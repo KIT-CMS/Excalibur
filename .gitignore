@@ -19,3 +19,10 @@
 *.exe
 *.out
 *.app
+
+# Extended
+*~
+*.pyc
+work.*
+*__init__.py
+*.formatted

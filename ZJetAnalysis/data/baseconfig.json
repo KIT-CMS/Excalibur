@@ -1,0 +1,18 @@
+{
+    "SkipEvents": 0,
+    "EventCount": -1, 
+    "GlobalProcessors": [],
+    "InputFiles": [
+            "/storage/a/dhaitz/skims/2014_03_25_data12/kappa_2012D_3654.root"
+     ],
+    "OutputPath": "sample_zjet_output.root", 
+    "InputIsData": 1,
+    "Pipelines": {
+        "all": {
+            "Consumers": [ "zjetntuple"], 
+            "Quantities" :["npv", "mu1pt"],
+            "Processors": []
+        }
+    }
+}
+
