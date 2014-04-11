@@ -12,9 +12,6 @@ ZJetEventProvider::ZJetEventProvider(FileInterface2 & fileInterface, InputTypeEn
 void ZJetEventProvider::WireEvent(global_setting_type const& globalSettings)
 {
 	KappaEventProvider::WireEvent(globalSettings);
-	if(! globalSettings.GetTaggedJets().empty())
-		this->m_event.m_tjets = this->m_fi.Get<KDataPFTaggedJets>(globalSettings.GetTaggedJets());
-
 }
 
 

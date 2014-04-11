@@ -15,6 +15,5 @@ class ZJetGlobalSettings: public KappaGlobalSettings {
 public:
 
 	IMPL_SETTING(bool, InputIsData)
-	IMPL_SETTING(std::string, TaggedJets)
 
 };
