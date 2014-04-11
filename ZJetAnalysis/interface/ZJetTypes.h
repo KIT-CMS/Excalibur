@@ -6,7 +6,10 @@
 
 #include "Artus/Core/interface/Cpp11Support.h"
 #include "Artus/Core/interface/ProducerBase.h"
+#include "Artus/Core/interface/Pipeline.h"
 #include "Artus/Core/interface/PipelineRunner.h"
+
+#include "Artus/KappaAnalysis/interface/KappaPipelineInitializer.h"
 
 #include "ZJetEvent.h"
 #include "ZJetProduct.h"
@@ -34,4 +37,6 @@ typedef Pipeline<ZJetTypes> ZJetPipeline;
 
 //Setup our custom pipeline runner
 typedef PipelineRunner<ZJetPipeline, ZJetTypes> ZJetPipelineRunner;
+
+typedef KappaPipelineInitializer<ZJetTypes> ZJetPipelineInitializer;
 

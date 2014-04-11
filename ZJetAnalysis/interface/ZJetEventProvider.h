@@ -18,14 +18,7 @@ public:
 
 	typedef typename ZJetTypes::global_setting_type global_setting_type;
 
-	ZJetEventProvider(FileInterface2 & fi, InputTypeEnum inpType) : 
-		KappaEventProvider<ZJetTypes>(fi,inpType) {}
+	ZJetEventProvider(FileInterface2 & fi, InputTypeEnum inpType);
 
-	virtual void WireEvent(global_setting_type const& globalSettings) 
-		ARTUS_CPP11_OVERRIDE
-	{
-		KappaEventProvider::WireEvent(globalSettings);
-		m_event.m_vertexSummary = m_fi.Get<KVertexSummary>("goodOfflinePrimaryVerticesSummary");
-		m_event.m_muons = m_fi.Get<KDataMuons>("muons");
-	}
+	virtual void WireEvent(global_setting_type const& globalSettings) ARTUS_CPP11_OVERRIDE;
 };

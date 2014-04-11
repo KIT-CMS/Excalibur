@@ -10,5 +10,5 @@ class ZJetEvent : public KappaEvent
 {
 public:
 	ZJetEvent() : KappaEvent() {};
-
+	KDataPFTaggedJets* m_tjets = 0;
 };

@@ -1,37 +1,21 @@
-/* Copyright (c) 2014 - All Rights Reserved
- *   Dominik Haitz <dhaitz@cern.ch>
- */
-
 #pragma once
 
 #include "Artus/Core/interface/Cpp11Support.h"
+#include "Artus/Core/interface/GlobalInclude.h"
 
-#include "Artus/Consumer/interface/NtupleConsumerBase.h"
+#include "Artus/Consumer/interface/LambdaNtupleConsumerBase.h"
 
 #include "ZJetTypes.h"
 
 
-class ZJetNtupleConsumer: public NtupleConsumerBase<ZJetTypes> {
-
+class ZJetNtupleConsumer: public LambdaNtupleConsumerBase<ZJetTypes> {
 public:
-	virtual std::string GetConsumerId() const
-		ARTUS_CPP11_OVERRIDE
-	{
-		return "zjetntuple";
-	}
 
-private:
+typedef std::function<float(ZJetEvent const&, ZJetProduct const&)> float_extractor_lambda;
 
-	float returnvalue(std::string string, ZJetEvent const& event,
-			ZJetProduct const& product ) ARTUS_CPP11_OVERRIDE
-	{
-		if (string == "npv")
-			return event.m_vertexSummary->nVertices;
-		else if (string == "mu1pt")
-			return event.m_muons->at(0).p4.Pt();
-		else
-			LOG(FATAL) << "The quantity " << string << " could not be added to the Ntuple!";
-			return UNDEFINED_VALUE;
-	}
+ZJetNtupleConsumer() : LambdaNtupleConsumerBase<ZJetTypes>() { };
+
+virtual void Init(Pipeline<ZJetTypes> * pset) ARTUS_CPP11_OVERRIDE;
+virtual std::string GetConsumerId() const ARTUS_CPP11_OVERRIDE;
 
 };

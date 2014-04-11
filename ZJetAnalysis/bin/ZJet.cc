@@ -11,13 +11,9 @@
 #include "Artus/Configuration/interface/ArtusConfig.h"
 #include "Artus/Configuration/interface/RootEnvironment.h"
 
-#include "Artus/Utility/interface/ArtusLogging.h"
-
-#include "ZJet/ZJetAnalysis/interface/ZJetFactory.h"
 #include "ZJet/ZJetAnalysis/interface/ZJetTypes.h"
 #include "ZJet/ZJetAnalysis/interface/ZJetEventProvider.h"
-#include "ZJet/ZJetAnalysis/interface/ZJetPipelineInitializer.h"
-
+#include "ZJet/ZJetAnalysis/interface/ZJetFactory.h"
 
 
 int main(int argc, char** argv) {

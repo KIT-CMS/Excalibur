@@ -1,13 +1,12 @@
-<Flags LDFLAGS="-Lsrc/KappaTools/lib -lKToolbox -lKRootTools" />
-<Flags LDFLAGS="-Lsrc/Kappa/lib -lKappa" />
-
 <bin   name="ZJet" file="ZJet.cc">
-   <use   name="boost"/>
-   <use   name="boost_regex"/>
-   <use   name="root"/>
+   <Flags LDFLAGS="-Lsrc/KappaTools/lib -lKToolbox -lKRootTools" />
+   <Flags LDFLAGS="-Lsrc/Kappa/lib -lKappa" />
    <use   name="Artus/Core"/>
    <use   name="Artus/Provider"/>
    <use   name="Artus/Configuration"/>
    <use   name="Artus/Consumer"/>
    <use   name="ZJet/ZJetAnalysis"/>
+   <use   name="root"/>
+   <use   name="boost"/>
+   <use   name="boost_regex"/>
 </bin>

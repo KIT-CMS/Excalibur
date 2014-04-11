@@ -9,18 +9,12 @@
 class ZJetPipelineSettings: public KappaPipelineSettings {
 public:
 
-
-	VarCache<stringvector> quantities;
-	stringvector GetQuantities() const
-	{
-		RETURN_CACHED(quantities, PropertyTreeSupport::GetAsStringList(GetPropTree(), "Pipelines." + GetName() + ".Quantities"))
-	}
-
 };
 
 class ZJetGlobalSettings: public KappaGlobalSettings {
 public:
 
 	IMPL_SETTING(bool, InputIsData)
+	IMPL_SETTING(std::string, TaggedJets)
 
 };

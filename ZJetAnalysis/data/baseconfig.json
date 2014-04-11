@@ -2,6 +2,12 @@
     "SkipEvents": 0,
     "EventCount": -1, 
     "GlobalProcessors": [],
+    "Muons": "muons",
+    "VertexSummary":"goodOfflinePrimaryVerticesSummary",
+    "TaggedJets":"AK5PFTaggedJetsCHS",
+    "JetArea":"KT6Area",
+    "Met":"PFMETCHS",
+    "EventMetadata":"KEventMetadata",
     "InputFiles": [
             "/storage/a/dhaitz/skims/2014_03_25_data12/kappa_2012D_3654.root"
      ],
@@ -9,8 +15,8 @@
     "InputIsData": 1,
     "Pipelines": {
         "all": {
-            "Consumers": [ "zjetntuple"], 
-            "Quantities" :["npv", "mu1pt"],
+            "Consumers": [ "ntuple"], 
+            "Quantities" :["npv", "jet1pt", "run", "metphi"],
             "Processors": []
         }
     }
