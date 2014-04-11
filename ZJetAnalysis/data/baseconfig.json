@@ -1,7 +1,7 @@
 {
     "SkipEvents": 0,
     "EventCount": -1, 
-    "GlobalProcessors": [],
+    "GlobalProcessors": ["producer:zproducer"],
     "Muons": "muons",
     "VertexSummary":"goodOfflinePrimaryVerticesSummary",
     "TaggedJets":"AK5PFTaggedJetsCHS",
@@ -16,7 +16,7 @@
     "Pipelines": {
         "all": {
             "Consumers": [ "ntuple"], 
-            "Quantities" :["npv", "jet1pt", "run", "metphi"],
+            "Quantities" :["npv", "jet1pt", "run", "metphi", "validz"],
             "Processors": []
         }
     }

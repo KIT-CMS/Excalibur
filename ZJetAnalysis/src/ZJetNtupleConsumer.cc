@@ -19,6 +19,9 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 
 	m_valueExtractorMap["metphi"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return event.m_met->p4.Phi(); };
+	
+	m_valueExtractorMap["validz"] = [](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.has_valid_z; };
 
 	LambdaNtupleConsumerBase<ZJetTypes>::Init(pset);
 }

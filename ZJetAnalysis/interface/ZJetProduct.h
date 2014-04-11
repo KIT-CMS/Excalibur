@@ -13,5 +13,6 @@ public:
 	ZJetProduct() : KappaProduct() {};
 
 	float m_product;
+	bool has_valid_z;
 
 };

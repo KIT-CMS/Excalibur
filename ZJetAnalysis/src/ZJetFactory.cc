@@ -1,26 +1,21 @@
 #include "ZJet/ZJetAnalysis/interface/ZJetFactory.h"
 
 // producers
-//#include "HiggsAnalysis/KITHiggsToTauTau/interface/Producers/DecayChannelProducer.h"
-//#include "HiggsAnalysis/KITHiggsToTauTau/interface/Producers/TauSpinnerProducer.h"
-//#include "HiggsAnalysis/KITHiggsToTauTau/interface/Producers/EventWeightProducer.h"
-//#include "HiggsAnalysis/KITHiggsToTauTau/interface/Producers/GenTauCPProducer.h"
+#include "ZJet/ZJetAnalysis/interface/Producers/ZProducer.h"
 
 // filters
-//#include "HiggsAnalysis/KITHiggsToTauTau/interface/Filters/PreselectionFilter.h"
+//#include ""
 
 // consumers
 #include "ZJet/ZJetAnalysis/interface/ZJetNtupleConsumer.h"
-//#include "HiggsAnalysis/KITHiggsToTauTau/interface/Consumers/HttCutFlowHistogramConsumer.h"
+
 
 
 ZJetProducerBase * ZJetFactory::createProducer ( std::string const& id )
 {
-	//if(id == DecayChannelProducer().GetProducerId())
-	//	return new DecayChannelProducer();
-	//else if(id == TauSpinnerProducer().GetProducerId())
-	//	return new TauSpinnerProducer();
-	//else
+	if(id == ZProducer().GetProducerId())
+		return new ZProducer();
+	else
 		return KappaFactory<ZJetTypes>::createProducer( id );	
 }
 
