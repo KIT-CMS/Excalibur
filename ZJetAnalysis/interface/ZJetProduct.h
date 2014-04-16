@@ -13,6 +13,9 @@ public:
 	ZJetProduct() : KappaProduct() {};
 
 	float m_product;
+	KDataMuons m_validmuons;
+	KDataMuons m_invalidmuons;
+
 	bool has_valid_z;
 
 };

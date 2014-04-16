@@ -15,5 +15,9 @@ class ZJetGlobalSettings: public KappaGlobalSettings {
 public:
 
 	IMPL_SETTING(bool, InputIsData)
+	
+	IMPL_SETTING(bool, MuonID2011)
+	IMPL_SETTING(float, MuonEtaMax)
+	IMPL_SETTING(float, MuonPtMin)
 
 };
