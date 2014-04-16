@@ -1,14 +1,25 @@
 {
     "SkipEvents": 0,
     "EventCount": -1, 
-    "GlobalProcessors": ["producer:validmuonproducer", "producer:zproducer"],
+    "GlobalProcessors": [
+        "filter:json_filter", 
+        "producer:hlt_selector",
+        "filter:hlt_filter", 
+        "producer:validmuonproducer",
+        "producer:zproducer"
+    ],
     "Muons": "muons",
     "VertexSummary":"goodOfflinePrimaryVerticesSummary",
     "TaggedJets":"AK5PFTaggedJetsCHS",
     "JetArea":"KT6Area",
     "Met":"PFMETCHS",
     "EventMetadata":"KEventMetadata",
+    "LumiMetadata" : "KLumiMetadata",
     
+    "ZMassMin": 71,
+    "ZMassMax": 111,
+    
+    "JsonFiles": ["/portal/ekpcms5/home/dhaitz/git/CalibFW/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt"],
     "MuonID2011": false,
     "MuonPtMin": 20,
     "MuonEtaMax": 2.4,
@@ -45,14 +56,16 @@
         "HLT_Mu17_Mu8_v29"
     ], 
     "InputFiles": [
-            "/storage/a/dhaitz/skims/2014_03_25_data12/kappa_2012D_3654.root"
+            "/storage/a/dhaitz/skims/2014_03_25_data12/*_1.root"
      ],
     "OutputPath": "sample_zjet_output.root", 
     "InputIsData": 1,
     "Pipelines": {
         "all": {
             "Consumers": [ "ntuple"], 
-            "Quantities" :["npv", "jet1pt", "run", "metphi", "validz", "nvalidmuons"],
+            "Quantities" :["npv", "jet1pt", "run", "metphi", "validz",
+                    "nvalidmuons", "zmass"
+            ],
             "Processors": []
         }
     }
