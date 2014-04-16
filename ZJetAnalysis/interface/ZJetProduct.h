@@ -20,4 +20,6 @@ public:
 
 	KDataLV Z;
 
+	HLTTools* m_hltInfo = new HLTTools;
+
 };
