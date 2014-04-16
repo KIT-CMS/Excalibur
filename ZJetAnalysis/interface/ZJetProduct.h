@@ -18,4 +18,6 @@ public:
 
 	bool has_valid_z;
 
+	KDataLV Z;
+
 };

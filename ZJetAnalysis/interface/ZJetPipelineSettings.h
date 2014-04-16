@@ -20,4 +20,7 @@ public:
 	IMPL_SETTING(float, MuonEtaMax)
 	IMPL_SETTING(float, MuonPtMin)
 
+	IMPL_SETTING(float, ZMassMax)
+	IMPL_SETTING(float, ZMassMin)
+
 };

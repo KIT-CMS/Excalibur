@@ -23,6 +23,9 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 	m_valueExtractorMap["validz"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.has_valid_z; };
 
+	m_valueExtractorMap["zmass"] = [](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.Z.p4.mass(); };
+
 	m_valueExtractorMap["nvalidmuons"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.m_validmuons.size(); };
 
