@@ -8,11 +8,13 @@
 
 class ZJetPipelineSettings: public KappaPipelineSettings {
 public:
-
+	IMPL_SETTING(std::string, JetAlgorithm)
 };
 
 class ZJetGlobalSettings: public KappaGlobalSettings {
 public:
+
+	IMPL_SETTING_DEFAULT(std::string, TaggerMetadata, "")
 
 	IMPL_SETTING(bool, InputIsData)
 	
@@ -22,5 +24,7 @@ public:
 
 	IMPL_SETTING(float, ZMassMax)
 	IMPL_SETTING(float, ZMassMin)
+	
+	IMPL_SETTING(bool, VetoPileupJets)
 
 };

@@ -7,7 +7,8 @@
         "filter:hlt_filter", 
         "producer:validmuonproducer",
         "filter:muons",
-        "producer:zproducer"
+        "producer:zproducer",
+        "producer:validjetproducer"
     ],
     "Muons": "muons",
     "VertexSummary":"goodOfflinePrimaryVerticesSummary",
@@ -24,6 +25,8 @@
     "MuonID2011": false,
     "MuonPtMin": 20,
     "MuonEtaMax": 2.4,
+    
+    "VetoPileupJets": false,
 
     "HltPaths": [
         "HLT_Mu17_Mu8_v1", 
@@ -64,8 +67,9 @@
     "Pipelines": {
         "all": {
             "Consumers": [ "ntuple"], 
+            "JetAlgorithm": "AK5PFTaggedJetsCHS",
             "Quantities" :["npv", "jet1pt", "run", "metphi", "validz",
-                    "nvalidmuons", "zmass"
+                    "nvalidmuons", "zmass", "jet1pt"
             ],
             "Processors": []
         }

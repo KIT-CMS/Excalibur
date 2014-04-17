@@ -12,6 +12,9 @@ ZJetEventProvider::ZJetEventProvider(FileInterface2 & fileInterface, InputTypeEn
 void ZJetEventProvider::WireEvent(global_setting_type const& globalSettings)
 {
 	KappaEventProvider::WireEvent(globalSettings);
+	if(! globalSettings.GetTaggerMetadata().empty())
+			this->m_event.m_taggermetadata = this->SecureFileInterfaceGet<KTaggerMetadata>(globalSettings.GetTaggerMetadata());
+
 }
 
 

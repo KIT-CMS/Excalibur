@@ -18,4 +18,7 @@ ZJetNtupleConsumer() : LambdaNtupleConsumerBase<ZJetTypes>() { };
 virtual void Init(Pipeline<ZJetTypes> * pset) ARTUS_CPP11_OVERRIDE;
 virtual std::string GetConsumerId() const ARTUS_CPP11_OVERRIDE;
 
+private:
+	std::string algoname;
+
 };

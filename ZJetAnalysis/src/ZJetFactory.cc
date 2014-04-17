@@ -3,6 +3,7 @@
 // producers
 #include "ZJet/ZJetAnalysis/interface/Producers/ZProducer.h"
 #include "ZJet/ZJetAnalysis/interface/Producers/ValidMuonProducer.h"
+#include "ZJet/ZJetAnalysis/interface/Producers/ValidJetProducer.h"
 
 // filters
 #include "ZJet/ZJetAnalysis/interface/Filters/MuonFilter.h"
@@ -18,6 +19,8 @@ ZJetProducerBase * ZJetFactory::createProducer ( std::string const& id )
 		return new ZProducer();
 	else if(id == ValidMuonProducer().GetProducerId())
 		return new ValidMuonProducer();
+	else if(id == ValidJetProducer().GetProducerId())
+		return new ValidJetProducer();
 	else
 		return KappaFactory<ZJetTypes>::createProducer( id );	
 }

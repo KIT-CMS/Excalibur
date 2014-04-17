@@ -6,7 +6,7 @@
 
 void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 {
-
+	algoname = pset->GetSettings().GetJetAlgorithm();
 	
 	m_valueExtractorMap["npv"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return event.m_vertexSummary->nVertices; };
@@ -28,6 +28,10 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 
 	m_valueExtractorMap["nvalidmuons"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.m_validmuons.size(); };
+	
+	m_valueExtractorMap["jet1pt"] = [&](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.GetLeadingJet(algoname).p4.Pt(); };
+
 
 	LambdaNtupleConsumerBase<ZJetTypes>::Init(pset);
 }
