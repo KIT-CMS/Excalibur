@@ -8,7 +8,10 @@
         "producer:validmuonproducer",
         "filter:muons",
         "producer:zproducer",
-        "producer:validjetproducer"
+        "filter:validz",
+        "filter:zpt",
+        "producer:validjetproducer",
+        "filter:jetpt"
     ],
     "Muons": "muons",
     "VertexSummary":"goodOfflinePrimaryVerticesSummary",
@@ -25,6 +28,9 @@
     "MuonID2011": false,
     "MuonPtMin": 20,
     "MuonEtaMax": 2.4,
+    
+    "ZPtMin": 30,
+    "JetPtMin": 12,
     
     "VetoPileupJets": false,
 
@@ -60,7 +66,7 @@
         "HLT_Mu17_Mu8_v29"
     ], 
     "InputFiles": [
-            "/storage/a/dhaitz/skims/2014_03_25_data12/*_1.root"
+            "/storage/a/dhaitz/skims/2014_03_25_data12/*300*.root"
      ],
     "OutputPath": "sample_zjet_output.root", 
     "InputIsData": 1,
@@ -69,7 +75,7 @@
             "Consumers": [ "ntuple"], 
             "JetAlgorithm": "AK5PFTaggedJetsCHS",
             "Quantities" :["npv", "jet1pt", "run", "metphi", "validz",
-                    "nvalidmuons", "zmass", "jet1pt"
+                    "nvalidmuons", "zmass"
             ],
             "Processors": []
         }

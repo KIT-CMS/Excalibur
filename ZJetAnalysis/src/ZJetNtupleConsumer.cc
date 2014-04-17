@@ -11,9 +11,6 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 	m_valueExtractorMap["npv"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return event.m_vertexSummary->nVertices; };
 
-	m_valueExtractorMap["jet1pt"] = [](ZJetEvent const & event, ZJetProduct const & product)
-	{return event.m_tjets->at(0).p4.Pt(); };
-
 	m_valueExtractorMap["run"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return event.m_eventMetadata->nRun; };
 
