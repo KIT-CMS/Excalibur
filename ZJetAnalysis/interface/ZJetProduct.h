@@ -15,6 +15,7 @@ public:
 	float m_product;
 	KDataMuons m_validmuons;
 	KDataMuons m_invalidmuons;
+	const KDataMuon * m_decaymuons [2];
 
 	bool has_valid_z;
 

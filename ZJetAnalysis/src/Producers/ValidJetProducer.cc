@@ -25,10 +25,10 @@ void ValidJetProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& produc
 		dr1 = 99999.0f;
 		dr2 = 99999.0f;
 
-		//dr1 = ROOT::Math::VectorUtil::DeltaR((*jet).p4,
-		//									 metaData.GetValidMuons().at(0).p4);
-		//dr2 = ROOT::Math::VectorUtil::DeltaR((*jet).p4,
-		//									 metaData.GetValidMuons().at(1).p4);
+		dr1 = ROOT::Math::VectorUtil::DeltaR((*jet).p4,
+											 product.m_decaymuons[0]->p4);
+		dr2 = ROOT::Math::VectorUtil::DeltaR((*jet).p4,
+											 product.m_decaymuons[1]->p4);
 		good_jet = good_jet && (dr1 > 0.5) && (dr2 > 0.5);
 
 		// JetID

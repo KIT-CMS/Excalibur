@@ -26,7 +26,11 @@ void ZProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
 				z.p4 = m1.p4 + m2.p4;
 
 				if (z.p4.mass() > globalSettings.GetZMassMin() && z.p4.mass() < globalSettings.GetZMassMax())
+				{
 					z_candidates.push_back(z);
+					product.m_decaymuons[0] = & m1;
+					product.m_decaymuons[1] = & m2;
+				}
 			}
 		}
 	}
