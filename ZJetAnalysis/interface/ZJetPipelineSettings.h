@@ -9,6 +9,10 @@
 class ZJetPipelineSettings: public KappaPipelineSettings {
 public:
 	IMPL_SETTING(std::string, JetAlgorithm)
+	
+	IMPL_SETTING(float, ZPtMin)
+	
+	IMPL_SETTING(float, JetPtMin)
 };
 
 class ZJetGlobalSettings: public KappaGlobalSettings {
@@ -26,5 +30,9 @@ public:
 	IMPL_SETTING(float, ZMassMin)
 	
 	IMPL_SETTING(bool, VetoPileupJets)
+	
+	IMPL_SETTING(float, ZPtMin)
+	
+	IMPL_SETTING(float, JetPtMin)
 
 };
