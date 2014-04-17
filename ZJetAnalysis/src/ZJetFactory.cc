@@ -5,7 +5,7 @@
 #include "ZJet/ZJetAnalysis/interface/Producers/ValidMuonProducer.h"
 
 // filters
-//#include ""
+#include "ZJet/ZJetAnalysis/interface/Filters/MuonFilter.h"
 
 // consumers
 #include "ZJet/ZJetAnalysis/interface/ZJetNtupleConsumer.h"
@@ -24,9 +24,9 @@ ZJetProducerBase * ZJetFactory::createProducer ( std::string const& id )
 
 ZJetFilterBase * ZJetFactory::createFilter ( std::string const& id )
 {
-	//if(id == PreselectionFilter().GetFilterId())
-	//	return new PreselectionFilter();
-	//else
+	if(id == MuonFilter().GetFilterId())
+		return new MuonFilter();
+	else
 		return KappaFactory<ZJetTypes>::createFilter( id );
 }
 

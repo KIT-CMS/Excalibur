@@ -6,6 +6,7 @@
         "producer:hlt_selector",
         "filter:hlt_filter", 
         "producer:validmuonproducer",
+        "filter:muons",
         "producer:zproducer"
     ],
     "Muons": "muons",
