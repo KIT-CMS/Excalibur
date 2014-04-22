@@ -15,6 +15,7 @@ public:
 	IMPL_SETTING(float, JetPtMin)
 	IMPL_SETTING(float, JetEtaMax)
 	IMPL_SETTING(float, AlphaMax)
+	IMPL_SETTING(float, DeltaPhiMax)
 };
 
 class ZJetGlobalSettings: public KappaGlobalSettings {
@@ -38,5 +39,6 @@ public:
 	IMPL_SETTING(float, JetPtMin)
 	IMPL_SETTING(float, JetEtaMax)
 	IMPL_SETTING(float, AlphaMax)
+	IMPL_SETTING(float, DeltaPhiMax)
 
 };
