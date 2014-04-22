@@ -11,6 +11,7 @@
 #include "ZJet/ZJetAnalysis/interface/Filters/ZPtFilter.h"
 #include "ZJet/ZJetAnalysis/interface/Filters/JetPtFilter.h"
 #include "ZJet/ZJetAnalysis/interface/Filters/JetEtaFilter.h"
+#include "ZJet/ZJetAnalysis/interface/Filters/AlphaFilter.h"
 
 // consumers
 #include "ZJet/ZJetAnalysis/interface/ZJetNtupleConsumer.h"
@@ -41,6 +42,8 @@ ZJetFilterBase * ZJetFactory::createFilter ( std::string const& id )
 		return new JetPtFilter();
 	else if(id == JetEtaFilter().GetFilterId())
 		return new JetEtaFilter();
+	else if(id == AlphaFilter().GetFilterId())
+		return new AlphaFilter();
 	else
 		return KappaFactory<ZJetTypes>::createFilter( id );
 }

@@ -12,7 +12,8 @@
         "filter:zpt",
         "producer:validjetproducer",
         "filter:jetpt",
-        "filter:jeteta"
+        "filter:jeteta",
+        "filter:alpha"
     ],
     "Muons": "muons",
     "VertexSummary":"goodOfflinePrimaryVerticesSummary",
@@ -34,6 +35,7 @@
     "ZPtMin": 30,
     "JetPtMin": 12,
     "JetEtaMax": 1.3,
+    "AlphaMax": 0.2,
     
     "VetoPileupJets": false,
 
