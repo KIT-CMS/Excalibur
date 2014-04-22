@@ -21,6 +21,7 @@
     "Met":"PFMETCHS",
     "EventMetadata":"KEventMetadata",
     "LumiMetadata" : "KLumiMetadata",
+    "TaggerMetadata" : "KTaggerMetadata",
     
     "ZMassMin": 71,
     "ZMassMax": 111,
@@ -76,8 +77,12 @@
         "all": {
             "Consumers": [ "ntuple"], 
             "JetAlgorithm": "AK5PFTaggedJetsCHS",
-            "Quantities" :["npv", "jet1pt", "run", "metphi", "validz",
-                    "nvalidmuons", "zmass"
+            "Quantities" :[
+            "npv", "run",
+            "jet1pt", "jet1eta", "jet1phi",
+            "metphi", "metpt",
+            "nvalidmuons", "validz",
+            "zmass", "zpt", "zy"
             ],
             "Processors": []
         }
