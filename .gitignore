@@ -26,3 +26,5 @@
 work.*
 *__init__.py
 *.formatted
+*.root
+logs/
