@@ -39,6 +39,11 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 	m_valueExtractorMap["jet1phi"] = [&](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.GetLeadingJet(algoname).p4.Phi(); };
 
+	m_valueExtractorMap["btag"] = [&](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.GetLeadingJet(algoname).getTagger("CombinedSecondaryVertexBJetTags", event.m_taggermetadata); };
+	m_valueExtractorMap["qgtag"] = [&](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.GetLeadingJet(algoname).getTagger("QGlikelihood", event.m_taggermetadata); };
+
 	m_valueExtractorMap["mpf"] = [&](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.GetMPF(event.m_met); };
 

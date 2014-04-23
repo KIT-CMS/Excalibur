@@ -79,7 +79,8 @@
                 "metphi", "metpt",
                 "nvalidmuons", "validz",
                 "zmass", "zpt", "zy",
-                "mpf"
+                "mpf",
+                "btag", "qgtag"
             ],
             "Processors": [
                 "filter:jetpt",
@@ -101,7 +102,8 @@
                 "metphi", "metpt",
                 "nvalidmuons", "validz",
                 "zmass", "zpt", "zy",
-                "mpf"
+                "mpf",
+                "btag", "qgtag"
             ],
             "Processors": []
         }
