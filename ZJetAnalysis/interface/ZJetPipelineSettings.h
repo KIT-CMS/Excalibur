@@ -21,8 +21,6 @@ public:
 class ZJetGlobalSettings: public KappaGlobalSettings {
 public:
 
-	IMPL_SETTING_DEFAULT(std::string, TaggerMetadata, "")
-
 	IMPL_SETTING(bool, InputIsData)
 	
 	IMPL_SETTING(bool, MuonID2011)
