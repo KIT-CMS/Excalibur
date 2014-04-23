@@ -10,5 +10,4 @@ class ZJetEvent : public KappaEvent
 {
 public:
 	ZJetEvent() : KappaEvent() {};
-	KTaggerMetadata* m_taggermetadata = 0;
 };
