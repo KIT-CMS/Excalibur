@@ -31,4 +31,11 @@ public:
 		return m_validjets.at(algoname).at(0);
 	}
 
+	float GetMPF(const KDataPFMET* met) const //type1 !!!
+	{
+		return 1.0f + (Z.p4.Px() * met->p4.Px()
+			+ Z.p4.Py() * met->p4.Py()) /
+			 (Z.p4.Px() * Z.p4.Px()
+			+ Z.p4.Py() * Z.p4.Py());
+	}
 };

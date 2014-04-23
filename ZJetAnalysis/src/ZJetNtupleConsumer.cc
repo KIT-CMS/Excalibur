@@ -39,6 +39,9 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 	m_valueExtractorMap["jet1phi"] = [&](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.GetLeadingJet(algoname).p4.Phi(); };
 
+	m_valueExtractorMap["mpf"] = [&](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.GetMPF(event.m_met); };
+
 	LambdaNtupleConsumerBase<ZJetTypes>::Init(pset);
 }
 
