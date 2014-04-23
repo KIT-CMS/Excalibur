@@ -33,6 +33,11 @@ public:
 
 	KDataPFTaggedJet GetSecondJet(std::string const& algoname) const
 	{
+		if (m_validjets.at(algoname).size() < 2)
+		{
+			KDataPFTaggedJet jet;
+			return jet;
+		}
 		return m_validjets.at(algoname).at(1);
 	}
 

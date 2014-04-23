@@ -65,7 +65,7 @@
         "HLT_Mu17_Mu8_v29"
     ], 
     "InputFiles": [
-            "/storage/a/dhaitz/skims/2014_03_25_data12/*3000*.root"
+            "/storage/fhgfs/dhaitz/skims/2014_03_25_data12/*300*.root"
      ],
     "OutputPath": "sample_zjet_output.root", 
     "InputIsData": 1,
@@ -76,11 +76,13 @@
             "Quantities" :[
                 "npv", "run",
                 "jet1pt", "jet1eta", "jet1phi",
+                "jet2pt", "jet2eta", "jet2phi",
                 "metphi", "metpt",
                 "nvalidmuons", "validz",
                 "zmass", "zpt", "zy",
                 "mpf",
-                "btag", "qgtag"
+                "btag", "qgtag",
+                "njets"
             ],
             "Processors": [
                 "filter:jetpt",
@@ -99,11 +101,13 @@
             "Quantities" :[
                 "npv", "run",
                 "jet1pt", "jet1eta", "jet1phi",
+                "jet2pt", "jet2eta", "jet2phi",
                 "metphi", "metpt",
                 "nvalidmuons", "validz",
                 "zmass", "zpt", "zy",
                 "mpf",
-                "btag", "qgtag"
+                "btag", "qgtag",
+                "njets"
             ],
             "Processors": []
         }
