@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Artus/KappaAnalysis/interface/KappaProduct.h"
+#include "Artus/Utility/interface/SafeMap.h"
 
 
 class ZJetProduct : public KappaProduct
@@ -28,7 +29,7 @@ public:
 
 	KDataPFTaggedJet GetLeadingJet(std::string const& algoname) const
 	{
-		return m_validjets.at(algoname).at(0);
+		return SafeMap::Get(m_validjets, algoname).at(0);
 	}
 
 	KDataPFTaggedJet GetSecondJet(std::string const& algoname) const
@@ -38,7 +39,7 @@ public:
 			KDataPFTaggedJet jet;
 			return jet;
 		}
-		return m_validjets.at(algoname).at(1);
+		return SafeMap::Get(m_validjets, algoname).at(1);
 	}
 
 	float GetMPF(const KDataPFMET* met) const //type1 !!!
