@@ -10,7 +10,8 @@
         "producer:zproducer",
         "filter:validz",
         "filter:zpt",
-        "producer:validjetproducer"
+        "producer:validjetproducer",
+        "filter:validjets"
     ],
     "Muons": "muons",
     "VertexSummary":"goodOfflinePrimaryVerticesSummary",

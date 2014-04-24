@@ -9,6 +9,7 @@
 #include "ZJet/ZJetAnalysis/interface/Filters/MuonFilter.h"
 #include "ZJet/ZJetAnalysis/interface/Filters/ValidZFilter.h"
 #include "ZJet/ZJetAnalysis/interface/Filters/ZPtFilter.h"
+#include "ZJet/ZJetAnalysis/interface/Filters/ValidJetsFilter.h"
 #include "ZJet/ZJetAnalysis/interface/Filters/JetPtFilter.h"
 #include "ZJet/ZJetAnalysis/interface/Filters/JetEtaFilter.h"
 #include "ZJet/ZJetAnalysis/interface/Filters/AlphaFilter.h"
@@ -47,6 +48,8 @@ ZJetFilterBase * ZJetFactory::createFilter ( std::string const& id )
 		return new AlphaFilter();
 	else if(id == DeltaPhiFilter().GetFilterId())
 		return new DeltaPhiFilter();
+	else if(id == ValidJetsFilter().GetFilterId())
+		return new ValidJetsFilter();
 	else
 		return KappaFactory<ZJetTypes>::createFilter( id );
 }
