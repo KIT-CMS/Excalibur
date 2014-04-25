@@ -1,0 +1,26 @@
+{
+    "SkipEvents": 0,
+    "EventCount": -1, 
+    "GlobalProcessors": [
+        "producer:genzproducer"
+    ],
+    "GenParticles" : "LHE",
+
+    "InputFiles": [
+            "/portal/ekpcms5/home/dhaitz/newskim/5314/skim.root"
+     ],
+    "OutputPath": "lhe_output.root", 
+    "InputIsData": 0,
+    "Pipelines": {
+        "all": {
+            "Consumers": [ "ntuple"], 
+            "Quantities" :[
+                "genzpt", "genzmass", "genzy"
+            ],
+            "JetAlgorithm": "",
+            "Processors": [
+            ]
+        }
+    }
+}
+
