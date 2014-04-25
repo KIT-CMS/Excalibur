@@ -57,9 +57,7 @@ void ValidJetProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& produc
 			product.m_validjets[jetalgo].push_back(*jet);
 		else
 			product.m_invalidjets[jetalgo].push_back(*jet);
-		}
-		
-				
+	}
 }
 
 
