@@ -19,8 +19,10 @@ public:
 	const KDataMuon * m_decaymuons [2];
 
 	bool has_valid_z;
+	bool has_valid_genz;
 
 	KDataLV Z;
+	KDataLV GenZ;
 
 	HLTTools* m_hltInfo = new HLTTools;
 	
