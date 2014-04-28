@@ -1,7 +1,7 @@
-#include "ZJet/ZJetAnalysis/interface/Producers/ValidJetProducer.h"
+#include "ZJet/ZJetAnalysis/interface/Producers/ZJetValidJetsProducer.h"
 
 
-void ValidJetProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
+void ZJetValidJetsProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
 		ZJetGlobalSettings const& globalSettings) const
 {
 	std::string jetalgo;
