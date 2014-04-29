@@ -24,24 +24,27 @@ public:
 	KDataLV Z;
 	KDataLV GenZ;
 
-	HLTTools* m_hltInfo = new HLTTools;
-	
-	std::map<std::string, KDataPFTaggedJets> m_validjets;
-	std::map<std::string, KDataPFTaggedJets> m_invalidjets;
-
-	KDataPFTaggedJet GetLeadingJet(std::string const& algoname) const
+	KDataPFTaggedJet * GetLeadingJet(std::string const& algoname) const
 	{
-		return SafeMap::Get(m_validjets, algoname).at(0);
+		//if (std::string::npos == algoname.find("L1"))
+			return static_cast<KDataPFTaggedJet*> (m_validJets.at(0));
+		//else
+		//	return SafeMap::Get(m_validjets, algoname).at(0);
 	}
 
-	KDataPFTaggedJet GetSecondJet(std::string const& algoname) const
+	KDataPFTaggedJet * GetSecondJet(std::string const& algoname) const
 	{
-		if (m_validjets.at(algoname).size() < 2)
+		//if (std::string::npos == algoname.find("L1"))
+		//{
+			return static_cast<KDataPFTaggedJet*> (m_validJets.at(1));
+			/*}
+		else if (m_validjets.at(algoname).size() < 2)
 		{
 			KDataPFTaggedJet jet;
 			return jet;
 		}
 		return SafeMap::Get(m_validjets, algoname).at(1);
+			*/
 	}
 
 	float GetMPF(const KDataPFMET* met) const //type1 !!!

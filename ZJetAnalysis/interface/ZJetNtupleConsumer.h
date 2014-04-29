@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Artus/Core/interface/Cpp11Support.h"
-#include "Artus/Core/interface/GlobalInclude.h"
 
 #include "Artus/Consumer/interface/LambdaNtupleConsumerBase.h"
 

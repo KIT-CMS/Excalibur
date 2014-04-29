@@ -32,6 +32,7 @@
     "MuonEtaMax": 2.4,
 
     "VetoPileupJets": false,
+    "JetID": "Loose",
 
     "HltPaths": [
         "HLT_Mu17_Mu8_v1", 

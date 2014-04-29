@@ -30,10 +30,7 @@ private:
 	virtual bool DoesEventPass(ZJetEvent const& event,
 		ZJetProduct const& product, std::string const& algoname) const
 	{
-		std::map<std::string, KDataPFTaggedJets>::const_iterator it = product.m_validjets.find(algoname);
-		if (it == product.m_validjets.end())
-			return false;
-		else if (SafeMap::Get(product.m_validjets, algoname).size() < 1)
+		if (product.m_validJets.size() < 1)
 			return false;
 		else
 			return true;

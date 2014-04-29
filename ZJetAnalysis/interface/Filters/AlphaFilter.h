@@ -29,7 +29,7 @@ private:
 	virtual bool DoesEventPass(ZJetEvent const& event,
 		ZJetProduct const& product, std::string const& algoname, float const& alphamax) const
 	{
-		if (product.GetSecondJet(algoname).p4.Pt() / product.Z.p4.Pt() > alphamax)
+		if (product.GetSecondJet(algoname)->p4.Pt() / product.Z.p4.Pt() > alphamax)
 			return false;
 		else
 			return true;

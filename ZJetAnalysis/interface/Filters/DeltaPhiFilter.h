@@ -29,7 +29,7 @@ private:
 	virtual bool DoesEventPass(ZJetEvent const& event,
 		ZJetProduct const& product, std::string const& algoname, float const& deltaphimax) const
 	{
-		if ( (ROOT::Math::Pi() - ROOT::Math::VectorUtil::DeltaR(product.GetLeadingJet(algoname).p4,
+		if ( (ROOT::Math::Pi() - ROOT::Math::VectorUtil::DeltaR(product.GetLeadingJet(algoname)->p4,
 						product.Z.p4) ) > deltaphimax)
 			return false;
 		else

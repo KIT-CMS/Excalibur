@@ -29,7 +29,7 @@ private:
 	virtual bool DoesEventPass(ZJetEvent const& event,
 		ZJetProduct const& product, std::string const& algoname, float const& jetetamax) const
 	{
-		if (std::abs(product.GetLeadingJet(algoname).p4.Eta()) > jetetamax)
+		if (std::abs(product.GetLeadingJet(algoname)->p4.Eta()) > jetetamax)
 			return false;
 		else
 			return true;
