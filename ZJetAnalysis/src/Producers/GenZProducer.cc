@@ -5,13 +5,12 @@ void GenZProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
                                          ZJetGlobalSettings const& globalSettings) const
 {
 
-	std::vector<KDataLV> genz_candidates;
+	KGenParticles genz_candidates;
 
 	// Loop over gen particles
-	LOG(INFO) << event.m_genParticles->size();
 	for (KGenParticles::iterator it = event.m_genParticles->begin(); it != event.m_genParticles->end(); ++it)
 	{
-		if (it->pdgid == 23)
+		if (it->pdgId() == 23)
 			genz_candidates.push_back(*it);
 	}
 

@@ -22,7 +22,7 @@ public:
 	bool has_valid_genz;
 
 	KDataLV Z;
-	KDataLV GenZ;
+	KGenParticle GenZ;
 
 	KDataPFTaggedJet * GetLeadingJet(std::string const& algoname) const
 	{

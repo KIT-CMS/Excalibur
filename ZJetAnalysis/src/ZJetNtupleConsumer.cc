@@ -35,6 +35,8 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 	{return product.GenZ.p4.Pt(); };
 	m_valueExtractorMap["genzy"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.GenZ.p4.Rapidity(); };
+	m_valueExtractorMap["genzstatus"] = [](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.GenZ.status(); };
 
 	m_valueExtractorMap["nvalidmuons"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.m_validmuons.size(); };
