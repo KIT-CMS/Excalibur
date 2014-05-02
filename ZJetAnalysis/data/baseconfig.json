@@ -72,7 +72,7 @@
     "InputIsData": 1,
     "Pipelines": {
         "filter": {
-            "Consumers": [ "ntuple"], 
+            "Consumers": [ "ntuple", "cutflow_histogram"], 
             "JetAlgorithm": "AK5PFTaggedJetsCHS",
             "Quantities" :[
                 "npv", "run",
@@ -97,7 +97,7 @@
             "DeltaPhiMax": 0.3
         },
         "all": {
-            "Consumers": [ "ntuple"], 
+            "Consumers": [ "ntuple", "cutflow_histogram"], 
             "JetAlgorithm": "AK5PFTaggedJetsCHS",
             "Quantities" :[
                 "npv", "run",
