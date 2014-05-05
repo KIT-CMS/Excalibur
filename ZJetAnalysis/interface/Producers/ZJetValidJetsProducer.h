@@ -12,8 +12,9 @@ public:
 	{
 		return "validjetproducer";
 	}
-	
-		bool AdditionalCriteria(KDataPFTaggedJet* jet, event_type const& event, product_type& product) const;
+
+protected:
+		virtual bool AdditionalCriteria(KDataPFTaggedJet* jet, event_type const& event, product_type& product) const ARTUS_CPP11_OVERRIDE;
 /*
 	virtual void ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
 		ZJetGlobalSettings const& globalSettings) const ARTUS_CPP11_OVERRIDE;
