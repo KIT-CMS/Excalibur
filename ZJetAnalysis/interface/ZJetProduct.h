@@ -23,6 +23,7 @@ public:
 
 	KDataLV Z;
 	KGenParticle GenZ;
+	KGenParticles m_genmuons;
 
 	KDataPFTaggedJet * GetLeadingJet(std::string const& algoname) const
 	{

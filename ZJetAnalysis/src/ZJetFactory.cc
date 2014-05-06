@@ -3,6 +3,7 @@
 // producers
 #include "ZJet/ZJetAnalysis/interface/Producers/ZProducer.h"
 #include "ZJet/ZJetAnalysis/interface/Producers/GenZProducer.h"
+#include "ZJet/ZJetAnalysis/interface/Producers/GenMuonsProducer.h"
 #include "ZJet/ZJetAnalysis/interface/Producers/ValidMuonProducer.h"
 #include "ZJet/ZJetAnalysis/interface/Producers/ZJetValidJetsProducer.h"
 
@@ -28,6 +29,8 @@ ZJetProducerBase * ZJetFactory::createProducer ( std::string const& id )
 		return new ZProducer();
 	else if(id == GenZProducer().GetProducerId())
 		return new GenZProducer();
+	else if(id == GenMuonsProducer().GetProducerId())
+		return new GenMuonsProducer();
 	else if(id == ValidMuonProducer().GetProducerId())
 		return new ValidMuonProducer();
 	else if(id == ZJetValidJetsProducer().GetProducerId())
