@@ -40,6 +40,10 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 
 	m_valueExtractorMap["nvalidmuons"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.m_validmuons.size(); };
+	m_valueExtractorMap["ngenmuons"] = [](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.m_genmuons.size(); };
+	m_valueExtractorMap["ngenparticles"] = [](ZJetEvent const & event, ZJetProduct const & product)
+	{return event.m_genParticles->size(); };
 	
 	m_valueExtractorMap["jet1pt"] = [&](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.GetLeadingJet(algoname)->p4.Pt(); };
