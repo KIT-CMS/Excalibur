@@ -2,7 +2,8 @@
     "SkipEvents": 0,
     "EventCount": -1, 
     "GlobalProcessors": [
-        "producer:genzproducer"
+        "producer:genzproducer",
+        "producer:genmuonsproducer"
     ],
     "GenParticles" : "LHE",
 
@@ -15,7 +16,8 @@
         "all": {
             "Consumers": [ "ntuple"], 
             "Quantities" :[
-                "genzpt", "genzmass", "genzy", "genzstatus"
+                "genzpt", "genzmass", "genzy", "genzstatus",
+                "ngenmuons", "ngenparticles"
             ],
             "JetAlgorithm": "",
             "Processors": [
