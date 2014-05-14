@@ -1,0 +1,54 @@
+{
+    "SkipEvents": 0,
+    "EventCount": -1, 
+    "GlobalProcessors": [
+        "producer:valid_electrons",
+        "producer:zproducer",
+        "producer:pu_weights"
+    ],
+    "Electrons": "electrons",
+    "VertexSummary":"goodOfflinePrimaryVerticesSummary",
+    "Met":"PFMETCHS",
+    "EventMetadata":"KEventMetadata",
+    "LumiMetadata" : "KLumiMetadata",
+    "TaggerMetadata" : "KTaggerMetadata",
+
+    "JsonFiles": ["/portal/ekpcms5/home/dhaitz/git/CalibFW/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt"],
+    "ElectronID": "mvanontrig",
+    "ElectronIsoType": "None",
+    "InputFiles": [
+            "/storage/a/dhaitz/skims/2014_02_28_zee_mc_powheg/kappa_2012_mc_powheg_111.root"
+     ],
+    "PileupWeightFile": "/portal/ekpcms5/home/dhaitz/git/CalibFW/data/pileup/weights_190456-208686_8TeV_22Jan2013ReReco_2014_01_31_zee_mc.root", 
+    "OutputPath": "mc_ee.root", 
+    "InputIsData": 0,
+    "Pipelines": {
+        "filter": {
+            "Consumers": [ "ntuple", "cutflow_histogram"],
+            "Quantities" :[
+                "npv", "run", "puweight",
+                "metphi", "metpt",
+                "nvalidelectrons", "validz",
+                "zmass", "zpt", "zy"
+            ],
+            "Processors": [
+                "filter:validz",
+                "filter:zpt"
+            ],
+            "ZMassMin": 71,
+            "ZMassMax": 111,
+            "ZPtMin": 30
+        },
+        "all": {
+            "Consumers": [ "ntuple", "cutflow_histogram"],
+            "Quantities" :[
+                "npv", "run", "puweight",
+                "metphi", "metpt",
+                "nvalidelectrons", "validz",
+                "zmass", "zpt", "zy"
+            ],
+            "Processors": []
+        }
+    }
+}
+
