@@ -42,6 +42,10 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 	{return product.m_validmuons.size(); };
 	m_valueExtractorMap["ngenmuons"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.m_genmuons.size(); };
+	m_valueExtractorMap["nvalidelectrons"] = [](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.m_validElectrons.size(); };
+	m_valueExtractorMap["ngenelectrons"] = [](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.m_validElectrons.size(); };
 	m_valueExtractorMap["ngenparticles"] = [](ZJetEvent const & event, ZJetProduct const & product)
 	{return event.m_genParticles->size(); };
 	
@@ -69,6 +73,10 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 
 	m_valueExtractorMap["njets"] = [&](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.m_validJets.size(); };
+
+	m_valueExtractorMap["puweight"] = [&](ZJetEvent const & event, ZJetProduct const & product)
+	{return product.m_puweight; };
+
 
 	LambdaNtupleConsumerBase<ZJetTypes>::Init(pset);
 }
