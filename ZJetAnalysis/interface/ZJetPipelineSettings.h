@@ -8,7 +8,7 @@
 
 class ZJetPipelineSettings: public KappaPipelineSettings {
 public:
-	IMPL_SETTING(std::string, JetAlgorithm)
+	IMPL_SETTING_DEFAULT(std::string, JetAlgorithm, "")
 	
 	IMPL_SETTING(float, ZPtMin)
 	
