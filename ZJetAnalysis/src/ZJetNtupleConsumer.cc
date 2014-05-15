@@ -75,7 +75,7 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 	{return product.m_validJets.size(); };
 
 	m_valueExtractorMap["puweight"] = [&](ZJetEvent const & event, ZJetProduct const & product)
-	{return product.m_puweight; };
+	{return product.m_weights.at("puWeight"); };
 
 
 	LambdaNtupleConsumerBase<ZJetTypes>::Init(pset);
