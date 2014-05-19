@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
+import sys
 import argparse
-#import ZJet.ZJetAnalysis.zjetConfigBase as zjetConfigBase
-import ZJet.ZJetAnalysis.x as x
+
+import logging
 import Artus.Utility.logger as logger
 log = logging.getLogger(__name__)
 
+import ZJet.ZJetAnalysis.zjetConfigBase as cb
 
-import sys
 from Artus.Configuration.artusWrapper import ArtusWrapper
 
 
@@ -27,8 +27,8 @@ if __name__ == "__main__":
 	conf = artusWrapper.getConfig()
 
 	#Get additional Zjet settings from config base
-	#zjetconf = zjetConfigBase.getZjetConfig(conf)
-	#conf.update(zjetconf)
+	zjetconf = cb.getZjetConfig(conf)
+	conf.update(zjetconf)
 	print conf
 	sys.exit()
 
