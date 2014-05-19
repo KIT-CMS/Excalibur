@@ -3,8 +3,7 @@
 
 import logging
 import argparse
-#import ZJet.ZJetAnalysis.zjetConfigBase as zjetConfigBase
-import ZJet.ZJetAnalysis.x as x
+import ZJet.ZJetAnalysis.zjetConfigBase as zjetConfigBase
 import Artus.Utility.logger as logger
 log = logging.getLogger(__name__)
 
@@ -27,8 +26,8 @@ if __name__ == "__main__":
 	conf = artusWrapper.getConfig()
 
 	#Get additional Zjet settings from config base
-	#zjetconf = zjetConfigBase.getZjetConfig(conf)
-	#conf.update(zjetconf)
+	zjetconf = zjetConfigBase.getZjetConfig(conf)
+	conf.update(zjetconf)
 	print conf
 	sys.exit()
 
