@@ -1,0 +1,43 @@
+{
+    "SkipEvents": 0,
+    "EventCount": -1, 
+    "GlobalProcessors": [
+        "producer:valid_electrons",
+        "producer:zproducer"
+    ],
+    "Electrons": "electrons",
+    "VertexSummary":"goodOfflinePrimaryVerticesSummary",
+    "Met":"PFMETCHS",
+    "EventMetadata":"KEventMetadata",
+    "LumiMetadata" : "KLumiMetadata",
+    "TaggerMetadata" : "KTaggerMetadata",
+
+    "ElectronID": "mvanontrig",
+    "ElectronIso": "mvanontrig",
+    "ElectronReco": "mvanontrig",
+    "ElectronIsoType": "None",
+    "InputFiles": [
+            "dcap://dcache-cms-dcap.desy.de:22125/pnfs/desy.de/cms/tier2/store/user/dhaitz/2014_02_28_ee-mc-powheg/kappa_2012_mc_powheg_111.root"
+     ],
+    "OutputPath": "mc_ee.root", 
+    "InputIsData": 0,
+    "Pipelines": {
+        "filter": {
+            "Consumers": [ "ntuple", "cutflow_histogram"],
+            "Quantities" :[],
+            "Processors": [
+                "filter:validz",
+                "filter:zpt"
+            ],
+            "ZMassMin": 71,
+            "ZMassMax": 111,
+            "ZPtMin": 30
+        },
+        "all": {
+            "Consumers": [ "ntuple", "cutflow_histogram"],
+            "Quantities" :[],
+            "Processors": []
+        }
+    }
+}
+
