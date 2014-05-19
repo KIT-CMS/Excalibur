@@ -27,12 +27,7 @@
     "Pipelines": {
         "filter": {
             "Consumers": [ "ntuple", "cutflow_histogram"],
-            "Quantities" :[
-                "npv", "run", "puweight",
-                "metphi", "metpt",
-                "nvalidelectrons", "validz",
-                "zmass", "zpt", "zy"
-            ],
+            "Quantities" :[],
             "Processors": [
                 "filter:validz",
                 "filter:zpt"
@@ -43,12 +38,7 @@
         },
         "all": {
             "Consumers": [ "ntuple", "cutflow_histogram"],
-            "Quantities" :[
-                "npv", "run", "puweight",
-                "metphi", "metpt",
-                "nvalidelectrons", "validz",
-                "zmass", "zpt", "zy"
-            ],
+            "Quantities" :[],
             "Processors": []
         }
     }
