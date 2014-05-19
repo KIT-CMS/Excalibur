@@ -29,8 +29,8 @@ if __name__ == "__main__":
 	#Get additional Zjet settings from config base
 	zjetconf = cb.getZjetConfig(conf)
 	conf.update(zjetconf)
-	print conf
-	sys.exit()
+	#print conf
+	#sys.exit()
 
 	artusWrapper.setConfig(conf)
 
