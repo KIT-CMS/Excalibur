@@ -14,8 +14,8 @@ public:
 
 	GenMuonsProducer() : ZJetProducerBase() {};
 
-	virtual void ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
-		ZJetGlobalSettings const& globalSettings) const ARTUS_CPP11_OVERRIDE
+	virtual void Produce(ZJetEvent const& event, ZJetProduct& product,
+		ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
 	{
 		// Loop over gen particles
 		for (KGenParticles::iterator it = event.m_genParticles->begin(); it != event.m_genParticles->end(); ++it)

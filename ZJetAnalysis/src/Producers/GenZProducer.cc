@@ -1,8 +1,8 @@
 #include "ZJet/ZJetAnalysis/interface/Producers/GenZProducer.h"
 
 
-void GenZProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
-                                         ZJetGlobalSettings const& globalSettings) const
+void GenZProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
+                                         ZJetSettings const& settings) const
 {
 
 	KGenParticles genz_candidates;

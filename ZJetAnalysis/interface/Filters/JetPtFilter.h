@@ -11,17 +11,10 @@ public:
 		return "jetpt";
 	}
 
-	virtual bool DoesEventPassLocal(ZJetEvent const& event,
-	ZJetProduct const& product,
-	ZJetPipelineSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	bool DoesEventPass(ZJetEvent const& event,
+			ZJetProduct const& product, ZJetSettings const& settings) const
 	{
-		return DoesEventPass(event, product, settings.GetJetAlgorithm() , settings.GetJetPtMin());
-	}
-
-	bool DoesEventPassGlobal(ZJetEvent const& event,
-			ZJetProduct const& product, ZJetGlobalSettings const& global_settings) const
-	{
-		return DoesEventPass(event, product, global_settings.GetTaggedJets(), global_settings.GetJetPtMin());
+		return DoesEventPass(event, product, settings.GetTaggedJets(), settings.GetJetPtMin());
 	}
 
 private:

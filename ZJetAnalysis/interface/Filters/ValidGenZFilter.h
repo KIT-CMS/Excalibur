@@ -11,15 +11,8 @@ public:
 		return "validgenz";
 	}
 
-	virtual bool DoesEventPassLocal(ZJetEvent const& event,
-	ZJetProduct const& product,
-	ZJetPipelineSettings const& settings) const ARTUS_CPP11_OVERRIDE
-	{
-		return DoesEventPass(event, product);
-	}
-
-	bool DoesEventPassGlobal(ZJetEvent const& event,
-			ZJetProduct const& product, ZJetGlobalSettings const& global_settings) const
+	bool DoesEventPass(ZJetEvent const& event,
+			ZJetProduct const& product, ZJetSettings const& settings) const
 	{
 		return DoesEventPass(event, product);
 	}

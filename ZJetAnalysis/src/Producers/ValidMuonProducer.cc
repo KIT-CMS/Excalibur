@@ -1,8 +1,8 @@
 #include "ZJet/ZJetAnalysis/interface/Producers/ValidMuonProducer.h"
 
 
-void ValidMuonProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
-		ZJetGlobalSettings const& globalSettings) const
+void ValidMuonProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
+		ZJetSettings const& settings) const
 {
 	for (KDataMuons::iterator it = event.m_muons->begin();
 			 it != event.m_muons->end(); it++)
@@ -11,15 +11,15 @@ void ValidMuonProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& produ
 
 		// Own loose cuts on muons and muon isolation
 		good_muon = good_muon
-					&& it->p4.Pt() > globalSettings.GetMuonPtMin()
-					&& std::abs(it->p4.Eta()) < globalSettings.GetMuonEtaMax()
+					&& it->p4.Pt() > settings.GetMuonPtMin()
+					&& std::abs(it->p4.Eta()) < settings.GetMuonEtaMax()
 					&& it->trackIso03 < 3.0;
 
 		// Tight MuonID 2012
 		// [twiki](https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Tight_Muon)
 		// The comments describe, how CMSSW treats the recoMu.
 		/// version of MuonID
-		bool is2011 = globalSettings.GetMuonID2011();
+		bool is2011 = settings.GetMuonID2011();
 		good_muon = good_muon
 					&& it->isGlobalMuon()
 					// use PF muons

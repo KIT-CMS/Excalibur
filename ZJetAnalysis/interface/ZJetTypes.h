@@ -19,8 +19,7 @@
 struct ZJetTypes {
 	typedef ZJetEvent event_type;
 	typedef ZJetProduct product_type;
-	typedef ZJetPipelineSettings setting_type;
-	typedef ZJetGlobalSettings global_setting_type;
+	typedef ZJetSettings setting_type;
 };
 
 // Pass the template parameters for the Producers

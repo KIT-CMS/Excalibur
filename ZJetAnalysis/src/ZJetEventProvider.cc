@@ -9,9 +9,9 @@ ZJetEventProvider::ZJetEventProvider(FileInterface2 & fileInterface, InputTypeEn
 	KappaEventProvider<ZJetTypes>(fileInterface, inpType)
 {}
 
-void ZJetEventProvider::WireEvent(global_setting_type const& globalSettings)
+void ZJetEventProvider::WireEvent(setting_type const& settings)
 {
-	KappaEventProvider::WireEvent(globalSettings);
+	KappaEventProvider::WireEvent(settings);
 }
 
 

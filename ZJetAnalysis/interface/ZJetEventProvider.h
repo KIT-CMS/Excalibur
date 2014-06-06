@@ -16,9 +16,9 @@
 class ZJetEventProvider: public KappaEventProvider<ZJetTypes> {
 public:
 
-	typedef typename ZJetTypes::global_setting_type global_setting_type;
+	typedef typename ZJetTypes::setting_type setting_type;
 
 	ZJetEventProvider(FileInterface2 & fi, InputTypeEnum inpType);
 
-	virtual void WireEvent(global_setting_type const& globalSettings) ARTUS_CPP11_OVERRIDE;
+	virtual void WireEvent(setting_type const& settings) ARTUS_CPP11_OVERRIDE;
 };

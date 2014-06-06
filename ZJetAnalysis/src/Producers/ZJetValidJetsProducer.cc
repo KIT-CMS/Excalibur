@@ -1,6 +1,7 @@
 #include "ZJet/ZJetAnalysis/interface/Producers/ZJetValidJetsProducer.h"
 
-	bool ZJetValidJetsProducer::AdditionalCriteria(KDataPFTaggedJet* jet, event_type const& event, product_type& product) const
+	bool ZJetValidJetsProducer::AdditionalCriteria(KDataPFTaggedJet* jet,
+		event_type const& event, product_type& product, setting_type const& settings) const
 	{
 		bool validJet = true;
 		// 5 GeV minimum pT

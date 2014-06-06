@@ -11,17 +11,11 @@ public:
 		return "deltaphi";
 	}
 
-	virtual bool DoesEventPassLocal(ZJetEvent const& event,
-	ZJetProduct const& product,
-	ZJetPipelineSettings const& settings) const ARTUS_CPP11_OVERRIDE
-	{
-		return DoesEventPass(event, product, settings.GetJetAlgorithm() , settings.GetDeltaPhiMax());
-	}
 
-	bool DoesEventPassGlobal(ZJetEvent const& event,
-			ZJetProduct const& product, ZJetGlobalSettings const& global_settings) const
+	bool DoesEventPass(ZJetEvent const& event,
+			ZJetProduct const& product, ZJetSettings const& settings) const
 	{
-		return DoesEventPass(event, product, global_settings.GetTaggedJets(), global_settings.GetDeltaPhiMax());
+		return DoesEventPass(event, product, settings.GetTaggedJets(), settings.GetDeltaPhiMax());
 	}
 
 private:

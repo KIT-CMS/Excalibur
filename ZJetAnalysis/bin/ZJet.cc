@@ -22,15 +22,15 @@ int main(int argc, char** argv) {
 	ArtusConfig myConfig(argc, argv);
 	
 	// load the global settings from the config file
-	ZJetGlobalSettings globalsettings = myConfig.GetGlobalSettings<ZJetGlobalSettings>();
+	ZJetSettings settings = myConfig.GetSettings<ZJetSettings>();
 
 	// create the output root environment, automatically saves the config into the root file
 	RootEnvironment rootEnv(myConfig);
 
 
 	FileInterface2 fileInterface(myConfig.GetInputFiles());
-	ZJetEventProvider evtProvider(fileInterface, (globalsettings.GetInputIsData() ? DataInput : McInput));
-	evtProvider.WireEvent( globalsettings );
+	ZJetEventProvider evtProvider(fileInterface, (settings.GetInputIsData() ? DataInput : McInput));
+	evtProvider.WireEvent( settings );
 
 	// the pipeline initializer will setup the pipeline, with
 	// all the attached Producer, Filer and Consumer
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 
 	// run all the configured pipelines and all their attached
 	// consumers
-	runner.RunPipelines(evtProvider, globalsettings);
+	runner.RunPipelines(evtProvider, settings);
 
 	// close output root file
 	rootEnv.Close();

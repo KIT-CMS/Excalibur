@@ -11,18 +11,13 @@ public:
 		return "muons";
 	}
 
-	virtual bool DoesEventPassLocal(ZJetEvent const& event,
+	virtual bool DoesEventPass(ZJetEvent const& event,
 	ZJetProduct const& product,
-	ZJetPipelineSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
 	{
 		return DoesEventPass(event, product);
 	}
 
-	bool DoesEventPassGlobal(ZJetEvent const& event,
-			ZJetProduct const& product, ZJetGlobalSettings const& global_settings) const
-	{
-		return DoesEventPass(event, product);
-	}
 
 private:
 

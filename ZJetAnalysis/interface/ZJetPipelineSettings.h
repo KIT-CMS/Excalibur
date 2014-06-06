@@ -4,22 +4,12 @@
 
 #pragma once
 
-#include "Artus/KappaAnalysis/interface/KappaPipelineSettings.h"
+#include "Artus/KappaAnalysis/interface/KappaSettings.h"
 
-class ZJetPipelineSettings: public KappaPipelineSettings {
+class ZJetSettings: public KappaSettings {
 public:
+
 	IMPL_SETTING_DEFAULT(std::string, JetAlgorithm, "")
-	
-	IMPL_SETTING(float, ZPtMin)
-	
-	IMPL_SETTING(float, JetPtMin)
-	IMPL_SETTING(float, JetEtaMax)
-	IMPL_SETTING(float, AlphaMax)
-	IMPL_SETTING(float, DeltaPhiMax)
-};
-
-class ZJetGlobalSettings: public KappaGlobalSettings {
-public:
 
 	IMPL_SETTING(bool, InputIsData)
 	

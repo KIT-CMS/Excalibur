@@ -1,8 +1,8 @@
 #include "ZJet/ZJetAnalysis/interface/Producers/ZProducer.h"
 
 
-void ZProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
-                                         ZJetGlobalSettings const& globalSettings) const
+void ZProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
+                                         ZJetSettings const& settings) const
 {
 	// other than 2 or three muons:
 	if (product.m_validmuons.size() < 2 || product.m_validmuons.size() > 3)
@@ -25,7 +25,7 @@ void ZProducer::ProduceGlobal(ZJetEvent const& event, ZJetProduct& product,
 				KDataLV z;
 				z.p4 = m1.p4 + m2.p4;
 
-				if (z.p4.mass() > globalSettings.GetZMassMin() && z.p4.mass() < globalSettings.GetZMassMax())
+				if (z.p4.mass() > settings.GetZMassMin() && z.p4.mass() < settings.GetZMassMax())
 				{
 					z_candidates.push_back(z);
 					product.m_decaymuons[0] = & m1;

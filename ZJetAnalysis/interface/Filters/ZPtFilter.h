@@ -11,17 +11,10 @@ public:
 		return "zpt";
 	}
 
-	virtual bool DoesEventPassLocal(ZJetEvent const& event,
-	ZJetProduct const& product,
-	ZJetPipelineSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	bool DoesEventPass(ZJetEvent const& event,
+			ZJetProduct const& product, ZJetSettings const& settings) const
 	{
 		return DoesEventPass(event, product, settings.GetZPtMin());
-	}
-
-	bool DoesEventPassGlobal(ZJetEvent const& event,
-			ZJetProduct const& product, ZJetGlobalSettings const& global_settings) const
-	{
-		return DoesEventPass(event, product, global_settings.GetZPtMin());
 	}
 
 private:
