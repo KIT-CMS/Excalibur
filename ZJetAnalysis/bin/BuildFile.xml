@@ -1,4 +1,4 @@
-<bin   name="ZJet" file="ZJet.cc">
+<bin   name="zjet" file="zjet.cc">
    <Flags LDFLAGS="-Lsrc/KappaTools/lib -lKToolbox -lKRootTools" />
    <Flags LDFLAGS="-Lsrc/Kappa/lib -lKappa" />
    <use   name="Artus/Core"/>
