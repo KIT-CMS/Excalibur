@@ -4,8 +4,9 @@
 #include "ZJet/ZJetAnalysis/interface/ZJetNtupleConsumer.h"
 
 
-void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
+void ZJetLambdaNtupleConsumer::Init(setting_type const& settings)
 {
+/*
 	algoname = pset->GetSettings().GetJetAlgorithm();
 	
 	m_valueExtractorMap["npv"] = [](ZJetEvent const & event, ZJetProduct const & product)
@@ -76,14 +77,9 @@ void ZJetNtupleConsumer::Init(Pipeline<ZJetTypes>* pset)
 
 	m_valueExtractorMap["puweight"] = [&](ZJetEvent const & event, ZJetProduct const & product)
 	{return product.m_weights.at("puWeight"); };
+*/
 
-
-	LambdaNtupleConsumerBase<ZJetTypes>::Init(pset);
-}
-
-std::string ZJetNtupleConsumer::GetConsumerId() const// ARTUS_CPP11_OVERRIDE
-{
-	return "ntuple";
+	KappaLambdaNtupleConsumer::Init(settings);
 }
 
 

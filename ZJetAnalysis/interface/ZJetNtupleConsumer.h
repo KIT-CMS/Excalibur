@@ -2,22 +2,17 @@
 
 #include "Artus/Core/interface/Cpp11Support.h"
 
-#include "Artus/Consumer/interface/LambdaNtupleConsumerBase.h"
+#include "Artus/KappaAnalysis/interface/Consumers/KappaLambdaNtupleConsumer.h"
 
 #include "ZJetTypes.h"
 
 
-class ZJetNtupleConsumer: public LambdaNtupleConsumerBase<ZJetTypes> {
+class ZJetLambdaNtupleConsumer: public KappaLambdaNtupleConsumer<ZJetTypes> {
 public:
 
-typedef std::function<float(ZJetEvent const&, ZJetProduct const&)> float_extractor_lambda;
+	typedef typename ZJetTypes::event_type event_type;
+	typedef typename ZJetTypes::product_type product_type;
+	typedef typename ZJetTypes::setting_type setting_type;
 
-ZJetNtupleConsumer() : LambdaNtupleConsumerBase<ZJetTypes>() { };
-
-virtual void Init(Pipeline<ZJetTypes> * pset) ARTUS_CPP11_OVERRIDE;
-virtual std::string GetConsumerId() const ARTUS_CPP11_OVERRIDE;
-
-private:
-	std::string algoname;
-
+	virtual void Init(setting_type const& settings) ARTUS_CPP11_OVERRIDE;
 };

@@ -11,14 +11,14 @@
 
 #include "ZJetTypes.h"
 
-class ZJetFactory: public KappaFactory<ZJetTypes> {
+class ZJetFactory: public KappaFactory{//<ZJetTypes> {
 public:
 
-	ZJetFactory() : KappaFactory<ZJetTypes>() {};
+	ZJetFactory() : KappaFactory() {};
 	virtual ~ZJetFactory() {};
 
-	virtual ZJetProducerBase * createProducer ( std::string const& id ) ARTUS_CPP11_OVERRIDE;
-	virtual ZJetFilterBase * createFilter ( std::string const& id ) ARTUS_CPP11_OVERRIDE;
-	virtual ZJetConsumerBase * createConsumer ( std::string const& id ) ARTUS_CPP11_OVERRIDE;
 
+	virtual ProducerBaseUntemplated * createProducer(std::string const& id) ARTUS_CPP11_OVERRIDE;
+	virtual FilterBaseUntemplated * createFilter(std::string const& id) ARTUS_CPP11_OVERRIDE;
+	virtual ConsumerBaseUntemplated * createConsumer(std::string const& id) ARTUS_CPP11_OVERRIDE;
 };
