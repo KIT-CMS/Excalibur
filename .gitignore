@@ -28,3 +28,4 @@ work.*
 *.formatted
 *.root
 logs/
+*.py.json
