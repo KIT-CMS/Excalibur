@@ -15,8 +15,8 @@ import time
 import socket
 
 
-def artus():
-    """artus modifies and runs the configs"""
+def zjet():
+    """zjet modifies and runs the configs"""
     aborted = False
     options = getoptions()
     if not options.nologo:
@@ -100,28 +100,28 @@ def artus():
                 except:
                     print "Could not switch to correct Artus version"
                     exit(1)
-                print "Compile Artus"
+                print "Compile zjet"
                 subprocess.call(['bash', '-c', 'cd $EXCALIBUR_BASE && make -B -j' ])
                 print "Writing %s into version log" % conf["checkArtus"]
                 subprocess.call(['bash', '-c', 'echo %s > ${EXCALIBUR_BASE}/version.log' % conf["checkArtus"]])
                 subprocess.call(['bash', '-c', 'cd $EXCALIBUR_BASE && git checkout %s' % currentExcalibur])
             else:
-                print "Current Artus is compatible! No need to switch"
+                print "Current zjet is compatible! No need to switch"
         elif Kappacompiled:
-            print "Recompile Artus because Kappa was also compiled"
+            print "Recompile zjet because Kappa was also compiled"
             subprocess.call(['bash', '-c', 'cd $EXCALIBUR_BASE && make -B -j' ])
 
-    # Now the config .json is ready and we can run Artus
-    if not os.path.exists('artus'):
-        print "Artus is not found, please compile it first."
-        exit(1)
+    # Now the config .json is ready and we can run zjet
+    #if not os.path.exists('zjet'):
+    #    print "zjet is not found, please compile it first."
+    #    exit(1)
     if options.batch:
         if not options.resume:
             prepareWork(options.work, options.out, options.clean)
             writeDBS(conf, options.out, options.work + "/files.dbs")
-            createRunfile(options.json, options.work + "/run-artus.sh", workpath = options.work)
+            createRunfile(options.json, options.work + "/run-zjet.sh", workpath = options.work)
             shutil.copy(options.json, options.work)
-            shutil.copy("artus", options.work)
+            shutil.copy("zjet", options.work)
             outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp)
             outpath = options.work + "out/" + outpath
         else:
@@ -164,16 +164,16 @@ def artus():
             except KeyboardInterrupt:
                 exit(0)
         try:
-            subprocess.call([options.base + "/artus", options.json])
+            subprocess.call([options.base + "/zjet", options.json])
         except KeyboardInterrupt:
             aborted = True
-            print '\33[31m%s\033[0m' % "Artus run was aborted prematurely."
+            print '\33[31m%s\033[0m' % "zjet run was aborted prematurely."
 
     # show message and optionally open root file
     if aborted:
-        showMessage("Excalibur", "Artus run with config " + options.out + " aborted.")
+        showMessage("Excalibur", "zjet run with config " + options.out + " aborted.")
     else:
-        showMessage("Excalibur", "Artus run with config " + options.out + " done.")
+        showMessage("Excalibur", "zjet run with config " + options.out + " done.")
     if options.root and not aborted:
         print "\nOpen output file in TBrowser:"
         try:
@@ -184,7 +184,7 @@ def artus():
             pass
 
 
-def getoptions(configdir='ZJetAnalysis/data/cfg/', name='artus'):
+def getoptions(configdir='ZJetAnalysis/data/cfg/', name='zjet'):
     """Set standard options and read command line arguments. """
 
     parser = argparse.ArgumentParser(
@@ -448,4 +448,4 @@ def logo():
 """
 
 if __name__ == "__main__":
-    artus()
+    zjet()
