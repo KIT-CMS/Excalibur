@@ -16,14 +16,7 @@ import stat
 import getpass
 import json
 import sys
-import ArtusConfigFunctions
-
-
-def BaseConfig(inputtype, run='2012', analysis='mm', tagged=True,
-                        rundepMC=False, lhe=False, flavourCorrections=False):
-    """This functions is here for backward compatibility."""
-    return getConfig(inputtype, run, analysis, tagged=tagged, rundep=rundepMC,
-        addLHE=lhe, flavourCorrections=flavourCorrections)
+import ZJetConfigFunctions
 
 
 def getConfig(inputtype, year, channel, **kwargs):
@@ -31,14 +24,14 @@ def getConfig(inputtype, year, channel, **kwargs):
         Main function to get a basic config.
 
         According to the three main categories (type, year, channel), the config
-        is modified according to whats specified in ArtusConfigFunctions.
+        is modified according to whats specified in ZJetConfigFunctions.
         All combinations of the categories are considered, if config functions are available.
     """
 
     # python class/function names cant start with a number -> add '_' to year
     l = [channel, inputtype, '_' + str(year)]
     print "Getting cfg for", channel, inputtype, year
-    cfg = ArtusConfigFunctions.getBaseConfig(**kwargs)
+    cfg = ZJetConfigFunctions.getBaseConfig(**kwargs)
 
     # iterate over all combinations and call updateConfig(single-entry tuples first):
     for i in l:
@@ -56,26 +49,8 @@ def getConfig(inputtype, year, channel, **kwargs):
 
 def updateConfig(conf, tupl, **kwargs):
     string = "".join(tupl)
-    if string in dir(ArtusConfigFunctions):
-        getattr(ArtusConfigFunctions, string)(conf, **kwargs)
-
-
-def getPath(variable='EXCALIBUR_BASE', nofail=False):
-    try:
-        return os.environ[variable]
-    except:
-        print variable, "is not in shell variables:", os.environ.keys()
-        print "Please source scripts/ini_excalibur and CMSSW!"
-        if nofail:
-            return None
-        exit(1)
-
-
-def addCHS(algorithms):
-    """can be used as [algos =] addCHS(algos) or algos = addCHS([AK5, etc.])"""
-    algorithms += [a.replace("PFJets", "PFJetsCHS") for a in algorithms
-        if "PFJets" in a and "PFJetsCHS" not in a and a.replace("PFJets", "PFJetsCHS") not in algorithms]
-    return algorithms
+    if string in dir(ZJetConfigFunctions):
+        getattr(ZJetConfigFunctions, string)(conf, **kwargs)
 
 
 def setInputFiles(ekppath, nafpath=None):
@@ -89,77 +64,6 @@ def setInputFiles(ekppath, nafpath=None):
             return d[host]
     else:
         sys.exit("ERROR: Cant determine input file location!")
-
-
-def ApplySampleReweighting(conf, sample="herwig", referencelumi_fbinv=1.0):
-    """Weights for pt hat binned samples"""
-    picobarn2femtobarn = 1000
-    d = {
-        "herwig": {
-            "weights":[
-                0.0,  # 400.8834/6167020,# 0-15 (not existing, prep/das inconsistent)
-                70.551230 / 200000,  # 15-20
-                77.535330 / 150154,  # 20-30 (old sample)
-                62.745670 / 150000,  # 30-50
-                28.738060 / 100160,  # 50-80 (old sample)
-                9.7459310 / 96000,   # 80-120
-                2.8100250 / 98560,   # 120-170
-                0.7702934 / 100000,  # 170-230
-                0.2142680 / 96640,   # 230-300
-                0.08858213 / 90517,  # 300-inf
-            ],
-            "names": [
-                "0-15",
-                "15-20",
-                "20-30",
-                "30-50",
-                "50-80",
-                "80-120",
-                "120-170",
-                "170-230",
-                "230-300",
-                "300_"
-            ],
-        },
-        "herwigRD": {
-            "weights": [
-                0.0,  # 400.8834/6167020,# 0-15 (not existing, prep/das inconsistent)
-                0.0, #70.551230 / 1,  # 15-20 (not existing for RD?)
-                77.535330 / 141323,  # 20-30
-                62.745670 / 150000,  # 30-50
-                28.738060 / 100160,  # 50-80
-                9.7459310 / 100000,   # 80-120
-                2.8100250 / 100000,   # 120-170
-                0.7702934 / 121460,  # 170-230
-                0.2142680 / 100000,   # 230-300
-                0.08858213 / 100000,  # 300-inf
-            ],
-            "names": [
-                "0-15",
-                "15-20",
-                "20-30",
-                "30-50",
-                "50-80",
-                "80-120",
-                "120-170",
-                "170-230",
-                "230-300",
-                "300_"
-            ],
-        },
-    }
-
-    if sample not in d:
-        print "No sample weights for this dataset:", sample
-        print "Weights are available for:", ", ".join(d.keys())
-        print "Please add them in ArtusConfigBase or do not use ApplySampleReweighting."
-        exit(0)
-
-    result = [picobarn2femtobarn * referencelumi_fbinv * w for w in d[sample]['weights']]
-    conf["EnableSampleReweighting"] = True
-    conf["SampleWeights"] = result
-    conf["SampleNames"] = d[sample]['names']
-    return conf
 
 
 def expand(config, variations=[], algorithms=[], default="default"):

@@ -1,17 +1,13 @@
-import ArtusConfigBase as base
+import ZJet.ZJetAnalysis.ZJetConfigBase as base
+import ZJetWrapper
 
 
 def config():
-    cfg = base.BaseConfig('mc', '2012', rundepMC=True, flavourCorrections=True, lhe=True)
+    cfg = base.getConfig('mc', 2012, 'mm')
     cfg["InputFiles"] = base.setInputFiles(
-        ekppath="/storage/9/dhaitz/skims/2014_07_18_ee-mm-mcRD/*.root",
-        nafpath="/nfs/dust/cms/user/dhaitz/skims/2014_07_18_ee-mm-mcRD/*.root"
+        #ekppath="root://cms-xrd-global.cern.ch//store/user/tmuller/higgs-kit/skimming/2014-07-30-full_skim/DYJetsToLL_M_50_madgraph_8TeV/kappa_DYJetsToLL_M_50_madgraph_8TeV_1000.root",
+        ekppath="~/home/CMSSW_6_2_3/src/kappa_DYJetsToLL_M_50_madgraph_8TeV_1000.root",
+        nafpath=""
     )
     cfg = base.expand(cfg, ['all', 'zcuts', 'incut'])
-    cfg['PileupWeights'] = base.getPath() + "/data/pileup/weights_190456-208686_8TeV_22Jan2013ReReco_kappa5313_MC12_madgraph_rundep-2.root"
-    cfg['RC'] = True
-    cfg['EnableLumiReweighting'] = True
-    cfg['EnableTriggerReweighting'] = True
-    cfg['NEvents'] = 30459503
-    cfg['XSection'] = 3503.71
     return cfg
