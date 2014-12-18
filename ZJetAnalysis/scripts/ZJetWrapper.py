@@ -34,8 +34,6 @@ def ZJet():
         except:
             print "Could not delete output directory %s" % options.work
         exit(0)
-        
-
 
     # make json config
     if not options.isjson and not options.resume:
@@ -43,7 +41,8 @@ def ZJet():
         conf = custom.config()
         conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
         if conf["OutputPath"] == "out":
-            conf["OutputPath"] = options.out
+            print "out", options.out
+            conf["OutputPath"] = options.out + ".root"
         if options.skip:
             conf['EventCount'] = options.skip[1]
             conf['SkipEvents'] = options.skip[0]
@@ -61,60 +60,8 @@ def ZJet():
 
     if not options.isjson and not options.resume:
         Kappacompiled = False
-        # check the current Kappa version
-        if conf.get("checkKappa", False) is not False:
-            print "\nCfg needs: ", conf["checkKappa"]
-            p1 = subprocess.Popen(['bash', '-c', '. ${EXCALIBUR_BASE}/scripts/ini_excalibur; checkKappa'], stdout=subprocess.PIPE)
-            out, err = p1.communicate()
-            p1.wait()
-            print "Kappa is currently on ", out
-            if not ( (conf["checkKappa"][:7] in out) or (out in conf["checkKappa"][:7]) ):
-                print "Incompatible Kappa version, switching to correct one ..."
-                try:
-                    subprocess.call(['bash', '-c', '. ${EXCALIBUR_BASE}/scripts/ini_excalibur; switchKappa %s' % conf["checkKappa"]])
-                    Kappacompiled = True
-                except:
-                    print "Could not switch to correct Kappa version"
-                    exit(1)
-                if conf.get("checkArtus", False) is False:
-                    p3 = subprocess.Popen(['bash', '-c', '. ${EXCALIBUR_BASE}/scripts/ini_excalibur; compileExcalibur' ])
-                    p3.wait()
-            else:
-                print "Current Kappa is compatible! No need to switch"
-
-        # check the current Artus version
-        if conf.get("checkArtus", False) is not False:
-            print "\nCfg needs: ", conf["checkArtus"]
-            p1 = subprocess.Popen(['bash', '-c', 'cat ${EXCALIBUR_BASE}/version.log'], stdout=subprocess.PIPE)
-            out, err1 = p1.communicate()
-            p1.wait()
-            p2 = subprocess.Popen(['bash', '-c', '. ${EXCALIBUR_BASE}/scripts/ini_excalibur; checkExcalibur'], stdout=subprocess.PIPE)
-            currentExcalibur, err2 = p2.communicate()
-            p2.wait()
-            print "Artus is currently on ", out
-            print "Excalibur is currently on ", currentExcalibur
-            if ( not ( (conf["checkArtus"] in out) or (out in conf["checkArtus"]) ) or Kappacompiled):
-                print "Incompatible Artus version, switching to correct one ..."
-                try:
-                    p2 = subprocess.call(['bash', '-c', '. ${EXCALIBUR_BASE}/scripts/ini_excalibur; switchExcalibur %s' % conf["checkArtus"]])
-                except:
-                    print "Could not switch to correct Artus version"
-                    exit(1)
-                print "Compile zjet"
-                subprocess.call(['bash', '-c', 'cd $EXCALIBUR_BASE && make -B -j' ])
-                print "Writing %s into version log" % conf["checkArtus"]
-                subprocess.call(['bash', '-c', 'echo %s > ${EXCALIBUR_BASE}/version.log' % conf["checkArtus"]])
-                subprocess.call(['bash', '-c', 'cd $EXCALIBUR_BASE && git checkout %s' % currentExcalibur])
-            else:
-                print "Current zjet is compatible! No need to switch"
-        elif Kappacompiled:
-            print "Recompile zjet because Kappa was also compiled"
-            subprocess.call(['bash', '-c', 'cd $EXCALIBUR_BASE && make -B -j' ])
 
     # Now the config .json is ready and we can run zjet
-    #if not os.path.exists('zjet'):
-    #    print "zjet is not found, please compile it first."
-    #    exit(1)
     if options.batch:
         if not options.resume:
             prepareWork(options.work, options.out, options.clean)
@@ -164,7 +111,7 @@ def ZJet():
             except KeyboardInterrupt:
                 exit(0)
         try:
-            subprocess.call([options.base + "/zjet", options.json])
+            subprocess.call(["zjet", options.json])
         except KeyboardInterrupt:
             aborted = True
             print '\33[31m%s\033[0m' % "zjet run was aborted prematurely."
@@ -177,15 +124,17 @@ def ZJet():
     if options.root and not aborted:
         print "\nOpen output file in TBrowser:"
         try:
-            subprocess.call(["root", "-l",
-                "%s/%s.root" % (options.base, options.out),
-                "%s/scripts/tbrowser.cxx" % options.base])
+            subprocess.call(["rot",
+                "%s/%s.root" % (options.base, options.out)])
         except:
             pass
 
 
-def getoptions(configdir='ZJetAnalysis/data/cfg/', name='zjet'):
+def getoptions(configdir="", name='zjet'):
     """Set standard options and read command line arguments. """
+    if configdir == "":
+        configdir = getPath('CMSSW_BASE')+'/src/ZJet/ZJetAnalysis/data/cfg/'
+
 
     parser = argparse.ArgumentParser(
         description="%(prog)s is the main analysis program.",
@@ -260,7 +209,7 @@ def getoptions(configdir='ZJetAnalysis/data/cfg/', name='zjet'):
     if not opt.out:
         opt.out = opt.cfg[opt.cfg.rfind('/') + 1:opt.cfg.rfind('.py')]
     opt.base = getPath()
-    opt.boost = getPath('BOOSTPATH')
+    #opt.boost = getPath('BOOSTPATH')
     if not opt.work:
         opt.work = getPath('EXCALIBUR_WORK', True) or getPath()
     opt.work += '/' + name + '/' + opt.out
@@ -281,12 +230,12 @@ def getoptions(configdir='ZJetAnalysis/data/cfg/', name='zjet'):
     return opt
 
 
-def getPath(variable='EXCALIBUR_BASE', nofail=False):
+def getPath(variable='CMSSW_BASE', nofail=False):
     try:
         return os.environ[variable]
     except:
         print variable, "is not in shell variables:", os.environ.keys()
-        print "Please source scripts/ini_excalibur and CMSSW!"
+        print "Please source scripts/ini_zjet and CMSSW!"
         if nofail:
             return None
         exit(1)
@@ -336,7 +285,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp=''):
         '@TIMESTAMP@': timestamp,
         '$EXCALIBUR_BASE': getPath(),
         '$EXCALIBUR_WORK': getPath('EXCALIBUR_WORK'),
-        '$BOOSTLIB': getPath('BOOSTLIB'),
+        #'$BOOSTLIB': getPath('BOOSTLIB'),
     }
 
     text = copyFile(original, filename, d)

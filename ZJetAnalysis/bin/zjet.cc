@@ -27,7 +27,6 @@ int main(int argc, char** argv) {
 	// create the output root environment, automatically saves the config into the root file
 	RootEnvironment rootEnv(myConfig);
 
-
 	FileInterface2 fileInterface(myConfig.GetInputFiles());
 	ZJetEventProvider evtProvider(fileInterface, (settings.GetInputIsData() ? DataInput : McInput));
 	evtProvider.WireEvent( settings );
