@@ -15,8 +15,8 @@ import time
 import socket
 
 
-def zjet():
-    """zjet modifies and runs the configs"""
+def ZJet():
+    """ZJet modifies and runs the configs"""
     aborted = False
     options = getoptions()
     if not options.nologo:
@@ -448,4 +448,4 @@ def logo():
 """
 
 if __name__ == "__main__":
-    zjet()
+    ZJet()
