@@ -73,6 +73,7 @@ def mm(cfg, **kwargs):
     # The order of these producers is important!
     cfg['Processors'] = [
         'producer:ValidMuonsProducer',
+        'producer:ZProducer'
     ]
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
