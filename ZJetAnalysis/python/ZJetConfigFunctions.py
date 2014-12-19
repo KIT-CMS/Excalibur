@@ -14,9 +14,13 @@ def getBaseConfig(**kwargs):
                 'JetAlgorithm': "AK5PFJetsCHSL1L2L3Res",
                 'Consumers': [
                     "KappaLambdaNtupleConsumer",
-                    #"cutflow_histogram",
+                    "cutflow_histogram",
                 ],
-                'Filter': [],
+                'EventWeight': 'eventWeight',
+                'Filter':[],
+                'Processors': [
+                    'filter:ZMassFilter'
+                ],
                 'Quantities': [
                     "run", "event", "lumi"
                 ],
