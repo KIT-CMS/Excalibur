@@ -46,6 +46,6 @@ make -C KappaTools
 cd Artus
 cmake .
 make -j4
-cd ../ZJet
+cd ../Excalibur
 make
 ```
