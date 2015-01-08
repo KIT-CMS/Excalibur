@@ -5,7 +5,7 @@ Analysis repository for Z + jet studies.
 It is based on [Artus](https://github.com/artus-analysis/Artus "Artus Analysis")
 which in turn is (largely) based on [Kappa](https://github.com/KappaAnalysis "Kappa and KappaTools").
 
-## Installation of the ZJet Framework
+## Installation of the Excalibur Framework
 
 ### Requirements
 This framework needs:
@@ -13,6 +13,7 @@ This framework needs:
 - boost
 - ROOT
 - GCC compiler
+
 All that is most easily provided by installing CMSSW alongside:
 ```
 cmsrel CMSSW_7_2_0
@@ -24,9 +25,10 @@ Alternatiely, all these tools can also be installed independently or taken from 
 
 ### Installation
 The framework comes in 4 layers:
-1. The data format definition of the input files: [Kappa]()
-2. The basic interaction toolkit for this format: [KappaTools]()
-3. The basic analysis framework to analyse the data: [Artus]()
+
+1. The data format definition of the input files: [Kappa](https://github.com/KappaAnalysis/Kappa "Kappa")
+2. The basic interaction toolkit for this format: [KappaTools](https://github.com/KappaAnalysis/KappaTools "KappaTools")
+3. The basic analysis framework to analyse the data: [Artus](https://github.com/artus-analysis/Artus "Artus")
 4. The analysis specific program to do a Z+Jet(s) analysis: Excalibur
 
 To install these packages check them out using [git]():
