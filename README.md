@@ -2,8 +2,8 @@ Excalibur
 =========
 
 Analysis repository for Z + jet studies.
-It is based on [Artus](https://github.com/artus-analysis/Artus "Artus Analysis")
-which in turn is (largely) based on [Kappa](https://github.com/KappaAnalysis "Kappa and KappaTools").
+It is based on [Artus](https://github.com/artus-analysis/Artus "Artus Analysis") which in turn is (largely) based on [Kappa](https://github.com/KappaAnalysis "Kappa and KappaTools").
+The predecessor of this framework was also named excalibur and can be found [here](https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur "excalibur")  (protected).
 
 ## Installation of the Excalibur Framework
 
