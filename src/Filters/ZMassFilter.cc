@@ -10,4 +10,4 @@ bool ZMassFilter::DoesEventPass(ZJetEvent const& event, ZJetProduct const& produ
 		ZJetSettings const& settings) const{
 	//TODO Implement actual filter here
 	return true;
-};
+}
