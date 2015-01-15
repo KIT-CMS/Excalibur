@@ -31,10 +31,10 @@ The framework comes in 4 layers:
 3. The basic analysis framework to analyse the data: [Artus](https://github.com/artus-analysis/Artus "Artus")
 4. The analysis specific program to do a Z+Jet(s) analysis: Excalibur
 
-To install these packages check them out using [git]():
+To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
 git clone https://github.com/KappaAnalysis/Kappa.git
-git clone -b dictchanges https://github.com/KappaAnalysis/KappaTools.git
+git clone https://github.com/KappaAnalysis/KappaTools.git
 git clone https://github.com/artus-analysis/Artus.git
 git clone https://github.com/dhaitz/Excalibur.git
 ```
