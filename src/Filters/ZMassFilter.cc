@@ -1,5 +1,5 @@
 
-#include "ZJet/ZJetAnalysis/interface/Filters/ZMassFilter.h"
+#include "Filters/ZMassFilter.h"
 
 
 std::string ZMassFilter::GetFilterId() const{

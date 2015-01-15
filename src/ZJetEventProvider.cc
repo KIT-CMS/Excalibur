@@ -1,4 +1,4 @@
-#include "ZJet/ZJetAnalysis/interface/ZJetEventProvider.h"
+#include "ZJetEventProvider.h"
 
 /**
 \brief class to connect the analysis specific event content to the pipelines.

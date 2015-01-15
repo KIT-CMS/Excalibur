@@ -43,11 +43,9 @@ In a next step you need to compile all those packages:
 ```
 make -C Kappa/DataFormats/test
 make -C KappaTools
-cd Artus
-cmake .
-make -j4
-cd ../Excalibur
-make
+cmake Artus
+make -C Artus -j4
+make -C Excalibur
 ```
 
 

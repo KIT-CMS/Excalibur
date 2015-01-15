@@ -1,5 +1,4 @@
-
-#include "ZJet/ZJetAnalysis/interface/Producers/ZProducer.h"
+#include "Producers/ZProducer.h"
 
 
 std::string ZProducer::GetProducerId() const {

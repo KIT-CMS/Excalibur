@@ -1,13 +1,13 @@
-#include "ZJet/ZJetAnalysis/interface/ZJetFactory.h"
+#include "ZJetFactory.h"
 
 // producers
-#include "ZJet/ZJetAnalysis/interface/Producers/ZProducer.h"
+#include "Producers/ZProducer.h"
 
 // filters
-#include "ZJet/ZJetAnalysis/interface/Filters/ZMassFilter.h"
+#include "Filters/ZMassFilter.h"
 
 // consumers
-//#include "ZJet/ZJetAnalysis/interface/ZJetNtupleConsumer.h"
+//#include "Consumers/ZJetNtupleConsumer.h"
 
 
 

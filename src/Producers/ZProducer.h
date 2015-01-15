@@ -1,7 +1,6 @@
-
 #pragma once
 
-#include "../ZJetTypes.h"
+#include "ZJetTypes.h"
 
 
 /** Producer class for Z boson reconstruction from muons/electrons.

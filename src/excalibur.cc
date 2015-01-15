@@ -11,16 +11,16 @@
 #include "Artus/Configuration/interface/ArtusConfig.h"
 #include "Artus/Configuration/interface/RootEnvironment.h"
 
-#include "ZJet/ZJetAnalysis/interface/ZJetTypes.h"
-#include "ZJet/ZJetAnalysis/interface/ZJetEventProvider.h"
-#include "ZJet/ZJetAnalysis/interface/ZJetFactory.h"
+#include "ZJetTypes.h"
+#include "ZJetEventProvider.h"
+#include "ZJetFactory.h"
 
 
 int main(int argc, char** argv) {
 
 	// parse the command line and load the
 	ArtusConfig myConfig(argc, argv);
-	
+
 	// load the global settings from the config file
 	ZJetSettings settings = myConfig.GetSettings<ZJetSettings>();
 

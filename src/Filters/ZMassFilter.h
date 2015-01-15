@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "../ZJetTypes.h"
+#include "ZJetTypes.h"
 
 #include "Artus/Core/interface/FilterBase.h"
 
