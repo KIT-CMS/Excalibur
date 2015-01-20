@@ -1,28 +1,19 @@
 # Compiled Object files
-*.slo
-*.lo
 *.o
-*.obj
+*.pyc
 
 # Compiled Dynamic libraries
 *.so
-*.dylib
-*.dll
 
 # Compiled Static libraries
-*.lai
 *.la
 *.a
-*.lib
 
 # Executables
-*.exe
-*.out
-*.app
+scripts/artus
 
 # Extended
 *~
-*.pyc
 work.*
 *__init__.py
 *.formatted
@@ -32,3 +23,4 @@ logs/
 
 ZJetAnalysis/plotting/plots/
 ZJetAnalysis/plotting/websync/
+*.log
