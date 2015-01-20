@@ -9,28 +9,26 @@
 // consumers
 //#include "Consumers/ZJetNtupleConsumer.h"
 
-
-
-ProducerBaseUntemplated * ZJetFactory::createProducer ( std::string const& id )
+ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 {
-	if(id == ZProducer().GetProducerId())
+	if (id == ZProducer().GetProducerId())
 		return new ZProducer();
 	else
-		return KappaFactory::createProducer( id );	
+		return KappaFactory::createProducer(id);
 }
 
-FilterBaseUntemplated * ZJetFactory::createFilter ( std::string const& id )
+FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 {
-	if(id == ZMassFilter().GetFilterId())
+	if (id == ZMassFilter().GetFilterId())
 		return new ZMassFilter();
 	else
-		return KappaFactory::createFilter( id );
+		return KappaFactory::createFilter(id);
 }
 
-ConsumerBaseUntemplated * ZJetFactory::createConsumer ( std::string const& id )
+ConsumerBaseUntemplated* ZJetFactory::createConsumer(std::string const& id)
 {
-	//if(id == ZJetLambdaNtupleConsumer().GetConsumerId())
+	// if(id == ZJetLambdaNtupleConsumer().GetConsumerId())
 	//	return new ZJetLambdaNtupleConsumer();
-	//else
-		return KappaFactory::createConsumer( id );
+	// else
+	return KappaFactory::createConsumer(id);
 }

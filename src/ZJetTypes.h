@@ -16,7 +16,8 @@
 #include "ZJetPipelineSettings.h"
 
 // all data types which are used for this analysis
-struct ZJetTypes {
+struct ZJetTypes
+{
 	typedef ZJetEvent event_type;
 	typedef ZJetProduct product_type;
 	typedef ZJetSettings setting_type;
@@ -31,11 +32,10 @@ typedef ConsumerBase<ZJetTypes> ZJetConsumerBase;
 // Pass the template parameters for the Filter
 typedef FilterBase<ZJetTypes> ZJetFilterBase;
 
-//Pass the template parameters for the Pipeline
+// Pass the template parameters for the Pipeline
 typedef Pipeline<ZJetTypes> ZJetPipeline;
 
-//Setup our custom pipeline runner
+// Setup our custom pipeline runner
 typedef PipelineRunner<ZJetPipeline, ZJetTypes> ZJetPipelineRunner;
 
 typedef KappaPipelineInitializer<ZJetTypes> ZJetPipelineInitializer;
-

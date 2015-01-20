@@ -1,11 +1,9 @@
 #include "Producers/ZProducer.h"
 
-
-std::string ZProducer::GetProducerId() const {
-	return "ZProducer";
-}
+std::string ZProducer::GetProducerId() const { return "ZProducer"; }
 
 void ZProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
-		ZJetSettings const& settings) const {
-	//produce here
+                        ZJetSettings const& settings) const
+{
+	// produce here
 }

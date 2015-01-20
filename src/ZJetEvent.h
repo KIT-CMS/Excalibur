@@ -8,6 +8,6 @@
 
 class ZJetEvent : public KappaEvent
 {
-public:
-	ZJetEvent() : KappaEvent() {};
+  public:
+	ZJetEvent() : KappaEvent(){};
 };

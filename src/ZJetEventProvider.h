@@ -13,12 +13,12 @@
 \brief class to connect the analysis specific event content to the pipelines.
 */
 
-class ZJetEventProvider: public KappaEventProvider<ZJetTypes> {
-public:
-
+class ZJetEventProvider : public KappaEventProvider<ZJetTypes>
+{
+  public:
 	typedef typename ZJetTypes::setting_type setting_type;
 
-	ZJetEventProvider(FileInterface2 & fi, InputTypeEnum inpType);
+	ZJetEventProvider(FileInterface2& fi, InputTypeEnum inpType);
 
 	virtual void WireEvent(setting_type const& settings) ARTUS_CPP11_OVERRIDE;
 };

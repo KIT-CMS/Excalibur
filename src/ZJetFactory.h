@@ -8,17 +8,18 @@
 
 #include "Artus/KappaAnalysis/interface/KappaFactory.h"
 
-
 #include "ZJetTypes.h"
 
-class ZJetFactory: public KappaFactory{//<ZJetTypes> {
-public:
+class ZJetFactory : public KappaFactory
+{ //<ZJetTypes> {
+  public:
+	ZJetFactory() : KappaFactory(){};
+	virtual ~ZJetFactory(){};
 
-	ZJetFactory() : KappaFactory() {};
-	virtual ~ZJetFactory() {};
-
-
-	virtual ProducerBaseUntemplated * createProducer(std::string const& id) ARTUS_CPP11_OVERRIDE;
-	virtual FilterBaseUntemplated * createFilter(std::string const& id) ARTUS_CPP11_OVERRIDE;
-	virtual ConsumerBaseUntemplated * createConsumer(std::string const& id) ARTUS_CPP11_OVERRIDE;
+	virtual ProducerBaseUntemplated* createProducer(std::string const& id)
+	    ARTUS_CPP11_OVERRIDE;
+	virtual FilterBaseUntemplated* createFilter(std::string const& id)
+	    ARTUS_CPP11_OVERRIDE;
+	virtual ConsumerBaseUntemplated* createConsumer(std::string const& id)
+	    ARTUS_CPP11_OVERRIDE;
 };
