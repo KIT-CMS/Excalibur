@@ -9,8 +9,8 @@ ROOTLDFLAGS    = $(shell root-config --ldflags --libs)
 PROJECT        = Excalibur
 EXECUTABLE     = artus
 CXX            = g++
-FLAGS          = -O2 -pedantic -Wfatal-errors -l profiler -l tcmalloc -Wall -Wno-unused-local-typedefs
-CFLAGS         = -c -std=c++0x -g -fPIC -DSTANDALONE $(FLAGS)\
+FLAGS          = -O2 -pedantic -Wfatal-errors -lprofiler -ltcmalloc -Wall -Wno-unused-local-typedefs -c -std=c++0x -g -fPIC
+CFLAGS         = $(FLAGS)\
  -Isrc/ -Iexternal/OfflineCorrection/ -Iexternal/ -I../\
  $(ROOTCFLAGS) -I$(BOOSTPATH)/include/ -I$(KAPPATOOLSPATH)/../
 LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA\
@@ -22,11 +22,11 @@ OBJECTS = $(patsubst %.cc,%.o,$(wildcard src/*.cc src/*/*.cc))
 
 HEADERS = $(wildcard src/*.h src/*/*.h)
 
-$(EXECUTABLE): $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS) $(HEADERS)
 	@echo `git branch | sed -n '/\* /s///p'` &> version.log
 	@echo "Linking" $(EXECUTABLE)":"
 	@echo $(CXX) LDFLAGS $(OBJECTS)
-	@$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
+	@$(CXX) $(LDFLAGS) $(OBJECTS) -o scripts/$@
 	@echo $(EXECUTABLE) "built successfully."
 
 .cc.o:
@@ -35,7 +35,6 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
-	rm -f external/OfflineCorrection/CondFormats/lib/libJetMETObjects.so
 
 purge: clean
 	rm -f src/*.cc.formatted src/*/*.cc.formatted
@@ -48,10 +47,16 @@ check:
 	@echo -e "checking BOOST...        \c" && ls $(BOOSTPATH) -d
 	@echo -e "checking KAPPA...        \c" && ls $(KAPPAPATH) -d
 	@echo -e "checking KAPPATOOLS...   \c" && ls $(KAPPATOOLSPATH) -d
+	@echo -e "checking OFFLINE JEC...  \c" && ls ../CondFormats -d
+	@echo -e "checking ARTUS...        \c" && ls ../Artus -d
 	@echo -e "checking PYTHON...       \c" && python --version || echo "  Python is not needed for compiling"
 	@echo -e "checking GRID-CONTROL... \c" && which go.py 2> /dev/null || echo "not found, grid-control is not needed for compiling"
-	@echo -e "checking EXECUTABLE...   \c" && ls $(EXECUTABLE) 2> /dev/null || echo $(EXECUTABLE) "not yet built"
+	@echo -e "checking EXECUTABLE...   \c" && ls scripts/$(EXECUTABLE) 2> /dev/null || echo $(EXECUTABLE) "not yet built"
 	@echo $(PROJECT) "is ok."
+
+project:
+	@test -f ../Makefile || ln -s Excalibur/Makefile.project ../Makefile
+	make -C ..
 
 #TODO: version	path
 #NN=`ls /wlcg/sw/boost/current/lib/libboost_regex.so.*` && echo ${NN/*so./}
