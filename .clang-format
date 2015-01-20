@@ -9,7 +9,7 @@ UseTab: ForIndentation
 BreakBeforeBraces: Allman
 PenaltyReturnTypeOnItsOwnLine: 200
 PointerBindsToType: true
-
+AllowShortFunctionsOnASingleLine: All
 #AccessModifierOffset: -2
 #ConstructorInitializerIndentWidth: 4
 #AlignEscapedNewlinesLeft: false
