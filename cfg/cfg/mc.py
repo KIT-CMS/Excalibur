@@ -1,4 +1,4 @@
-import ZJet.ZJetAnalysis.ZJetConfigBase as base
+import ZJetConfigBase as base
 import ZJetWrapper
 
 
