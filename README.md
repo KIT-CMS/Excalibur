@@ -9,19 +9,21 @@ The predecessor of this framework was also named excalibur and can be found [her
 
 ### Requirements
 This framework needs:
-- python > 2.6
-- boost
-- ROOT
+- python >= 2.6
+- boost >= 1.50
+- ROOT >= 5.34
 - GCC compiler
 
-All that is most easily provided by installing CMSSW alongside:
+All that is most easily provided by installing CMSSW alongside and taking the offline jet corrections from there (in CondFormats):
 ```
 cmsrel CMSSW_7_2_0
 cd CMSSW_7_2_0/src
 cmsenv
+git cms-addpkg CondFormats/JetMETObjects
 cd ../..
+ln -s CMSSW_7_2_0/src/CondFormats
 ```
-Alternatiely, all these tools can also be installed independently or taken from the system.
+Alternatively, all these requirements can also be installed independently or taken from the system.
 
 ### Installation
 The framework comes in 4 layers:
@@ -29,13 +31,13 @@ The framework comes in 4 layers:
 1. The data format definition of the input files: [Kappa](https://github.com/KappaAnalysis/Kappa "Kappa")
 2. The basic interaction toolkit for this format: [KappaTools](https://github.com/KappaAnalysis/KappaTools "KappaTools")
 3. The basic analysis framework to analyse the data: [Artus](https://github.com/artus-analysis/Artus "Artus")
-4. The analysis specific program to do a Z+Jet(s) analysis: Excalibur
+4. The analysis specific program to do a Z+Jet(s) or calibration analysis: Excalibur
 
 To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
 git clone https://github.com/KappaAnalysis/Kappa.git
 git clone https://github.com/KappaAnalysis/KappaTools.git
-git clone https://github.com/artus-analysis/Artus.git
+git clone -b CMSSW_7_X_X https://github.com/artus-analysis/Artus.git  # TODO: switch back to master when Artus switches
 git clone https://github.com/dhaitz/Excalibur.git
 ```
 
@@ -48,6 +50,8 @@ make -C Artus -j4
 make -C Excalibur
 ```
 
+after having done so, it can also be compile with `make` in the parent directory
+or with `make project` in Excalibur.
 
 ## Usage of the Excalibur Framework
 
@@ -64,5 +68,4 @@ scripts/ contains an ini script and the 'merlin' plotting executable
 python/scripts/ contains some plotting scripts
 
 source the ini file and type "merlin.py -h" to get a list of the plotting options
-
 
