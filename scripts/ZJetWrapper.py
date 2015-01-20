@@ -111,7 +111,7 @@ def ZJet():
             except KeyboardInterrupt:
                 exit(0)
         try:
-            subprocess.call(["zjet", options.json])
+            subprocess.call(["artus", options.json])
         except KeyboardInterrupt:
             aborted = True
             print '\33[31m%s\033[0m' % "zjet run was aborted prematurely."
@@ -133,7 +133,7 @@ def ZJet():
 def getoptions(configdir="", name='zjet'):
     """Set standard options and read command line arguments. """
     if configdir == "":
-        configdir = getPath('CMSSW_BASE')+'/src/ZJet/ZJetAnalysis/data/cfg/'
+        configdir = getPath('CMSSW_BASE')+'/../Excalibur/data/cfg/'
 
 
     parser = argparse.ArgumentParser(
