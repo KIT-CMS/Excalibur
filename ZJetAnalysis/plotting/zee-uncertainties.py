@@ -1,14 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
-import Artus.Utility.logger as logger
-log = logging.getLogger(__name__)
-
-import argparse
-import os
-
-import Artus.HarryPlotter.core as harrycore
 import Artus.HarryPlotter.harry as harry
 
 if __name__ == '__main__':
@@ -154,7 +146,7 @@ if __name__ == '__main__':
 			'lightskyblue',
 			'red',
 			'green',
-			'orange',
+			#'orange',
 		],
 		'markers': ['o', '*', '.-', 'd'
 			],
@@ -196,16 +188,18 @@ if __name__ == '__main__':
 		'nicks_blacklist': ['responsematrix', 'background',
 		 'gen', 'data', 'mc', 'lumi_', 'unf'],
 
-		'formats': ['pdf'],
+		'formats': ['png'],
 		'lumi': 19.8,
 		'energy': '8',
-		'live': 'evince',
+		#'live': 'evince',
 		'userpc': True,
 		'x_bins': '5,30,230',
 		'y_bins': '5,30,230',
 		'x_label': 'zpt',
 		'y_label': 'error',
 		'legloc': 'center left',
+		'www': "test",
+		'log_level': 'debug',
 		#'y_lims': [0, 10],
 
 	}
