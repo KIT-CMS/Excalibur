@@ -7,8 +7,10 @@ if __name__ == '__main__':
 
 	# some variables
 	quantity = 'zpt'
-	selection = 'abs(zy)<0.4'
+	selection = "1"#'(abs(zy)<0.4)'
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur'
+	data = '/work/data_ee_corr.root'
+	mc = '/store/mc_ee_powheg_corr.root'
 
 	d = {
 		'x_expressions': 
@@ -26,20 +28,12 @@ if __name__ == '__main__':
 			+ [None]*8
 			+ [None]*2,
 		'files': [
-			path + '/work/data.root',
-			path + '/work/data.root',
+			path + data,
+			path + data,
 
-			path + '/work/mc.root',
-			path + '/work/mc.root',
-			path + '/work/mc.root',
-
-			path + '/store/background_ee_zz.root',
-			path + '/store/background_ee_wz.root',
-			path + '/store/background_ee_tt.root',
-			path + '/store/background_ee_tw.root',
-			path + '/store/background_ee_ww.root',
-			path + '/store/background_ee_wjets.root',
-			path + '/store/background_ee_dytautau.root',
+			path + mc,
+			path + mc,
+			path + mc,
 
 			path + '/store/background_ee_zz.root',
 			path + '/store/background_ee_wz.root',
@@ -48,10 +42,18 @@ if __name__ == '__main__':
 			path + '/store/background_ee_ww.root',
 			path + '/store/background_ee_wjets.root',
 			path + '/store/background_ee_dytautau.root',
-			path + '/work/data.root',
 
-			path + '/work/data.root',
-			path + '/work/data.root',
+			path + '/store/background_ee_zz.root',
+			path + '/store/background_ee_wz.root',
+			path + '/store/background_ee_tt.root',
+			path + '/store/background_ee_tw.root',
+			path + '/store/background_ee_ww.root',
+			path + '/store/background_ee_wjets.root',
+			path + '/store/background_ee_dytautau.root',
+			path + data,
+
+			path + data,
+			path + data,
 		],
 		'scale_factors': [
 			1,
@@ -105,7 +107,7 @@ if __name__ == '__main__':
 			selection,
 		],
 		'nicks': [
-			'staterrors',
+			'statistical',
 			'data',
 
 			'mc',
@@ -120,20 +122,20 @@ if __name__ == '__main__':
 			'data',
 			'data',
 
-			'background',
-			'background',
-			'background',
-			'background',
-			'background',
-			'background',
-			'background',
-			'background',
+			'backgroundunc',
+			'backgroundunc',
+			'backgroundunc',
+			'backgroundunc',
+			'backgroundunc',
+			'backgroundunc',
+			'backgroundunc',
+			'backgroundunc',
 			
 			'lumi_num',
 			'lumi_denum',
 		],
 		'labels':[
-			#'staterrors',
+			#'statistical',
 			#'data',
 			#'mc',
 			#'background',
@@ -159,7 +161,7 @@ if __name__ == '__main__':
 			'ScaleBinContents',
 		],
 		#module options
-		'stat_error': ['staterrors'],
+		'stat_error': ['statistical'],
 		
 		'unfolding': 'data',
 		'unfolding_responsematrix': 'responsematrix',
@@ -172,35 +174,44 @@ if __name__ == '__main__':
 		'relative_error': True,
 		
 		'divide_numerator_nicks': ['lumi_num', 'data', 'unfolded'],
-		'divide_denominator_nicks': ['lumi_denum', 'background', 'unfoldedup'],
-		'divide_result_nicks' : ['lumi', 'bkgrunc', 'uunc'],
+		'divide_denominator_nicks': ['lumi_denum', 'backgroundunc', 'unfoldedup'],
+		'divide_result_nicks' : ['lumi', 'background', 'unfolding'],
 		
-		'shift_bin_contents': ['bkgrunc', 'uunc'],
+		'shift_bin_contents': ['background', 'unfolding'],
 		'shift': -1,
 		
-		'scale_bin_contents': ['bkgrunc', 'uunc'],
+		'scale_bin_contents': ['background', 'unfolding'],
 		'scale': 100,
 
-		'absolute_bin_contents': ['bkgrunc', 'uunc'],
+		'absolute_bin_contents': ['background', 'unfolding'],
 
 
 		
-		'nicks_blacklist': ['responsematrix', 'background',
-		 'gen', 'data', 'mc', 'lumi_', 'unf'],
+		'nicks_blacklist': ['responsematrix', 'backgroundunc',
+		 'gen', 'data', 'mc', 'lumi_', 'unfolded'],
+		 
+		 
+		#'nicks_whitelist': ['unfolding'],
 
-		'formats': ['png'],
+		'formats': ['pdf'],
 		'lumi': 19.8,
 		'energy': '8',
-		#'live': 'evince',
+		'live': 'evince',
 		'userpc': True,
 		'x_bins': '5,30,230',
 		'y_bins': '5,30,230',
 		'x_label': 'zpt',
 		'y_label': 'error',
-		'legloc': 'center left',
-		'www': "test",
+		'legloc': 'upper left',
+		#'www': "test",
 		'log_level': 'debug',
 		#'y_lims': [0, 10],
+		
+		#'axes': [0, 1, 2, 3],
+		'n_axes_x': 1,
+		'n_axes_y': 1,
+		'x_lims': [0, 250],
+		'y_lims': [0, 5],
 
 	}
 
