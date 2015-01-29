@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Artus.HarryPlotter.harry as harry
+import harryZJet as harryZJet
 
 if __name__ == '__main__':
 
@@ -15,7 +16,7 @@ if __name__ == '__main__':
 	d = {
 		'x_expressions': 
 			[quantity]*3 +
-			[quantity, 'gen'+quantity]
+			["gen"+quantity, 'gen'+quantity]
 
 			+ [quantity]*7
 			+ [quantity]*8
@@ -23,7 +24,8 @@ if __name__ == '__main__':
 
 		'y_expressions': [
 			None, None,
-			None, 'gen'+quantity, None,]
+			None, #'gen'+
+			quantity, None,]
 			+ [None]*7
 			+ [None]*8
 			+ [None]*2,
@@ -150,8 +152,9 @@ if __name__ == '__main__':
 			'green',
 			#'orange',
 		],
-		'markers': ['o', '*', '.-', 'd'
+		'markers': ['o', '*', '.', 'd'
 			],
+		'linestyles': ['-', '-', '-', '-'],
 		'analysis_modules': [
 			'StatisticalErrors',
 			'Unfolding',
@@ -186,27 +189,25 @@ if __name__ == '__main__':
 		'absolute_bin_contents': ['background', 'unfolding'],
 
 
-		
 		'nicks_blacklist': ['responsematrix', 'backgroundunc',
 		 'gen', 'data', 'mc', 'lumi_', 'unfolded'],
 		 
 		 
 		#'nicks_whitelist': ['unfolding'],
 
-		'formats': ['pdf'],
+		'formats': ['png'],
 		'lumi': 19.8,
 		'energy': '8',
-		'live': 'evince',
-		'userpc': True,
+		#'live': 'evince',
+		#'userpc': True,
 		'x_bins': '5,30,230',
 		'y_bins': '5,30,230',
 		'x_label': 'zpt',
-		'y_label': 'error',
+		'y_label': 'relative error [%]',
 		'legloc': 'upper left',
-		#'www': "test",
 		'log_level': 'debug',
 		#'y_lims': [0, 10],
-		
+
 		#'axes': [0, 1, 2, 3],
 		'n_axes_x': 1,
 		'n_axes_y': 1,
@@ -215,5 +216,5 @@ if __name__ == '__main__':
 
 	}
 
-	harry_instance = harry.HarryPlotter(list_of_config_dicts=[d])
+	harry_instance = harryZJet.HarryPlotterZJet(list_of_config_dicts=[d])
 

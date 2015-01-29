@@ -6,15 +6,18 @@ import Artus.HarryPlotter.harry as harry
 if __name__ == '__main__':
 
 	# some variables
-	quantity = 'zmass'#'zpt'
+	quantity = 'zpt'
+	quantity = 'zmass'
 	selection = '1'#'(abs(zy) < 0.4)'
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur'
 	data = '/work/data_ee_corr.root'
 	mc = '/store/mc_ee_powheg_corr.root'
+	#mc = '/work/mc_ee_corr.root'
+	
 
 	d = {
 		'x_expressions': [
-			quantity, 
+			quantity,
 			
 			quantity,
 			"gen"+quantity,
@@ -100,7 +103,7 @@ if __name__ == '__main__':
 		#'markers': ['o', '*', '.-', 'd'
 		#	],
 		'analysis_modules': [
-			#'Unfolding',
+			'Unfolding',
 			'NormalizeToFirstHisto'
 		],
 		#module options
@@ -117,19 +120,23 @@ if __name__ == '__main__':
 		'nicks_blacklist': ['responsematrix',
 		 'gen', 'unfolded'],
 
-		'formats': ['pdf'],
+		'formats': ['png'],
 		'lumi': 19.8,
 		'energy': '8',
-		'live': 'evince',
+		#'live': 'evince',
 		'userpc': True,
 		'x_bins': "40,81,101",
+		'x_bins': "40,81,101",
+		#'x_bins': '10,30,230',
 		#'y_bins': '10,30,230',
-		'x_lims': [81, 101],
+		#'x_ticks':[30, 50, 70, 100, 230],
+		#'x_lims': [30, 230],
 		'y_ratio_lims': [0.5, 1.5],
 		'legloc': 'center left',
+		'filename': quantity,#'zpt_unfolded_powheg',
 		#'log_level': 'debug',
 		'x_label': 'zpt',
-		#'y_log': True,
+		'y_log': True,
 		#'x_log': True,
 		'ratio': True,
 
