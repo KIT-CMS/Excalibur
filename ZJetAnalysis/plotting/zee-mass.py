@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Artus.HarryPlotter.harry as harry
 import ZJet.Plotting.harryZJet as harryZJet
 
 if __name__ == '__main__':
-
 	# some variables
 	quantity = 'zmass'
 	selection = '1'
