@@ -27,7 +27,7 @@ class InputRootZJet(inputroot.InputRoot):
 		# merlin plotting
 		zjetlist =  ["algorithms", "corrections", "zjetfolders"]
 		self.prepare_list_args(plotData, zjetlist)
-		if all( [plotData.plotdict[i] != None for i in  zjetlist]):
+		if all( [plotData.plotdict[i] != [None] for i in zjetlist]):
 			folders = []
 			for algo, corr, folder in zip([plotData.plotdict[i] for i in zjetlist]):
 				folders.append("%s_%s%s" % (folder, algo, corr))
