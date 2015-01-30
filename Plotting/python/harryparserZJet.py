@@ -11,5 +11,5 @@ class HarryParserZJet(harryparser.HarryParser):
 		super(HarryParserZJet, self).__init__()
 
 		self.set_defaults(plot_modules=["PlotMplZJet"])
-		self.set_defaults(input_modules=["InputRootZJet"])
+		self.set_defaults(input_module="InputRootZJet")
 
