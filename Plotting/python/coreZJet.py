@@ -18,6 +18,6 @@ class HarryCoreZJet(core.HarryCore):
 		else:
 			additional_modules_dirs = [plotdir]
 
-		super(HarryCoreZJet, self).__init__(additional_modules_dirs, args_from_script)
-		self.parser = harryparserZJet.HarryParserZJet()
+		super(HarryCoreZJet, self).__init__(additional_modules_dirs, args_from_script,
+			parser = harryparserZJet.HarryParserZJet())
 
