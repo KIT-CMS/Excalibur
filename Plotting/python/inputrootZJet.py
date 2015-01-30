@@ -24,7 +24,7 @@ class InputRootZJet(inputroot.InputRoot):
 		
 		zjetlist =  ["algorithms", "corrections", "zjetfolders"]
 		self.prepare_list_args(plotData, zjetlist)
-		if all( [plotData.plotdict[i] != None for i in ] zjetlist):
-			for algo, corr, folder in ([plotData.plotdict[i] for i in zjetlist]):
+		if all( [plotData.plotdict[i] != None for i in  zjetlist]):
+			for algo, corr, folder in zip([plotData.plotdict[i] for i in zjetlist]):
 				print algo, corr
 				#plotData.plotdict['folders'] = 
