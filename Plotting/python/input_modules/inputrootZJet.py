@@ -8,7 +8,6 @@ import Artus.HarryPlotter.input_modules.inputroot as inputroot
 class InputRootZJet(inputroot.InputRoot):
 
 	def modify_argument_parser(self, parser, args):
-		print "!!mod"
 		super(InputRootZJet, self).modify_argument_parser(parser, args)
 
 		# special arguemnts for custom zjet folder naming conventions
