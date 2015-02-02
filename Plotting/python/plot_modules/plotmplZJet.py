@@ -16,7 +16,29 @@ class PlotMplZJet(plotmpl.PlotMpl):
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
 		self.other_options.set_defaults(userpc=True)
-	
+
+		self.formatting_options.set_defaults(markers=['o']+['fill']*8)
+		self.formatting_options.set_defaults(colors=[
+                    'black',
+                    '#7293cb',  # light blue
+                    '#e1974c',  # mustard yellow
+                    '#808585',  # grey
+                    '#d35e60',  # light red
+                    '#9067a7',  # violet
+                    '#ab6857',  # brown
+                    '#84ba5b',  # green
+                    '#ccc210',  # dirty yellow
+                    'salmon',
+                    'mediumaquamarine'
+        ])
+		self.formatting_options.set_defaults(x_errors=[False])
+		self.formatting_options.set_defaults(y_errors=[True])
+		self.formatting_options.set_defaults(legloc='center right')
+
+		self.formatting_options.set_defaults(energy='8')
+		self.formatting_options.set_defaults(lumi=19.789)
+		self.formatting_options.set_defaults(live='evince')
+
 		self.formatting_options.add_argument('--layout', type=str,
 			default='cmsstyle_JetMET',
 			help="layout for the plots. E.g. 'document': serif, LaTeX, pdf; " +
@@ -25,5 +47,5 @@ class PlotMplZJet(plotmpl.PlotMpl):
 
 	def prepare_args(self, parser, plotData):
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
-		matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
-		matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')
+		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
+		#matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')

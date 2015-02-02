@@ -25,6 +25,7 @@ class InputRootZJet(inputroot.InputRoot):
 		                                help="jet algorithms.")
 		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=None,
 		                                help="correction levels.")
+		self.zjet_input_options.set_defaults(files=[os.environ.get(x) for x in ['DATA', 'MC']])
 
 
 	def prepare_args(self, parser, plotData):
