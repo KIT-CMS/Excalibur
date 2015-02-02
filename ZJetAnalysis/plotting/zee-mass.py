@@ -27,57 +27,33 @@ if __name__ == '__main__':
 			path + '/store/background_ee_wjets.root',
 			path + '/store/background_ee_dytautau.root',
 		],
-		'scale_factors': [
-			1,
-			1,
-
-			-1,
-			-1,
-			-1,
-			-1,
-			-1,
-			-1,
-			-1,
-		],
-		'weights': [selection] + ['(%s * 19.789 * weight)' % selection]*8,
+		'weights': selection,
 		'nicks': [
 			'data',
 			'mc',
-
-			'data',
-			'data',
-			'data',
-			'data',
-			'data',
-			'data',
-			'data',
-
+			'ZZ', 'WZ', 'tt', 'tW', 'WW', 'Wjets', 'DYtautau'
 		],
+
 		'folders': ['zcuts_AK5PFJetsCHSL1L2L3'],
 		'analysis_modules': [
-			'NormalizeToFirstHisto'
+		#	'NormalizeToFirstHisto'
 		],
 		
-		'nicks_blacklist': ['responsematrix',
-		 'gen', 'unfolded'],
-
-		'formats': ['pdf'],
-		'lumi': 19.8,
-		'energy': '8',
-		#'live': 'evince',
-		#'userpc': True,
+		#'y_lims': [1, 400],
 		'x_lims': [81, 101],
 		'x_bins': "40,81,101",
-		'x_bins': "40,81,101",
+		'x_label': 'zmass',
+		'y_log': True,
+
+		#'ratio': True,
 		'y_ratio_lims': [0.5, 1.5],
-		'legloc': 'center left',
+
+		'formats': ['pdf'],
+		#'userpc': True,
 		'filename': quantity,
-		'x_label': 'zpt',
-		'ratio': True,
-		'no_logo': True,
-		'log_level': 'debug',
+		#'log_level': 'debug',
+		'stack': ['data']+['x']*8,
 
 	}
-
 	harry_instance = harryZJet.HarryPlotterZJet(list_of_config_dicts=[d])
 
