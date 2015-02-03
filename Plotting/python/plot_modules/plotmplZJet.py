@@ -7,11 +7,13 @@ import matplotlib
 
 import Artus.HarryPlotter.plot_modules.plotmpl as plotmpl
 import ZJet.Plotting.utility.matplotlib_rc as matplotlib_rc
+import ZJet.Plotting.utility.labelsZJet as labelsZJet
 
 class PlotMplZJet(plotmpl.PlotMpl):
 
 	def __init__(self):
 		super(PlotMplZJet, self).__init__()
+		self.nicelabels = labelsZJet.LabelsDictZJet()
 
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
