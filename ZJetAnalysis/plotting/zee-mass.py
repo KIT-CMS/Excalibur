@@ -47,6 +47,7 @@ if __name__ == '__main__':
 
 		#'ratio': True,
 		'y_ratio_lims': [0.5, 1.5],
+		#'legloc': None,
 
 		'formats': ['pdf'],
 		#'userpc': True,
