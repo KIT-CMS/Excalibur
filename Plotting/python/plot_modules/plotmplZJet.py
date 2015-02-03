@@ -54,3 +54,9 @@ class PlotMplZJet(plotmpl.PlotMpl):
 
 		if not all([i==None for i in plotData.plotdict['y_expressions']]):
 			plotData.plotdict['y_label'] = plotData.plotdict['y_expressions'][0]
+
+		if plotData.plotdict['live']:
+			plotData.plotdict['formats'] = ['pdf']
+		if plotData.plotdict['www']:
+			plotData.plotdict['formats'] = ['png']
+			plotData.plotdict['live'] = False
