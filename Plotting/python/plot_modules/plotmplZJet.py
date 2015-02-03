@@ -51,3 +51,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
 		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
 		#matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')
+
+		if not all([i==None for i in plotData.plotdict['y_expressions']]):
+			plotData.plotdict['y_label'] = plotData.plotdict['y_expressions'][0]
