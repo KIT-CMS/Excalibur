@@ -61,9 +61,6 @@
         "x"
     ],
     "x_expressions": "zmass",
-    "y_bins": [
-        "25"
-    ], 
     "y_label": "Events", 
     "y_log": true, 
     "y_ratio_lims": [
@@ -71,6 +68,6 @@
         1.5
     ], 
     "zjetfolders": [
-        "incut"
+        "zcuts"
     ]
 }
