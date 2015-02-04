@@ -60,8 +60,9 @@ class InputRootZJet(inputroot.InputRoot):
 			types.append(f.Get("Type"))
 
 		if all([typ == 'mc' for typ in types]) and mc_weight is not None:
-			if plotData.plotdict['lumi'] == None:
+			if plotData.plotdict.get('lumi', None) == None:
 				log.critical("'lumi' is not set, but needed for weights!")
+				return weight
 			mc_weight = mc_weight.replace('lumi', str(plotData.plotdict['lumi']))
 			log.debug("Automatically add MC weights: %s" % mc_weight)
 			return "((%s) * (%s))" % (weight, mc_weight)
