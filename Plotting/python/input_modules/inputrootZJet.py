@@ -39,6 +39,12 @@ class InputRootZJet(inputroot.InputRoot):
 				folders.append("%s_%s%s" % (folder, algo, corr))
 		plotData.plotdict['folders'] = folders
 
+		# automatically set nicks, x-expressions if not explicitly given
+		if plotData.plotdict['nicks'] == None:
+			plotData.plotdict['nicks'] = [os.path.splitext(os.path.basename(i))[0] for i in plotData.plotdict['files']]
+		if plotData.plotdict['x_expressions'] == None:
+			plotData.plotdict['x_expressions'] = plotData.plotdict['plot'].split("_")[-1]
+
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
 

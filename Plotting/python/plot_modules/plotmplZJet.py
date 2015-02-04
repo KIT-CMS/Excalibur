@@ -48,7 +48,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 				 "Default is %(default)s")
 
 	def prepare_args(self, parser, plotData):
-		super(PlotMplZJet, self).prepare_args(parser, plotData)
 		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
 		#matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')
 
@@ -60,3 +59,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		if plotData.plotdict['www']:
 			plotData.plotdict['formats'] = ['png']
 			plotData.plotdict['live'] = False
+
+		super(PlotMplZJet, self).prepare_args(parser, plotData)
+
