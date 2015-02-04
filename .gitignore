@@ -29,3 +29,6 @@ work.*
 *.root
 logs/
 *.py.json
+
+ZJetAnalysis/plotting/plots/
+ZJetAnalysis/plotting/websync/
