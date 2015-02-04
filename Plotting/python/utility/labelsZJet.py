@@ -35,7 +35,6 @@ class LabelsDictZJet(labels.LabelsDict):
 			'rho': '$\rho$',
 			'run': 'Run',
 			'sumEt': '$\sum E^\mathrm{T}$',
-			'zmass': '$m^\mathrm{Z}$',
 			'zpt': 'Z $p_\mathrm{T}$ / GeV',
 			'zy': '$y^Z$',
 		
