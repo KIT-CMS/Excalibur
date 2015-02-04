@@ -4,6 +4,7 @@
 """
 
 import matplotlib
+import datetime
 
 import Artus.HarryPlotter.plot_modules.plotmpl as plotmpl
 import ZJet.Plotting.utility.matplotlib_rc as matplotlib_rc
@@ -40,6 +41,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		self.formatting_options.set_defaults(energy='8')
 		self.formatting_options.set_defaults(lumi=19.789)
 		self.formatting_options.set_defaults(live='evince')
+
+		self.output_options.set_defaults(output_dir="plots/%s/" % datetime.date.today().strftime('%Y_%m_%d'))
 
 		self.formatting_options.add_argument('--layout', type=str,
 			default='cmsstyle_JetMET',
