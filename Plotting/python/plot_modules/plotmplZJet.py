@@ -15,6 +15,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 	def __init__(self):
 		super(PlotMplZJet, self).__init__()
 		self.nicelabels = labelsZJet.LabelsDictZJet()
+		self.sshpc = "ekplx26.physik.uni-karlsruhe.de"
 
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
