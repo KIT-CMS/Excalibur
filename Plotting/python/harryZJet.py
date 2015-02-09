@@ -9,4 +9,4 @@ class HarryPlotterZJet(harry.HarryPlotter):
 
 	def plot(self, harry_args):
 		harry_core_zjet = coreZJet.HarryCoreZJet(args_from_script=harry_args)
-		harry_core_zjet.run()
+		return harry_core_zjet.run()
