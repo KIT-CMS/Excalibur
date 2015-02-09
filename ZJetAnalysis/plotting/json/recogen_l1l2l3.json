@@ -1,0 +1,169 @@
+{
+    "3d": false, 
+    "algorithms": [
+        "AK5PFJetsCHS"
+    ], 
+    "analysis_modules": [], 
+    "author": null, 
+    "axes": 0, 
+    "colormap": "afmhot", 
+    "colors": [
+        "black", 
+        "#7293cb", 
+        "#e1974c", 
+        "#808585", 
+        "#d35e60", 
+        "#9067a7", 
+        "#ab6857", 
+        "#84ba5b", 
+        "#ccc210", 
+        "salmon", 
+        "mediumaquamarine"
+    ], 
+    "corrections": [
+        "L1L2L3"
+    ], 
+    "date": null, 
+    "debug": false, 
+    "dict": false, 
+    "directories": null, 
+    "edgecolors": null, 
+    "energy": "8", 
+    "err_level": "info", 
+    "event_number_label": false, 
+    "filename": "recogen_dy-qcd_l1l2l3", 
+    "files": [
+        "/usr/users/dhaitz/CMSSW_5_3_22_patch1__reco-gen-test/src/Demo/recogen_dy.root", 
+        "/usr/users/dhaitz/CMSSW_5_3_22_patch1__reco-gen-test/src/Demo/recogen_qcd.root"
+    ], 
+    "folders": [
+        "l1l2l3/l1l2l3"
+    ], 
+    "formats": [
+        "png"
+    ], 
+    "friend_filenames": null, 
+    "friend_treenames": null, 
+    "grid": false, 
+    "input_module": "InputRootZJet", 
+    "labels": [
+        "DY", 
+        "QCD"
+    ], 
+    "layout": "cmsstyle_JetMET", 
+    "legend": "upper right", 
+    "legloc": "center right", 
+    "linestyles": null, 
+    "list_available_modules": false, 
+    "log_files": [], 
+    "log_level": "info", 
+    "log_stream": "NONE", 
+    "lumi": 19.789, 
+    "markers": [
+        "o", 
+        "D"
+    ], 
+    "modules_search_paths": [], 
+    "n_axes_x": 1, 
+    "n_axes_y": 1, 
+    "nicks": null, 
+    "nicks_blacklist": [
+        "noplot"
+    ], 
+    "nicks_whitelist": null, 
+    "no_logo": true, 
+    "out_level": "info", 
+    "output_dir": "plots/2015_02_06/", 
+    "plot": "zmass", 
+    "plot_modules": [
+        "PlotMplZJet"
+    ], 
+    "ratio": false, 
+    "ratio_colors": null, 
+    "ratio_denom": null, 
+    "ratio_grid": false, 
+    "ratio_labels": null, 
+    "ratio_markers": null, 
+    "ratio_num": null, 
+    "ratio_x_errors": [
+        true
+    ], 
+    "ratio_y_errors": [
+        true
+    ], 
+    "root_histogram_draw_options": "prof", 
+    "save_legend": false, 
+    "scale_factors": null, 
+    "stack": null, 
+    "step": false, 
+    "text": null, 
+    "title": "L1L2L3", 
+    "verbose": false, 
+    "weights": "1.0", 
+    "www": null, 
+    "x_bins": [
+        "30", 
+        "40", 
+        "50", 
+        "60", 
+        "75", 
+        "95", 
+        "125", 
+        "180", 
+        "300", 
+        "1000"
+    ], 
+    "x_errors": [
+        false
+    ], 
+    "x_expressions": [
+        "genpt"
+    ], 
+    "x_label": null, 
+    "x_lims": [
+        30.0, 
+        400.0
+    ], 
+    "x_log": true, 
+    "x_tick_labels": null, 
+    "x_ticks": [
+        30.0, 
+        50.0, 
+        70.0, 
+        100.0, 
+        200.0, 
+        400.0
+    ], 
+    "y_bins": [
+        "25"
+    ], 
+    "y_errors": [
+        true
+    ], 
+    "y_expressions": [
+        "recopt/genpt"
+    ], 
+    "y_label": "Events", 
+    "y_lims": [
+        0.97, 
+        1.1
+    ], 
+    "y_log": false, 
+    "y_ratio_label": "Ratio", 
+    "y_ratio_lims": null, 
+    "y_tick_labels": null, 
+    "y_ticks": null, 
+    "z_bins": [
+        "25"
+    ], 
+    "z_expressions": null, 
+    "z_label": "Events", 
+    "z_lims": null, 
+    "z_log": false, 
+    "z_tick_labels": null, 
+    "z_ticks": null, 
+    "zjetfolders": [
+        "incut"
+    ], 
+    "zorder": null
+}
