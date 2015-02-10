@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 import Artus.Utility.jsonTools as jsonTools
 import ZJet.Plotting.harryZJet as harryZJet
-import scripts
+import ZJet.Plotting.scripts
 
 
 
