@@ -49,3 +49,22 @@ make -j4
 cd ../Excalibur
 make
 ```
+
+
+## Usage of the Excalibur Framework
+
+### ZJetAnalysis: C++ part
+to do
+
+### Plotting: python part
+This part derives some classes from HarryPlotter to implement ZJet-specific stuff.
+See 
+
+data/json/ contains some json files for plots
+python/ contains the derived classes
+scripts/ contains an ini script and the 'merlin' plotting executable
+python/scripts/ contains some plotting scripts
+
+source the ini file and type "merlin.py -h" to get a list of the plotting options
+
+
