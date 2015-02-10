@@ -41,7 +41,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 
 		self.formatting_options.set_defaults(energy='8')
 		self.formatting_options.set_defaults(lumi=19.789)
-		self.formatting_options.set_defaults(live='evince')
 
 		self.output_options.set_defaults(output_dir="plots/%s/" % datetime.date.today().strftime('%Y_%m_%d'))
 
@@ -55,7 +54,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
 		#matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')
 
-		if not all([i==None for i in plotData.plotdict['y_expressions']]):
+		if plotData.plotdict['y_label'] in [None, ""] and not all([i==None for i in plotData.plotdict['y_expressions']]):
 			plotData.plotdict['y_label'] = plotData.plotdict['y_expressions'][0]
 
 		if plotData.plotdict['www'] is not None:
