@@ -9,17 +9,8 @@ if __name__ == '__main__':
 	# some variables
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur'
 	data = '/work/data_ee_corr.root'
-	mc = '/store/mc_ee_powheg_corr.root'
-	#mc = '/work/mc_ee_corr.root'
-	
-	#bins = "10,-2.5,2.5"
-	#quantity = 'zy'
-
-	bins = "20,30,430"
-	quantity = 'zpt'
 
 	plots = []
-
 	for mc_label, mc in zip( ['Madgraph', 'Powheg'], ['/work/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']):
 		for quantity, bins in zip(['zpt', 'zmass', 'zy'], ["10,30,430", "10,81,101","10,-3,3"]):
 			d = {
@@ -37,7 +28,6 @@ if __name__ == '__main__':
 					None,
 					] +
 					[None]*7,
-
 				'files': [
 					path + data,
 

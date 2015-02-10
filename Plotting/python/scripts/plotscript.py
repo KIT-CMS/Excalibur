@@ -13,7 +13,7 @@ def plotscript(dicts):
 	""" main """	
 	# get max processes name from command line
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--max-processes', type=int, default=4)
+	parser.add_argument('--max-processes', type=int, default=8)
 	opt, unknown_args = parser.parse_known_args()
 
 	harry_instance = harryZJet.HarryPlotterZJet(
