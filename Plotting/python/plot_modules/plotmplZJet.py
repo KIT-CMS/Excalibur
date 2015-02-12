@@ -19,7 +19,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
-		self.other_options.set_defaults(userpc=True)
 
 		self.formatting_options.set_defaults(markers=['o']+['fill']*8)
 		self.formatting_options.set_defaults(colors=[
@@ -53,6 +52,9 @@ class PlotMplZJet(plotmpl.PlotMpl):
 	def prepare_args(self, parser, plotData):
 		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
 		#matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')
+
+		if 'ekplx' in os.environ['USERPC']:
+			plotData.plotdict['userpc'] = True
 
 		if plotData.plotdict['y_label'] in [None, ""] and not all([i==None for i in plotData.plotdict['y_expressions']]):
 			plotData.plotdict['y_label'] = plotData.plotdict['y_expressions'][0]
