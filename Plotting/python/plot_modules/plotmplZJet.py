@@ -5,6 +5,7 @@
 
 import matplotlib
 import datetime
+import os
 
 import Artus.HarryPlotter.plot_modules.plotmpl as plotmpl
 import ZJet.Plotting.utility.matplotlib_rc as matplotlib_rc
