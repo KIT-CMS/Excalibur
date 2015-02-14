@@ -11,8 +11,6 @@ class ZJetProduct : public KappaProduct
 {
 public:
 	ZJetProduct() : KappaProduct() {};
-/*
-	#TODO update this code so it'll compile with Kappa2.0
 
 	float m_product;
 	KMuons m_validmuons;
@@ -39,13 +37,10 @@ public:
 		// if (std::string::npos == algoname.find("L1"))
 		//{
 		return static_cast<KJet*>(m_validJets.at(1));
-		/*}
-	else if (m_validjets.at(algoname).size() < 2)
-	{
-		KJet jet;
-		return jet;
-	}
-	return SafeMap::Get(m_validjets, algoname).at(1);
+		//}
+		//else if (m_validjets.at(algoname).size() < 2)
+		//{
+		//return SafeMap::Get(m_validjets, algoname).at(1);
 	}
 
 	float GetMPF(const KMET* met) const // type1 !!!
@@ -54,5 +49,4 @@ public:
 		       (Z.p4.Px() * met->p4.Px() + Z.p4.Py() * met->p4.Py()) /
 		           (Z.p4.Px() * Z.p4.Px() + Z.p4.Py() * Z.p4.Py());
 	}
-*/
 };
