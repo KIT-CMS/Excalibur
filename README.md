@@ -19,9 +19,11 @@ All that is most easily provided by installing CMSSW alongside and taking the of
 cmsrel CMSSW_7_2_0
 cd CMSSW_7_2_0/src
 cmsenv
-git cms-addpkg CondFormats/JetMETObjects
+#git cms-addpkg CondFormats/JetMETObjects
 cd ../..
-ln -s CMSSW_7_2_0/src/CondFormats
+#ln -s CMSSW_7_2_0/src/CondFormats
+# temporary solution because 7x does not compile here:
+cp -r /portal/ekpcms5/home/berger/zjet/excalibur/external/OfflineCorrection/CondFormats ./
 ```
 Alternatively, all these requirements can also be installed independently or taken from the system.
 
@@ -37,7 +39,7 @@ To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
 git clone https://github.com/KappaAnalysis/Kappa.git
 git clone https://github.com/KappaAnalysis/KappaTools.git
-git clone -b CMSSW_7_X_X https://github.com/artus-analysis/Artus.git  # TODO: switch back to master when Artus switches
+git clone https://github.com/artus-analysis/Artus.git
 git clone https://github.com/dhaitz/Excalibur.git
 ```
 
@@ -45,10 +47,12 @@ In a next step you need to compile all those packages:
 ```
 make -C Kappa/DataFormats/test
 make -C KappaTools
-cmake Artus
-make -C Artus -j4
-make -C Excalibur
+cd Artus ; cmake . ; make -j4 ; cd ..
+cd Excalibur
+. scripts/ini_excalibur.sh
+make Excalibur
 ```
+(todo: a script should do that and the Makefile should fully handle all parts)
 
 after having done so, it can also be compile with `make` in the parent directory
 or with `make project` in Excalibur.
