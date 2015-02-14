@@ -11,6 +11,7 @@ export KAPPAPATH=$EXCALIBURPATH/../Kappa
 export KAPPATOOLSPATH=$EXCALIBURPATH/../KappaTools
 export ARTUSPATH=$EXCALIBURPATH/../Artus
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ARTUSPATH:$KAPPAPATH/lib:$KAPPATOOLSPATH/lib:$BOOSTPATH/lib
+export PATH=$PATH:$EXCALIBURPATH/scripts
 
 export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 
