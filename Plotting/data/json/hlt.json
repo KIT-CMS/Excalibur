@@ -1,0 +1,36 @@
+{
+    "files": [
+        "store/mc_ee_powheg_corr_noc.root"
+    ], 
+    "folders": [
+        "electron_all_AK5PFJetsCHSL1L2L3"
+    ], 
+    "plot": "pt", 
+    "root_histogram_draw_options": "prof", 
+    "x_bins": [
+        "25,20,120"
+    ], 
+    "x_expressions": [
+        "pt"
+    ], 
+    "x_label": "ept", 
+    "y_bins": [
+        "27,0,2.6"
+    ], 
+    "y_expressions": [
+        "abs(eta)"
+    ], 
+    "y_label": "eabseta", 
+    "y_lims": [
+        0.0, 
+        2.6
+    ], 
+    "z_expressions": [
+        "hlt"
+    ], 
+    "z_label": "HLT-efficiency", 
+    "z_lims": [
+        0.9, 
+        1.0
+    ]
+}

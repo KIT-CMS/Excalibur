@@ -1,0 +1,43 @@
+{
+    "axes": [
+        0, 
+        1
+    ], 
+    "colormap": "bwr", 
+    "files": [
+        "store/mc_ee_powheg_corr_noc.root", 
+        "store/mc_ee_powheg_raw_noc.root"
+    ], 
+    "folders": [
+        "electron_all_AK5PFJetsCHSL1L2L3"
+    ], 
+    "n_axes_x": 2, 
+    "plot": "recogen", 
+    "root_histogram_draw_options": "prof", 
+    "x_bins": [
+        "20,20,120"
+    ], 
+    "x_expressions": [
+        "pt"
+    ], 
+    "x_label": "ept", 
+    "y_bins": [
+        "26,0,2.6"
+    ], 
+    "y_expressions": [
+        "abs(eta)"
+    ], 
+    "y_label": "eabseta", 
+    "y_lims": [
+        0.0, 
+        2.6
+    ], 
+    "z_expressions": [
+        "pt/genpt"
+    ], 
+    "z_label": "$ p_\\mathrm{T,reco} \\ / p_\\mathrm{T,gen}$", 
+    "z_lims": [
+        0.96, 
+        1.04
+    ]
+}
