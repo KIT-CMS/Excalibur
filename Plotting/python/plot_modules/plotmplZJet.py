@@ -68,6 +68,9 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['output_dir'] = 'plots/live/'
 			plotData.plotdict['filename'] = 'plot'
 
+		if plotData.plotdict.get('nolumilabel', True):
+			plotData.plotdict['lumi'] = None
+
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
 

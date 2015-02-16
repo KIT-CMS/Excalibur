@@ -69,6 +69,7 @@ class InputRootZJet(inputroot.InputRoot):
 			return "((%s) * (%s))" % (weight, mc_weight)
 		elif all([typ == 'data' for typ in types]) and data_weight is not None:
 			log.debug("Automatically add Data weights: %s" % data_weight)
+			plotData.plotdict['nolumilabel'] = True
 			return "((%s) * (%s))" % (weight, data_weight)
 		else:
 			return weight
