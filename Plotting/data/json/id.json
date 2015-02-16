@@ -1,6 +1,6 @@
 {
     "files": [
-        "store/mc_ee_powheg_corr_noc.root"
+        "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_corr_noc.root"
     ], 
     "folders": [
         "electron_all_AK5PFJetsCHSL1L2L3"
