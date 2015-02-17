@@ -79,6 +79,6 @@ if __name__ == '__main__':
 				}
 				if quantity == 'zpt':
 					d['x_log'] = True
-					d['x_lims'] = [20, 600]
+					d['x_lims'] = [20, 650]
 				plots.append(d)
 	plotscript.plotscript(plots)
