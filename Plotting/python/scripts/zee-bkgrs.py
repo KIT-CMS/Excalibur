@@ -5,9 +5,9 @@ import Artus.HarryPlotter.harry as harry
 import plotscript
 
 if __name__ == '__main__':
-	""" data, signal and backgounds, over different x quantities"
+	""" data, signal and backgounds, over different x quantities"""
 
-	path = '/portal/ekpcms5/home/dhaitz/git/excalibur'
+	path = '/portal/ekpcms5/home/dhaitz/git/excalibur/'
 	plots = []
 	
 	for mc, mc_label in zip(['/work/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root'],
@@ -21,7 +21,7 @@ if __name__ == '__main__':
 				d = {
 					'x_expressions': quantity,
 					'files': [
-						path + data,
+						path + 'work/data_ee_corr.root',
 
 						path + mc,
 
