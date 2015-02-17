@@ -4,6 +4,7 @@
         1
     ], 
     "colormap": "bwr", 
+    "filename": "ee-recogen-2D", 
     "files": [
         "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_corr_noc.root", 
         "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_raw_noc.root"
@@ -12,8 +13,10 @@
         "electron_all_AK5PFJetsCHSL1L2L3"
     ], 
     "n_axes_x": 2, 
+    "output_dir": "plots/dpg/", 
     "plot": "recogen", 
     "root_histogram_draw_options": "prof", 
+    "title": "own work", 
     "x_bins": [
         "20,20,120"
     ], 

@@ -7,6 +7,7 @@
     ], 
     "plot": "pt", 
     "root_histogram_draw_options": "prof", 
+    "title": "own work", 
     "x_bins": [
         "25,20,120"
     ], 
