@@ -1,38 +1,7 @@
 {
-    "3d": false, 
-    "algorithms": [
-        "AK5PFJetsCHS"
-    ], 
     "analysis_modules": [
         "TGraphFromHistograms"
     ], 
-    "author": null, 
-    "axes": 0, 
-    "colormap": "afmhot", 
-    "colors": [
-        "black", 
-        "#7293cb", 
-        "#e1974c", 
-        "#808585", 
-        "#d35e60", 
-        "#9067a7", 
-        "#ab6857", 
-        "#84ba5b", 
-        "#ccc210", 
-        "salmon", 
-        "mediumaquamarine"
-    ], 
-    "corrections": [
-        "L1L2L3"
-    ], 
-    "date": null, 
-    "debug": false, 
-    "dict": false, 
-    "directories": null, 
-    "edgecolors": null, 
-    "energy": "8", 
-    "err_level": "info", 
-    "event_number_label": false, 
     "filename": "roc", 
     "files": [
         "store/mc_ee_powheg_corr_noc_noid.root"
@@ -40,65 +9,21 @@
     "folders": [
         "electron_zcuts_AK5PFJetsCHSL1L2L3"
     ], 
-    "formats": [
-        "png"
-    ], 
-    "friend_filenames": null, 
-    "friend_treenames": null, 
-    "grid": false, 
-    "input_module": "InputRootZJet", 
     "labels": [
         "mva", 
         "loose", 
         "medium", 
         "tight"
     ], 
-    "layout": "cmsstyle_JetMET", 
     "legend": "best", 
-    "legloc": "center right", 
-    "linestyles": null, 
-    "list_available_modules": false, 
-    "log_files": [], 
-    "log_level": "info", 
-    "log_stream": "NONE", 
-    "lumi": 19.789, 
     "markers": [
         "o"
     ], 
-    "modules_search_paths": [], 
-    "n_axes_x": 1, 
-    "n_axes_y": 1, 
-    "nicks": null, 
     "nicks_blacklist": [
         "nick"
     ], 
-    "nicks_whitelist": null, 
-    "no_logo": true, 
-    "out_level": "info", 
     "output_dir": "plots/dpg/", 
-    "plot": "zmass", 
-    "plot_modules": [
-        "PlotMplZJet"
-    ], 
-    "ratio": false, 
-    "ratio_colors": null, 
-    "ratio_denom": null, 
-    "ratio_grid": false, 
-    "ratio_labels": null, 
-    "ratio_markers": null, 
-    "ratio_num": null, 
-    "ratio_x_errors": [
-        true
-    ], 
-    "ratio_y_errors": [
-        true
-    ], 
     "root_histogram_draw_options": "prof", 
-    "save_legend": false, 
-    "scale_factors": null, 
-    "stack": null, 
-    "step": false, 
-    "text": null, 
     "tgraph_result_nicks": [
         "final0", 
         "final1", 
@@ -118,7 +43,6 @@
         "nick7"
     ], 
     "title": "own work", 
-    "verbose": false, 
     "weights": [
         "1", 
         "mva", 
@@ -129,12 +53,8 @@
         "1", 
         "tightid"
     ], 
-    "www": null, 
     "x_bins": [
         "1,-1,2"
-    ], 
-    "x_errors": [
-        false
     ], 
     "x_expressions": [
         "mva"
@@ -143,15 +63,6 @@
     "x_lims": [
         0.6, 
         1.0
-    ], 
-    "x_log": false, 
-    "x_tick_labels": null, 
-    "x_ticks": null, 
-    "y_bins": [
-        "25"
-    ], 
-    "y_errors": [
-        true
     ], 
     "y_expressions": [
         "mva", 
@@ -167,23 +78,5 @@
     "y_lims": [
         0.6, 
         1.0
-    ], 
-    "y_log": false, 
-    "y_ratio_label": "Ratio", 
-    "y_ratio_lims": null, 
-    "y_tick_labels": null, 
-    "y_ticks": null, 
-    "z_bins": [
-        "25"
-    ], 
-    "z_expressions": null, 
-    "z_label": "Events", 
-    "z_lims": null, 
-    "z_log": false, 
-    "z_tick_labels": null, 
-    "z_ticks": null, 
-    "zjetfolders": [
-        "incut"
-    ], 
-    "zorder": null
+    ]
 }
