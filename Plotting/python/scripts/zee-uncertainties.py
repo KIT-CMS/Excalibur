@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import ZJet.Plotting.harryZJet as harryZJet
+import Excalibur.Plotting.harryZJet as harryZJet
 import plotscript
 
 def ee_unc():

@@ -11,8 +11,8 @@ import Artus.Utility.logger as logger
 log = logging.getLogger(__name__)
 
 import Artus.Utility.jsonTools as jsonTools
-import ZJet.Plotting.harryZJet as harryZJet
-import ZJet.Plotting.scripts
+import Excalibur.Plotting.harryZJet as harryZJet
+import Excalibur.Plotting.scripts
 
 
 

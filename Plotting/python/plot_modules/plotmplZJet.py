@@ -8,8 +8,8 @@ import datetime
 import os
 
 import Artus.HarryPlotter.plot_modules.plotmpl as plotmpl
-import ZJet.Plotting.utility.matplotlib_rc as matplotlib_rc
-import ZJet.Plotting.utility.labelsZJet as labelsZJet
+import Excalibur.Plotting.utility.matplotlib_rc as matplotlib_rc
+import Excalibur.Plotting.utility.labelsZJet as labelsZJet
 
 class PlotMplZJet(plotmpl.PlotMpl):
 

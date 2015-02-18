@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import ZJet.Plotting.coreZJet as coreZJet
+import Excalibur.Plotting.coreZJet as coreZJet
 import Artus.HarryPlotter.harry as harry
 
 class HarryPlotterZJet(harry.HarryPlotter):

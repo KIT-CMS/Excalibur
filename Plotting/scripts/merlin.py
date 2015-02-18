@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 import sys
 
-import ZJet.Plotting.harryZJet as harryZJet
+import Excalibur.Plotting.harryZJet as harryZJet
 
 
 if __name__ == "__main__":

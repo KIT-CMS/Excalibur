@@ -6,7 +6,7 @@ import logging
 import Artus.Utility.logger as logger
 log = logging.getLogger(__name__)
 
-import ZJet.Plotting.harryZJet as harryZJet
+import Excalibur.Plotting.harryZJet as harryZJet
 
 
 def plotscript(dicts):

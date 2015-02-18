@@ -6,7 +6,7 @@
 import os
 
 import Artus.HarryPlotter.core as core
-import ZJet.Plotting.harryparserZJet as harryparserZJet
+import Excalibur.Plotting.harryparserZJet as harryparserZJet
 
 class HarryCoreZJet(core.HarryCore):
 
