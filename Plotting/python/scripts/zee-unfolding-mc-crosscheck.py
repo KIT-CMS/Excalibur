@@ -12,9 +12,8 @@ if __name__ == '__main__':
 	data = '/work/data_ee_corr.root'
 
 	plots = []
-	for mc_label, mc, data in zip( ['Madgraph', 'Powheg'],
-				['/work/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root'],
-				['/store/mc_ee_powheg_corr.root', '/work/mc_ee_corr.root']):
+	mc_samples = ['/store/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']
+	for mc_label, mc, data in zip( ['Madgraph', 'Powheg'], mc_samples, reversed(mc_samples)):
 		for quantity, bins in zip(['zpt', 'zmass', 'zy'], ["10,30,430", "10,81,101","10,-3,3"]):
 			d = {
 				'x_expressions': [

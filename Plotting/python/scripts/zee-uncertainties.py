@@ -74,6 +74,7 @@ def ee_unc():
 		"weights": 
 			["1"]*3 + 
 			["genzpt>30"] +["1"]*18,
+		"filename": "sys-errors", 
 		"formats": [
 			"png"
 		], 

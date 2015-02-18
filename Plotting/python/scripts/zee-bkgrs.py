@@ -10,7 +10,7 @@ if __name__ == '__main__':
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur/'
 	plots = []
 	
-	for mc, mc_label in zip(['/work/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root'],
+	for mc, mc_label in zip(['/store/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root'],
 		['Madgraph', 'Powheg']):
 		for log, suffix in zip([False, True
 						], ['', '_log']):

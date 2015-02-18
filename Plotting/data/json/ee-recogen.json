@@ -1,4 +1,5 @@
 {
+    "filename": "ee-recogen", 
     "files": [
         "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_corr_noc.root", 
         "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_raw_noc.root"
@@ -7,13 +8,16 @@
         "electron_all_AK5PFJetsCHSL1L2L3"
     ], 
     "labels": [
-        "corr", 
+        "corrected", 
         "raw"
     ], 
     "legend": "lower left", 
+    "line_styles": [
+        "steps-mid"
+    ], 
     "markers": [
         "o", 
-        "D"
+        "d"
     ], 
     "plot": "recogen", 
     "root_histogram_draw_options": "prof", 
@@ -31,7 +35,7 @@
     "y_expressions": [
         "pt/genpt"
     ], 
-    "y_label": "$ p_\\mathrm{T, reco} \\ / p_\\mathrm{T.gen}$", 
+    "y_label": "$ p_\\mathrm{T, reco} \\ / p_\\mathrm{T, gen}$", 
     "y_lims": [
         0.96, 
         1.04

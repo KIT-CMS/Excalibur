@@ -11,7 +11,7 @@ if __name__ == '__main__':
 	data = '/work/data_ee_corr.root'
 
 	plots = []
-	for mc_label, mc in zip( ['Madgraph', 'Powheg'], ['/work/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']):
+	for mc_label, mc in zip( ['Madgraph', 'Powheg'], ['/store/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']):
 		for quantity, bins in zip(['zpt', 'zmass', 'zy'], ["10,30,430", "10,81,101","10,-3,3"]):
 			d = {
 				'x_expressions': [
