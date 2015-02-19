@@ -1,0 +1,78 @@
+{
+    "filename": "zpt_mad_pow", 
+    "files": [
+        "work/data_ee_corr.root", 
+        "store/mc_ee_corr.root", 
+        "store/mc_ee_powheg_corr.root"
+    ], 
+    "labels": [
+        "Data", 
+        "Madgraph (LO)", 
+        "Powheg (NLO)"
+    ], 
+    "legend": "best", 
+    "line_styles": [
+        "1"
+    ], 
+    "markers": [
+        "o", 
+        ".", 
+        "."
+    ], 
+    "nicks": [
+        "data", 
+        "mc1", 
+        "mc2"
+    ], 
+    "ratio": true, 
+    "ratio_colors": [
+        "#7293cb", 
+        "#e1974c"
+    ], 
+    "ratio_denom": [
+        "data", 
+        "data"
+    ], 
+    "ratio_num": [
+        "mc1", 
+        "mc2"
+    ], 
+    "step": [
+        false, 
+        true, 
+        true
+    ], 
+    "x_bins": [
+        "30", 
+        "40", 
+        "50", 
+        "70", 
+        "100", 
+        "135", 
+        "200", 
+        "400", 
+        "1000"
+    ], 
+    "x_expressions": [
+        "zpt"
+    ], 
+    "x_log": true, 
+    "x_ticks": [
+        30.0, 
+        50.0, 
+        70.0, 
+        100.0, 
+        200.0, 
+        400.0, 
+        1000.0
+    ], 
+    "y_log": true, 
+    "y_ratio_label": "MC/Data", 
+    "y_ratio_lims": [
+        0.5, 
+        1.5
+    ], 
+    "zjetfolders": [
+        "zcuts"
+    ]
+}

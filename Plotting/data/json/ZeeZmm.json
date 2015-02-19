@@ -1,0 +1,28 @@
+{
+    "filename": "zeezmm", 
+    "files": [
+        "work/data_ee_corr.root", 
+        "work/data.root"
+    ], 
+    "folders": [
+        "zcuts_AK5PFJetsCHSL1L2L3Res"
+    ], 
+    "labels": [
+        "$ Z\\rightarrow ee$", 
+        "$ Z \\rightarrow \\mu\\mu $"
+    ], 
+    "legend": "best", 
+    "ratio": true, 
+    "title": "own work", 
+    "weights": [
+        "zmass>81 && zmass<101"
+    ], 
+    "x_bins": [
+        "25,0,2.5"
+    ], 
+    "x_expressions": [
+        "abs(zy)"
+    ], 
+    "x_label": "$\\|y^Z\\|$", 
+    "y_log": true
+}
