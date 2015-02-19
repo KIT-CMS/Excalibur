@@ -67,9 +67,9 @@ class InputRootZJet(inputroot.InputRoot):
 			mc_weight = mc_weight.replace('lumi', str(plotData.plotdict['lumi']))
 			log.debug("Automatically add MC weights: %s" % mc_weight)
 			return "((%s) * (%s))" % (weight, mc_weight)
-		elif all([typ == 'data' for typ in types]) and data_weight is not None:
-			log.debug("Automatically add Data weights: %s" % data_weight)
-			plotData.plotdict['nolumilabel'] = True
-			return "((%s) * (%s))" % (weight, data_weight)
-		else:
-			return weight
+		elif all([typ == 'data' for typ in types]):
+			plotData.plotdict['nolumilabel'] = False
+			if data_weight is not None:
+				log.debug("Automatically add Data weights: %s" % data_weight)
+				return "((%s) * (%s))" % (weight, data_weight)
+		return weight
