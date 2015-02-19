@@ -46,7 +46,7 @@
         "Wjets", 
         "DYtautau"
     ], 
-    "stack": [
+    "stacks": [
         "data", 
         "x", 
         "x", 

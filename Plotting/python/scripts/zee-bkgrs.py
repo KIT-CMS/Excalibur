@@ -58,7 +58,7 @@ if __name__ == '__main__':
 						"fill"
 					],
 					'export_json': None,
-					'stack': [
+					'stacks': [
 						'data',
 						'mc']
 						+ ['data']*7,

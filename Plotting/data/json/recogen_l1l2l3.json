@@ -94,7 +94,7 @@
     "root_histogram_draw_options": "prof", 
     "save_legend": false, 
     "scale_factors": null, 
-    "stack": null, 
+    "stacks": null, 
     "step": false, 
     "text": null, 
     "title": "L1L2L3", 
