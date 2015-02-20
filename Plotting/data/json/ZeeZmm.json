@@ -12,7 +12,18 @@
         "$ Z \\rightarrow \\mu\\mu $"
     ], 
     "legend": "best", 
+    "line_styles": [
+        "1"
+    ], 
+    "markers": [
+        "o", 
+        "*"
+    ], 
     "ratio": true, 
+    "step": [
+        false, 
+        true
+    ], 
     "title": "own work", 
     "weights": [
         "zmass>81 && zmass<101"
@@ -24,5 +35,6 @@
         "abs(zy)"
     ], 
     "x_label": "$\\|y^Z\\|$", 
-    "y_log": true
+    "y_log": true, 
+    "y_ratio_label": " $ Zee / Z\\mu\\mu $ "
 }

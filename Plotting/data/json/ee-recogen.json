@@ -20,7 +20,7 @@
         "d"
     ], 
     "plot": "recogen", 
-    "root_histogram_draw_options": "prof", 
+    "tree_draw_options": "prof", 
     "weights": [
         "hlt"
     ], 

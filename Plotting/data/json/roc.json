@@ -23,7 +23,7 @@
         "nick"
     ], 
     "output_dir": "plots/dpg/", 
-    "root_histogram_draw_options": "prof", 
+    "tree_draw_options": "prof", 
     "tgraph_result_nicks": [
         "final0", 
         "final1", 

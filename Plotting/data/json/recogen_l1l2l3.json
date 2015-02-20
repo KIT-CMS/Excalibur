@@ -91,7 +91,7 @@
     "ratio_y_errors": [
         true
     ], 
-    "root_histogram_draw_options": "prof", 
+    "tree_draw_options": "prof", 
     "save_legend": false, 
     "scale_factors": null, 
     "stacks": null, 

@@ -20,7 +20,7 @@
         "d"
     ], 
     "output_dir": "plots/dpg/", 
-    "root_histogram_draw_options": "prof", 
+    "tree_draw_options": "prof", 
     "weights": [
         "looseid", 
         "mediumid", 

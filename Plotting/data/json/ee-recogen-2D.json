@@ -15,7 +15,7 @@
     "n_axes_x": 2, 
     "output_dir": "plots/dpg/", 
     "plot": "recogen", 
-    "root_histogram_draw_options": "prof", 
+    "tree_draw_options": "prof", 
     "title": "own work", 
     "x_bins": [
         "20,20,120"
