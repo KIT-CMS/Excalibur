@@ -27,10 +27,10 @@ class PlotMplZJet(plotmpl.PlotMpl):
                     '#7293cb',  # light blue
                     '#e1974c',  # mustard yellow
                     '#808585',  # grey
-                    '#d35e60',  # light red
-                    '#9067a7',  # violet
                     '#ab6857',  # brown
+                    '#9067a7',  # violet
                     '#84ba5b',  # green
+                    '#d35e60',  # light red
                     '#ccc210',  # dirty yellow
                     'salmon',
                     'mediumaquamarine'
