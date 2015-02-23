@@ -87,7 +87,9 @@ if __name__ == '__main__':
 							'lumi': 19.8,
 							'energy': '8',
 						
-							'text': ["{},0.03,0.97".format(ybinlabel), "{},0.03,0.87".format(njetlabel)],
+							'texts': [ybinlabel, njetlabel],
+							'texts_x':[0.03],
+							'texts_y': [0.97, 0.87],
 
 							'x_bins': bins,
 							'y_log': log,

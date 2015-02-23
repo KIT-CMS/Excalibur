@@ -99,7 +99,9 @@ if __name__ == '__main__':
 					'lumi': 19.8,
 					'energy': '8',
 					'y_ratio_lims': [0.5, 1.5],
-					'text': "{},0.03,0.97".format(ybinlabel),
+					'texts': ["ybinlabel"],
+					'texts_x':[0.03],
+					'texts_y': [0.97],
 		
 					'x_bins': bins,
 					'y_bins': bins,
