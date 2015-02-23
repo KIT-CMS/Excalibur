@@ -38,6 +38,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'zpt': 'Z $p_\mathrm{T}$ / GeV',
 			'zy': '$y^Z$',
 			
+			'abs(zy)': '$|y^Z|$',
 			'eabseta': "$|\eta^\mathrm{electron}|$",
 			'ept': "$p_\mathrm{T}^\mathrm{electron}$",
 		

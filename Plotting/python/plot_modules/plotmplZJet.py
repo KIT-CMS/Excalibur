@@ -42,6 +42,9 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		self.formatting_options.set_defaults(energy='8')
 		self.formatting_options.set_defaults(lumi=19.789)
 
+		self.formatting_options.set_defaults(texts_x=0.03)
+		self.formatting_options.set_defaults(texts_y=0.97)
+
 		self.output_options.set_defaults(output_dir="plots/%s/" % datetime.date.today().strftime('%Y_%m_%d'))
 
 		self.formatting_options.add_argument('--layout', type=str,
