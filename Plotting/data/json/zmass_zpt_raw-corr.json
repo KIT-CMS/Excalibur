@@ -1,0 +1,37 @@
+{
+    "filename": "zmass_zpt_raw-corr", 
+    "files": [
+        "work/data_ee_corr.root", 
+        "work/data_ee_raw.root"
+    ], 
+    "labels": [
+        "corr", 
+        "raw"
+    ], 
+    "legend": "best", 
+    "line_styles": [
+        "-"
+    ], 
+    "markers": [
+        "o", 
+        "d"
+    ], 
+    "title": "own work", 
+    "tree_draw_options": [
+        "prof"
+    ], 
+    "x_bins": [
+        "24,0,2.4"
+    ], 
+    "x_expressions": [
+        "abs(zy)"
+    ], 
+    "y_expressions": [
+        "zmass"
+    ], 
+    "y_label": "zmass", 
+    "y_lims": [
+        91.0, 
+        93.1
+    ]
+}

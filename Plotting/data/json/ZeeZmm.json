@@ -1,4 +1,8 @@
 {
+    "colors": [
+        "red", 
+        "blue"
+    ], 
     "filename": "zeezmm", 
     "files": [
         "work/data_ee_corr.root", 
@@ -17,9 +21,12 @@
     ], 
     "markers": [
         "o", 
-        "*"
+        "D"
     ], 
     "ratio": true, 
+    "ratio_colors": [
+        "black"
+    ], 
     "step": [
         false, 
         true

@@ -1,4 +1,6 @@
 {
+    "colormap": "Blues", 
+    "filename": "hlt", 
     "files": [
         "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_corr_noc.root"
     ], 
@@ -6,8 +8,8 @@
         "electron_all_AK5PFJetsCHSL1L2L3"
     ], 
     "plot": "pt", 
-    "tree_draw_options": "prof", 
     "title": "own work", 
+    "tree_draw_options": "prof", 
     "x_bins": [
         "25,20,120"
     ], 
@@ -31,7 +33,7 @@
     ], 
     "z_label": "HLT-efficiency", 
     "z_lims": [
-        0.9, 
+        0.5, 
         1.0
     ]
 }

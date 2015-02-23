@@ -15,14 +15,15 @@ if __name__ == '__main__':
 	bkgr_signal_ratio = False
 
 	for njetweight, njetlabel, njetsuffix in zip(
-		["1", "njets30<2", "njets30>1"],
+		["1"#, "njets30<2", "njets30>1"
+			],
 		["", "$ n_{jets(p_T>30GeV)}<=1$", "$ n_{jets(p_T>30GeV)}>1$"],
 		["", "_njets0-1", "_njets2"]
 		
 	):
 		# iterate over rapidity bins
 		for ybin, ybinlabel, ybinsuffix in zip(
-					["1"] + ["abs(zy)<{1} && abs(zy)>{0}".format(low, up) for low, up in zip(ybins[:-1], ybins[1:])],
+					["1"],# + ["abs(zy)<{1} && abs(zy)>{0}".format(low, up) for low, up in zip(ybins[:-1], ybins[1:])],
 					["", "|y|<0.4"] + ["{0}<|y|<{1}".format(low, up) for low, up in zip(ybins[:-1], ybins[1:])][1:],
 					["_inclusive"] + ["_{0:02d}y{1:02d}".format(int(10*low), int(10*up)) for low, up in zip(ybins[:-1], ybins[1:])]
 		):
@@ -33,7 +34,7 @@ if __name__ == '__main__':
 				for log, suffix in zip([False, True], ['', '_log']):
 					# different quantities
 					for quantity, bins in zip(['zpt', 'zy', 'zmass', 'njets30'],
-						[[20, 40, 60, 80, 100, 120, 140, 170, 200, 1000],
+						[[30, 40, 60, 80, 100, 120, 140, 170, 200, 1000],
 						"14,-2.8, 2.8",
 						"20,81,101",
 						"7,-0.5,6.5"]):
@@ -71,7 +72,7 @@ if __name__ == '__main__':
 								'min',
 								'min'
 							],
-							'title': mc_label,
+							'title': "own work",
 							"markers": [
 								"o", 
 								"fill", 
@@ -104,7 +105,8 @@ if __name__ == '__main__':
 						}
 						if quantity == 'zpt':
 							d['x_log'] = True
-							d['x_lims'] = [20, 650]
+							d['x_lims'] = [30, 650]
+							d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 						plots.append(d)
 					
 						if bkgr_signal_ratio:
@@ -121,5 +123,4 @@ if __name__ == '__main__':
 								'save_legend': d['save_legend'] + "_sig-bkgr",
 							})
 							plots.append(d)
-	print "Doing {} plots".format(len(plots))
 	plotscript.plotscript(plots)

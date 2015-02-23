@@ -10,20 +10,21 @@
         "electron_zcuts_AK5PFJetsCHSL1L2L3"
     ], 
     "labels": [
-        "mva", 
-        "loose", 
-        "medium", 
-        "tight"
+        "MVA ID", 
+        "Cutbased ID loose", 
+        "Cutbased ID medium", 
+        "Cutbased ID tight"
     ], 
-    "legend": "best", 
+    "legend": "lower right", 
     "markers": [
-        "o"
+        "o", 
+        "D", 
+        "D", 
+        "D"
     ], 
     "nicks_blacklist": [
         "nick"
     ], 
-    "output_dir": "plots/dpg/", 
-    "tree_draw_options": "prof", 
     "tgraph_result_nicks": [
         "final0", 
         "final1", 
@@ -43,6 +44,7 @@
         "nick7"
     ], 
     "title": "own work", 
+    "tree_draw_options": "prof", 
     "weights": [
         "1", 
         "mva", 
@@ -59,9 +61,9 @@
     "x_expressions": [
         "mva"
     ], 
-    "x_label": "efficiency", 
+    "x_label": "ID efficiency", 
     "x_lims": [
-        0.6, 
+        0.65, 
         1.0
     ], 
     "y_expressions": [
@@ -74,9 +76,9 @@
         "tightid", 
         "(deltar<0.3)"
     ], 
-    "y_label": "purity", 
+    "y_label": "Purity", 
     "y_lims": [
-        0.6, 
+        0.65, 
         1.0
     ]
 }

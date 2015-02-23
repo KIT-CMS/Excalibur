@@ -20,9 +20,13 @@
         "d"
     ], 
     "plot": "recogen", 
+    "texts": [
+        " $ p_{T}^{electron} > 20 \\ GeV$"
+    ], 
+    "title": "own work", 
     "tree_draw_options": "prof", 
     "weights": [
-        "hlt"
+        "pt>20"
     ], 
     "x_expressions": [
         "abs(eta)"
@@ -37,7 +41,7 @@
     ], 
     "y_label": "$ p_\\mathrm{T, reco} \\ / p_\\mathrm{T, gen}$", 
     "y_lims": [
-        0.96, 
-        1.04
+        0.97, 
+        1.034
     ]
 }
