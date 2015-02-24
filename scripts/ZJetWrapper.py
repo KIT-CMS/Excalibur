@@ -133,7 +133,7 @@ def ZJet():
 def getoptions(configdir="", name='zjet'):
     """Set standard options and read command line arguments. """
     if configdir == "":
-        configdir = getPath('CMSSW_BASE')+'/../Excalibur/data/cfg/'
+        configdir = getPath('CMSSW_BASE')+'/../Excalibur/cfg/excalibur/'
 
 
     parser = argparse.ArgumentParser(
