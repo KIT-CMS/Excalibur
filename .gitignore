@@ -21,6 +21,10 @@ work.*
 logs/
 *.py.json
 
-ZJetAnalysis/plotting/plots/
-ZJetAnalysis/plotting/websync/
 *.log
+
+# plotting outputs
+plots/
+work
+websync/
+store
