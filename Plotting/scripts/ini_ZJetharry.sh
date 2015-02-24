@@ -1,2 +1,2 @@
-export MC=work/mc.root
-export DATA=work/data.root
+#source HarryPlotter ini script
+source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# source Artus ini script
-source ../Artus/Configuration/scripts/ini_ArtusAnalysis.sh
 
 # set the environment
 export EXCALIBURPATH=$(readlink -e .)
@@ -15,6 +13,8 @@ export PATH=$PATH:$EXCALIBURPATH/scripts
 export PYTHONPATH=$PYTHONPATH:$EXCALIBURPATH/python
 export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 
+# source Artus ini script
+source $ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh
 
 # Set some user specific variables
 if [ $USER = "dhaitz" ]; then
