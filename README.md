@@ -65,11 +65,24 @@ to do
 ### Plotting: python part
 This part derives some classes from HarryPlotter to implement ZJet-specific stuff.
 See 
+- Plotting/python/, which contains the derived classes
+- Plotting/scripts/, which contains an ini script and the 'merlin' plotting executable
 
-data/json/ contains some json files for plots
-python/ contains the derived classes
-scripts/ contains an ini script and the 'merlin' plotting executable
-python/scripts/ contains some plotting scripts
+Source the ini file and type `merlin.py -h` to get a list of the plotting options.
 
-source the ini file and type "merlin.py -h" to get a list of the plotting options
+Plot configs are stored as json or python files. Type `merlin.py --functions` to
+get a list of the availabel plot configs.
+
+##### Json
+- Json configs can be directly saved from the command line with HarryPlotter's
+--export-json functionality. These configs can later be read in again, changed
+and overwritten. The "_comment" key has to be added manually and should contain
+a short description of the plot.
+- Plotting/data/json-configs/ contains some json files for plots
+
+##### Python
+- Python functions allow to construct loops of plots, but cannot be saved or read
+as easily as json files. The docstring of the functions should contain a description.
+- Plotting/data/python-configs/ contains some python plotting scripts
+
 
