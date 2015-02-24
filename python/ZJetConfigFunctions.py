@@ -29,9 +29,10 @@ def getBaseConfig(**kwargs):
         },
 
         # Wire Kappa objects
-        "EventMetadata" : "KEventMetadata",
-        "LumiMetadata" : "KLumiMetadata",
-        "VertexSummary": "goodOfflinePrimaryVerticesSummary",
+        "EventMetadata" : "eventInfo",
+        "LumiMetadata" : "lumiInfo",
+        #"VertexSummary": "goodOfflinePrimaryVerticesSummary",
+        "VertexSummary": "offlinePrimaryVerticesSummary",
     }
     return cfg
 
@@ -42,7 +43,7 @@ def getBaseConfig(**kwargs):
 def data(cfg, **kwargs):
     cfg['InputType'] = 'data'
     cfg['InputIsData'] = True
-    cfg['Pipelines']['default']['QuantitiesVector'] += ['run', 'eventnr', 'lumisec']
+    #cfg['Pipelines']['default']['QuantitiesVector'] += ['run', 'eventnr', 'lumisec']
 
 
 def mc(cfg, **kwargs):
