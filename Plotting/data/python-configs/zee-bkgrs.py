@@ -4,7 +4,7 @@
 import numpy as np
 
 import Artus.HarryPlotter.harry as harry
-import plotscript
+import Excalibur.Plotting.plotscript as plotscript
 
 
 def zee_bkgrs():

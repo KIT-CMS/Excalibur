@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import Excalibur.Plotting.harryZJet as harryZJet
-import plotscript
+import Excalibur.Plotting.plotscript as plotscript
 
 
 def zee_unc():

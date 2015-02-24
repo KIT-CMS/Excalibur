@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Artus.HarryPlotter.harry as harry
-import plotscript
+import Excalibur.Plotting.plotscript as plotscript
 
 
 def zee_unfolded():
