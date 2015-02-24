@@ -3,7 +3,9 @@
 import Excalibur.Plotting.harryZJet as harryZJet
 import plotscript
 
-def ee_unc():
+
+def zee_unc():
+	""" Plot of the systematic uncertainties of the Z->ee measurement."""
 
 	bins = [30,40,60,80,100,120,140,170,200,1000]
 	path = "/portal/ekpcms5/home/dhaitz/git/excalibur/"
@@ -241,5 +243,6 @@ def ee_unc():
 	}
 	plotscript.plotscript([d])
 
+
 if __name__ == '__main__':
-	ee_unc()
+	zee_unc()

@@ -4,7 +4,9 @@
 import Artus.HarryPlotter.harry as harry
 import plotscript
 
-if __name__ == '__main__':
+
+def zee_unfolded():
+	"""Unfolded Z(->ee) distributions. All combinations of rapidity bins, MC samples and quantities (y, mass, pT) are plotted."""
 
 	# some variables
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur'
@@ -119,3 +121,7 @@ if __name__ == '__main__':
 
 				plots.append(d)
 	plotscript.plotscript(plots)
+
+
+if __name__ == '__main__':
+	zee_unfolded()

@@ -4,8 +4,9 @@
 import Artus.HarryPlotter.harry as harry
 import plotscript
 
-if __name__ == '__main__':
-	""" test unfolding from one mc with another."""
+
+def zee_unfolding_crosscheck():
+	"""Cross-check unfolding procedure derived from one mc and applied to the other (Powheg/Madgraph)."""
 
 	# some variables
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur'
@@ -89,3 +90,6 @@ if __name__ == '__main__':
 
 			plots.append(d)
 	plotscript.plotscript(plots)
+
+if __name__ == '__main__':
+	zee_unfolding_crosscheck()

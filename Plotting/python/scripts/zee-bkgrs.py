@@ -6,8 +6,10 @@ import numpy as np
 import Artus.HarryPlotter.harry as harry
 import plotscript
 
-if __name__ == '__main__':
-	""" data, signal and backgounds, for different variations"""
+
+def zee_bkgrs():
+	"""Plot data, signal and backgounds, for all combinations of njet categories, 
+	rapidity bins, mc samples, log/linear scale, ZpT/y/mass/ Njets as x-quantity."""
 
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur/'
 	plots = []
@@ -99,7 +101,7 @@ if __name__ == '__main__':
 							'y_ratio_lims': [0.5, 1.5],
 
 							'save_legend': "legend" + "_" + mc_label,
-							'export_json': False,
+							#'export_json': False,
 
 							'filename': quantity + suffix + "_" + mc_label+ybinsuffix+njetsuffix,
 						}
@@ -107,8 +109,8 @@ if __name__ == '__main__':
 							d['x_log'] = True
 							d['x_lims'] = [30, 650]
 							d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
-						plots.append(d)
-					
+	plots.append(d)
+	"""
 						if bkgr_signal_ratio:
 							d.update({
 								"nicks": ['data','signal','bkgr','bkgr','bkgr','bkgr','bkgr','bkgr','bkgr'],
@@ -123,4 +125,9 @@ if __name__ == '__main__':
 								'save_legend': d['save_legend'] + "_sig-bkgr",
 							})
 							plots.append(d)
+					"""
 	plotscript.plotscript(plots)
+
+
+if __name__ == '__main__':
+	zee_bkgrs()
