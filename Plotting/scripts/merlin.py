@@ -9,11 +9,13 @@ import sys
 
 import Excalibur.Plotting.harryZJet as harryZJet
 
-
-if __name__ == "__main__":
+def main():
 	"""This script executes all steps necessary to create a plot."""
 	if len(sys.argv) == 1:
 		sys.argv.append("-h")
-		
+
 	harryZJet.HarryPlotterZJet()
 
+
+if __name__ == "__main__":
+	main()
