@@ -16,6 +16,7 @@ This framework needs:
 
 All that is most easily provided by installing CMSSW alongside and taking the offline jet corrections from there (in CondFormats):
 ```
+export SCRAM_ARCH=slc6_amd64_gcc481
 cmsrel CMSSW_7_2_0
 cd CMSSW_7_2_0/src
 cmsenv
@@ -50,7 +51,7 @@ make -C KappaTools
 cd Artus ; cmake . ; make -j4 ; cd ..
 cd Excalibur
 . scripts/ini_excalibur.sh
-make Excalibur
+make
 ```
 (todo: a script should do that and the Makefile should fully handle all parts)
 
