@@ -9,5 +9,5 @@ def config():
         ekppath="/storage/6/berger/kappatest/skim_kappa2_data.root",
         nafpath=""
     )
-    cfg = base.expand(cfg, ['all', 'zcuts', 'incut'])
+    cfg = base.expand(cfg, ['nocuts', 'zcuts', 'finalcuts'])
     return cfg
