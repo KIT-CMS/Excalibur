@@ -86,11 +86,11 @@ def expand(config, variations=[], algorithms=[], default="default"):
 
     # copy for variations
     for v in variations:
-        if v == 'all':
+        if v == 'nocuts':
             pipelines[v] = copy.deepcopy(p)
             pipelines[v]['Cuts'] = []
-            if 'incut' in pipelines[v]['Filter']:
-                    pipelines[v]['Filter'].remove('incut')
+            if 'finalcuts' in pipelines[v]['Filter']:
+                    pipelines[v]['Filter'].remove('finalcuts')
         elif v == 'zcuts':
             pipelines[v] = copy.deepcopy(p)
             removelist = ['leadingjet_pt', 'back_to_back']
@@ -103,7 +103,7 @@ def expand(config, variations=[], algorithms=[], default="default"):
             pipelines[v]['Cuts'].append('secondleading_to_zpt')
             pipelines[v]['CutLeadingJetEta'] = 1.3
             pipelines[v]['CutSecondLeadingToZPt'] = 0.2
-        elif v == 'incut':
+        elif v == 'finalcuts':
             pipelines[v] = copy.deepcopy(p)
 
     # remove template pipeline
@@ -122,7 +122,7 @@ def expand(config, variations=[], algorithms=[], default="default"):
 def pipelinediff(config, to=None):
     print "Comparing", len(config['Pipelines']), "pipelines:"
     if to == None:
-        to = filter(lambda x: 'incut' in x, config['Pipelines'].keys())[0]
+        to = filter(lambda x: 'finalcuts' in x, config['Pipelines'].keys())[0]
 
     for name, p in config['Pipelines'].items():
         if name != to:

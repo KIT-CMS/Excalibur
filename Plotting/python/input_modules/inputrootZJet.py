@@ -19,8 +19,8 @@ class InputRootZJet(inputroot.InputRoot):
 
 		# special arguemnts for custom zjet folder naming conventions
 		self.zjet_input_options = parser.add_argument_group("ZJet input options")
-		self.zjet_input_options.add_argument("--zjetfolders", type=str, nargs='*', default=['incut'],
-		                                help="zjet folders (all, incut....")
+		self.zjet_input_options.add_argument("--zjetfolders", type=str, nargs='*', default=['finalcuts'],
+		                                help="zjet folders (nocuts, finalcuts....")
 		self.zjet_input_options.add_argument("--algorithms", type=str, nargs='*', default=["AK5PFJetsCHS"],
 		                                help="jet algorithms.")
 		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3"],
