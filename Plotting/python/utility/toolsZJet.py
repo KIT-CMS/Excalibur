@@ -11,7 +11,6 @@ import pkgutil
 
 import Artus.Utility.jsonTools as jsonTools
 import Artus.Utility.tools as tools
-import Excalibur.Plotting.scripts as scripts
 
 def print_jsons_and_functions(json_path, python_path):
 	""" print the comments / docstrings of the json/python plot configs"""
@@ -21,7 +20,7 @@ def print_jsons_and_functions(json_path, python_path):
 	log.info(tools.get_colored_string("\npython scripts:", 'cyan'))
 
 	# get docstrings from python functions
-	module_list = [(module.find_module(name).load_module(name)) for module, name, is_pkg in pkgutil.walk_packages(scripts.__path__)]
+	module_list = [(module.find_module(name).load_module(name)) for module, name, is_pkg in pkgutil.walk_packages([python_path])]
 	for module in module_list:
 		log.info("\t"+ tools.get_colored_string(module.__name__ + ".py", "yellow"))
 		functions = inspect.getmembers(module, inspect.isfunction)

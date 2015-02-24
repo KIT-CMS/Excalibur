@@ -5,7 +5,6 @@
 
 import Artus.HarryPlotter.harryparser as harryparser
 import Artus.Utility.tools as tools
-import Excalibur.Plotting.scripts as scripts
 import Excalibur.Plotting.utility.toolsZJet as toolsZJet
 
 class HarryParserZJet(harryparser.HarryParser):
@@ -34,8 +33,8 @@ class HarryParserZJet(harryparser.HarryParser):
 
 		if known_args.functions:
 			toolsZJet.print_jsons_and_functions(
-				json_path = tools.get_environment_variable("EXCALIBURPATH") + "/Plotting/data/json/",
-				python_path = scripts
+				json_path = tools.get_environment_variable("EXCALIBURPATH") + "/Plotting/data/json-configs/",
+				python_path = tools.get_environment_variable("EXCALIBURPATH") + "/Plotting/data/python-configs/",
 			)
 
 		return known_args, unknown_args
