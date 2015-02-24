@@ -1,4 +1,5 @@
 {
+    "_comment": "pT reco/gen for raw and corrected electrons a function of pT",
     "filename": "ee-recogen", 
     "files": [
         "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_corr_noc.root", 

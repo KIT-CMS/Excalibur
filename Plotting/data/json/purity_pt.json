@@ -1,4 +1,5 @@
 {
+    "_comment": "Purity of the electron sample of pT for the four electron IDs",
     "filename": "purity_pt", 
     "files": [
         "store/mc_ee_powheg_corr_noc_noid.root"

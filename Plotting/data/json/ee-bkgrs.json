@@ -1,4 +1,5 @@
 {
+    "_comment": "Z->ee mass spectrum with all relevant backgrounds",
     "files": [
         "/portal/ekpcms5/home/dhaitz/git/excalibur/work/data_ee_corr.root", 
         "/portal/ekpcms5/home/dhaitz/git/excalibur/store/mc_ee_powheg_corr.root", 

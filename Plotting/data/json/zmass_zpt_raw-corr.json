@@ -1,4 +1,5 @@
 {
+    "_comment": "Comparison of Z(->ee) mass as a function of Z pT between raw and corrected electrons",
     "filename": "zmass_zpt_raw-corr", 
     "files": [
         "work/data_ee_corr.root", 

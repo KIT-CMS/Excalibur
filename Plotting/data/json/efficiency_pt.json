@@ -1,4 +1,5 @@
 {
+    "_comment": "Electron selection efficiency as a function of pT for the four IDs",
     "filename": "efficiency_pt", 
     "files": [
         "store/mc_ee_powheg_corr_noc_noid.root"

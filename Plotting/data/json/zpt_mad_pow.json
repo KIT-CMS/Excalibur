@@ -1,4 +1,5 @@
 {
+    "_comment": "Plot the Z(->ee) pT spectrum of data(-backgrounds), Madgraph and Powheg",
     "filename": "zpt_mad_pow", 
     "files": [
         "work/data_ee_corr.root", 

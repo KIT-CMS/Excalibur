@@ -1,4 +1,5 @@
 {
+    "_comment": "ROC points (efficiency vs purity) for the four electron IDs",
     "analysis_modules": [
         "TGraphFromHistograms"
     ], 

@@ -1,4 +1,5 @@
 {
+    "_comment": "Electron HLT efficiency as a function of electron |eta|",
     "colormap": "Blues", 
     "filename": "hlt", 
     "files": [

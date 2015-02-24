@@ -1,4 +1,5 @@
 {
+    "_comment": "pT reco/gen plot for the recogen Testanalyzer (DY vs QCD)",
     "3d": false, 
     "algorithms": [
         "AK5PFJetsCHS"

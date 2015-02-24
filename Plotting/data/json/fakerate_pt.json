@@ -1,4 +1,5 @@
 {
+    "_comment": "Electron fakerate as a function of pT for the four electron IDs",
     "filename": "fakerate_pt", 
     "files": [
         "store/mc_ee_powheg_corr_noc_noid.root"
