@@ -16,7 +16,7 @@ def plotscript(dicts):
 	parser.add_argument('--max-processes', type=int, default=8)
 	opt, unknown_args = parser.parse_known_args()
 
-	log.info("Doing {} plots".format(len(dicts)))
+	logger.initLogger()
 
 	harry_instance = harryZJet.HarryPlotterZJet(
 		list_of_config_dicts=dicts,
