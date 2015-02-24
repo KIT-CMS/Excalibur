@@ -12,7 +12,7 @@ export KAPPATOOLSPATH=$EXCALIBURPATH/../KappaTools
 export ARTUSPATH=$EXCALIBURPATH/../Artus
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ARTUSPATH:$KAPPAPATH/lib:$KAPPATOOLSPATH/lib:$BOOSTPATH/lib
 export PATH=$PATH:$EXCALIBURPATH/scripts
-
+export PYTHONPATH=$PYTHONPATH:$EXCALIBURPATH/python
 export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 
 
@@ -20,3 +20,10 @@ export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 if [ $USER = "dhaitz" ]; then
     export EXCALIBUR_WORK=/storage/a/dhaitz/zjet
 fi
+
+
+# Use this to open a root file directly in the TBrowser
+rot()
+{
+    ipython -i $EXCALIBURPATH/scripts/rot.py $@
+}
