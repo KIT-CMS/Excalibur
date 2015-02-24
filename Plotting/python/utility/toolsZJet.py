@@ -28,6 +28,6 @@ def print_jsons_and_functions(json_path, python_path):
 			prefix = "\t\t\t"
 			for func in functions:
 				log.info("\t\t" + tools.get_colored_string(func[0], "green"))
-				log.info(tools.get_indented_text(prefix, func[1].__doc__))
+				log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
 	sys.exit(0)
 
