@@ -76,14 +76,14 @@ get a list of the availabel plot configs.
 
 ##### Json
 - Json configs can be directly saved from the command line with HarryPlotter's
---export-json functionality. These configs can later be read in again, changed
-and overwritten. The "_comment" key has to be added manually and should contain
+--export-json functionality. These configs can later be read in again with -j, changed
+and saved again. The "_comment" key has to be added manually and should contain
 a short description of the plot.
 - Plotting/data/json-configs/ contains some json files for plots
 
 ##### Python
 - Python functions allow to construct loops of plots, but cannot be saved or read
-as easily as json files. The docstring of the functions should contain a description.
+as easily as json files. Execution of these functions with --python, a list of
+the available functions can be displayed with --functions. The docstring of the
+functions should contain a description.
 - Plotting/data/python-configs/ contains some python plotting scripts
-
-

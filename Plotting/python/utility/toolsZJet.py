@@ -20,7 +20,7 @@ def print_jsons_and_functions(json_path, python_path):
 	log.info(tools.get_colored_string("\npython scripts:", 'cyan'))
 
 	# get docstrings from python functions
-	module_list = [(module.find_module(name).load_module(name)) for module, name, is_pkg in pkgutil.walk_packages([python_path])]
+	module_list = get_module_list(python_path)
 	for module in module_list:
 		log.info("\t"+ tools.get_colored_string(module.__name__ + ".py", "yellow"))
 		functions = inspect.getmembers(module, inspect.isfunction)
@@ -31,3 +31,18 @@ def print_jsons_and_functions(json_path, python_path):
 				log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
 	sys.exit(0)
 
+def call_python_function(function_name, python_path):
+	"""call a python if it is present in any module in the path."""
+	module_list = get_module_list(python_path)
+	for module in module_list:
+		functions = inspect.getmembers(module, inspect.isfunction)
+		for func in functions:
+			if func[0] == function_name:
+				log.info("Executing function {} in module {}".format(func[0], module.__name__))
+				func[1]()
+				return
+
+
+def get_module_list(path):
+	"""get a list with all python modules in the path."""
+	return [(module.find_module(name).load_module(name)) for module, name, is_pkg in pkgutil.walk_packages([path])]
