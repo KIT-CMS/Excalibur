@@ -33,8 +33,8 @@ class HarryParserZJet(harryparser.HarryParser):
 
 		if known_args.functions:
 			toolsZJet.print_jsons_and_functions(
-				json_path = tools.get_environment_variable("EXCALIBURPATH") + "/Plotting/data/json-configs/",
-				python_path = tools.get_environment_variable("EXCALIBURPATH") + "/Plotting/data/python-configs/",
+				json_path = tools.get_environment_variable("JSONCONFIGS"),
+				python_path = tools.get_environment_variable("PYTHONCONFIGS"),
 			)
 
 		return known_args, unknown_args
