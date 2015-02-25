@@ -1,6 +1,3 @@
-import ZJetWrapper
-
-
 def getBaseConfig(**kwargs):
     cfg = {
         'SkipEvents': 0,

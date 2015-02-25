@@ -1,5 +1,4 @@
 import ZJetConfigBase as base
-import ZJetWrapper
 
 
 def config():
