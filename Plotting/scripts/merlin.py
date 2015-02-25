@@ -32,7 +32,8 @@ def main():
 			harryZJet.HarryPlotterZJet(list_of_args_strings=" ".join(unknown_args))
 
 	except SystemExit, e:
-		harryZJet.HarryPlotterZJet()
+		if "-h" in sys.argv:
+			harryZJet.HarryPlotterZJet()
 
 
 if __name__ == "__main__":
