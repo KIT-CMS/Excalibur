@@ -12,11 +12,13 @@ class LabelsDictZJet(labels.LabelsDict):
 		
 		self.labels_dict.update({
 			#more general stuff. maybe move to Artus?
-			
+			'abs(zy)': '$|y^Z|$',
 			'algoflavour': 'Flavour (Algorithmic definition)',
 			'constituents': 'Number of Jet Constituents',
+			'eabseta': "$|\eta^\mathrm{electron}|$",
 			'eminuspt': '$p_\mathrm{T}^\mathrm{e^{-}}$',
 			'epluspt': '$p_\mathrm{T}^\mathrm{e^{+}}$',
+			'ept': "$p_\mathrm{T}^\mathrm{electron}$",
 			'eventsperbin': 'Events per bin',
 			'genjet1pt': '$p_\mathrm{T}^\mathrm{Leading Gen Jet}$',
 			'genjet2pt': '$p_\mathrm{T}^\mathrm{GenJet2}$',
@@ -30,6 +32,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'mu2pt': '$p_\mathrm{T}^\mathrm{\mu2}$',
 			'muminuspt': '$p_\mathrm{T}^\mathrm{\mu-}$',
 			'mupluspt': '$p_\mathrm{T}^\mathrm{\mu+}$',
+			'njets30': '$\mathrm{n}_{\mathrm{jets}, p_T>30GeV}$',
 			'npv': '$n_\mathrm{PV}$',
 			'physflavour': 'Flavour (Physics definition)',
 			'rho': '$\rho$',
@@ -37,11 +40,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'sumEt': '$\sum E^\mathrm{T}$',
 			'zpt': 'Z $p_\mathrm{T}$ / GeV',
 			'zy': '$y^Z$',
-			
-			'abs(zy)': '$|y^Z|$',
-			'eabseta': "$|\eta^\mathrm{electron}|$",
-			'ept': "$p_\mathrm{T}^\mathrm{electron}$",
-		
+
 			# ZJet specific
 			'METeta': '$\eta^\mathrm{MET}$',
 			'METpt': '$E_\mathrm{T}^\mathrm{miss}$',
