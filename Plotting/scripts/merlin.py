@@ -26,14 +26,8 @@ def main():
 
 		# call python config function
 		if known_args.python != [None]:
-			# manually clean sys.argv
-			# TODO should we rather propagate unknown_args through the functions?
-			sys.argv.remove("--python")
 			for function in known_args.python:
-				sys.argv.remove(function)
-
-			for function in known_args.python:
-				toolsZJet.call_python_function(function, tools.get_environment_variable("PYTHONCONFIGS"))
+				toolsZJet.call_python_function(function, tools.get_environment_variable("PYTHONCONFIGS"), unknown_args)
 		else:
 			harryZJet.HarryPlotterZJet(list_of_args_strings=" ".join(unknown_args))
 

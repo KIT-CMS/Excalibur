@@ -31,7 +31,7 @@ def print_jsons_and_functions(json_path, python_path):
 				log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
 	sys.exit(0)
 
-def call_python_function(function_name, python_path):
+def call_python_function(function_name, python_path, unknown_args=None):
 	"""call a python if it is present in any module in the path."""
 	module_list = get_module_list(python_path)
 	for module in module_list:
@@ -39,7 +39,7 @@ def call_python_function(function_name, python_path):
 		for func in functions:
 			if func[0] == function_name:
 				log.info("Executing function {} in module {}".format(func[0], module.__name__))
-				func[1]()
+				func[1](unknown_args)
 				return
 
 
