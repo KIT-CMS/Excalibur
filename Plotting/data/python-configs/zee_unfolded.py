@@ -14,6 +14,7 @@ def zee_unfolded(unknown_args=None):
 	path = '/portal/ekpcms5/home/dhaitz/git/excalibur'
 	data = '/work/data_ee_corr.root'
 	ybins = np.arange(0, 2.8, 0.4)
+	zcuts = "zmass>81 && zmass<101 && eminuspt>25 && epluspt>25 && abs(epluseta)<2.4 && abs(eminuseta)<2.4"
 
 	plots = []
 	for njetweight, njetlabel, njetsuffix in zip(
@@ -29,7 +30,7 @@ def zee_unfolded(unknown_args=None):
 			for mc_label, mc in zip( ['Madgraph', 'Powheg'], ['/store/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']):
 				for quantity, bins in zip(
 					['zpt', 'zmass', 'zy'],
-					[[30, 40, 60, 80, 100, 140, 200, 1000], "10,81,101","10,-3,3"]
+					[[0, 15, 30, 40, 60, 80, 100, 140, 200, 1000], "10,81,101","10,-3,3"]
 				):
 					d = {
 						'x_expressions': [
@@ -91,8 +92,8 @@ def zee_unfolded(unknown_args=None):
 							'data',
 							'data',
 						],
-						'folders': ['zcuts_AK5PFJetsCHSL1L2L3'],
-						'weights': "(({}) && ({}))".format(ybin, njetweight),
+						'folders': ['all_AK5PFJetsCHSL1L2L3'],
+						'weights': "(({}) && ({}) && ({}))".format(zcuts, ybin, njetweight),
 						'analysis_modules': [
 							'Unfolding',
 						],
@@ -129,6 +130,7 @@ def zee_unfolded(unknown_args=None):
 					if quantity == 'zpt':
 						d['x_log'] = True
 						d['y_log'] = True
+						d['x_lims'] = [30, 1000]
 						d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 
 					plots.append(d)

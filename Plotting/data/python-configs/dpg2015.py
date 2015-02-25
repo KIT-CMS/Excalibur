@@ -9,6 +9,8 @@ import Excalibur.Plotting.harryZJet as harryZJet
 def dpg_dominik(unknown_args=None):
 	"""Function to create all plots for Dominiks DPG presentation."""
 
+	unknown_args += ['--title', '"own work"']
+
 	zee_bkgrs.zee_bkgrs(unknown_args)
 	zee_unfolded.zee_unfolded(unknown_args)
 	dpg_mad_pow(unknown_args)
