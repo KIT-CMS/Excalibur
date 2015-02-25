@@ -3,6 +3,7 @@
 
 import zee_bkgrs
 import zee_unfolded
+import zee_uncertainties
 
 import Excalibur.Plotting.harryZJet as harryZJet
 
@@ -14,6 +15,7 @@ def dpg_dominik(unknown_args=None):
 	zee_bkgrs.zee_bkgrs(unknown_args)
 	zee_unfolded.zee_unfolded(unknown_args)
 	dpg_mad_pow(unknown_args)
+	zee_uncertainties.zee_unc(unknown_args)
 
 
 def dpg_mad_pow(unknown_args=None):

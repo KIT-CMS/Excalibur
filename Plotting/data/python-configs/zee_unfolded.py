@@ -30,7 +30,7 @@ def zee_unfolded(unknown_args=None):
 			for mc_label, mc in zip( ['Madgraph', 'Powheg'], ['/store/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']):
 				for quantity, bins in zip(
 					['zpt', 'zmass', 'zy'],
-					[[0, 15, 30, 40, 60, 80, 100, 140, 200, 1000], "10,81,101","10,-3,3"]
+					[[15, 30, 40, 60, 80, 100, 140, 200, 1000], "10,81,101","10,-3,3"]
 				):
 					d = {
 						'x_expressions': [
@@ -103,7 +103,7 @@ def zee_unfolded(unknown_args=None):
 						'unfolding_responsematrix': 'responsematrix',
 						'unfolding_mc_gen': 'gen',
 						'unfolding_mc_reco': 'mc',
-						'unfolding_new_nicks': ['Data', mc_label],
+						'unfolding_new_nicks': ['Data', 'MC'],
 						'libRooUnfold': '~/home/RooUnfold-1.1.1/libRooUnfold.so',
 				
 		
