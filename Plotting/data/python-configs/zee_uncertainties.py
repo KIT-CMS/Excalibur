@@ -130,6 +130,7 @@ def zee_unc(unknown_args=None):
 			"unfolded"
 		],
 		"relative_error": True, 
+		"title": "own work", 
 		"scale": 100, 
 		"scale_bin_contents": [
 			"background", 
