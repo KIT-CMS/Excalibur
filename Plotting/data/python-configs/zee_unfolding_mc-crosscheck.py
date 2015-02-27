@@ -5,7 +5,7 @@ import Artus.HarryPlotter.harry as harry
 import Excalibur.Plotting.plotscript as plotscript
 
 
-def zee_unfolding_crosscheck(unknown_args=None):
+def zee_unfolding_crosscheck(args=None):
 	"""Cross-check unfolding procedure derived from one mc and applied to the other (Powheg/Madgraph)."""
 
 	# some variables
@@ -89,7 +89,7 @@ def zee_unfolding_crosscheck(unknown_args=None):
 				d['x_ticks'] = [30, 50, 70, 100, 230]
 
 			plots.append(d)
-	plotscript.plotscript(plots, unknown_args)
+	plotscript.plotscript(plots, args)
 
 if __name__ == '__main__':
 	zee_unfolding_crosscheck()

@@ -7,7 +7,7 @@ import Artus.HarryPlotter.harry as harry
 import Excalibur.Plotting.plotscript as plotscript
 
 
-def zee_bkgrs(unknown_args=None):
+def zee_bkgrs(args=None):
 	"""Plot data, signal and backgounds, for all combinations of njet categories, 
 	rapidity bins, mc samples, log/linear scale, ZpT/y/mass/ Njets as x-quantity."""
 
@@ -124,7 +124,7 @@ def zee_bkgrs(unknown_args=None):
 							})
 							plots.append(d)
 					"""
-	plotscript.plotscript(plots, unknown_args)
+	plotscript.plotscript(plots, args)
 
 
 if __name__ == '__main__':

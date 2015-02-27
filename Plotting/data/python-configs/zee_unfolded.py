@@ -7,7 +7,7 @@ import Excalibur.Plotting.plotscript as plotscript
 import numpy as np
 
 
-def zee_unfolded(unknown_args=None):
+def zee_unfolded(args=None):
 	"""Unfolded Z(->ee) distributions. All combinations of n jet categories, rapidity bins, MC samples and quantities (y, mass, pT) are plotted."""
 
 	# some variables
@@ -134,7 +134,7 @@ def zee_unfolded(unknown_args=None):
 						d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 
 					plots.append(d)
-	plotscript.plotscript(plots, unknown_args)
+	plotscript.plotscript(plots, args)
 
 
 if __name__ == '__main__':

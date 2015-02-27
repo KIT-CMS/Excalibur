@@ -4,7 +4,7 @@ import Excalibur.Plotting.harryZJet as harryZJet
 import Excalibur.Plotting.plotscript as plotscript
 
 
-def zee_unc(unknown_args=None):
+def zee_unc(args=None):
 	""" Plot of the systematic uncertainties of the Z->ee measurement."""
 
 	weights = "1"
@@ -243,7 +243,7 @@ def zee_unc(unknown_args=None):
 			5
 		]
 	}
-	plotscript.plotscript([d], unknown_args)
+	plotscript.plotscript([d], args)
 
 
 if __name__ == '__main__':
