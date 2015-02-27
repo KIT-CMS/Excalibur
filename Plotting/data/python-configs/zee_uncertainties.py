@@ -7,6 +7,7 @@ import Excalibur.Plotting.plotscript as plotscript
 def zee_unc(unknown_args=None):
 	""" Plot of the systematic uncertainties of the Z->ee measurement."""
 
+	weights = "1"
 	bins = [30,40,60,80,100,120,140,170,200,1000]
 	path = "/portal/ekpcms5/home/dhaitz/git/excalibur/"
 
@@ -74,8 +75,8 @@ def zee_unc(unknown_args=None):
 			["zcuts_AK5PFJetsCHSL1L2L3", "zcuts_AK5PFJetsCHSL1L2L3"] +["zcuts_AK5PFJetsCHSL1L2L3"]*15 + 
 			["zcuts_AK5PFJetsCHSL1L2L3Res"]*3,
 		"weights": 
-			["1"]*3 + 
-			["genzpt>30"] +["1"]*18,
+			[weights]*3 + 
+			["genzpt>30 && {}".format(weights)] +[weights]*18,
 		"filename": "sys-errors", 
 		"formats": [
 			"png"
@@ -129,6 +130,7 @@ def zee_unc(unknown_args=None):
 			"unfolded"
 		],
 		"relative_error": True, 
+		"title": "own work", 
 		"scale": 100, 
 		"scale_bin_contents": [
 			"background", 

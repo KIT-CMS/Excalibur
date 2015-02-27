@@ -17,7 +17,7 @@ def print_jsons_and_functions(json_path, python_path):
 
 	# get jsons infos
 	jsonTools.print_comments_from_json_files(json_path, "_comment")
-	log.info(tools.get_colored_string("\npython scripts:", 'cyan'))
+	log.info(tools.get_colored_string("\npython scripts: ({})".format(python_path), 'cyan'))
 
 	# get docstrings from python functions
 	module_list = get_module_list(python_path)

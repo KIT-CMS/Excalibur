@@ -6,8 +6,11 @@
         "work/data_ee_raw.root"
     ], 
     "labels": [
-        "corr", 
+        "corrected", 
         "raw"
+    ], 
+    "folders": [
+        "zcuts_AK5PFJetsCHSL1L2L3Res"
     ], 
     "legend": "best", 
     "line_styles": [

@@ -1,5 +1,5 @@
 {
-    "_comment": "Electron selection efficiency as a function of pT for the four IDs",
+    "_comment": "Electron selection efficiency as a function of pT for the four IDs", 
     "filename": "efficiency_pt", 
     "files": [
         "store/mc_ee_powheg_corr_noc_noid.root"
@@ -8,19 +8,19 @@
         "electron_zcuts_AK5PFJetsCHSL1L2L3"
     ], 
     "labels": [
-        "looseid", 
-        "mediumid", 
-        "tightid", 
-        "mva"
+        "MVA ID", 
+        "Cutbased ID loose", 
+        "Cutbased ID medium", 
+        "Cutbased ID tight"
     ], 
     "legend": "best", 
     "markers": [
         "o", 
         "D", 
-        "*", 
-        "d"
+        "D", 
+        "D"
     ], 
-    "output_dir": "plots/dpg/", 
+    "title": "own work", 
     "tree_draw_options": "prof", 
     "x_bins": [
         "20,20,120"
@@ -30,12 +30,12 @@
     ], 
     "x_label": "ept", 
     "y_expressions": [
-        "looseid", 
-        "mediumid", 
+        "mva",
         "tightid", 
-        "mva"
+        "mediumid", 
+        "looseid"
     ], 
-    "y_label": "efficiency", 
+    "y_label": "ID efficiency", 
     "y_lims": [
         0.0, 
         1.0

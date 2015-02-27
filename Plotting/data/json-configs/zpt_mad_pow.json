@@ -1,22 +1,22 @@
 {
-    "_comment": "Plot the Z(->ee) pT spectrum of data(-backgrounds), Madgraph and Powheg",
+    "_comment": "Plot the Z(->ee) pT spectrum of data(-backgrounds), Madgraph and Powheg", 
     "filename": "zpt_mad_pow", 
     "files": [
         "work/data_ee_corr.root", 
         "store/mc_ee_corr.root", 
-        "store/mc_ee_powheg_corr.root",
-        "store/background_ee_zz.root",
-        "store/background_ee_wz.root",
-        "store/background_ee_tt.root",
-        "store/background_ee_tw.root",
-        "store/background_ee_ww.root",
-        "store/background_ee_wjets.root",
+        "store/mc_ee_powheg_corr.root", 
+        "store/background_ee_zz.root", 
+        "store/background_ee_wz.root", 
+        "store/background_ee_tt.root", 
+        "store/background_ee_tw.root", 
+        "store/background_ee_ww.root", 
+        "store/background_ee_wjets.root", 
         "store/background_ee_dytautau.root"
     ], 
     "labels": [
         "Data", 
-        "Madgraph (LO)", 
-        "Powheg (NLO)"
+        "Madgraph (LO) + Pythia", 
+        "Powheg (NLO) + Pythia"
     ], 
     "legend": "best", 
     "line_styles": [
@@ -30,7 +30,7 @@
     "nicks": [
         "data", 
         "mc1", 
-        "mc2",
+        "mc2", 
         "data", 
         "data", 
         "data", 
@@ -53,21 +53,28 @@
         "mc2"
     ], 
     "scale_factors": [
-        1,
-        1,
-        1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
+        1, 
+        1, 
+        1, 
+        -1, 
+        -1, 
+        -1, 
+        -1, 
+        -1, 
+        -1, 
         -1
-    ],
+    ], 
     "step": [
         false, 
         true, 
         true
+    ], 
+    "texts": [
+        "$ n_{jets(p_T>30 GeV)} \\leq 1$"
+    ], 
+    "title": "own work", 
+    "weights": [
+        "njets30<2"
     ], 
     "x_bins": [
         "30", 

@@ -95,7 +95,7 @@ def zee_bkgrs(unknown_args=None):
 							'x_bins': bins,
 							'y_log': log,
 
-							'ratio': True,
+							#'ratio': True,
 							'y_ratio_lims': [0.5, 1.5],
 
 							'save_legend': "legend" + "_" + mc_label,
