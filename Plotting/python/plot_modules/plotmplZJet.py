@@ -69,7 +69,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['colors'] = [None] * len(plotData.plotdict['colors'])
 
 	def make_plots(self, plotData):
-		default_marker_colors = ['black', 'red', 'blue']
+		default_marker_colors = ['black', 'red', 'blue', 'green']
 		default_bar_colors = [
                 '#7293cb',  # light blue
                 '#e1974c',  # mustard yellow
@@ -82,10 +82,10 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		i_bar = 0
 		for marker_index, marker in enumerate(plotData.plotdict['markers']):
 			if marker in ['bar', 'fill']:
-				plotData.plotdict['colors'][marker_index] = default_bar_colors[i_bar]
+				plotData.plotdict['colors'][marker_index] = default_bar_colors[i_bar % len(default_bar_colors)]
 				i_bar += 1
 			else:
-				plotData.plotdict['colors'][marker_index] = default_marker_colors[i_marker]
+				plotData.plotdict['colors'][marker_index] = default_marker_colors[i_marker % len(default_marker_colors)]
 				i_marker += 1
 
 		super(PlotMplZJet, self).make_plots(plotData)
