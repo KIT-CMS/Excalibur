@@ -4,17 +4,17 @@
 
 #include "Artus/Core/interface/FilterBase.h"
 
-/** Producer class for Z boson reconstruction from muons/electrons.
+/** Filter class for Z boson.
  *
- *	Needs to run after the valid object producers.
+ *	Needs to run after the Z producer.
  */
 
-class ZMassFilter : public ZJetFilterBase
+class ZFilter : public ZJetFilterBase
 {
   public:
 	virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE;
 
-	// ZMassFilter() : ZJetFilterBase() {};
+	ZFilter() : ZJetFilterBase(){};
 
 	virtual bool DoesEventPass(
 	    ZJetEvent const& event, ZJetProduct const& product,

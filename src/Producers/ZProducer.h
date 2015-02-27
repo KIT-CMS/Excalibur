@@ -17,4 +17,6 @@ class ZProducer : public ZJetProducerBase
 	virtual void Produce(ZJetEvent const& event, ZJetProduct& product,
 	                     ZJetSettings const& settings) const
 	    ARTUS_CPP11_OVERRIDE;
+
+  private:
 };

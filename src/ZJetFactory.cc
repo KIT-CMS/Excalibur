@@ -4,7 +4,7 @@
 #include "Producers/ZProducer.h"
 
 // filters
-#include "Filters/ZMassFilter.h"
+#include "Filters/ZFilter.h"
 
 // consumers
 //#include "Consumers/ZJetNtupleConsumer.h"
@@ -19,8 +19,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 
 FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 {
-	if (id == ZMassFilter().GetFilterId())
-		return new ZMassFilter();
+	if (id == ZFilter().GetFilterId())
+		return new ZFilter();
 	else
 		return KappaFactory::createFilter(id);
 }

@@ -9,4 +9,5 @@ def config():
         nafpath=""
     )
     cfg = base.expand(cfg, ['nocuts', 'zcuts', 'finalcuts'])
+    print cfg
     return cfg

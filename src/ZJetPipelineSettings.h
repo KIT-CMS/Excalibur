@@ -1,7 +1,3 @@
-/* Copyright (c) 2014 - All Rights Reserved
- *   Dominik Haitz <dhaitz@cern.ch>
- */
-
 #pragma once
 
 #include "Artus/KappaAnalysis/interface/KappaSettings.h"
@@ -15,8 +11,8 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(float, MuonEtaMax)
 	IMPL_SETTING(float, MuonPtMin)
 
-	IMPL_SETTING(float, ZMassMax)
-	IMPL_SETTING(float, ZMassMin)
+	IMPL_SETTING(float, ZMass)
+	IMPL_SETTING(float, ZMassRange)
 
 	IMPL_SETTING(bool, VetoPileupJets)
 

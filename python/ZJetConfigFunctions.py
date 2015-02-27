@@ -5,6 +5,8 @@ def getBaseConfig(**kwargs):
         'GlobalProducer': [],
         'InputFiles': [],     # overridden by artus
         'OutputPath': "out",  # overridden by artus
+        'ZMass': 91.1876,
+        'ZMassRange': 20.,
         'Pipelines': {
             'default': {
                 'Level': 1,
@@ -16,7 +18,7 @@ def getBaseConfig(**kwargs):
                 'EventWeight': 'eventWeight',
                 'Filter':[],
                 'Processors': [
-                    'filter:ZMassFilter'
+                    'filter:ZFilter'
                 ],
                 'Quantities': [
                     "run", "event", "lumi"
@@ -74,8 +76,10 @@ def mm(cfg, **kwargs):
     cfg['Muons'] = 'muons'
     # The order of these producers is important!
     cfg['Processors'] = [
-        'producer:ValidMuonsProducer',
-        'producer:ZProducer'
+        'producer:ValidMuonsProducer',			#Artus
+        'producer:MuonCorrectionsProducer',		#Artus
+        'producer:ZProducer',					#Excalibur
+        'filter:ZFilter',						#Excalibur
     ]
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
