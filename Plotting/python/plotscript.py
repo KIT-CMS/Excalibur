@@ -19,8 +19,6 @@ def plotscript(dicts, unknown_args=None):
 	else:
 		known_args, unknown_args = parser.parse_known_args(unknown_args)
 
-	logger.initLogger()
-
 	harry_instance = harryZJet.HarryPlotterZJet(
 		list_of_config_dicts=dicts,
 		list_of_args_strings=" ".join(unknown_args),

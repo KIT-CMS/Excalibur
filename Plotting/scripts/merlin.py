@@ -26,6 +26,7 @@ def main():
 
 		# call python config function
 		if known_args.python != [None]:
+			logger.initLogger()
 			for function in known_args.python:
 				toolsZJet.call_python_function(function, tools.get_environment_variable("PYTHONCONFIGS"), unknown_args)
 		else:

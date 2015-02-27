@@ -41,6 +41,7 @@ def call_python_function(function_name, python_path, unknown_args=None):
 				log.info("Executing function {} in module {}".format(func[0], module.__name__))
 				func[1](unknown_args)
 				return
+	log.warning("Could not execute function {}".format(function_name))
 
 
 def get_module_list(path):
