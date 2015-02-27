@@ -16,7 +16,7 @@ def dpg_dominik(args=None):
 	zee_unfolded.zee_unfolded(args)
 	dpg_mad_pow(args)
 	zee_uncertainties.zee_unc(args)
-
+	zee_unfolded_mc_test()
 
 def dpg_mad_pow(args=None):
 	"""Mad pow comparison vs Njets"""
@@ -34,6 +34,20 @@ def dpg_mad_pow(args=None):
 		list_of_args_strings=" ".join(args),
 		list_of_config_dicts=[d]
 	)
+
+
+def zee_unfolded_mc_test(args=None):
+	"""special configuration for the zee_unfolded config to produce a mc test plot """
+	if args == None:
+		args = []
+
+	args = ['--no-ybins', '1', '--no-njets', '--no-quantities', '0', '--no-mcs', '0',
+			'--title', "'own work'", '--y-ratio-lims', '0.95', '1.05',
+			'--ratio-colors', 'black', 'red', '--y-ratio-label', "'Ratio to MC Gen'",
+			'--unfolding-iterations', '4', '-m', '*', 'fill', 'd', 
+			'--ratio-num', 'mc_reco', 'mc_unfolded', '--ratio-denom', 'mc_gen', 'mc_gen',
+			'--labels', "'MC Reco'", "'MC Gen'", "'MC Unfolded'", '--ratio-markers', '*', 'd'] + args
+	zee_unfolded.zee_unfolded(args)
 
 
 if __name__ == '__main__':
