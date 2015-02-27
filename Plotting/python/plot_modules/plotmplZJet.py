@@ -5,9 +5,9 @@
 
 import matplotlib
 import datetime
-import os
 
 import Artus.HarryPlotter.plot_modules.plotmpl as plotmpl
+import Artus.Utility.tools as tools
 import Excalibur.Plotting.utility.matplotlib_rc as matplotlib_rc
 import Excalibur.Plotting.utility.labelsZJet as labelsZJet
 
@@ -16,7 +16,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 	def __init__(self):
 		super(PlotMplZJet, self).__init__()
 		self.nicelabels = labelsZJet.LabelsDictZJet()
-		self.sshpc = "ekplx26.physik.uni-karlsruhe.de"
 
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
@@ -45,7 +44,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
 		#matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')
 
-		if 'ekplx' in os.environ['USERPC']:
+		if 'ekplx' in tools.get_environment_variable('USERPC'):
 			plotData.plotdict['userpc'] = True
 
 		if plotData.plotdict['y_label'] in [None, ""] and not all([i==None for i in plotData.plotdict['y_expressions']]):
