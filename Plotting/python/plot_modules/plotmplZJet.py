@@ -16,6 +16,12 @@ class PlotMplZJet(plotmpl.PlotMpl):
 	def __init__(self):
 		super(PlotMplZJet, self).__init__()
 		self.nicelabels = labelsZJet.LabelsDictZJet()
+		self.default_bar_colors = [
+                '#7293cb',  # light blue
+                '#e1974c',  # mustard yellow
+                '#808585',  # grey
+                '#ab6857',  # brown
+        ]
 
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
@@ -61,32 +67,5 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		if plotData.plotdict.get('nolumilabel', True):
 			plotData.plotdict['lumi'] = None
 
-		no_colors_set = True
-		if plotData.plotdict['colors'] != None:
-			no_colors_set = False
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
-		if no_colors_set:
-			plotData.plotdict['colors'] = [None] * len(plotData.plotdict['colors'])
-
-	def make_plots(self, plotData):
-		default_marker_colors = ['black', 'red', 'blue', 'green']
-		default_bar_colors = [
-                '#7293cb',  # light blue
-                '#e1974c',  # mustard yellow
-                '#808585',  # grey
-                '#ab6857',  # brown
-        ]
-
-		# set different default colors for markers and bars
-		i_marker = 0
-		i_bar = 0
-		for marker_index, marker in enumerate(plotData.plotdict['markers']):
-			if marker in ['bar', 'fill']:
-				plotData.plotdict['colors'][marker_index] = default_bar_colors[i_bar % len(default_bar_colors)]
-				i_bar += 1
-			else:
-				plotData.plotdict['colors'][marker_index] = default_marker_colors[i_marker % len(default_marker_colors)]
-				i_marker += 1
-
-		super(PlotMplZJet, self).make_plots(plotData)
 
