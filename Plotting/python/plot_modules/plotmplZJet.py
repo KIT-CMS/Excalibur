@@ -69,3 +69,20 @@ class PlotMplZJet(plotmpl.PlotMpl):
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
 
+	def set_matplotlib_defaults(self):
+		super(PlotMplZJet, self).set_matplotlib_defaults()
+
+		# set finer ticks
+		matplotlib.rcParams['xtick.major.size'] = 6
+		if self.mpl_version >= 121:
+			matplotlib.rcParams['xtick.major.width'] = 0.8
+		matplotlib.rcParams['xtick.minor.size'] = 4
+		if self.mpl_version >= 121:
+			matplotlib.rcParams['xtick.minor.width'] = 0.5
+		if self.mpl_version >= 121:
+			matplotlib.rcParams['ytick.major.width'] = 0.8
+		matplotlib.rcParams['ytick.major.size'] = 6
+		matplotlib.rcParams['ytick.minor.size'] = 3.5
+		if self.mpl_version >= 121:
+			matplotlib.rcParams['ytick.minor.width'] = 0.5
+
