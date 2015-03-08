@@ -5,7 +5,7 @@ import Excalibur.Plotting.plotscript as plotscript
 
 
 def pdf_corr(args=None):
-	""" """
+	"""Correlation of sigma_Z and PDF vs |y| and x (2D), for u/d/s/g."""
 	dicts = []
 	partons = ["Gluon", "Up", "Down", "Strange"]
 	for parton, title in zip(partons, [p.lower() for p in partons]):
