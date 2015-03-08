@@ -22,13 +22,6 @@ if [ $USER = "dhaitz" ]; then
 fi
 
 
-# Use this to open a root file directly in the TBrowser
-rot()
-{
-    ipython -i $EXCALIBURPATH/scripts/rot.py $@
-}
-
-
 # This function creates a folder with links to python directories, like SCRAM
 # TODO enable merlin standalone usage without reinventing SCRAM ...
 standalone_merlin(){
