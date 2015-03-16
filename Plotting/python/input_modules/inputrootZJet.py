@@ -53,7 +53,7 @@ class InputRootZJet(inputroot.InputRoot):
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
 		# apply alpha / eta cuts on the fly
-		if plotData.plotdict['zjetfolders'] in [['incut'], ['finalcuts']]:
+		if any([all(key in folder[0] for folder in plotData.plotdict['folders']) for key in ['incut', 'finalcuts']]):
 			zjet_cuts = " * ".join([plotData.plotdict['allalpha'], plotData.plotdict['alleta']])
 			plotData.plotdict['weights'] = ["({}) * ({})".format(w, zjet_cuts) for w in plotData.plotdict['weights']]
 			log.info("Applying default ZJet cuts: {}".format(zjet_cuts))
