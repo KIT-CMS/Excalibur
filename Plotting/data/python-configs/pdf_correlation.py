@@ -19,11 +19,20 @@ def pdf_corr(args=None):
 				"result"
 			], 
 			"texts": [
-				"NNPDF 2.3"
+				"NNPDF 2.3 NNLO",
+				"Q = 91.1 GeV",
+				r"$ Z \\rightarrow \\mu \\mu$ "
 			], 
 			"texts_y": [
-				0.9
+				0.97,
+				0.92,
+				0.97
 			], 
+			"texts_x": [
+				0.03,
+				0.03,
+				0.8
+			],
 			"title": title, 
 			"x_expressions": [
 				"corr"
@@ -37,7 +46,7 @@ def pdf_corr(args=None):
 			"y_label": "|$ y_Z $|", 
 			"y_lims": [
 				0.0, 
-				2.5
+				2.8
 			], 
 			"z_label": r"Correlation coefficient $ \\rho$ ($ \\sigma_Z$, PDF)", 
 			"z_lims": [
