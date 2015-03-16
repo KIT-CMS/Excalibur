@@ -17,7 +17,7 @@ class InputRootZJet(inputroot.InputRoot):
 	def modify_argument_parser(self, parser, args):
 		super(InputRootZJet, self).modify_argument_parser(parser, args)
 
-		# special arguemnts for custom zjet folder naming conventions
+		# special arguments for custom zjet folder naming conventions
 		self.zjet_input_options = parser.add_argument_group("ZJet input options")
 		self.zjet_input_options.add_argument("--zjetfolders", type=str, nargs='*', default=['finalcuts'],
 		                                help="zjet folders (nocuts, finalcuts....")
@@ -25,6 +25,12 @@ class InputRootZJet(inputroot.InputRoot):
 		                                help="jet algorithms.")
 		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3"],
 		                                help="correction levels.")
+
+		# arguments to quickly switch to full alpha / eta range
+		self.zjet_input_options.add_argument("--allalpha", type=str, nargs="?", default="(jet2pt/zpt<0.2)", const="1",
+		                                help="If in finalcuts folder, dont apply alpha cut [Default: %(default)s]")
+		self.zjet_input_options.add_argument("--alleta", type=str, nargs="?", default="(abs(jet1eta)<1.3)", const="1",
+		                                help="If in finalcuts folder, dont apply eta cut [Default: %(default)s]")
 
 	def prepare_args(self, parser, plotData):
 		# this is needed so one can put together the folder name like in the old
@@ -45,6 +51,12 @@ class InputRootZJet(inputroot.InputRoot):
 			plotData.plotdict['x_expressions'] = plotData.plotdict['plot'].split("_")[-1]
 
 		super(InputRootZJet, self).prepare_args(parser, plotData)
+
+		# apply alpha / eta cuts on the fly
+		if plotData.plotdict['zjetfolders'] in [['incut'], ['finalcuts']]:
+			zjet_cuts = " * ".join([plotData.plotdict['allalpha'], plotData.plotdict['alleta']])
+			plotData.plotdict['weights'] = ["({}) * ({})".format(w, zjet_cuts) for w in plotData.plotdict['weights']]
+			log.info("Applying default ZJet cuts: {}".format(zjet_cuts))
 
 
 	def auto_detect_type_and_modify_weight(self, weight, root_files, plotData,
