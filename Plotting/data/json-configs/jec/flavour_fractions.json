@@ -1,0 +1,55 @@
+{
+    "files": [
+        "/portal/ekpcms5/home/dhaitz/git/excalibur/work/mc.root"
+    ], 
+    "labels": [
+        "undef", 
+        "g", 
+        "b", 
+        "c", 
+        "uds"
+    ], 
+    "markers": [
+        "fill"
+    ], 
+    "stacks": [
+        "a", 
+        "a", 
+        "a", 
+        "a", 
+        "a"
+    ], 
+    "tree_draw_options": [
+        "prof"
+    ], 
+    "x_bins": [
+        "30", 
+        "40", 
+        "50", 
+        "60", 
+        "75", 
+        "95", 
+        "125", 
+        "180", 
+        "300", 
+        "1000"
+    ], 
+    "x_expressions": [
+        "zpt"
+    ], 
+    "x_log": true, 
+    "y_expressions": [
+        "(physflavour==0)", 
+        "(physflavour==21)", 
+        "(physflavour==5)", 
+        "(physflavour==4)", 
+        "(physflavour>0 && physflavour<4)"
+    ], 
+    "y_lims": [
+        0.0, 
+        1.0
+    ], 
+    "zjetfolders": [
+        "incut"
+    ]
+}
