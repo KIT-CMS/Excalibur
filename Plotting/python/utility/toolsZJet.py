@@ -4,6 +4,7 @@ import logging
 import Artus.Utility.logger as logger
 log = logging.getLogger(__name__)
 
+import os
 import sys
 import inspect
 import argparse
@@ -17,8 +18,10 @@ def print_jsons_and_functions(json_path, python_path):
 
 	# get jsons infos
 	jsonTools.print_comments_from_json_files(json_path, "_comment")
-	log.info(tools.get_colored_string("\npython scripts: ({})".format(python_path), 'cyan'))
+	for subdir in [x[0] for x in os.walk(json_path)][1:]:
+		jsonTools.print_comments_from_json_files(subdir, "_comment")
 
+	log.info(tools.get_colored_string("\npython scripts: ({})".format(python_path), 'cyan'))
 	# get docstrings from python functions
 	module_list = get_module_list(python_path)
 	for module in module_list:
