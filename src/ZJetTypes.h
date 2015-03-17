@@ -11,9 +11,9 @@
 
 #include "Artus/KappaAnalysis/interface/KappaPipelineInitializer.h"
 
+#include "ZJetSettings.h"
 #include "ZJetEvent.h"
 #include "ZJetProduct.h"
-#include "ZJetPipelineSettings.h"
 
 // all data types which are used for this analysis
 struct ZJetTypes
