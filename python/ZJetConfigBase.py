@@ -52,6 +52,15 @@ def updateConfig(conf, tupl, **kwargs):
     if string in dir(ZJetConfigFunctions):
         getattr(ZJetConfigFunctions, string)(conf, **kwargs)
 
+def getPath(variable='EXCALIBURPATH', nofail=False):
+    try:
+        return os.environ[variable]
+    except:
+        print variable, "is not in shell variables:", os.environ.keys()
+        print "Please source scripts/ini_excalibur and CMSSW!"
+        if nofail:
+            return None
+        exit(1)
 
 def setInputFiles(ekppath, nafpath=None):
     """Return ekppath if you're at EKP, nafpath if at NAF. """
@@ -70,12 +79,11 @@ def expand(config, variations=[], algorithms=[], default="default"):
     """create pipelines for each algorithm times each variation"""
     pipelines = config['Pipelines']
     p = config['Pipelines'][default]
-    if p['JetAlgorithm'] not in algorithms:
-        algorithms.append(p['JetAlgorithm'])
-    if config['InputType'] == 'data' and "Res" not in p['JetAlgorithm']:
-        algorithms.append(p['JetAlgorithm'] + "Res")
+    #if p['JetAlgorithm'] not in algorithms:
+    #    algorithms.append(p['JetAlgorithm'])
 
     #find global algorithms
+    '''
     config["GlobalAlgorithms"] = []
     removelist = ["Jets", "L1", "L2", "L3", "Res", "Hcal", "Custom"]
     for algo in algorithms:
@@ -83,7 +91,7 @@ def expand(config, variations=[], algorithms=[], default="default"):
             algo = algo.replace(r, "").replace("CHS", "chs")
         if algo not in config["GlobalAlgorithms"]:
             config["GlobalAlgorithms"].append(algo)
-
+    '''
     # copy for variations
     for v in variations:
         if v == 'nocuts':
@@ -110,11 +118,13 @@ def expand(config, variations=[], algorithms=[], default="default"):
     pipelines.pop(default)
 
     # copy for algorithms, naming scheme: incut_algo
+    '''
     for name, p in pipelines.items():
         for algo in algorithms:
             pipelines[name + "_" + algo] = copy.deepcopy(p)
             pipelines[name + "_" + algo]["JetAlgorithm"] = algo
         del pipelines[name]
+    '''
 
     return config
 
