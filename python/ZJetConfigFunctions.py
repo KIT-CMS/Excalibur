@@ -103,6 +103,7 @@ def mm(cfg, **kwargs):
         'producer:ValidTaggedJetsProducer',
         'filter:ValidJetsFilter',
         'producer:ZJetCorrectionsProducer',
+        'producer:JetSorter',
         'producer:ZProducer',
         'filter:ZFilter',
     ]
