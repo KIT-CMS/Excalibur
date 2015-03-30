@@ -19,8 +19,8 @@ class ZJetProduct : public KappaProduct
 	ZJetProduct() : KappaProduct(){};
 
 	// added by ZProducer
-	IMPL_PROPERTY(bool, ValidZ)
-	IMPL_PROPERTY(KLV, Z)
+	bool m_validZ = false;
+	KLV m_z;
 	
 	// added by ZJetValidJetsProducer
 	//mutable std::map<std::string, std::vector<KJet*> > m_validZJets;
@@ -33,10 +33,10 @@ class ZJetProduct : public KappaProduct
 	double GetMPF(const KLV* met) const
 	{
 		double scalPtEt =
-		    GetRefZ().p4.Px() * met->p4.Px() + GetRefZ().p4.Py() * met->p4.Py();
+		    m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
 
-		double scalPtSq = GetRefZ().p4.Px() * GetRefZ().p4.Px() +
-		                  GetRefZ().p4.Py() * GetRefZ().p4.Py();
+		double scalPtSq = m_z.p4.Px() * m_z.p4.Px() +
+		                  m_z.p4.Py() * m_z.p4.Py();
 
 		return 1.0f + scalPtEt / scalPtSq;
 	}

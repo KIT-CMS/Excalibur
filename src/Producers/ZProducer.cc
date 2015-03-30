@@ -8,14 +8,14 @@ void ZProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
 	if (product.m_validMuons.size() < 2)
 	{
 		// No Z to produce here
-		product.SetValidZ(false);
+		product.m_validZ = false;
 		return;
 	}
 	if (product.m_validMuons.size() > 3)
 	{
 		LOG(INFO) << "More than 3 valid muons? Not producing any Z. "
 		          << product.m_validMuons.size();
-		product.SetValidZ(false);
+		product.m_validZ = false;
 		return;
 	}
 	// Create all possible Z combinations
@@ -56,12 +56,12 @@ void ZProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
 				best_z_cand = i;
 			}
 		}
-		product.SetZ(z_cand[best_z_cand]);
-		product.SetValidZ(true);
+		product.m_z = z_cand[best_z_cand];
+		product.m_validZ = true;
 	}
 	else
 	{
-		product.SetValidZ(false);
+		product.m_validZ = false;
 		return;
 	}
 }
