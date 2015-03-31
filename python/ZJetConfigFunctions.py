@@ -15,6 +15,7 @@ def getBaseConfig(**kwargs):
         # ZProducer Settings
         'ZMassRange': 20.,
         # TypeIMETProducer Settings
+        'Met' : "met",
         'EnableMetPhiCorrection': False,
         'MetPhiCorrectionParameters': [],
         'JetPtMin': 10.,
@@ -32,7 +33,7 @@ def getBaseConfig(**kwargs):
                 'Level': 1,
                 'CorrectionLevel': "L1L2L3Res",
                 'Consumers': [
-                    "KappaLambdaNtupleConsumer",
+                    "ZJetLambdaNtupleConsumer",
                     "cutflow_histogram",
                 ],
                 'EventWeight': 'eventWeight',
@@ -42,7 +43,22 @@ def getBaseConfig(**kwargs):
 					'filter:HltFilter',
 				],
                 'Quantities': [
-                    "run", "event", "lumi"
+                    # General quantities
+                    "npv", "rho", "weight", #"nputruth",
+                    "njets", "njetsinv",  # number of valid and invalid jets
+                    # Z quantities
+                    "zpt", "zeta", "zy", "zphi", "zmass",
+                    # Leading jet
+                    "jet1pt", "jet1eta", "jet1y", "jet1phi",
+                    #"jet1chargedemfraction", 
+                    "jet1chargedhadfraction", "jet1neutralhadfraction",
+                    "jet1muonfraction", "jet1HFhadfraction", "jet1HFemfraction", "jet1photonfraction",
+                    #"jet1unc",  # Leading jet uncertainty
+                    # Second jet
+                    "jet2pt", "jet2eta", "jet2phi",
+                    # MET and related
+                    #"mpf", "rawmpf", "METpt", "METphi", "rawMETphi", "sumEt",
+                    "rawMETpt",
                 ],
                 'Cuts': [],
             },
@@ -51,8 +67,8 @@ def getBaseConfig(**kwargs):
         # Wire Kappa objects
     	"EventMetadata" : "eventInfo",
 		"LumiMetadata" : "lumiInfo",
-        #"VertexSummary": "goodOfflinePrimaryVerticesSummary",
-        "VertexSummary": "offlinePrimaryVerticesSummary",
+        "VertexSummary": "goodOfflinePrimaryVerticesSummary",
+        #"VertexSummary": "offlinePrimaryVerticesSummary",
     }
     return cfg
 
@@ -63,7 +79,7 @@ def getBaseConfig(**kwargs):
 def data(cfg, **kwargs):
     cfg['InputType'] = 'data'
     cfg['InputIsData'] = True
-    #cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumisec']
+    cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi']
 
 
 def mc(cfg, **kwargs):
