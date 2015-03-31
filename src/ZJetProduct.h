@@ -18,29 +18,25 @@ class ZJetProduct : public KappaProduct
   public:
 	ZJetProduct() : KappaProduct(){};
 
-	// added by ZProducer
+	// Added by ZProducer
 	bool m_validZ = false;
 	KLV m_z;
 	
-	// added by ZJetValidJetsProducer
+	// Added by ZJetValidJetsProducer
 	//mutable std::map<std::string, std::vector<KJet*> > m_validZJets;
 	//mutable std::map<std::string, std::vector<KJet*> > m_invalidZJets;
 	
-	// added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the product after creation
+	// Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the product after creation
 	mutable std::map<std::string, std::vector<std::shared_ptr<KJet> > > m_correctedZJets;
+	
+	// Added by TypeIMETProducer
+	mutable std::map<std::string, KMET> m_corrMET;
 
 
-	double GetMPF(const KLV* met) const
-	{
-		double scalPtEt =
-		    m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
-
-		double scalPtSq = m_z.p4.Px() * m_z.p4.Px() +
-		                  m_z.p4.Py() * m_z.p4.Py();
-
-		return 1.0f + scalPtEt / scalPtSq;
-	}
-
+	/////////////////////////////
+	// Functions for Consumers //
+	/////////////////////////////
+	
 	// Access to valid/corrected jets
 	unsigned int GetValidJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
@@ -87,19 +83,19 @@ class ZJetProduct : public KappaProduct
 		}
 	}
 
-	KLV* GetValidPrimaryJet(ZJetSettings const& settings,
-								ZJetEvent const& event) const
-	{
-		return GetValidJet(settings, event, 0);
-	}
-
 	KLV* GetValidJet(ZJetSettings const& settings,
 						 ZJetEvent const& event,
 						 unsigned int index) const
 	{
 		return GetValidJet(settings, event, index, settings.GetCorrectionLevel());
 	}
-	
+
+	KLV* GetValidPrimaryJet(ZJetSettings const& settings,
+								ZJetEvent const& event) const
+	{
+		return GetValidJet(settings, event, 0);
+	}
+
 	// Access to invalid jets
 	unsigned int GetInvalidJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
@@ -119,5 +115,32 @@ class ZJetProduct : public KappaProduct
 								  ZJetEvent const& event) const
 	{
 		return GetInvalidJetCount(settings, event, settings.GetCorrectionLevel());
+	}
+	
+	// Access to (un)corrected MET
+	KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+	{
+		// Why only L3?
+		if (std::string::npos != corrLevel.find("L3"))
+		{
+			return (&m_corrMET.at(corrLevel));
+		}
+		else
+		{
+			return event.m_met;
+		}
+	}
+
+	KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event) const
+	{
+		return GetMet(settings, event, settings.GetCorrectionLevel());
+	}
+
+	// Calculate MPF
+	double GetMPF(const KLV* met) const
+	{
+		double scalPtEt = m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
+		double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
+		return 1.0f + scalPtEt / scalPtSq;
 	}
 };
