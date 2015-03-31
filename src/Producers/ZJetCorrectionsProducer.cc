@@ -8,7 +8,7 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 {
 	ZJetProducerBase::Init(settings);
 	
-	// CHS oder no CHS jets?
+	// CHS or no CHS jets?
 	std::string algoName = settings.GetTaggedJets();
 	if (algoName.find("chs") == std::string::npos) {
 		algoName = algoName.substr(0, 5);
@@ -98,15 +98,6 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event, ZJetProduct& produ
 	{
 		CorrectJetCollection("L1L2L3", "L1L2L3Res", m_l2l3res, event, product, settings);
 	}
-
-		// Sort vectors of corrected jets by pt
-		/*
-		std::sort(product.m_correctedZJets[italgo->first + itlevel->first].begin(),
-				  product.m_correctedZJets[italgo->first + itlevel->first].end(),
-				  [](std::shared_ptr<KJet> jet1, std::shared_ptr<KJet> jet2) -> bool
-				  { return jet1->p4.Pt() > jet2->p4.Pt(); });
-		*/
-
 }
 
 void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel, std::string outCorrLevel,
