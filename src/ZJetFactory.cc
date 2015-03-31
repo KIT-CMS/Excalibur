@@ -11,7 +11,7 @@
 #include "Filters/ZFilter.h"
 
 // consumers
-//#include "Consumers/ZJetNtupleConsumer.h"
+#include "Consumers/ZJetLambdaNtupleConsumer.h"
 
 ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 {
@@ -39,8 +39,8 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 
 ConsumerBaseUntemplated* ZJetFactory::createConsumer(std::string const& id)
 {
-	// if(id == ZJetLambdaNtupleConsumer().GetConsumerId())
-	//	return new ZJetLambdaNtupleConsumer();
-	// else
+	if(id == ZJetLambdaNtupleConsumer().GetConsumerId())
+		return new ZJetLambdaNtupleConsumer();
+	else
 	return KappaFactory::createConsumer(id);
 }
