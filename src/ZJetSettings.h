@@ -30,7 +30,7 @@ class ZJetSettings : public KappaSettings
 	//IMPL_SETTING_STRINGLIST_DEFAULT(GlobalAlgorithms, {});
 	
 	// ZJetCorrectionsProducer
-	IMPL_SETTING_DEFAULT(std::string, CorrectionLevel, "")
+	IMPL_SETTING_DEFAULT(std::string, CorrectionLevel, "None")
 	//IMPL_SETTING(double, HcalCorrection)
 	IMPL_SETTING(std::string, Jec)
 	IMPL_SETTING(std::string, L1Correction)

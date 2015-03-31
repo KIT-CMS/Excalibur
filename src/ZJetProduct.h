@@ -41,7 +41,7 @@ class ZJetProduct : public KappaProduct
 		return 1.0f + scalPtEt / scalPtSq;
 	}
 
-	// Access to valid jets
+	// Access to valid/corrected jets
 	unsigned int GetValidJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
 								  std::string corrLevel) const
@@ -98,5 +98,26 @@ class ZJetProduct : public KappaProduct
 						 unsigned int index) const
 	{
 		return GetValidJet(settings, event, index, settings.GetCorrectionLevel());
+	}
+	
+	// Access to invalid jets
+	unsigned int GetInvalidJetCount(ZJetSettings const& settings,
+								  ZJetEvent const& event,
+								  std::string corrLevel) const
+	{
+		// Gen jets are always valid
+		if (corrLevel == "Gen") {
+			return 0;
+		}
+		// Invalid jets, no need for different correction levels
+		else {
+			return m_invalidJets.size();
+		}
+	}
+
+	unsigned int GetInvalidJetCount(ZJetSettings const& settings,
+								  ZJetEvent const& event) const
+	{
+		return GetInvalidJetCount(settings, event, settings.GetCorrectionLevel());
 	}
 };
