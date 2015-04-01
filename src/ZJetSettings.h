@@ -5,22 +5,10 @@
 class ZJetSettings : public KappaSettings
 {
   public:
-	IMPL_SETTING(bool, MuonID2011)
-	IMPL_SETTING(float, MuonEtaMax)
-	IMPL_SETTING(float, MuonPtMin)
-
 	// ZProducer
 	IMPL_SETTING_DEFAULT(float, ZMass, 91.1876)
 	IMPL_SETTING(float, ZMassRange)
 
-	//IMPL_SETTING(bool, VetoPileupJets)
-
-	//IMPL_SETTING(float, ZPtMin)
-
-	//IMPL_SETTING(float, JetEtaMax)
-	//IMPL_SETTING(float, AlphaMax)
-	//IMPL_SETTING(float, DeltaPhiMax)
-	
 	// TypeIMETProducer
 	IMPL_SETTING(float, JetPtMin)
 	IMPL_SETTING(bool, EnableMetPhiCorrection)
@@ -36,4 +24,10 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(std::string, L1Correction)
 	IMPL_SETTING(bool, RC)
 	IMPL_SETTING(bool, FlavourCorrections)
+	
+	// ZJetCutsFilter
+	IMPL_SETTING(float, CutMuonPtMin)
+	IMPL_SETTING(float, CutMuonEtaMax)
+	IMPL_SETTING(float, CutLeadingJetPtMin)
+	IMPL_SETTING(float, CutLeadingJetEtaMax)
 };

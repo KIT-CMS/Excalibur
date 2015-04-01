@@ -39,6 +39,10 @@ def getBaseConfig(**kwargs):
 				'EventWeight': 'eventWeight',
 				'Filter':[],
 				'Processors': [
+                    'filter:MuonPtCut',
+                    'filter:MuonEtaCut',
+                    'filter:LeadingJetPtCut',
+                    'filter:LeadingJetEtaCut',
 					'producer:HltProducer',
 					'filter:HltFilter',
 				],
@@ -129,8 +133,6 @@ def mm(cfg, **kwargs):
 	cfg['MuonIso'] = 'tight'
 	cfg['MuonIsoType'] = 'pf'
 	cfg['DirectIso'] = 'true'
-	cfg['MuonUpperAbsEtaCuts'] = [2.3]
-	cfg['MuonLowerPtCuts'] = [20.0]
 
 	cfg['Pipelines']['default']['Quantities'] += [
 		'muPlusPt', 'muPlusEta', 'muPlusPhi', 'muPlusIso',
@@ -139,6 +141,11 @@ def mm(cfg, **kwargs):
 		'mu2Pt', 'mu2Eta', 'mu2Phi',
 		'nMuons',
 	]
+
+	cfg['CutMuonPtMin'] = 20.0
+	cfg['CutMuonEtaMax'] = 2.3
+	cfg['CutLeadingJetPtMin'] = 20.0
+	cfg['CutLeadingJetEtaMax'] = 1.3
 
 
 ###

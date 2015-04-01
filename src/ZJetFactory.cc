@@ -9,6 +9,7 @@
 
 // filters
 #include "Filters/ZFilter.h"
+#include "Filters/ZJetCutsFilter.h"
 
 // consumers
 #include "Consumers/ZJetLambdaNtupleConsumer.h"
@@ -31,7 +32,15 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 
 FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 {
-	if (id == ZFilter().GetFilterId())
+	if (id == MuonPtCut().GetFilterId())
+		return new MuonPtCut();
+	else if (id == MuonEtaCut().GetFilterId())
+		return new MuonEtaCut();
+	else if (id == LeadingJetPtCut().GetFilterId())
+		return new LeadingJetPtCut();
+	else if (id == LeadingJetEtaCut().GetFilterId())
+		return new LeadingJetEtaCut();
+	else if (id == ZFilter().GetFilterId())
 		return new ZFilter();
 	else
 		return KappaFactory::createFilter(id);
