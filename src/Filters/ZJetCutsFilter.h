@@ -11,6 +11,7 @@
  * muon eta
  * leading jet pt
  * leading jet eta
+ * z pt
  * back to back
  * 
  */
@@ -136,4 +137,64 @@ class LeadingJetEtaCut : public ZJetFilterBase
 
   private:
 	float leadingJetEtaMax;
+};
+
+
+//////////
+// Z Pt //
+//////////
+class ZPtCut : public ZJetFilterBase
+{
+  public:
+	virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE { return "ZPtCut"; }
+
+	ZPtCut() : ZJetFilterBase(){};
+	
+	virtual void Init(ZJetSettings const& settings) ARTUS_CPP11_OVERRIDE
+	{
+		ZJetFilterBase::Init(settings);
+		zPtMin = settings.GetCutZPtMin();
+	}
+
+	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	{
+		return (product.m_z.p4.Pt() > zPtMin) ? true : false;
+	}
+
+  private:
+	float zPtMin;
+};
+
+
+//////////////////
+// Back to Back //
+//////////////////
+class BackToBackCut : public ZJetFilterBase
+{
+  public:
+	virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE { return "BackToBackCut"; }
+
+	BackToBackCut() : ZJetFilterBase(){};
+	
+	virtual void Init(ZJetSettings const& settings) ARTUS_CPP11_OVERRIDE
+	{
+		ZJetFilterBase::Init(settings);
+		backToBack = settings.GetCutBackToBack();
+	}
+
+	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	{
+		double jet1Phi = product.GetValidPrimaryJet(settings, event)->p4.Phi();
+		double zPhi = product.m_z.p4.Phi();
+		if (std::abs(std::abs(jet1Phi - zPhi) - ROOT::Math::Pi()) < backToBack)
+		{
+			return true;
+		}
+		return false;
+	}
+
+  private:
+	float backToBack;
 };

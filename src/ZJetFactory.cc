@@ -40,6 +40,10 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 		return new LeadingJetPtCut();
 	else if (id == LeadingJetEtaCut().GetFilterId())
 		return new LeadingJetEtaCut();
+	else if (id == ZPtCut().GetFilterId())
+		return new ZPtCut();
+	else if (id == BackToBackCut().GetFilterId())
+		return new BackToBackCut();
 	else if (id == ZFilter().GetFilterId())
 		return new ZFilter();
 	else

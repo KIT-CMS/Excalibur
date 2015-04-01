@@ -30,4 +30,6 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(float, CutMuonEtaMax)
 	IMPL_SETTING(float, CutLeadingJetPtMin)
 	IMPL_SETTING(float, CutLeadingJetEtaMax)
+	IMPL_SETTING(float, CutZPtMin)
+	IMPL_SETTING(float, CutBackToBack)
 };
