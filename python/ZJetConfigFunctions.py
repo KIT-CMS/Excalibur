@@ -31,7 +31,7 @@ def getBaseConfig(**kwargs):
 		'Pipelines': {
 			'default': {
 				'Level': 1,
-				'CorrectionLevel': 'L1L2L3Res',
+				'CorrectionLevel': 'L1L2L3',
 				'Consumers': [
 					'ZJetLambdaNtupleConsumer',
 					'cutflow_histogram',
@@ -45,8 +45,6 @@ def getBaseConfig(**kwargs):
                     'filter:LeadingJetEtaCut',
                     'filter:ZPtCut',
                     'filter:BackToBackCut',
-					'producer:HltProducer',
-					'filter:HltFilter',
 				],
 				'Quantities': [
 					# General quantities
@@ -86,6 +84,11 @@ def data(cfg, **kwargs):
 	cfg['InputType'] = 'data'
 	cfg['InputIsData'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi']
+	cfg['Processors'] += [
+		'filter:JsonFilter',
+		'producer:HltProducer',
+		'filter:HltFilter',
+	]
 
 
 def mc(cfg, **kwargs):
@@ -161,12 +164,13 @@ def data_2011(cfg, **kwargs):
 
 def data_2012(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V6/Winter14_V5_DATA'
+	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
 
 def mc_2011(cfg, **kwargs):
 	pass
 
 def mc_2012(cfg, **kwargs):
-	pass
+	cfg['Jec'] = ZJetConfigBase.getPath() + "/data/jec/Winter14_V6/Winter14_V5_MC"
 
 
 def mcee(cfg, **kwargs):
