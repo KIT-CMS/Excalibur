@@ -10,13 +10,14 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	
 	// CHS or no CHS jets?
 	std::string algoName = settings.GetTaggedJets();
-	if (algoName.find("chs") == std::string::npos) {
+	if (algoName.find("CHS") == std::string::npos) {
 		algoName = algoName.substr(0, 5);
 	}
 	else
 	{
 		algoName = algoName.substr(0, 5) + "chs";
 	}
+	LOG(INFO) << "\t -- Jet corrections enabled for " << algoName << " jets";
 		
 	// JEC initialization
 	std::vector<JetCorrectorParameters> jecParameters;

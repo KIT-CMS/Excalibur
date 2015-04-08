@@ -15,7 +15,7 @@ def getBaseConfig(**kwargs):
 		# ZProducer Settings
 		'ZMassRange': 20.,
 		# TypeIMETProducer Settings
-		'Met' : 'met',
+		'Met' : 'met', # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
 		'JetPtMin': 10.,
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [],
@@ -24,7 +24,7 @@ def getBaseConfig(**kwargs):
 		'JetID' : 'tight',
 		'JetIDVersion' : 2014,
 		'JetMetadata' : 'jetMetadata',
-		'TaggedJets' : 'AK5PFTaggedJets',
+		'TaggedJets' : 'AK5PFTaggedJetsCHS',
 		#PU
 		'PileupDensity' : 'KT6Area',
 		# Pipelines

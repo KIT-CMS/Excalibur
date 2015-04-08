@@ -44,6 +44,10 @@ def getConfig(inputtype, year, channel, **kwargs):
             for k in l:
                 updateConfig(cfg, (i, j, k), **kwargs)
 
+    # Adjust met input if CHS jets are requested
+    if "CHS" in cfg['TaggedJets']:
+        cfg['Met'] = cfg['Met'] + 'CHS'
+
     return cfg
 
 
