@@ -112,7 +112,7 @@ class ZJetProduct : public KappaProduct
 	}
 
 	unsigned int GetInvalidJetCount(ZJetSettings const& settings,
-								  ZJetEvent const& event) const
+									ZJetEvent const& event) const
 	{
 		return GetInvalidJetCount(settings, event, settings.GetCorrectionLevel());
 	}
@@ -120,7 +120,7 @@ class ZJetProduct : public KappaProduct
 	// Access to (un)corrected MET
 	KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
 	{
-		// Why only L3?
+		// Only L3 is corrected in TypeIMETProducer
 		if (std::string::npos != corrLevel.find("L3"))
 		{
 			return (&m_corrMET.at(corrLevel));

@@ -10,8 +10,9 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(float, ZMassRange)
 
 	// TypeIMETProducer
-	IMPL_SETTING(float, JetPtMin)
+	IMPL_SETTING_DEFAULT(float, JetPtMin, 10.)
 	IMPL_SETTING(bool, EnableMetPhiCorrection)
+	IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
 	
 	// ZJetValidJetsProducer
 	//IMPL_SETTING_DEFAULT(std::string, JetAlgorithm, "")
@@ -19,7 +20,6 @@ class ZJetSettings : public KappaSettings
 	
 	// ZJetCorrectionsProducer
 	IMPL_SETTING_DEFAULT(std::string, CorrectionLevel, "None")
-	//IMPL_SETTING(double, HcalCorrection)
 	IMPL_SETTING(std::string, Jec)
 	IMPL_SETTING(std::string, L1Correction)
 	IMPL_SETTING(bool, RC)

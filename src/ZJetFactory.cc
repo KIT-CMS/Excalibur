@@ -2,7 +2,7 @@
 
 // producers
 #include "Producers/ZProducer.h"
-//#include "Producers/TypeIMETProducer.h"
+#include "Producers/TypeIMETProducer.h"
 //#include "Producers/ZJetValidJetsProducer.h"
 #include "Producers/ZJetCorrectionsProducer.h"
 #include "Producers/JetSorter.h"
@@ -18,8 +18,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 {
 	if (id == ZProducer().GetProducerId())
 		return new ZProducer();
-	//else if (id == TypeIMETProducer().GetProducerId())
-	//	return new TypeIMETProducer();
+	else if (id == TypeIMETProducer().GetProducerId())
+		return new TypeIMETProducer();
 	//else if (id == ZJetValidTaggedJetsProducer().GetProducerId())
 	//	return new ZJetValidTaggedJetsProducer();
 	else if (id == ZJetCorrectionsProducer().GetProducerId())

@@ -119,11 +119,11 @@ void ZJetLambdaNtupleConsumer::Init(ZJetSettings const& settings)
 	// MET //
 	/////////
 	
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("METPt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("metPt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.GetMet(settings, event)->p4.Pt();
 	} );
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("METPhi", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("metPhi", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.GetMet(settings, event)->p4.Phi();
 	} );
@@ -139,7 +139,7 @@ void ZJetLambdaNtupleConsumer::Init(ZJetSettings const& settings)
 	{
 		return product.GetMet(settings, event, "None")->p4.Phi();
 	} );
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("MPF", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("mpf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.GetMPF(product.GetMet(settings, event));
 	} );
