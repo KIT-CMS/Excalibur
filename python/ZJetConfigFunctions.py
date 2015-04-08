@@ -16,9 +16,9 @@ def getBaseConfig(**kwargs):
 		'ZMassRange': 20.,
 		# TypeIMETProducer Settings
 		'Met' : 'met',
+        'JetPtMin': 10.,
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [],
-		'JetPtMin': 10.,
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
 		'JetID' : 'tight',
@@ -30,14 +30,12 @@ def getBaseConfig(**kwargs):
 		# Pipelines
 		'Pipelines': {
 			'default': {
-				'Level': 1,
 				'CorrectionLevel': 'L1L2L3',
 				'Consumers': [
 					'ZJetLambdaNtupleConsumer',
 					'cutflow_histogram',
 				],
 				'EventWeight': 'eventWeight',
-				'Filter':[],
 				'Processors': [
                     'filter:MuonPtCut',
                     'filter:MuonEtaCut',
@@ -54,17 +52,14 @@ def getBaseConfig(**kwargs):
 					'zPt', 'zEta', 'zY', 'zPhi', 'zMass',
 					# Leading jet
 					'jet1Pt', 'jet1Eta', 'jet1Y', 'jet1Phi',
-					#'jet1chargedemfraction', 
 					'jet1ChargedHadFraction', 'jet1NeutralHadFraction',
 					'jet1MuonFraction', 'jet1HFHadFraction', 'jet1HFEMFraction', 'jet1PhotonFraction',
 					#'jet1unc',  # Leading jet uncertainty
 					# Second jet
 					'jet2Pt', 'jet2Eta', 'jet2Phi',
 					# MET and related
-					#'MPF', 'rawMPF', 'METPt', 'METPhi', 'rawMETPhi', 'sumEt',
-					'rawMETPt',
+					'mpf', 'rawMPF', 'metPt', 'metPhi', 'rawMETPt', 'rawMETPhi', 'sumEt',
 				],
-				'Cuts': [],
 			},
 		},
 
@@ -72,7 +67,6 @@ def getBaseConfig(**kwargs):
 		'EventMetadata' : 'eventInfo',
 		'LumiMetadata' : 'lumiInfo',
 		'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
-		#'VertexSummary': 'offlinePrimaryVerticesSummary',
 	}
 	return cfg
 
@@ -81,7 +75,6 @@ def getBaseConfig(**kwargs):
 
 
 def data(cfg, **kwargs):
-	cfg['InputType'] = 'data'
 	cfg['InputIsData'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi']
 	cfg['Processors'] += [
@@ -92,7 +85,6 @@ def data(cfg, **kwargs):
 
 
 def mc(cfg, **kwargs):
-	cfg['InputType'] = 'mc'
 	cfg['InputIsData'] = False
 	# put the gen_producer first since e.g. l5_producer depend on it
 
@@ -128,6 +120,7 @@ def mm(cfg, **kwargs):
 		'producer:ValidTaggedJetsProducer',
 		'filter:ValidJetsFilter',
 		'producer:ZJetCorrectionsProducer',
+        'producer:TypeIMETProducer',
 		'producer:JetSorter',
 		'producer:ZProducer',
 		'filter:ZFilter',
@@ -165,12 +158,14 @@ def data_2011(cfg, **kwargs):
 def data_2012(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V6/Winter14_V5_DATA'
 	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
+	cfg['MetPhiCorrectionParameters'] = [0.2661, 0.3217, -0.2251, -0.1747]
 
 def mc_2011(cfg, **kwargs):
 	pass
 
 def mc_2012(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + "/data/jec/Winter14_V6/Winter14_V5_MC"
+	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
 
 
 def mcee(cfg, **kwargs):
