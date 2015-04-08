@@ -16,7 +16,7 @@ def getBaseConfig(**kwargs):
 		'ZMassRange': 20.,
 		# TypeIMETProducer Settings
 		'Met' : 'met',
-        'JetPtMin': 10.,
+		'JetPtMin': 10.,
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [],
 		# Valid Jet Selection
@@ -37,12 +37,12 @@ def getBaseConfig(**kwargs):
 				],
 				'EventWeight': 'eventWeight',
 				'Processors': [
-                    'filter:MuonPtCut',
-                    'filter:MuonEtaCut',
-                    'filter:LeadingJetPtCut',
-                    'filter:LeadingJetEtaCut',
-                    'filter:ZPtCut',
-                    'filter:BackToBackCut',
+					'filter:MuonPtCut',
+					'filter:MuonEtaCut',
+					'filter:LeadingJetPtCut',
+					'filter:LeadingJetEtaCut',
+					'filter:ZPtCut',
+					'filter:BackToBackCut',
 				],
 				'Quantities': [
 					# General quantities
@@ -120,7 +120,7 @@ def mm(cfg, **kwargs):
 		'producer:ValidTaggedJetsProducer',
 		'filter:ValidJetsFilter',
 		'producer:ZJetCorrectionsProducer',
-        'producer:TypeIMETProducer',
+		'producer:TypeIMETProducer',
 		'producer:JetSorter',
 		'producer:ZProducer',
 		'filter:ZFilter',

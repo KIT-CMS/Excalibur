@@ -97,20 +97,20 @@ def expand(config, variations=[], algorithms=[], default="default"):
         if v == 'nocuts':
             pipelines[v] = copy.deepcopy(p)
             pipelines[v]['Cuts'] = []
-            if 'finalcuts' in pipelines[v]['Filter']:
-                    pipelines[v]['Filter'].remove('finalcuts')
+            #if 'finalcuts' in pipelines[v]['Filter']:
+            #        pipelines[v]['Filter'].remove('finalcuts')
         elif v == 'zcuts':
             pipelines[v] = copy.deepcopy(p)
             removelist = ['leadingjet_pt', 'back_to_back']
-            for cut in removelist:
-                if cut in pipelines[v]['Cuts']:
-                    pipelines[v]['Cuts'].remove(cut)
+            #for cut in removelist:
+            #    if cut in pipelines[v]['Cuts']:
+            #        pipelines[v]['Cuts'].remove(cut)
         elif v == 'fullcuts':
             pipelines[v] = copy.deepcopy(p)
-            pipelines[v]['Cuts'].append('leadingjet_eta')
-            pipelines[v]['Cuts'].append('secondleading_to_zpt')
-            pipelines[v]['CutLeadingJetEta'] = 1.3
-            pipelines[v]['CutSecondLeadingToZPt'] = 0.2
+            #pipelines[v]['Cuts'].append('leadingjet_eta')
+            #pipelines[v]['Cuts'].append('secondleading_to_zpt')
+            #pipelines[v]['CutLeadingJetEta'] = 1.3
+            #pipelines[v]['CutSecondLeadingToZPt'] = 0.2
         elif v == 'finalcuts':
             pipelines[v] = copy.deepcopy(p)
 
