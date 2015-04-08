@@ -52,6 +52,7 @@ def updateConfig(conf, tupl, **kwargs):
     if string in dir(ZJetConfigFunctions):
         getattr(ZJetConfigFunctions, string)(conf, **kwargs)
 
+
 def getPath(variable='EXCALIBURPATH', nofail=False):
     try:
         return os.environ[variable]
@@ -61,6 +62,7 @@ def getPath(variable='EXCALIBURPATH', nofail=False):
         if nofail:
             return None
         exit(1)
+
 
 def setInputFiles(ekppath, nafpath=None):
     """Return ekppath if you're at EKP, nafpath if at NAF. """
@@ -76,27 +78,15 @@ def setInputFiles(ekppath, nafpath=None):
 
 
 def expand(config, variations=[], algorithms=[], default="default"):
-    """create pipelines for each algorithm times each variation"""
+    """create pipelines for each variation"""
     pipelines = config['Pipelines']
     p = config['Pipelines'][default]
-    #if p['JetAlgorithm'] not in algorithms:
-    #    algorithms.append(p['JetAlgorithm'])
 
-    #find global algorithms
-    '''
-    config["GlobalAlgorithms"] = []
-    removelist = ["Jets", "L1", "L2", "L3", "Res", "Hcal", "Custom"]
-    for algo in algorithms:
-        for r in removelist:
-            algo = algo.replace(r, "").replace("CHS", "chs")
-        if algo not in config["GlobalAlgorithms"]:
-            config["GlobalAlgorithms"].append(algo)
-    '''
-    # copy for variations
+    # copy default pipeline for different cut variations
     for v in variations:
         if v == 'nocuts':
             pipelines[v] = copy.deepcopy(p)
-            pipelines[v]['Cuts'] = []
+            #pipelines[v]['Cuts'] = []
             #if 'finalcuts' in pipelines[v]['Filter']:
             #        pipelines[v]['Filter'].remove('finalcuts')
         elif v == 'zcuts':
@@ -117,14 +107,10 @@ def expand(config, variations=[], algorithms=[], default="default"):
     # remove template pipeline
     pipelines.pop(default)
 
-    # copy for algorithms, naming scheme: incut_algo
-    '''
+    # copy for correction levels, naming scheme: cut_AlgoName + CorrectionLevel
     for name, p in pipelines.items():
-        for algo in algorithms:
-            pipelines[name + "_" + algo] = copy.deepcopy(p)
-            pipelines[name + "_" + algo]["JetAlgorithm"] = algo
+        pipelines[name + "_" + config['TaggedJets'] + config['Pipelines'][name]['CorrectionLevel']] = copy.deepcopy(p)
         del pipelines[name]
-    '''
 
     return config
 
