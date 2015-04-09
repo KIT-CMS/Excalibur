@@ -42,7 +42,7 @@ def ZJet():
         conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
         if conf["OutputPath"] == "out":
             print "out", options.out
-            conf["OutputPath"] = options.out + ".root"
+            conf["OutputPath"] = options.out
         if options.skip:
             conf['EventCount'] = options.skip[1]
             conf['SkipEvents'] = options.skip[0]
@@ -66,9 +66,9 @@ def ZJet():
         if not options.resume:
             prepareWork(options.work, options.out, options.clean)
             writeDBS(conf, options.out, options.work + "/files.dbs")
-            createRunfile(options.json, options.work + "/run-zjet.sh", workpath = options.work)
+            createRunfile(options.json, options.work + "/run-excalibur.sh", workpath = options.work)
             shutil.copy(options.json, options.work)
-            shutil.copy("zjet", options.work)
+            shutil.copy("scripts/artus", options.work)
             outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp)
             outpath = options.work + "out/" + outpath
         else:
@@ -130,10 +130,10 @@ def ZJet():
             pass
 
 
-def getoptions(configdir="", name='zjet'):
+def getoptions(configdir="", name='excalibur'):
     """Set standard options and read command line arguments. """
     if configdir == "":
-        configdir = getPath('CMSSW_BASE')+'/../Excalibur/cfg/excalibur/'
+        configdir = getPath('EXCALIBURPATH')+'/cfg/excalibur/'
 
 
     parser = argparse.ArgumentParser(
@@ -230,7 +230,7 @@ def getoptions(configdir="", name='zjet'):
     return opt
 
 
-def getPath(variable='CMSSW_BASE', nofail=False):
+def getPath(variable='EXCALIBURPATH', nofail=False):
     try:
         return os.environ[variable]
     except:
@@ -270,22 +270,22 @@ def copyFile(source, target, replace={}):
 def createGridControlConfig(settings, filename, original=None, timestamp=''):
     if original is None:
         if 'naf' in socket.gethostname():
-            original = getPath() + '/cfg/artus/base/gc_naf.conf'
+            original = getPath() + '/cfg/gc/gc_naf.conf'
         else:
-            original = getPath() + '/cfg/artus/base/gc.conf'
+            original = getPath() + '/cfg/gc/gc.conf'
     jobs = {
-            'mc': 120,
-            'data': 300,
+            0: 120, # MC
+            1: 300, # DATA
     }
-    fpj = len(settings['InputFiles']) / float(jobs.get(settings['InputType'], 70))
+    fpj = len(settings['InputFiles']) / float(jobs.get(settings['InputIsData'], 70))
     fpj = int(fpj + 1)
     d = {
         'files per job = 100': 'files per job = ' + str(fpj),
         '@NICK@': settings["OutputPath"],
         '@TIMESTAMP@': timestamp,
-        '$EXCALIBUR_BASE': getPath(),
+        '$EXCALIBURPATH': getPath(),
         '$EXCALIBUR_WORK': getPath('EXCALIBUR_WORK'),
-        #'$BOOSTLIB': getPath('BOOSTLIB'),
+        '$BOOSTLIB': getPath('BOOSTLIB'),
     }
 
     text = copyFile(original, filename, d)
@@ -298,14 +298,15 @@ def createGridControlConfig(settings, filename, original=None, timestamp=''):
 
 def createRunfile(configjson, filename='test.sh', original=None, workpath=None):
     if original is None:
-        original = getPath() + '/cfg/artus/base/run-artus.sh'
+        original = getPath() + '/cfg/gc/run-excalibur.sh'
     with open(original) as f:
         text = f.read()
-    text = text.replace('cfg/artus/config.py.json', configjson)
     if workpath is not None:
-        text = text.replace("$EXCALIBUR_BASE/cfg/artus/", workpath)
-        text = text.replace("$EXCALIBUR_BASE/artus", workpath + "artus")
-    text = text.replace('$EXCALIBUR_BASE', getPath())
+        text = text.replace("$EXCALIBURPATH/cfg/excalibur/", workpath)
+        text = text.replace("$EXCALIBURPATH/artus", workpath + "artus")
+    text = text.replace('cfg/excalibur/config.py.json', configjson)
+    text = text.replace('$SCRAM_ARCH', getPath('SCRAM_ARCH'))
+    text = text.replace('$EXCALIBURPATH', getPath())
     text = text.replace('$CMSSW_BASE', getPath('CMSSW_BASE'))
     with open(filename, 'wb') as f:
         f.write(text)
