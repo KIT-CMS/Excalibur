@@ -42,7 +42,7 @@ def ZJet():
         conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
         if conf["OutputPath"] == "out":
             print "out", options.out
-            conf["OutputPath"] = options.out
+            conf["OutputPath"] = options.out + '.root'
         if options.skip:
             conf['EventCount'] = options.skip[1]
             conf['SkipEvents'] = options.skip[0]
@@ -281,7 +281,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp=''):
     fpj = int(fpj + 1)
     d = {
         'files per job = 100': 'files per job = ' + str(fpj),
-        '@NICK@': settings["OutputPath"],
+        '@NICK@': settings["OutputPath"][:-5],
         '@TIMESTAMP@': timestamp,
         '$EXCALIBURPATH': getPath(),
         '$EXCALIBUR_WORK': getPath('EXCALIBUR_WORK'),
