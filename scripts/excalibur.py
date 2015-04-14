@@ -339,7 +339,7 @@ def createFileList(files, fast=False):
                     out, err = p1.communicate()
                     files = out.split('\n')
                     files = [f for f in files if ".root" in f]
-                files = ["dcap://dcache-cms-dcap.desy.de:22125" + f for f in files]
+                files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
             else:
                 files = [files]
         if not files:
