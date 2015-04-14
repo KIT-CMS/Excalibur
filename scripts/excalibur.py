@@ -301,10 +301,8 @@ def createRunfile(configjson, filename='test.sh', original=None, workpath=None):
         original = getPath() + '/cfg/gc/run-excalibur.sh'
     with open(original) as f:
         text = f.read()
-    if workpath is not None:
-        text = text.replace("$EXCALIBURPATH/cfg/excalibur/", workpath)
-        text = text.replace("$EXCALIBURPATH/artus", workpath + "artus")
-    text = text.replace('cfg/excalibur/config.py.json', configjson)
+    text = text.replace('ARTUS_CONFIG', workpath + os.path.basename(configjson))
+    text = text.replace('ARTUS_BINARY', workpath + "artus")
     text = text.replace('$SCRAM_ARCH', getPath('SCRAM_ARCH'))
     text = text.replace('$EXCALIBURPATH', getPath())
     text = text.replace('$CMSSW_BASE', getPath('CMSSW_BASE'))

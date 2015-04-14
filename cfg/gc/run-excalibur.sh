@@ -1,3 +1,4 @@
+cat /etc/redhat-release
 echo $FILE_NAMES
 cd $CMSSW_BASE
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/
@@ -8,4 +9,4 @@ cd -
 cd $EXCALIBURPATH
 source $EXCALIBURPATH/scripts/ini_excalibur.sh
 cd -
-$EXCALIBURPATH/artus $EXCALIBURPATH/cfg/excalibur/config.py.json
+ARTUS_BINARY ARTUS_CONFIG
