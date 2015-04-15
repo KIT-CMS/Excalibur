@@ -67,8 +67,28 @@ def ZJet():
             prepareWork(options.work, options.out, options.clean)
             writeDBS(conf, options.out, options.work + "/files.dbs")
             createRunfile(options.json, options.work + "/run-excalibur.sh", workpath = options.work)
+            # Copy config files, scripts and artus executable into working directory
+            shutil.copy(getEnv() + "/cfg/gc/json_modifier.py", options.work)
+            shutil.copy(getEnv() + "/scripts/ini_excalibur.sh", options.work)
             shutil.copy(options.json, options.work)
-            shutil.copy("scripts/artus", options.work)
+            shutil.copy(getEnv() + "/scripts/artus", options.work)
+            # Copy shared libraries into working directory/lib
+            print options.work
+            os.makedirs(options.work + "lib")
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_configuration.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_consumer.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_core.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_externalcorr.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_filter.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_kappaanalysis.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_provider.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/libartus_utility.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/../Kappa/lib/libKappa.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/../KappaTools/lib/libKPlotTools.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/../KappaTools/lib/libKRootTools.so", options.work + 'lib/')
+            shutil.copy(getEnv('ARTUSPATH') + "/../KappaTools/lib/libKToolbox.so", options.work + 'lib/')
+            shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_regex.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
+            shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_program_options.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
             outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp)
             outpath = options.work + "out/" + outpath
         else:
@@ -90,14 +110,14 @@ def ZJet():
             exit(1)
 
         try:
-            print "Symlink to output file created: ", "%s/work/%s.root" % (getPath(), options.out)
-            if not os.path.exists(getPath() + "work/"):
-                os.makedirs(getPath() + "work/")
-            os.symlink(options.work + "out.root", "%s/work/%s.root" % (getPath(), options.out))
+            print "Symlink to output file created: ", "%s/work/%s.root" % (getEnv(), options.out)
+            if not os.path.exists(getEnv() + "work/"):
+                os.makedirs(getEnv() + "work/")
+            os.symlink(options.work + "out.root", "%s/work/%s.root" % (getEnv(), options.out))
         except OSError, e:
             if e.errno == errno.EEXIST:
-                os.remove("%s/work/%s.root" % (getPath(), options.out))
-                os.symlink(options.work + "out.root", "%s/work/%s.root" % (getPath(), options.out))
+                os.remove("%s/work/%s.root" % (getEnv(), options.out))
+                os.symlink(options.work + "out.root", "%s/work/%s.root" % (getEnv(), options.out))
         except:
             print "Could not create symlink."
 
@@ -133,7 +153,7 @@ def ZJet():
 def getoptions(configdir="", name='excalibur'):
     """Set standard options and read command line arguments. """
     if configdir == "":
-        configdir = getPath('EXCALIBURPATH')+'/cfg/excalibur/'
+        configdir = getEnv('EXCALIBURPATH')+'/cfg/excalibur/'
 
 
     parser = argparse.ArgumentParser(
@@ -208,10 +228,10 @@ def getoptions(configdir="", name='excalibur'):
     # set paths for libraries and outputs
     if not opt.out:
         opt.out = opt.cfg[opt.cfg.rfind('/') + 1:opt.cfg.rfind('.py')]
-    opt.base = getPath()
-    #opt.boost = getPath('BOOSTPATH')
+    opt.base = getEnv()
+    #opt.boost = getEnv('BOOSTPATH')
     if not opt.work:
-        opt.work = getPath('EXCALIBUR_WORK', True) or getPath()
+        opt.work = getEnv('EXCALIBUR_WORK', True) or getEnv()
     opt.work += '/' + name + '/' + opt.out
     if not opt.resume and not opt.delete:
         opt.timestamp = time.strftime("_%Y-%m-%d_%H-%M")
@@ -230,7 +250,7 @@ def getoptions(configdir="", name='excalibur'):
     return opt
 
 
-def getPath(variable='EXCALIBURPATH', nofail=False):
+def getEnv(variable='EXCALIBURPATH', nofail=False):
     try:
         return os.environ[variable]
     except:
@@ -270,9 +290,9 @@ def copyFile(source, target, replace={}):
 def createGridControlConfig(settings, filename, original=None, timestamp=''):
     if original is None:
         if 'naf' in socket.gethostname():
-            original = getPath() + '/cfg/gc/gc_naf.conf'
+            original = getEnv() + '/cfg/gc/gc_naf.conf'
         else:
-            original = getPath() + '/cfg/gc/gc.conf'
+            original = getEnv() + '/cfg/gc/gc.conf'
     jobs = {
             0: 120, # MC
             1: 300, # DATA
@@ -283,9 +303,9 @@ def createGridControlConfig(settings, filename, original=None, timestamp=''):
         'files per job = 100': 'files per job = ' + str(fpj),
         '@NICK@': settings["OutputPath"][:-5],
         '@TIMESTAMP@': timestamp,
-        '$EXCALIBURPATH': getPath(),
-        '$EXCALIBUR_WORK': getPath('EXCALIBUR_WORK'),
-        '$BOOSTLIB': getPath('BOOSTLIB'),
+        '$EXCALIBURPATH': getEnv(),
+        '$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
+        '$BOOSTLIB': getEnv('BOOSTLIB'),
     }
 
     text = copyFile(original, filename, d)
@@ -298,20 +318,20 @@ def createGridControlConfig(settings, filename, original=None, timestamp=''):
 
 def createRunfile(configjson, filename='test.sh', original=None, workpath=None):
     if original is None:
-        original = getPath() + '/cfg/gc/run-excalibur.sh'
+        original = getEnv() + '/cfg/gc/run-excalibur.sh'
     with open(original) as f:
         text = f.read()
-    text = text.replace('ARTUS_CONFIG', workpath + os.path.basename(configjson))
-    text = text.replace('ARTUS_BINARY', workpath + "artus")
-    text = text.replace('$SCRAM_ARCH', getPath('SCRAM_ARCH'))
-    text = text.replace('$EXCALIBURPATH', getPath())
-    text = text.replace('$CMSSW_BASE', getPath('CMSSW_BASE'))
+    text = text.replace('@ARTUS_CONFIG@', os.path.basename(configjson))
+    text = text.replace('@SCRAM_ARCH@', getEnv('SCRAM_ARCH'))
+    text = text.replace('@EXCALIBURPATH@', getEnv())
+    text = text.replace('@CMSSW_BASE@', getEnv('CMSSW_BASE'))
+    text = text.replace('@WORKPATH@/', workpath)
     with open(filename, 'wb') as f:
         f.write(text)
 
 
 def showMessage(title, message):
-    userpc = "%s@%s" % (getPath('USER'), getPath('USERPC'))
+    userpc = "%s@%s" % (getEnv('USER'), getEnv('USERPC'))
     iconpath = '/usr/users/dhaitz/excalibur/excal_small.jpg'
     try:
         if 'ekplx' in userpc:
