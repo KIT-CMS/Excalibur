@@ -294,8 +294,8 @@ def createGridControlConfig(settings, filename, original=None, timestamp=''):
         else:
             original = getEnv() + '/cfg/gc/gc.conf'
     jobs = {
-            0: 200, # MC
-            1: 600, # DATA
+            0: 80, # MC
+            1: 40, # DATA
     }
     fpj = len(settings['InputFiles']) / float(jobs.get(settings['InputIsData'], 70))
     fpj = int(fpj + 1)
