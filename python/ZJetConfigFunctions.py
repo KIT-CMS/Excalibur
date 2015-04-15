@@ -47,18 +47,18 @@ def getBaseConfig(**kwargs):
 				'Quantities': [
 					# General quantities
 					'npv', 'rho', 'weight', #'nputruth',
-					'nJets', 'nJets30', 'nJetsInv',  # number of valid and invalid jets
+					'njets', 'njetsinv',  # number of valid and invalid jets
 					# Z quantities
-					'zPt', 'zEta', 'zY', 'zPhi', 'zMass',
+					'zpt', 'zeta', 'zy', 'zphi', 'zmass',
 					# Leading jet
-					'jet1Pt', 'jet1Eta', 'jet1Y', 'jet1Phi',
-					'jet1ChargedHadFraction', 'jet1NeutralHadFraction',
-					'jet1MuonFraction', 'jet1HFHadFraction', 'jet1HFEMFraction', 'jet1PhotonFraction',
+					'jet1pt', 'jet1eta', 'jet1y', 'jet1phi',
+					'jet1chf', 'jet1nhf',
+					'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
 					#'jet1unc',  # Leading jet uncertainty
 					# Second jet
-					'jet2Pt', 'jet2Eta', 'jet2Phi',
+					'jet2pt', 'jet2eta', 'jet2phi',
 					# MET and related
-					'mpf', 'rawMPF', 'metPt', 'metPhi', 'rawMETPt', 'rawMETPhi', 'sumEt',
+					'mpf', 'rawmpf', 'metpt', 'metphi', 'rawmetpt', 'rawmetphi', 'sumet',
 				],
 			},
 		},
@@ -133,11 +133,11 @@ def mm(cfg, **kwargs):
 	cfg['DirectIso'] = True
 
 	cfg['Pipelines']['default']['Quantities'] += [
-		'muPlusPt', 'muPlusEta', 'muPlusPhi', 'muPlusIso',
-		'muMinusPt', 'muMinusEta', 'muMinusPhi', 'muMinusIso',
-		'mu1Pt', 'mu1Eta', 'mu1Phi',
-		'mu2Pt', 'mu2Eta', 'mu2Phi',
-		'nMuons',
+		'mupluspt', 'mupluseta', 'muplusphi', 'muplusiso',
+		'muminuspt', 'muminuseta', 'muminusphi', 'muminusiso',
+		'mu1pt', 'mu1eta', 'mu1phi',
+		'mu2pt', 'mu2eta', 'mu2phi',
+		'nmuons',
 	]
 
 	cfg['CutMuonPtMin'] = 20.0
