@@ -130,7 +130,7 @@ def mm(cfg, **kwargs):
 	cfg['MuonID'] = 'tight'
 	cfg['MuonIso'] = 'tight'
 	cfg['MuonIsoType'] = 'pf'
-	cfg['DirectIso'] = 'true'
+	cfg['DirectIso'] = True
 
 	cfg['Pipelines']['default']['Quantities'] += [
 		'muPlusPt', 'muPlusEta', 'muPlusPhi', 'muPlusIso',
@@ -164,7 +164,7 @@ def mc_2011(cfg, **kwargs):
 	pass
 
 def mc_2012(cfg, **kwargs):
-	cfg['Jec'] = ZJetConfigBase.getPath() + "/data/jec/Winter14_V6/Winter14_V5_MC"
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V6/Winter14_V5_MC'
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
 
 
