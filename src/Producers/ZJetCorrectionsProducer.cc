@@ -86,8 +86,8 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event, ZJetProduct& produ
 	{
 		CorrectJetCollection("None", "RC", m_l1, event, product, settings);
 	}
-	CorrectJetCollection("L1", "L1L2", m_l2, event, product, settings);
-	CorrectJetCollection("L1L2", "L1L2L3", m_l3, event, product, settings);
+	CorrectJetCollection("L1", "L1L2L3", m_l2, event, product, settings); // Output is named L1L2L3 since L1L2 -> L1L2L3 does not do anything and we need L1L2L3 for further corrections/access
+	// CorrectJetCollection("L1L2", "L1L2L3", m_l3, event, product, settings); // L3Absolute does not do anything yet..
 	if (settings.GetFlavourCorrections())
 	{
 		CorrectJetCollection("L1L2L3", "L1L2L3L5q", m_l5q, event, product, settings);
