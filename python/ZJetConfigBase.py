@@ -68,7 +68,7 @@ def getPath(variable='EXCALIBURPATH', nofail=False):
         exit(1)
 
 
-def setInputFiles(ekppath, nafpath=None):
+def setInputFiles(ekppath=None, nafpath=None):
     """Return ekppath if you're at EKP, nafpath if at NAF. """
     d = {'ekp': ekppath, 'naf': nafpath}
     host = socket.gethostname()[:3]
