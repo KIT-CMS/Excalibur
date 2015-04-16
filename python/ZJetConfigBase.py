@@ -81,7 +81,7 @@ def setInputFiles(ekppath, nafpath=None):
         sys.exit("ERROR: Cant determine input file location!")
 
 
-def expand(config, cutModes, default="default"):
+def expand(config, cutModes, corrLevels, default="default"):
     """create pipelines for each cut mode and correction level"""
     pipelines = config['Pipelines']
     p = config['Pipelines'][default]
@@ -106,9 +106,15 @@ def expand(config, cutModes, default="default"):
     # remove template pipeline
     pipelines.pop(default)
 
-    # copy for correction levels, naming scheme: cut_AlgoName + CorrectionLevel
+    # copy pipelines with different correction levels, naming scheme: cut_AlgoName + CorrectionLevel
     for name, p in pipelines.items():
-        pipelines[name + "_" + config['TaggedJets'] + config['Pipelines'][name]['CorrectionLevel']] = copy.deepcopy(p)
+        for corrLevel in corrLevels:
+            if corrLevel == 'None':
+                pipelines[name + "_" + config['TaggedJets']] = copy.deepcopy(p)
+                pipelines[name + "_" + config['TaggedJets']]['CorrectionLevel'] = corrLevel
+            else:
+                pipelines[name + "_" + config['TaggedJets'] + corrLevel] = copy.deepcopy(p)
+                pipelines[name + "_" + config['TaggedJets'] + corrLevel]['CorrectionLevel'] = corrLevel
         del pipelines[name]
 
     return config

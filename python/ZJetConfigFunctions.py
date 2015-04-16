@@ -30,7 +30,8 @@ def getBaseConfig(**kwargs):
 		# Pipelines
 		'Pipelines': {
 			'default': {
-				'CorrectionLevel': 'L1L2L3',
+				'CorrectionLevel': '', # Overwritten by expand function, set levels in data.py or mc.py
+				                       # No correction at all equals 'None', not ''
 				'Consumers': [
 					'ZJetLambdaNtupleConsumer',
 					'cutflow_histogram',
