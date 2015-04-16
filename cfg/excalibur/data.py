@@ -7,6 +7,6 @@ def config():
         ekppath="/storage/a/dhaitz/skims/2015-04-13_DoubleMu_Run2012_22Jan2013_8TeV/*.root",
         nafpath="/pnfs/desy.de/cms/tier2/store/user/dhaitz/2015-04-13_DoubleMu_Run2012_22Jan2013_8TeV/"
     )
-    cfg = base.expand(cfg, ['finalcuts'])
-    print cfg
+    cfg = base.expand(cfg, ['nocuts', 'zcuts', 'finalcuts'])
+
     return cfg

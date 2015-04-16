@@ -62,7 +62,7 @@ def getPath(variable='EXCALIBURPATH', nofail=False):
         return os.environ[variable]
     except:
         print variable, "is not in shell variables:", os.environ.keys()
-        print "Please source scripts/ini_excalibur and CMSSW!"
+        print "Please source scripts/ini_excalibur.sh and CMSSW!"
         if nofail:
             return None
         exit(1)
@@ -81,32 +81,27 @@ def setInputFiles(ekppath, nafpath=None):
         sys.exit("ERROR: Cant determine input file location!")
 
 
-def expand(config, variations=[], algorithms=[], default="default"):
-    """create pipelines for each variation"""
+def expand(config, cutModes, default="default"):
+    """create pipelines for each cut mode and correction level"""
     pipelines = config['Pipelines']
     p = config['Pipelines'][default]
 
     # copy default pipeline for different cut variations
-    for v in variations:
-        if v == 'nocuts':
-            pipelines[v] = copy.deepcopy(p)
-            #pipelines[v]['Cuts'] = []
-            #if 'finalcuts' in pipelines[v]['Filter']:
-            #        pipelines[v]['Filter'].remove('finalcuts')
-        elif v == 'zcuts':
-            pipelines[v] = copy.deepcopy(p)
-            removelist = ['leadingjet_pt', 'back_to_back']
-            #for cut in removelist:
-            #    if cut in pipelines[v]['Cuts']:
-            #        pipelines[v]['Cuts'].remove(cut)
-        elif v == 'fullcuts':
-            pipelines[v] = copy.deepcopy(p)
-            #pipelines[v]['Cuts'].append('leadingjet_eta')
-            #pipelines[v]['Cuts'].append('secondleading_to_zpt')
-            #pipelines[v]['CutLeadingJetEta'] = 1.3
-            #pipelines[v]['CutSecondLeadingToZPt'] = 0.2
-        elif v == 'finalcuts':
-            pipelines[v] = copy.deepcopy(p)
+    for cutMode in cutModes:
+        if cutMode == 'nocuts':
+            pipelines[cutMode] = copy.deepcopy(p)
+            removeList = ['filter:MuonPtCut', 'filter:MuonEtaCut', 'filter:LeadingJetPtCut', 'filter:ZPtCut', 'filter:BackToBackCut']
+            for cut in removeList:
+                if cut in pipelines[cutMode]['Processors']:
+                    pipelines[cutMode]['Processors'].remove(cut)
+        elif cutMode == 'zcuts':
+            pipelines[cutMode] = copy.deepcopy(p)
+            removelist = ['filter:LeadingJetPtCut', 'filter:BackToBackCut']
+            for cut in removelist:
+                if cut in pipelines[cutMode]['Processors']:
+                    pipelines[cutMode]['Processors'].remove(cut)
+        elif cutMode == 'finalcuts':
+            pipelines[cutMode] = copy.deepcopy(p)
 
     # remove template pipeline
     pipelines.pop(default)

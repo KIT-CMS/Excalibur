@@ -5,27 +5,27 @@ def getBaseConfig(**kwargs):
 		'SkipEvents': 0,
 		'EventCount': -1,
 		'Processors': [],
-		'InputFiles': [],	 # overridden by artus
-		'OutputPath': 'out',  # overridden by artus
+		'InputFiles': [],	 # Overwritten by (data/mc).py, excalibur.py, json_modifier.py (if run in batch mode)
+		'OutputPath': 'out',  # Overwritten by excalibur.py
 		# ZJetCorrectionsProducer Settings
-		'Jec': '', # path for JEC data, will be set later
+		'Jec': '', # Path for JEC data, please set this later depending on input type
 		'L1Correction': 'L1FastJet',
-		'RC': False,  # also provide random cone offset JEC, and use for type-I
-		'FlavourCorrections': False,  # calculate additional MC flavour corrections
+		'RC': False,  # Also provide random cone offset JEC, and use for type-I
+		'FlavourCorrections': False,  # Calculate additional MC flavour corrections
 		# ZProducer Settings
 		'ZMassRange': 20.,
 		# TypeIMETProducer Settings
 		'Met' : 'met', # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
 		'JetPtMin': 10.,
 		'EnableMetPhiCorrection': False,
-		'MetPhiCorrectionParameters': [],
+		'MetPhiCorrectionParameters': [], # Please set this later depending on input type
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
 		'JetID' : 'tight',
 		'JetIDVersion' : 2014,
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'AK5PFTaggedJetsCHS',
-		#PU
+		# PU
 		'PileupDensity' : 'KT6Area',
 		# Pipelines
 		'Pipelines': {
@@ -36,11 +36,11 @@ def getBaseConfig(**kwargs):
 					'cutflow_histogram',
 				],
 				'EventWeight': 'eventWeight',
-				'Processors': [
+				'Processors': [ # Overwritten/cleaned by expand function, set cuts in data.py or mc.py
 					'filter:MuonPtCut',
 					'filter:MuonEtaCut',
 					'filter:LeadingJetPtCut',
-					'filter:LeadingJetEtaCut',
+					#'filter:LeadingJetEtaCut',
 					'filter:ZPtCut',
 					'filter:BackToBackCut',
 				],
