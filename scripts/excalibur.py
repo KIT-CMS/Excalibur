@@ -229,7 +229,6 @@ def getoptions(configdir="", name='excalibur'):
     if not opt.out:
         opt.out = opt.cfg[opt.cfg.rfind('/') + 1:opt.cfg.rfind('.py')]
     opt.base = getEnv()
-    #opt.boost = getEnv('BOOSTPATH')
     if not opt.work:
         opt.work = getEnv('EXCALIBUR_WORK', True) or getEnv()
     opt.work += '/' + name + '/' + opt.out
@@ -255,7 +254,7 @@ def getEnv(variable='EXCALIBURPATH', nofail=False):
         return os.environ[variable]
     except:
         print variable, "is not in shell variables:", os.environ.keys()
-        print "Please source scripts/ini_zjet and CMSSW!"
+        print "Please source scripts/ini_excalibur.sh and CMSSW!"
         if nofail:
             return None
         exit(1)
@@ -305,7 +304,6 @@ def createGridControlConfig(settings, filename, original=None, timestamp=''):
         '@TIMESTAMP@': timestamp,
         '$EXCALIBURPATH': getEnv(),
         '$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
-        '$BOOSTLIB': getEnv('BOOSTLIB'),
     }
 
     text = copyFile(original, filename, d)
@@ -344,22 +342,12 @@ def showMessage(title, message):
 
 def createFileList(files, fast=False):
         if type(files) == str:
-            if "/*.root" in files:
+            if "*.root" in files:
                 print "Creating file list from", files
                 files = glob.glob(files)
-            elif 'naf' in socket.gethostname():
-                # on naf3, /pnfs is mounted so we can directly access the files
-                if socket.gethostname() in ['nafhh-cms04.desy.de', 'nafhh-cms03.desy.de']:
-                    if "*.root" not in files:
-                        files += "/*.root"
-                    files = glob.glob(files)
-                else:
-                     # on NAF, get file list with lcg-ls, access files via DCAP
-                    p1 = subprocess.Popen(['bash', '-c', 'lcg-ls srm://dcache-se-cms.desy.de%s' % files], stdout=subprocess.PIPE)
-                    out, err = p1.communicate()
-                    files = out.split('\n')
-                    files = [f for f in files if ".root" in f]
-                files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
+                # Direct access to /pnfs is buggy, prepend dcap to file paths
+                if 'naf' in socket.gethostname():
+                    files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
             else:
                 files = [files]
         if not files:
