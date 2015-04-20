@@ -76,6 +76,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['lumi'] = None
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
+		if 'ratio' in plotData.plotdict['nicks']:
+			plotData.plotdict['colors'][plotData.plotdict['nicks'].index('ratio')] = 'black'
 
 
 	def add_labels(self, plotData):
