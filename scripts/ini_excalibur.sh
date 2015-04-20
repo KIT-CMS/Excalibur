@@ -13,7 +13,7 @@ BOOSTVER=${BOOSTPATH%-*}
 export BOOSTLIB=${BOOSTPATH}/lib/libboost_regex.so.${BOOSTVER/*\//}
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ARTUSPATH:$BOOSTPATH/lib
 export PATH=$PATH:$EXCALIBURPATH/scripts
-export PYTHONPATH=$PYTHONPATH:$EXCALIBURPATH/python
+export PYTHONPATH=$PYTHONPATH:$EXCALIBURPATH/python:$EXCALIBURPATH/cfg/excalibur
 export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 
 
