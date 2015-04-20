@@ -155,6 +155,22 @@ def comparison_E1E2(args=None):
 	basic_comparisons(args, additional_dictionary=d)
 	basic_profile_comparisons(args, additional_dictionary=d)
 
+def comparison_5374(args=None):
+	d = {
+		'files': [
+			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-16.root',
+			'ntuples/Data_8TeV_74X_E2_50ns_2015-04-20.root',
+		],
+		"algorithms": ["AK5PFTaggedJetsCHS",],
+		"corrections": ["L1L2L3/ntuple",],
+		'nicks': [
+			'53',
+			'74',
+		]
+	}
+	response_comparisons(args, additional_dictionary=d)
+	basic_comparisons(args, additional_dictionary=d)
+	basic_profile_comparisons(args, additional_dictionary=d)
 
 if __name__ == '__main__':
 	basic_comparisons()
