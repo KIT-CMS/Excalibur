@@ -71,7 +71,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 	plotscript.plotscript(plots, args)
 
 
-def kinematic_comparisons(args=None, additional_dictionary=None):
+def basic_comparisons(args=None, additional_dictionary=None):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
@@ -98,7 +98,7 @@ def kinematic_comparisons(args=None, additional_dictionary=None):
 
 
 def comparison_E1E2(args=None):
-	""" Do response and kinematic comparison for E1 and E2 ntuples """
+	""" Do response and basic comparison for E1 and E2 ntuples """
 	d = {
 		'files': [
 			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-16.root',
@@ -122,8 +122,8 @@ def comparison_E1E2(args=None):
 		]
 	}
 	response_comparisons(args, additional_dictionary=d)
-	kinematic_comparisons(args, additional_dictionary=d)
+	basic_comparisons(args, additional_dictionary=d)
 
 
 if __name__ == '__main__':
-	kinematic_comparisons()
+	basic_comparisons()
