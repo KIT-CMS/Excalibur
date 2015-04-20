@@ -82,11 +82,11 @@ def basic_comparisons(args=None, additional_dictionary=None):
 		d = {
 			'x_expressions': [quantity],
 			'cutlabel': True,
+			'analysis_modules': ['Ratio'],
+			'y_subplot_lims': [0, 2],
 		}
 		if quantity in ['jet1pt', 'zpt']:
-			d["x_bins"] = "30 40 50 60 75 95 125 180 300 1000"
-			d["x_log"] = True
-			d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+			d["y_log"] = True
 
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
@@ -95,8 +95,9 @@ def basic_comparisons(args=None, additional_dictionary=None):
 		# shape comparison
 		d2 = copy.deepcopy(d)
 		d2.update({
-			'analysis_modules': ['NormalizeToFirstHisto'],
+			'analysis_modules': ['NormalizeToFirstHisto', 'Ratio'],
 			'filename': quantity+"_shapeComparison",
+			'title': "Shape Comparison",
 		})
 		if additional_dictionary != None:
 			d2.update(additional_dictionary)
