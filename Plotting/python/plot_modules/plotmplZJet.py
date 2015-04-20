@@ -33,8 +33,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
 
-		self.formatting_options.set_defaults(markers=['o']+['fill']*8)
-
 		self.formatting_options.set_defaults(x_errors=[False])
 		self.formatting_options.set_defaults(y_errors=[True])
 		self.formatting_options.set_defaults(legloc='center right')
