@@ -105,6 +105,27 @@ def basic_comparisons(args=None, additional_dictionary=None):
 
 	plotscript.plotscript(plots, args)
 
+def basic_profile_comparisons(args=None, additional_dictionary=None):
+	""" Plots Z mass as a function of pT """
+	plots = []
+	for xquantity, yquantity in zip(['zpt'], ['zmass']):
+		d = {
+			'x_expressions': [xquantity],
+			'y_expressions': [yquantity],
+			'analysis_modules': ['Ratio'],
+			'tree_draw_options': 'prof',
+			'cutlabel': True,
+			'y_subplot_lims': [0.99, 1.01],
+			'x_log': True,
+			'y_lims': [90.19, 92.19],
+			'x_bins': "30 40 50 60 75 95 125 180 300 1000",
+		}
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		plots.append(d)
+
+	plotscript.plotscript(plots, args)
+
 
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
@@ -132,6 +153,7 @@ def comparison_E1E2(args=None):
 	}
 	response_comparisons(args, additional_dictionary=d)
 	basic_comparisons(args, additional_dictionary=d)
+	basic_profile_comparisons(args, additional_dictionary=d)
 
 
 if __name__ == '__main__':
