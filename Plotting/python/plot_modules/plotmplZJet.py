@@ -17,11 +17,18 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		super(PlotMplZJet, self).__init__()
 		self.nicelabels = labelsZJet.LabelsDictZJet()
 		self.default_bar_colors = [
-                '#7293cb',  # light blue
-                '#e1974c',  # mustard yellow
-                '#808585',  # grey
-                '#ab6857',  # brown
-        ]
+				'#7293cb',  # light blue
+				'#e1974c',  # mustard yellow
+				'#808585',  # grey
+				'#ab6857',  # brown
+		]
+		self.cutlabeldict = {
+			"1": r"",
+			"(abs(jet1eta)<1.3)": r"|$\eta^{\mathrm{Leading jet}}$|$<1.3$",
+			"zpt>30": "$p_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
+			"(jet2pt/zpt<0.2)": r"$\alpha<0.2$"
+		}
+
 
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
@@ -45,6 +52,9 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			help="layout for the plots. E.g. 'document': serif, LaTeX, pdf; " +
 				 "'slides': sans serif, big, png; 'generic': slides + pdf. " +
 				 "Default is %(default)s")
+		self.formatting_options.add_argument('--cutlabel', type=bool, default=False,
+			help="Place a label with the current cuts on the plot. [Defaut: %(default)s]")
+
 
 	def prepare_args(self, parser, plotData):
 		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
@@ -68,6 +78,16 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['lumi'] = None
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
+
+
+	def add_labels(self, plotData):
+		super(PlotMplZJet, self).add_labels(plotData)
+		for ax in [plotData.plot.axes[0]]:
+			if plotData.plotdict['cutlabel'] == True:
+				texts = ["zpt>30", plotData.plotdict['allalpha'], plotData.plotdict['alleta']]
+				texts = [self.cutlabeldict.get(*(text,)*2) for text in texts if self.cutlabeldict.get(*(text,)*2) != ""]
+				ax.text(0.03, 0.97, "\n".join(texts), va='top', ha='left', color='black', transform=ax.transAxes, size='large')
+
 
 	def set_matplotlib_defaults(self):
 		super(PlotMplZJet, self).set_matplotlib_defaults()
