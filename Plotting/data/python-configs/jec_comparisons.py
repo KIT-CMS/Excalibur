@@ -4,6 +4,7 @@
 import Excalibur.Plotting.plotscript as plotscript
 
 import argparse
+import copy
 
 
 # TODO to more general location
@@ -48,10 +49,11 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'x_expressions': [quantity],
 				'x_bins': bins,
 				'y_lims': [0.8, 1.1],
-				'x_errors': [1, 1],
+				'x_errors': [1],
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
 				'legloc': 'best',
+				'cutlabel': True,
 
 				'analysis_modules': ['Ratio'],
 
@@ -79,20 +81,26 @@ def basic_comparisons(args=None, additional_dictionary=None):
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
+			'cutlabel': True,
 		}
+		if quantity in ['jet1pt', 'zpt']:
+			d["x_bins"] = "30 40 50 60 75 95 125 180 300 1000"
+			d["x_log"] = True
+			d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
 		plots.append(d)
 
 		# shape comparison
-		d = {
-			'x_expressions': [quantity],
+		d2 = copy.deepcopy(d)
+		d2.update({
 			'analysis_modules': ['NormalizeToFirstHisto'],
 			'filename': quantity+"_shapeComparison",
-		}		
+		})
 		if additional_dictionary != None:
-			d.update(additional_dictionary)
-		plots.append(d)
+			d2.update(additional_dictionary)
+		plots.append(d2)
 
 	plotscript.plotscript(plots, args)
 
