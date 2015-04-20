@@ -14,6 +14,12 @@ import Artus.HarryPlotter.input_modules.inputroot as inputroot
 
 class InputRootZJet(inputroot.InputRoot):
 
+	def __init__(self):
+		super(InputRootZJet, self).__init__()
+		self.quantities_replace_dict = {
+			'ptbalance': '(jet1pt/zpt)'
+		}
+
 	def modify_argument_parser(self, parser, args):
 		super(InputRootZJet, self).modify_argument_parser(parser, args)
 
@@ -57,6 +63,13 @@ class InputRootZJet(inputroot.InputRoot):
 			zjet_cuts = " * ".join([plotData.plotdict['allalpha'], plotData.plotdict['alleta']])
 			plotData.plotdict['weights'] = ["({}) * ({})".format(w, zjet_cuts) for w in plotData.plotdict['weights']]
 			log.info("Applying default ZJet cuts: {}".format(zjet_cuts))
+
+		# automatically replace quantity names, eg. ptbalance->jet1pt/zpt
+		for axis in ['x', 'y', 'z']:
+			for i, item in enumerate(plotData.plotdict['{0}_expressions'.format(axis)]):
+				for key, value in self.quantities_replace_dict.iteritems():
+					if item != None and key in item:
+						plotData.plotdict['{0}_expressions'.format(axis)][i] = plotData.plotdict['{0}_expressions'.format(axis)][i].replace(key, value)
 
 
 	def auto_detect_type_and_modify_weight(self, weight, root_files, plotData,
