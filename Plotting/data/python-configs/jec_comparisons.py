@@ -77,7 +77,7 @@ def basic_comparisons(args=None, additional_dictionary=None):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
-	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'npv']:
+	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'npv', 'metpt', 'metphi']:
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
