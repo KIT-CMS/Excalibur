@@ -12,11 +12,11 @@ class LabelsDictZJet(labels.LabelsDict):
 		
 		self.labels_dict.update({
 			#more general stuff. maybe move to Artus?
-			'abs(zy)': '$|y^Z|$',
-			'abs(jet1eta)': "$|\eta^\mathrm{jet 1}|$",
+			'abs(zy)': '|$y^Z$|',
+			'abs(jet1eta)': '|$\eta^\mathrm{Leading Jet}$|',
 			'algoflavour': 'Flavour (Algorithmic definition)',
 			'constituents': 'Number of Jet Constituents',
-			'eabseta': "$|\eta^\mathrm{electron}|$",
+			'eabseta': "|$\eta^\mathrm{electron}$|",
 			'eminuspt': '$p_\mathrm{T}^\mathrm{e^{-}}$',
 			'epluspt': '$p_\mathrm{T}^\mathrm{e^{+}}$',
 			'ept': "$p_\mathrm{T}^\mathrm{electron}$",
@@ -25,6 +25,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'genjet2pt': '$p_\mathrm{T}^\mathrm{GenJet2}$',
 			'genzpt': '$\mathrm{Z}^\mathrm{GEN} \ p_\mathrm{T}$ / GeV',
 			'jet1area': 'Leading Jet area',
+			'jet1eta': '$\eta^\mathrm{Leading Jet}$',
+			'jet1phi': r"$\phi^\mathrm{Leading jet}$",
 			'jet1pt': '$p_\mathrm{T}^\mathrm{Leading Jet}$',
 			'jet2pt': '$p_\mathrm{T}^\mathrm{Jet2}$',
 			'jetsvalid': 'Number of valid jets $n$',
@@ -39,7 +41,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'rho': '$\rho$',
 			'run': 'Run',
 			'sumEt': '$\sum E^\mathrm{T}$',
-			'zpt': 'Z $p_\mathrm{T}$ / GeV',
+			'zphi': r"$\phi^\mathrm{Z}$",
+			'zpt': '$p_\mathrm{T}^\mathrm{Z}$ / GeV',
 			'zy': '$y^Z$',
 
 			# ZJet specific
