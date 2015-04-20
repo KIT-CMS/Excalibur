@@ -13,6 +13,7 @@ class LabelsDictZJet(labels.LabelsDict):
 		self.labels_dict.update({
 			#more general stuff. maybe move to Artus?
 			'abs(zy)': '$|y^Z|$',
+			'abs(jet1eta)': "$|\eta^\mathrm{jet 1}|$",
 			'algoflavour': 'Flavour (Algorithmic definition)',
 			'constituents': 'Number of Jet Constituents',
 			'eabseta': "$|\eta^\mathrm{electron}|$",
@@ -48,7 +49,9 @@ class LabelsDictZJet(labels.LabelsDict):
 			'extrapol': 'Response',
 			'genalpha': '$p_\mathrm{T}^\mathrm{GenJet 2}/p_\mathrm{T}^\mathrm{GenZ}$',
 			'genmpf': '$MPF$ Response (Gen level)',
+			'(jet1pt/zpt)': r"$p_\mathrm{T}$ balance",
 			'mpf': '$MPF$ Response',
+			'ptbalance': r"$p_\mathrm{T}$ balance",
 			'recogen': 'Jet Response $p_\mathrm{T}^\mathrm{RecoJet}/p_\mathrm{T}^\mathrm{GenJet}$',
 			'sys': 'Relative uncertainty [$\%$]',
 			'tagflavour': 'Flavour (from tagging)',
