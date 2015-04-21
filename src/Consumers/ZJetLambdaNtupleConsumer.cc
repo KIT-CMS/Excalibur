@@ -40,47 +40,47 @@ void ZJetLambdaNtupleConsumer::Init(ZJetSettings const& settings)
 	// Leading jet
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return product.GetValidPrimaryJet(settings, event)->p4.Pt();
+		return (product.GetValidJetCount(settings, event) > 0) ?  product.GetValidPrimaryJet(settings, event)->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return product.GetValidPrimaryJet(settings, event)->p4.Eta();
+		return (product.GetValidJetCount(settings, event) > 0) ?  product.GetValidPrimaryJet(settings, event)->p4.Eta() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1y", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return product.GetValidPrimaryJet(settings, event)->p4.Rapidity();
+		return (product.GetValidJetCount(settings, event) > 0) ?  product.GetValidPrimaryJet(settings, event)->p4.Rapidity() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return product.GetValidPrimaryJet(settings, event)->p4.Phi();
+		return (product.GetValidJetCount(settings, event) > 0) ? product.GetValidPrimaryJet(settings, event)->p4.Phi() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1pf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->photonFraction;
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->photonFraction : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1ef", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->electronFraction;
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->electronFraction : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1chf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->chargedHadronFraction;
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->chargedHadronFraction : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1nhf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->neutralHadronFraction;
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->neutralHadronFraction : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1mf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->muonFraction;
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->muonFraction : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1hfhf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->hfHadronFraction;
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->hfHadronFraction : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1hfemf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->hfEMFraction;
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->hfEMFraction : DefaultValues::UndefinedDouble;
 	} );
 	/*
 	 * TODO
