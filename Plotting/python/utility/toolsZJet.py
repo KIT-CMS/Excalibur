@@ -31,7 +31,8 @@ def print_jsons_and_functions(json_path, python_path):
 			prefix = "\t\t\t"
 			for func in functions:
 				log.info("\t\t" + tools.get_colored_string(func[0], "green"))
-				log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
+				if inspect.getdoc(func[1]) != None:  # has docstring
+					log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
 	sys.exit(0)
 
 def call_python_function(function_name, python_path, unknown_args=None):
