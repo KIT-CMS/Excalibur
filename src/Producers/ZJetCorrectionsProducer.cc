@@ -17,13 +17,14 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	{
 		algoName = algoName.substr(0, 5) + "chs";
 	}
-	LOG(INFO) << "\t -- Jet corrections enabled for " << algoName << " jets";
+	LOG(INFO) << "\t -- Jet corrections enabled for " << algoName << " jets using the following JEC files:";
 		
 	// JEC initialization
 	std::vector<JetCorrectorParameters> jecParameters;
 	
 	// L1 depending on config parameter
 	jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + settings.GetL1Correction() + "_" + algoName + ".txt"));
+	LOG(INFO) << "\t -- " << settings.GetJec() << "_" << settings.GetL1Correction() << "_" << algoName << ".txt";
 	m_l1 = new FactorizedJetCorrector(jecParameters);
 	jecParameters.clear();
 	
@@ -31,17 +32,20 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	if (settings.GetRC())
 	{
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "RC" + "_" + algoName + ".txt"));
+		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "RC" << "_" << algoName << ".txt";
 		m_rc = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 	}
 	
 	// L2Relative
 	jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L2Relative" + "_" + algoName + ".txt"));
+	LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L2Relative" << "_" << algoName << ".txt";
 	m_l2 = new FactorizedJetCorrector(jecParameters);
 	jecParameters.clear();
 	
 	// L3Absolute
 	jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L3Absolute" + "_" + algoName + ".txt"));
+	LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L3Absolute" << "_" << algoName << ".txt";
 	m_l3 = new FactorizedJetCorrector(jecParameters);
 	jecParameters.clear();
 	
@@ -49,15 +53,19 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	if (settings.GetFlavourCorrections())
 	{
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_qJ" + "_" + algoName + ".txt"));
+		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_qJ" << "_" << algoName << ".txt";
 		m_l2l3res = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_gJ" + "_" + algoName + ".txt"));
+		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_gJ" << "_" << algoName << ".txt";
 		m_l2l3res = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_cJ" + "_" + algoName + ".txt"));
+		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_cJ" << "_" << algoName << ".txt";
 		m_l2l3res = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_bJ" + "_" + algoName + ".txt"));
+		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_bJ" << "_" << algoName << ".txt";
 		m_l2l3res = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 	}
@@ -66,6 +74,7 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	if (settings.GetInputIsData())
 	{
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L2L3Residual" + "_" + algoName + ".txt"));
+		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L2L3Residual" << "_" << algoName << ".txt";
 		m_l2l3res = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 	}
