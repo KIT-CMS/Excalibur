@@ -21,7 +21,7 @@ def main():
 	try:
 		parser = argparse.ArgumentParser()
 		parser.add_argument('--python', nargs='+', default=[None],
-			help="execute python function(s). Available functions can be listed with --function")
+			help="execute python function(s). Available functions can be listed with --list-functions")
 		known_args, unknown_args = parser.parse_known_args()
 
 		# call python config function
