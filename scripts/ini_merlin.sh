@@ -1,8 +1,8 @@
 #source HarryPlotter ini script
 source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 
-export PYTHONCONFIGS=$EXCALIBURPATH/Plotting/data/python-configs
-export JSONCONFIGS=$EXCALIBURPATH/Plotting/data/json-configs
+export PYTHONCONFIGS=$EXCALIBURPATH/Plotting/plot-configs/python-configs
+export JSONCONFIGS=$EXCALIBURPATH/Plotting/plot-configs/json-configs
 
 export PYTHONPATH=$PYTHONCONFIGS:$PYTHONPATH
 
