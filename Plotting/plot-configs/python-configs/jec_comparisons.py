@@ -166,7 +166,8 @@ def comparison_5374(args=None):
 		'nicks': [
 			'53',
 			'74',
-		]
+		],
+		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
 	}
 	response_comparisons(args, additional_dictionary=d)
 	basic_comparisons(args, additional_dictionary=d)
