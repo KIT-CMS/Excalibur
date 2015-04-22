@@ -130,6 +130,25 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 
 	plotscript.plotscript(plots, args)
 
+def pf_comparisons(args=None, additional_dictionary=None):
+	"""Absolute contribution of PF fractions vs Z pT."""
+	plots = []
+
+	for pf in ['ch', 'm', 'nh', 'ch']:
+		d = {
+			'y_expressions': ["(jet1{0}f*jet1pt)".format(pf)],
+			'x_expressions': ['zpt'],
+			'x_bins': ["30 40 50 60 75 95 125 180 300 1000"],
+			'x_log': True,
+			'cutlabel': True,
+			'tree_draw_options':  'prof',
+			'x_lims': [30, 1000],
+			'analysis_modules': ['Ratio'],
+		}
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		plots.append(d)
+	plotscript.plotscript(plots, args)
 
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
@@ -176,6 +195,7 @@ def comparison_5374(args=None):
 	response_comparisons(args, additional_dictionary=d)
 	basic_comparisons(args, additional_dictionary=d)
 	basic_profile_comparisons(args, additional_dictionary=d)
+	pf_comparisons(args, additional_dictionary=d)
 
 if __name__ == '__main__':
 	basic_comparisons()
