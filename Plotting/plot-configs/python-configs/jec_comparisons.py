@@ -77,7 +77,7 @@ def basic_comparisons(args=None, additional_dictionary=None):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
-	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'npv', 'metpt', 'metphi']:
+	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'npv', 'metpt', 'metphi', 'run']:
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
@@ -131,8 +131,8 @@ def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
 	d = {
 		'files': [
-			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-16.root',
-			'ntuples/Data_8TeV_53X_E1_50ns_2015-01-08.root', 
+			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-21.root',
+			'ntuples/Data_8TeV_53X_E1_50ns_2015-04-22.root', 
 		],
 		"algorithms": [
 				"AK5PFTaggedJetsCHS",
