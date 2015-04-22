@@ -53,7 +53,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
 				'legloc': 'best',
-				'cutlabel': True,
+				'cutlabel': False,
 
 				'analysis_modules': ['Ratio'],
 
@@ -77,20 +77,21 @@ def basic_comparisons(args=None, additional_dictionary=None):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
-	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'npv', 'metpt', 'metphi', 'run', 'mu1pt', 'mu1eta', 'mu1phi']:
+	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'npv', 'metpt', 'metphi', 'run', 'mu1pt', 'mu1eta', 'mu1phi', 'lumi', 'event']:
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
-			'cutlabel': True,
+			'cutlabel': False,
 			'analysis_modules': ['Ratio'],
 			'y_subplot_lims': [0, 2],
 		}
 		if quantity in ['jet1pt', 'zpt']:
 			d["y_log"] = True
+			d["x_bins"] = ["25,0,400"]
+		elif quantity == 'mu1pt':
+			d["x_bins"] = ["25,0,150"]
 		elif quantity == 'metpt':
 			d["x_bins"] = ["25,0,125"]
-		if quantity == 'run':
-			d["plot_modules"] = ["PlotMplZJet", "PlotRunRanges"]
 
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
@@ -118,7 +119,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'y_expressions': [yquantity],
 			'analysis_modules': ['Ratio'],
 			'tree_draw_options': 'prof',
-			'cutlabel': True,
+			'cutlabel': False,
 			'y_subplot_lims': [0.99, 1.01],
 			'x_log': True,
 			'y_lims': [90.19, 92.19],
@@ -140,7 +141,7 @@ def pf_comparisons(args=None, additional_dictionary=None):
 			'x_expressions': ['zpt'],
 			'x_bins': ["30 40 50 60 75 95 125 180 300 1000"],
 			'x_log': True,
-			'cutlabel': True,
+			'cutlabel': False,
 			'tree_draw_options':  'prof',
 			'x_lims': [30, 1000],
 			'analysis_modules': ['Ratio'],
@@ -181,11 +182,11 @@ def comparison_E1E2(args=None):
 def comparison_5374(args=None):
 	d = {
 		'files': [
-			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-16.root',
+			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-04-22.root',
 			'ntuples/Data_8TeV_74X_E2_50ns_2015-04-20.root',
 		],
 		"algorithms": ["AK5PFTaggedJetsCHS",],
-		"corrections": ["L1L2L3/ntuple",],
+		"corrections": ["L1L2L3Res/ntuple",],
 		'nicks': [
 			'53',
 			'74',
