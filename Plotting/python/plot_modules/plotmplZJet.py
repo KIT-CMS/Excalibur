@@ -28,6 +28,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			"zpt>30": "$p_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
 			"(jet2pt/zpt<0.2)": r"$\alpha<0.2$"
 		}
+		self.zptcut = "zpt>30"
 
 
 	def modify_argument_parser(self, parser, args):
@@ -84,7 +85,11 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		super(PlotMplZJet, self).add_labels(plotData)
 		for ax in [plotData.plot.axes[0]]:
 			if plotData.plotdict['cutlabel'] == True:
-				texts = ["zpt>30", plotData.plotdict['allalpha'], plotData.plotdict['alleta']]
+				texts=[]
+				if ("incut" in plotData.plotdict['folders'][0][0]) or ("finalcuts" in plotData.plotdict['folders'][0][0]):
+					texts += [self.zptcut, plotData.plotdict['allalpha'], plotData.plotdict['alleta']]
+				elif ("zcuts" in plotData.plotdict['folders'][0][0]):
+					texts.append(self.zptcut)
 				texts = [self.cutlabeldict.get(*(text,)*2) for text in texts if self.cutlabeldict.get(*(text,)*2) != ""]
 				ax.text(0.03, 0.97, "\n".join(texts), va='top', ha='left', color='black', transform=ax.transAxes, size='large')
 
