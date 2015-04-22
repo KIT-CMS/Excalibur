@@ -87,6 +87,10 @@ def basic_comparisons(args=None, additional_dictionary=None):
 		}
 		if quantity in ['jet1pt', 'zpt']:
 			d["y_log"] = True
+		elif quantity == 'metpt':
+			d["x_bins"] = ["25,0,125"]
+		if quantity == 'run':
+			d["plot_modules"] = ["PlotMplZJet", "PlotRunRanges"]
 
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
