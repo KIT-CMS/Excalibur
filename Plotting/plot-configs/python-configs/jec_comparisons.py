@@ -81,7 +81,7 @@ def basic_comparisons(args=None, additional_dictionary=None):
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
-			'cutlabel': False,
+			'cutlabel': True,
 			'analysis_modules': ['Ratio'],
 			'y_subplot_lims': [0, 2],
 		}
@@ -119,7 +119,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'y_expressions': [yquantity],
 			'analysis_modules': ['Ratio'],
 			'tree_draw_options': 'prof',
-			'cutlabel': False,
+			'cutlabel': True,
 			'y_subplot_lims': [0.99, 1.01],
 			'x_log': True,
 			'y_lims': [90.19, 92.19],
@@ -141,7 +141,7 @@ def pf_comparisons(args=None, additional_dictionary=None):
 			'x_expressions': ['zpt'],
 			'x_bins': ["30 40 50 60 75 95 125 180 300 1000"],
 			'x_log': True,
-			'cutlabel': False,
+			'cutlabel': True,
 			'tree_draw_options':  'prof',
 			'x_lims': [30, 1000],
 			'analysis_modules': ['Ratio'],
