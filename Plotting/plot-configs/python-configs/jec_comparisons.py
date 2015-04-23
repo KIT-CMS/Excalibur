@@ -77,7 +77,9 @@ def basic_comparisons(args=None, additional_dictionary=None):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
-	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'npv', 'metpt', 'metphi', 'run', 'mu1pt', 'mu1eta', 'mu1phi', 'lumi', 'event']:
+	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi',
+			 'npv', 'metpt', 'metphi', 'run', 'mu1pt', 'mu1eta', 'mu1phi', 'lumi',
+			 'event', 'ptbalance', 'mpf']:
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
@@ -135,13 +137,14 @@ def pf_comparisons(args=None, additional_dictionary=None):
 	"""Absolute contribution of PF fractions vs Z pT."""
 	plots = []
 
-	for pf in ['ch', 'm', 'nh', 'ch']:
+	for pf in ['ch', 'm', 'nh', 'p']:
 		d = {
 			'y_expressions': ["(jet1{0}f*jet1pt)".format(pf)],
 			'x_expressions': ['zpt'],
 			'x_bins': ["30 40 50 60 75 95 125 180 300 1000"],
 			'x_log': True,
 			'cutlabel': True,
+			'markers': ['.', 'd'],
 			'tree_draw_options':  'prof',
 			'x_lims': [30, 1000],
 			'analysis_modules': ['Ratio'],
