@@ -10,6 +10,6 @@ def config():
     )
     cfg['Processors'] = [] # No processors to look at skim level
     cfg['Pipelines']['default']['Processors'] = [] # No processors to look at skim level
-    cfg = base.expand(cfg, ['nocuts', 'zcuts', 'finalcuts'], ['None'])
+    cfg = base.expand(cfg, ['nocuts'], ['None'])
 
     return cfg
