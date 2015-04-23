@@ -182,14 +182,14 @@ def comparison_E1E2(args=None):
 def comparison_5374(args=None):
 	d = {
 		'files': [
-			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-04-22.root',
 			'ntuples/Data_8TeV_74X_E2_50ns_2015-04-20.root',
+			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-04-22.root',
 		],
 		"algorithms": ["AK5PFTaggedJetsCHS",],
 		"corrections": ["L1L2L3Res/ntuple",],
 		'nicks': [
-			'53',
 			'74',
+			'53',
 		],
 		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
 	}
