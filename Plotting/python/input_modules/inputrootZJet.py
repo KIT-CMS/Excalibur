@@ -17,7 +17,9 @@ class InputRootZJet(inputroot.InputRoot):
 	def __init__(self):
 		super(InputRootZJet, self).__init__()
 		self.quantities_replace_dict = {
-			'ptbalance': '(jet1pt/zpt)'
+			'ptbalance': '(jet1pt/zpt)',
+			'deltaphizjet1' : '(abs(abs(abs(zphi-jet1phi)-TMath::Pi())-TMath::Pi()))',
+			'deltaphizmet' : '(abs(abs(abs(zphi-metphi)-TMath::Pi())-TMath::Pi()))',
 		}
 
 	def modify_argument_parser(self, parser, args):
@@ -29,7 +31,7 @@ class InputRootZJet(inputroot.InputRoot):
 		                                help="zjet folders (nocuts, finalcuts....")
 		self.zjet_input_options.add_argument("--algorithms", type=str, nargs='*', default=["AK5PFJetsCHS"],
 		                                help="jet algorithms.")
-		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3"],
+		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3Res"],
 		                                help="correction levels.")
 
 		# arguments to quickly switch to full alpha / eta range
@@ -47,7 +49,7 @@ class InputRootZJet(inputroot.InputRoot):
 			if all( [plotData.plotdict[i] != [None] for i in zjetlist]):
 				folders = []
 				for algo, corr, folder in zip(*[plotData.plotdict[i] for i in zjetlist]):
-					folders.append("%s_%s%s" % (folder, algo, corr))
+					folders.append("%s_%s%s/ntuple" % (folder, algo, corr))
 			plotData.plotdict['folders'] = folders
 
 		# automatically set nicks, x-expressions if not explicitly given
