@@ -143,7 +143,7 @@ def mm(cfg, **kwargs):
 
 	cfg['CutMuonPtMin'] = 20.0
 	cfg['CutMuonEtaMax'] = 2.3
-	cfg['CutLeadingJetPtMin'] = 20.0
+	cfg['CutLeadingJetPtMin'] = 12.0
 	cfg['CutLeadingJetEtaMax'] = 1.3
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
