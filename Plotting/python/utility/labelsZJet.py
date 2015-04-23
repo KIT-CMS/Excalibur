@@ -39,6 +39,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'metphi': r"$\phi^\mathrm{MET}$",
 			'metpt': '$E_\mathrm{T}^\mathrm{Miss}$',
 			'mu1pt': '$p_\mathrm{T}^\mathrm{\mu1}$',
+			'mu1eta': '$\eta^\mathrm{\mu1}$',
+			'mu1phi': '$\phi^\mathrm{\mu1}$',
 			'mu2pt': '$p_\mathrm{T}^\mathrm{\mu2}$',
 			'muminuspt': '$p_\mathrm{T}^\mathrm{\mu-}$',
 			'mupluspt': '$p_\mathrm{T}^\mathrm{\mu+}$',

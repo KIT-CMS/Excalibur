@@ -53,7 +53,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
 				'legloc': 'best',
-				'cutlabel': False,
+				'cutlabel': True,
 
 				'analysis_modules': ['Ratio'],
 
@@ -161,17 +161,9 @@ def comparison_E1E2(args=None):
 			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-21.root',
 			'ntuples/Data_8TeV_53X_E1_50ns_2015-04-22.root', 
 		],
-		"algorithms": [
-				"AK5PFTaggedJetsCHS",
-				"AK5PFJetsCHS",
-		],
-		"corrections": [
-				"L1L2L3/ntuple",
-				"L1L2L3",
-		],
-		"zjetfolders": [
-				"finalcuts",
-				"incut",
+		"folders": [
+				"finalcuts_AK5PFTaggedJetsCHSL1L2L3/ntuple",
+				"incut_AK5PFJetsCHSL1L2L3",
 		],
 		'nicks': [
 			'Ex2',
@@ -189,12 +181,14 @@ def comparison_5374(args=None):
 			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-04-22.root',
 		],
 		"algorithms": ["AK5PFTaggedJetsCHS",],
-		"corrections": ["L1L2L3Res/ntuple",],
+		"corrections": ["L1L2L3Res",],
 		'nicks': [
 			'74',
 			'53',
 		],
 		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
+		'y_subplot_label' : "74/53",
+		'lumi': 0.309
 	}
 	response_comparisons(args, additional_dictionary=d)
 	basic_comparisons(args, additional_dictionary=d)
