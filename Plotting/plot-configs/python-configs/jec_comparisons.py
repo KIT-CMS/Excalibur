@@ -94,6 +94,10 @@ def basic_comparisons(args=None, additional_dictionary=None):
 			d["x_bins"] = ["25,0,150"]
 		elif quantity == 'metpt':
 			d["x_bins"] = ["25,0,125"]
+		elif quantity == 'ptbalance':
+			d["x_bins"] = ["25,0,2"]
+		elif quantity == 'mpf':
+			d["x_bins"] = ["25,0,2"]
 
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
