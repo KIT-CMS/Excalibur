@@ -11,6 +11,8 @@ import ROOT
 import os
 
 import Artus.HarryPlotter.input_modules.inputroot as inputroot
+import Artus.Utility.jsonTools as jsonTools
+import Artus.HarryPlotter.utility.roottools as roottools
 
 class InputRootZJet(inputroot.InputRoot):
 
@@ -80,19 +82,30 @@ class InputRootZJet(inputroot.InputRoot):
 			modifies the weights accordingly. Actual implementation is
 			analysis-specific.
 		"""
-		types = []
+		is_data = False
 		for root_file in root_files:
 			f = ROOT.TFile(root_file)
-			types.append(f.Get("Type"))
+			keys, names = zip(*roottools.RootTools.walk_root_directory(f))
+			if 'config' in names:
+				is_data = jsonTools.JsonDict(root_file).get('InputIsData', False)
+			elif 'Type' in names:
+				types = []
+				types.append(f.Get("Type"))
+				if 'data' in types:
+					is_data = True
+			else:
+				f.Close()
+				return weight
+			f.Close()
 
-		if all([typ == 'mc' for typ in types]) and mc_weight is not None:
+		if (not is_data) and mc_weight is not None:
 			if plotData.plotdict.get('lumi', None) == None:
 				log.critical("'lumi' is not set, but needed for weights!")
 				return weight
 			mc_weight = mc_weight.replace('lumi', str(plotData.plotdict['lumi']))
 			log.debug("Automatically add MC weights: %s" % mc_weight)
 			return "((%s) * (%s))" % (weight, mc_weight)
-		elif all([typ == 'data' for typ in types]):
+		else:
 			plotData.plotdict['nolumilabel'] = False
 			if data_weight is not None:
 				log.debug("Automatically add Data weights: %s" % data_weight)
