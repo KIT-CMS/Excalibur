@@ -53,7 +53,7 @@ def getBaseConfig(**kwargs):
 					'zpt', 'zeta', 'zy', 'zphi', 'zmass',
 					# Leading jet
 					'jet1pt', 'jet1eta', 'jet1y', 'jet1phi',
-					'jet1chf', 'jet1nhf',
+					'jet1chf', 'jet1nhf', 'jet1ef',
 					'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
 					#'jet1unc',  # Leading jet uncertainty
 					# Second jet
