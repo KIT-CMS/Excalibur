@@ -50,9 +50,10 @@ class LabelsDictZJet(labels.LabelsDict):
 			'rho': '$\rho$',
 			'run': 'Run',
 			'sumet': '$\sum E^\mathrm{T}$',
+			'zmass': '$m_\mathrm{Z}$',
 			'zphi': r"$\phi^\mathrm{Z}$",
 			'zpt': '$p_\mathrm{T}^\mathrm{Z}$ / GeV',
-			'zy': '$y^Z$',
+			'zy': '$y_Z$',
 
 			# ZJet specific
 			'alpha': '$p_\mathrm{T}^\mathrm{Jet 2}/p_\mathrm{T}^\mathrm{Z}$',
