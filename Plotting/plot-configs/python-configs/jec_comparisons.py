@@ -79,7 +79,8 @@ def basic_comparisons(args=None, additional_dictionary=None):
 	plots = []
 	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi',
 			 'npv', 'metpt', 'metphi', 'run', 'mu1pt', 'mu1eta', 'mu1phi', 'lumi',
-			 'event', 'ptbalance', 'mpf']:
+			 'event', 'ptbalance', 'mpf', 'jet2pt', 'jet2eta',
+			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt']:
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
@@ -90,14 +91,17 @@ def basic_comparisons(args=None, additional_dictionary=None):
 		if quantity in ['jet1pt', 'zpt']:
 			d["y_log"] = True
 			d["x_bins"] = ["25,0,400"]
-		elif quantity == 'mu1pt':
-			d["x_bins"] = ["25,0,150"]
-		elif quantity == 'metpt':
-			d["x_bins"] = ["25,0,125"]
-		elif quantity == 'ptbalance':
-			d["x_bins"] = ["25,0,2"]
-		elif quantity == 'mpf':
-			d["x_bins"] = ["25,0,2"]
+		# TODO move this to more general location
+		xbins_dict = {
+			'mu1pt': ["25,0,150"],
+			'metpt': ["25,0,125"],
+			'ptbalance': ["25,0,2"],
+			'mpf': ["25,0,2"],
+			'jet2pt': ["25,0,100"],
+			'jet2eta': ["20,-5,5"],
+		}
+		if quantity in xbins_dict:
+			d.update({"x_bins": xbins_dict[quantity]})
 
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
