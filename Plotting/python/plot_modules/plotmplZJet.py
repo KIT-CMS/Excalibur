@@ -26,7 +26,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			"1": r"",
 			"(abs(jet1eta)<1.3)": r"|$\eta^{\mathrm{Leading \ jet}}$|$<1.3$",
 			"zpt>30": "$p_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
-			"(jet2pt/zpt<0.2)": r"$\alpha<0.2$"
+			"(jet2pt/zpt<0.2)": r"$\alpha<0.2$",
+			"(jet2pt/zpt<0.3)": r"$\alpha<0.3$"
 		}
 		self.zptcut = "zpt>30"
 
