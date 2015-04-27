@@ -16,6 +16,16 @@ export PATH=$PATH:$EXCALIBURPATH/scripts
 export PYTHONPATH=$PYTHONPATH:$EXCALIBURPATH/python:$EXCALIBURPATH/cfg/excalibur
 export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 
+# excalibur.py auto-completion
+function _artuscomplete_()
+{
+    local names
+    for i in `ls ${EXCALIBURPATH}/cfg/excalibur/*.py`
+        do names="${names} `basename $i .py`"
+    done
+    COMPREPLY=($(compgen -W "${names}" -- ${COMP_WORDS[COMP_CWORD]}))
+}
+complete -F _artuscomplete_ excalibur.py
 
 # Set some user specific variables
 if [ $USER = "dhaitz" ]; then
