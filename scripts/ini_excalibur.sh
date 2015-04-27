@@ -6,6 +6,7 @@ export ARTUSPATH=$EXCALIBURPATH/../Artus
 
 # source Artus ini script
 source $EXCALIBURPATH/../Artus/Configuration/scripts/ini_ArtusAnalysis.sh
+export PATH=$ARTUSPATH/Utility/scripts:$PATH
 
 # set the environment
 export BOOSTPATH=$(ls ${VO_CMS_SW_DIR}/${SCRAM_ARCH}/external/boost/* -d | tail -n 1)
