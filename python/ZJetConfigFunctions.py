@@ -157,7 +157,7 @@ def data_2011(cfg, **kwargs):
 	pass
 
 def data_2012(cfg, **kwargs):
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V6/Winter14_V5_DATA'
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_DATA'
 	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
 	cfg['MetPhiCorrectionParameters'] = [0.2661, 0.3217, -0.2251, -0.1747]
 
@@ -165,7 +165,7 @@ def mc_2011(cfg, **kwargs):
 	pass
 
 def mc_2012(cfg, **kwargs):
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V6/Winter14_V5_MC'
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_MC'
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
 
 
