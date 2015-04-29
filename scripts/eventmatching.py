@@ -37,15 +37,15 @@ def main():
     com, o1, o2 = compareLists(lists[0], lists[1])
     stopWatch()
     #for item1, item2 in zip(o1, o2):
-	#	print item1, item2
+    #    print item1, item2
     #for item in com:
     #    print item
     
     print "\nCopy to output trees:"
     fout = ROOT.TFile("output.root", "RECREATE")
-    cpTree(com, trees[0], "common1", 0)
+    c1 = cpTree(com, trees[0], "common1", 0)
     stopWatch()
-    cpTree(com, trees[1], "common2", 1)
+    c2 = cpTree(com, trees[1], "common2", 1)
     stopWatch()
     cpTree(o1, trees[0], "only1", 0)
     stopWatch()
@@ -54,6 +54,9 @@ def main():
 
     fout.Write()
     print "\nTrees written to file", fout.GetName()
+    
+    print "\nCompare common trees:"
+    compareTrees(c1, c2)
     stopWatch(overall=True)
     
     
@@ -119,7 +122,7 @@ def cpTree(eventList, tree, name, treeIndex=0, deactivate=None):
     outputTree = tree.CloneTree(0)
     outputTree.SetName(name)
     outputTree.SetTitle(tree.GetTitle() + "_" + name)
-    branches = list(set([b.GetName() for b in tree.GetListOfBranches()]))
+    branches = [b.GetName() for b in tree.GetListOfBranches()]
     print "  tree %r (%d branches, %d entries) to %r (%d branches, %d entries)" % (
         tree.GetName(), len(tree.GetListOfBranches()), tree.GetEntries(),
         name, len(outputTree.GetListOfBranches()), outputTree.GetEntries()),
@@ -134,7 +137,7 @@ def cpTree(eventList, tree, name, treeIndex=0, deactivate=None):
         if 'TNtuple' in str(type(tree)):
             outputTree.Fill(evt[3 + treeIndex])
         else:
-			outputTree.Fill()
+            outputTree.Fill()
         if i % 100 == 0:
             print "\r  %7d/%d" % (i, nevt),
             sys.stdout.flush()
@@ -143,7 +146,65 @@ def cpTree(eventList, tree, name, treeIndex=0, deactivate=None):
     print "\r  tree %r (%d branches, %d entries) to %r (%d branches, %d entries)" % (
         tree.GetName(), len(tree.GetListOfBranches()), tree.GetEntries(),
         name, len(outputTree.GetListOfBranches()), outputTree.GetEntries())
+    
+    return outputTree
 
-    return True
 
+def compareTrees(tree1, tree2):
+    ex1ex2dict = {
+        # ex2  :  ex1
+        'event': 'eventnr',
+        'lumi': 'lumisec',
+        'metphi': 'METphi',
+        'jet1ef': 'jet1chargedemfraction',
+        'jet1chf': 'jet1chargedhadfraction',
+        'jet1nhf': 'jet1neutralhadfraction', 
+        'jet1mf': 'jet1muonfraction',
+        'jet1hfhf': 'jet1HFhadfraction',
+        'jet1hfemf': 'jet1HFemfraction',
+        'jet1pf': 'jet1photonfraction', 
+        'metpt': 'METpt',
+        'metphi': 'METphi',
+        'rawmetpt': 'rawMETpt',
+        'rawmetphi': 'rawMETphi',
+        'sumet': 'sumEt', 
+    }
+    branches1orig = [b.GetName() for b in tree1.GetListOfBranches()] # branches of tree1
+    branches2orig = [b.GetName() for b in tree2.GetListOfBranches()] # branches of tree2
+    branches1used = [] # branches of tree1 that are in sync with tree2
+    branches2used = []
+    branches1only = [b for b in branches1orig]
+    branches2only = []
+
+    for b2 in branches2orig:
+        b1 = ex1ex2dict.get(b2, b2)
+        if b1 in branches1orig:
+            branches1used.append(b1)
+            branches2used.append(b2)
+            branches1only.remove(b1)
+        else:
+            branches2only.append(b1)
+    print "  * Branch comparison:"
+    print "  %4d branches only in tree1: %s" % (len(branches1only), ", ".join(branches1only))
+    print "  %4d branches only in tree1: %s" % (len(branches2only), ", ".join(branches2only))
+    print "  %4d common branches" % len(branches1used)
+    assert len(branches1used) == len(branches2used)
+
+    tree1.AddFriend(tree2.GetName())
+    for i in xrange(tree1.GetEntries()):
+        if i % 100 == 0:
+            print "\rEntry", i,
+        tree1.GetEntry(i)
+        tree2.GetEntry(i)
+        for b1, b2 in zip(branches1used, branches2used):
+            v1 = getattr(tree1, b1)
+            v2 = getattr(tree2, b2)
+            if b1 == 'eventnr':
+                v1 = int(tree1.eventnr1) * 1000000 + tree1.eventnr2
+            if abs(v1 - v2) > 1e-6 and b1 not in ['muplusiso', 'muminusiso', 'rho', 'njets', 'njetsinv']:
+                print "In entry %7d, %s differs: %s = %s, %s = %s" % (i, b2, b1, v1, b2, v2)
+    print "Looped"
+    
+            
+    
 main()
