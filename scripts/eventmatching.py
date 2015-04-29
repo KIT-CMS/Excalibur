@@ -10,9 +10,10 @@ def main():
     files = []
     trees = []
     stopWatch()
-    treeName = "finalcuts_AK5PFTaggedJetsCHSL1L2L3/ntuple"
+    treeName = ["finalcuts_AK5PFTaggedJetsCHSL1L2L3/ntuple", "finalcuts_AK5PFTaggedJetsCHSL1L2L3/ntuple"]
     if '-t' in sys.argv:
-        treeName = sys.argv.pop(sys.argv.index('-t') + 1)
+        treeName = [sys.argv.pop(sys.argv.index('-t') + 1), sys.argv.pop(sys.argv.index('-t') + 1)]
+        print treeName
         sys.argv.remove('-t')
     if len(sys.argv) < 3:
         print "Usage: %s file1.root file2.root [-t treename1 treename2]" % sys.argv[0]
@@ -22,19 +23,23 @@ def main():
     for i in range(1, len(sys.argv)):
         print "  File%2d: %s (%s)" % (i, sys.argv[i], treeName)
         files.append(ROOT.TFile(sys.argv[i]))
-        trees.append(files[-1].Get(treeName))
+        trees.append(files[-1].Get(treeName[i-1]))
     stopWatch()
 
     print "\nGet list of runs, lumis, events:"
     lists = []
     for tree in trees:
-        lst = getRunLumiEvent(tree)
+        lst = getRunLumiEvent(tree, 'e1event' if trees.index(tree) == 0 else 'event', 'lumisec' if trees.index(tree) == 0 else 'lumi')
         lists.append(sorted(lst))
     stopWatch()
 
     print "\nCompare lists:"
     com, o1, o2 = compareLists(lists[0], lists[1])
     stopWatch()
+    #for item1, item2 in zip(o1, o2):
+	#	print item1, item2
+    #for item in com:
+    #    print item
     
     print "\nCopy to output trees:"
     fout = ROOT.TFile("output.root", "RECREATE")
@@ -60,13 +65,16 @@ def stopWatch(n=[], overall=False):
     if overall:
         print "  -- Overall time:   %1.3f s" % (n[-1] - n[0])
 
-def getRunLumiEvent(tree, eventbranch='event'):
+def getRunLumiEvent(tree, eventbranch='event', lumibranch='event'):
     """get list of (run, lumi, event, entry index) from a tree"""
     result = []
     nevt = tree.GetEntries()
     for i in xrange(nevt):
         tree.GetEntry(i)
-        result.append((tree.run, tree.lumi, getattr(tree, eventbranch), i))
+        if eventbranch == 'e1event':
+            result.append((int(tree.run), int(getattr(tree, lumibranch)), int(getattr(tree, 'eventnr1') * 1000000 + getattr(tree, 'eventnr2')), i))
+        else:
+            result.append((int(tree.run), int(getattr(tree, lumibranch)), int(getattr(tree, eventbranch)), i))
         if i % 1000 == 0:
             print "\r  %7d/%d" % (i, nevt),
             sys.stdout.flush() 
@@ -122,8 +130,11 @@ def cpTree(eventList, tree, name, treeIndex=0, deactivate=None):
     nevt = len(eventList)
     for i, evt in zip(range(nevt), eventList):
         # evt is (run, lumi, event, index in tree1, index in tree2)
-        tree.GetEntry(evt[3 + treeIndex])  
-        outputTree.Fill()
+        tree.GetEntry(evt[3 + treeIndex])
+        if 'TNtuple' in str(type(tree)):
+            outputTree.Fill(evt[3 + treeIndex])
+        else:
+			outputTree.Fill()
         if i % 100 == 0:
             print "\r  %7d/%d" % (i, nevt),
             sys.stdout.flush()
