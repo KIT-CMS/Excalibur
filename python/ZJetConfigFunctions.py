@@ -41,7 +41,8 @@ def getBaseConfig(**kwargs):
 					'filter:MuonPtCut',
 					'filter:MuonEtaCut',
 					'filter:LeadingJetPtCut',
-					#'filter:LeadingJetEtaCut',
+					'filter:LeadingJetEtaCut',
+					'filter:AlphaCut',
 					'filter:ZPtCut',
 					'filter:BackToBackCut',
 				],
@@ -148,6 +149,7 @@ def mm(cfg, **kwargs):
 	cfg['CutLeadingJetEtaMax'] = 1.3
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
+	cfg['CutAlphaMax'] = 0.2
 
 
 ###

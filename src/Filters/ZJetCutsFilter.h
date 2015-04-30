@@ -15,6 +15,7 @@
  * leading jet eta
  * z pt
  * back to back
+ * alpha (second jet pt to z pt)
  * 
  */
 
@@ -254,4 +255,32 @@ class BackToBackCut : public ZJetFilterBase
 
   private:
 	float backToBack;
+};
+
+
+///////////
+// Alpha //
+///////////
+class AlphaCut : public ZJetFilterBase
+{
+  public:
+	virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE { return "AlphaCut"; }
+
+	AlphaCut() : ZJetFilterBase(){};
+	
+	virtual void Init(ZJetSettings const& settings) ARTUS_CPP11_OVERRIDE
+	{
+		ZJetFilterBase::Init(settings);
+		alphaMax = settings.GetCutAlphaMax();
+	}
+
+	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	{
+		// Always true if there is only one jet in the event
+		return (product.GetValidJetCount(settings, event) > 1) ? (product.GetValidJet(settings, event, 1)->p4.Pt()/product.m_z.p4.Pt() < alphaMax) : true;
+	}
+
+  private:
+	float alphaMax;
 };

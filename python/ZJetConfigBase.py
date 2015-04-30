@@ -90,13 +90,31 @@ def expand(config, cutModes, corrLevels, default="default"):
     for cutMode in cutModes:
         if cutMode == 'nocuts':
             pipelines[cutMode] = copy.deepcopy(p)
-            removeList = ['filter:MuonPtCut', 'filter:MuonEtaCut', 'filter:LeadingJetPtCut', 'filter:ZPtCut', 'filter:BackToBackCut']
+            removeList = ['filter:MuonPtCut', 'filter:MuonEtaCut', 'filter:LeadingJetPtCut', 'filter:ZPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
             for cut in removeList:
                 if cut in pipelines[cutMode]['Processors']:
                     pipelines[cutMode]['Processors'].remove(cut)
         elif cutMode == 'zcuts':
             pipelines[cutMode] = copy.deepcopy(p)
-            removelist = ['filter:LeadingJetPtCut', 'filter:BackToBackCut']
+            removelist = ['filter:LeadingJetPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
+            for cut in removelist:
+                if cut in pipelines[cutMode]['Processors']:
+                    pipelines[cutMode]['Processors'].remove(cut)
+        elif cutMode == 'noalphanoetacuts':
+            pipelines[cutMode] = copy.deepcopy(p)
+            removelist = ['filter:LeadingJetEtaCut', 'filter:AlphaCut']
+            for cut in removelist:
+                if cut in pipelines[cutMode]['Processors']:
+                    pipelines[cutMode]['Processors'].remove(cut)
+        elif cutMode == 'noalphacuts':
+            pipelines[cutMode] = copy.deepcopy(p)
+            removelist = ['filter:AlphaCut']
+            for cut in removelist:
+                if cut in pipelines[cutMode]['Processors']:
+                    pipelines[cutMode]['Processors'].remove(cut)
+        elif cutMode == 'noetacuts':
+            pipelines[cutMode] = copy.deepcopy(p)
+            removelist = ['filter:LeadingJetEtaCut']
             for cut in removelist:
                 if cut in pipelines[cutMode]['Processors']:
                     pipelines[cutMode]['Processors'].remove(cut)
