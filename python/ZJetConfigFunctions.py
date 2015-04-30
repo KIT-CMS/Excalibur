@@ -116,8 +116,8 @@ def mm(cfg, **kwargs):
 	# The order of these producers is important!
 	cfg['Processors'] = [
 		'producer:ValidMuonsProducer',
-        'filter:MinNMuonsCut',
-        'filter:MaxNMuonsCut',
+		'filter:MinNMuonsCut',
+		'filter:MaxNMuonsCut',
 		#'producer:MuonCorrectionsProducer', # Is not doing anything yet
 		'producer:ValidTaggedJetsProducer',
 		'filter:ValidJetsFilter',
