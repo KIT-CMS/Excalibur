@@ -7,6 +7,8 @@
 /**
  * Filter class with cuts for ZJet analysis.
  * 
+ * min nmuons
+ * max nmuons
  * muon pt
  * muon eta
  * leading jet pt
@@ -15,6 +17,61 @@
  * back to back
  * 
  */
+
+
+////////////////
+// Min nMuons //
+////////////////
+class MinNMuonsCut : public ZJetFilterBase
+{
+  public:
+	virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE { return "MinNMuonsCut"; }
+
+	MinNMuonsCut() : ZJetFilterBase(){};
+	
+	virtual void Init(ZJetSettings const& settings) ARTUS_CPP11_OVERRIDE
+	{
+		ZJetFilterBase::Init(settings);
+		nMuonsMin = settings.GetCutNMuonsMin();
+	}
+
+	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	{
+		return (product.m_validMuons.size() >= nMuonsMin);
+	}
+
+  private:
+	float nMuonsMin;
+};
+
+
+////////////////
+// Max nMuons //
+////////////////
+class MaxNMuonsCut : public ZJetFilterBase
+{
+  public:
+	virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE { return "MaxNMuonsCut"; }
+
+	MaxNMuonsCut() : ZJetFilterBase(){};
+	
+	virtual void Init(ZJetSettings const& settings) ARTUS_CPP11_OVERRIDE
+	{
+		ZJetFilterBase::Init(settings);
+		nMuonsMax = settings.GetCutNMuonsMax();
+	}
+
+	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
+	{
+		return (product.m_validMuons.size() <= nMuonsMax);
+	}
+
+  private:
+	float nMuonsMax;
+};
+
 
 /////////////
 // Muon Pt //

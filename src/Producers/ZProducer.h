@@ -5,6 +5,7 @@
 /** Producer class for Z boson reconstruction from muons/electrons.
  *
  *	Needs to run after the valid object producers.
+ * 	Needs min 2 valid muons and max 3 valid muons!
  */
 
 class ZProducer : public ZJetProducerBase

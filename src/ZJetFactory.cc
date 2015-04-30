@@ -46,6 +46,10 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 		return new BackToBackCut();
 	else if (id == ZFilter().GetFilterId())
 		return new ZFilter();
+	else if (id == MinNMuonsCut().GetFilterId())
+		return new MinNMuonsCut();
+	else if (id == MaxNMuonsCut().GetFilterId())
+		return new MaxNMuonsCut();
 	else
 		return KappaFactory::createFilter(id);
 }

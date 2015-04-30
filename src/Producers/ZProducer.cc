@@ -5,19 +5,6 @@ std::string ZProducer::GetProducerId() const { return "ZProducer"; }
 void ZProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
                         ZJetSettings const& settings) const
 {
-	if (product.m_validMuons.size() < 2)
-	{
-		// No Z to produce here
-		product.m_validZ = false;
-		return;
-	}
-	if (product.m_validMuons.size() > 3)
-	{
-		LOG(INFO) << "More than 3 valid muons? Not producing any Z. "
-		          << product.m_validMuons.size();
-		product.m_validZ = false;
-		return;
-	}
 	// Create all possible Z combinations
 	// Note: If we have more than 3 muons in an event, this may produce double
 	// counting

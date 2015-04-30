@@ -26,6 +26,8 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(bool, FlavourCorrections)
 	
 	// ZJetCutsFilter
+	IMPL_SETTING_DEFAULT(int, CutNMuonsMin, 2)
+	IMPL_SETTING_DEFAULT(int, CutNMuonsMax, 3)
 	IMPL_SETTING(float, CutMuonPtMin)
 	IMPL_SETTING(float, CutMuonEtaMax)
 	IMPL_SETTING(float, CutLeadingJetPtMin)
