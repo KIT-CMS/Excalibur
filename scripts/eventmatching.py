@@ -201,9 +201,19 @@ def compareTrees(tree1, tree2):
             v2 = getattr(tree2, b2)
             if b1 == 'eventnr':
                 v1 = int(tree1.eventnr1) * 1000000 + tree1.eventnr2
-            if abs(v1 - v2) > 1e-6 and b1 not in ['muplusiso', 'muminusiso', 'rho', 'njets', 'njetsinv']:
-                print "In entry %7d, %s differs: %s = %s, %s = %s" % (i, b2, b1, v1, b2, v2)
-    print "Looped"
+            #if b1 == 'njets':
+            #    v1 = tree1.njets + tree1.njetsinv
+            #    v2 = tree2.njets + tree2.njetsinv
+            #    print "N JET", v1, v2
+            if abs(v1 - v2) > 1e-3 and b1 not in ['muplusiso', 'muminusiso', 'rho','njets', 'njetsinv']:
+                if abs(tree1.jet1eta - tree2.jet1eta) > 0.001 and b2 in ['jet1pt', 'jet1phi', 'jet1y', 'jet1chf', 'jet1nhf', 'jet1ef', 'jet1pf', 'jet1hfhf', 'jet1hfemf']:
+                    continue
+                if abs(tree1.jet2eta - tree2.jet2eta) > 0.001 and b2 in ['jet2pt', 'jet2phi', 'jet2y']:
+                    continue
+                if 'mu2' in b2:
+                    continue
+                print "\rIn entry %7d, %s differs: %s = %s, %s = %s" % (i, b2, b1, v1, b2, v2)
+    print "\rEntry", i
     
             
     
