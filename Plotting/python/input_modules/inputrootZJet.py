@@ -75,4 +75,12 @@ class InputRootZJet(inputroot.InputRoot):
 					if item != None and key in item:
 						plotData.plotdict['{0}_expressions'.format(axis)][i] = plotData.plotdict['{0}_expressions'.format(axis)][i].replace(key, value)
 
+	def scale_histograms(self, plotData):
+
+		# automatically scale mc samples by lumi
+		for index, input_config_dict in enumerate(plotData.plotdict['input_json_dicts']):
+			if not input_config_dict.get("InputIsData", True):
+				plotData.plotdict['scale_factors'][index] *= plotData.plotdict['lumi']
+
+		super(InputRootZJet, self).scale_histograms(plotData)
 
