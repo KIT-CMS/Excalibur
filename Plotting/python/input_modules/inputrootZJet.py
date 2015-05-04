@@ -13,16 +13,14 @@ import os
 import Artus.HarryPlotter.input_modules.inputroot as inputroot
 import Artus.Utility.jsonTools as jsonTools
 import Artus.HarryPlotter.utility.roottools as roottools
+import Excalibur.Plotting.utility.quantities as quantities
 
 class InputRootZJet(inputroot.InputRoot):
 
 	def __init__(self):
 		super(InputRootZJet, self).__init__()
-		self.quantities_replace_dict = {
-			'ptbalance': '(jet1pt/zpt)',
-			'deltaphizjet1' : '(abs(abs(abs(zphi-jet1phi)-TMath::Pi())-TMath::Pi()))',
-			'deltaphizmet' : '(abs(abs(abs(zphi-metphi)-TMath::Pi())-TMath::Pi()))',
-		}
+		# TODO: put this dict in dedicated module
+		self.quantities_replace_dict = quantities.quantities_dict
 
 	def modify_argument_parser(self, parser, args):
 		super(InputRootZJet, self).modify_argument_parser(parser, args)
