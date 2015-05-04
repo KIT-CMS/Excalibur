@@ -68,6 +68,9 @@ class InputRootZJet(inputroot.InputRoot):
 			plotData.plotdict['weights'] = ["({}) * ({})".format(w, zjet_cuts) for w in plotData.plotdict['weights']]
 			log.info("Applying default ZJet cuts: {}".format(zjet_cuts))
 
+		# add 'weight' by default to weights by default
+		plotData.plotdict['weights'] = ["(weight * {0})".format (weight) for weight in plotData.plotdict['weights']]
+
 		# automatically replace quantity names, eg. ptbalance->jet1pt/zpt
 		for axis in ['x', 'y', 'z']:
 			for i, item in enumerate(plotData.plotdict['{0}_expressions'.format(axis)]):
