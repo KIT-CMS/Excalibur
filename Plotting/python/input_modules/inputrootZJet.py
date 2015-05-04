@@ -76,38 +76,3 @@ class InputRootZJet(inputroot.InputRoot):
 						plotData.plotdict['{0}_expressions'.format(axis)][i] = plotData.plotdict['{0}_expressions'.format(axis)][i].replace(key, value)
 
 
-	def auto_detect_type_and_modify_weight(self, weight, root_files, plotData,
-								mc_weight="lumi * weight", data_weight=None):
-		""" This function checks the type (data/MC) of the input file(s) and
-			modifies the weights accordingly. Actual implementation is
-			analysis-specific.
-		"""
-		is_data = False
-		for root_file in root_files:
-			f = ROOT.TFile(root_file)
-			keys, names = zip(*roottools.RootTools.walk_root_directory(f))
-			if 'config' in names:
-				is_data = jsonTools.JsonDict(root_file).get('InputIsData', False)
-			elif 'Type' in names:
-				types = []
-				types.append(f.Get("Type"))
-				if 'data' in types:
-					is_data = True
-			else:
-				f.Close()
-				return weight
-			f.Close()
-
-		if (not is_data) and mc_weight is not None:
-			if plotData.plotdict.get('lumi', None) == None:
-				log.critical("'lumi' is not set, but needed for weights!")
-				return weight
-			mc_weight = mc_weight.replace('lumi', str(plotData.plotdict['lumi']))
-			log.debug("Automatically add MC weights: %s" % mc_weight)
-			return "((%s) * (%s))" % (weight, mc_weight)
-		else:
-			plotData.plotdict['nolumilabel'] = False
-			if data_weight is not None:
-				log.debug("Automatically add Data weights: %s" % data_weight)
-				return "((%s) * (%s))" % (weight, data_weight)
-		return weight
