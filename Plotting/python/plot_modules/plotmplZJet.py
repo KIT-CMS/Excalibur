@@ -18,9 +18,12 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		self.nicelabels = labelsZJet.LabelsDictZJet()
 		self.default_bar_colors = [
 				'#7293cb',  # light blue
-				'#e1974c',  # mustard yellow
-				'#808585',  # grey
-				'#ab6857',  # brown
+				'#FAA75B',  # mustard yellow / orange
+				'#68A55A',  # green
+				'#CE7058',  # brown
+				'#9E67AB',  # violet
+				'#737373',  # grey
+				'#CE3B3E',  # red
 		]
 		self.cutlabeldict = {
 			"1": r"",
