@@ -128,11 +128,11 @@ def expand(config, cutModes, corrLevels, default="default"):
     for name, p in pipelines.items():
         for corrLevel in corrLevels:
             if corrLevel == 'None':
-                pipelines[name + "_" + config['TaggedJets']] = copy.deepcopy(p)
-                pipelines[name + "_" + config['TaggedJets']]['CorrectionLevel'] = corrLevel
+                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')] = copy.deepcopy(p)
+                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')]['CorrectionLevel'] = corrLevel
             else:
-                pipelines[name + "_" + config['TaggedJets'] + corrLevel] = copy.deepcopy(p)
-                pipelines[name + "_" + config['TaggedJets'] + corrLevel]['CorrectionLevel'] = corrLevel
+                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel] = copy.deepcopy(p)
+                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel]['CorrectionLevel'] = corrLevel
         del pipelines[name]
 
     return config

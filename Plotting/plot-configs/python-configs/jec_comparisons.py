@@ -191,7 +191,7 @@ def comparison_5374(args=None):
 			'ntuples/Data_8TeV_74X_E2_50ns_noHlt_2015-04-23.root',
 			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-04-23.root',
 		],
-		"algorithms": ["AK5PFTaggedJetsCHS",],
+		"algorithms": ["AK5PFJetsCHS",],
 		"corrections": ["L1L2L3Res",],
 		'nicks': [
 			'74',

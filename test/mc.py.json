@@ -35,7 +35,7 @@
     "OutputPath": "mc.root", 
     "PileupDensity": "KT6Area", 
     "Pipelines": {
-        "finalcuts_AK5PFTaggedJetsCHSL1L2L3": {
+        "finalcuts_AK5PFJetsCHSL1L2L3": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
@@ -98,7 +98,7 @@
                 "nmuons"
             ]
         }, 
-        "nocuts_AK5PFTaggedJetsCHSL1L2L3": {
+        "nocuts_AK5PFJetsCHSL1L2L3": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
@@ -155,7 +155,7 @@
                 "nmuons"
             ]
         }, 
-        "zcuts_AK5PFTaggedJetsCHSL1L2L3": {
+        "zcuts_AK5PFJetsCHSL1L2L3": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"

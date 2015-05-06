@@ -69,7 +69,7 @@
     "OutputPath": "data.root", 
     "PileupDensity": "KT6Area", 
     "Pipelines": {
-        "finalcuts_AK5PFTaggedJetsCHSL1L2L3": {
+        "finalcuts_AK5PFJetsCHSL1L2L3": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
@@ -135,7 +135,7 @@
                 "lumi"
             ]
         }, 
-        "finalcuts_AK5PFTaggedJetsCHSL1L2L3Res": {
+        "finalcuts_AK5PFJetsCHSL1L2L3Res": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
@@ -201,7 +201,7 @@
                 "lumi"
             ]
         }, 
-        "nocuts_AK5PFTaggedJetsCHSL1L2L3": {
+        "nocuts_AK5PFJetsCHSL1L2L3": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
@@ -261,7 +261,7 @@
                 "lumi"
             ]
         }, 
-        "nocuts_AK5PFTaggedJetsCHSL1L2L3Res": {
+        "nocuts_AK5PFJetsCHSL1L2L3Res": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
@@ -321,7 +321,7 @@
                 "lumi"
             ]
         }, 
-        "zcuts_AK5PFTaggedJetsCHSL1L2L3": {
+        "zcuts_AK5PFJetsCHSL1L2L3": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
@@ -385,7 +385,7 @@
                 "lumi"
             ]
         }, 
-        "zcuts_AK5PFTaggedJetsCHSL1L2L3Res": {
+        "zcuts_AK5PFJetsCHSL1L2L3Res": {
             "Consumers": [
                 "ZJetTreeConsumer", 
                 "cutflow_histogram"
