@@ -1,11 +1,11 @@
-#include "Consumers/ZJetLambdaNtupleConsumer.h"
+#include "Consumers/ZJetTreeConsumer.h"
 
-std::string ZJetLambdaNtupleConsumer::GetConsumerId() const
+std::string ZJetTreeConsumer::GetConsumerId() const
 {
-	return "ZJetLambdaNtupleConsumer";
+	return "ZJetTreeConsumer";
 }
 
-void ZJetLambdaNtupleConsumer::Init(ZJetSettings const& settings)
+void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 {
 	// Add possible quantities for the lambda ntuples consumers
 	

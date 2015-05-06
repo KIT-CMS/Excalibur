@@ -12,7 +12,7 @@
 #include "Filters/ZJetCutsFilter.h"
 
 // consumers
-#include "Consumers/ZJetLambdaNtupleConsumer.h"
+#include "Consumers/ZJetTreeConsumer.h"
 
 ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 {
@@ -58,8 +58,8 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 
 ConsumerBaseUntemplated* ZJetFactory::createConsumer(std::string const& id)
 {
-	if(id == ZJetLambdaNtupleConsumer().GetConsumerId())
-		return new ZJetLambdaNtupleConsumer();
+	if(id == ZJetTreeConsumer().GetConsumerId())
+		return new ZJetTreeConsumer();
 	else
 	return KappaFactory::createConsumer(id);
 }

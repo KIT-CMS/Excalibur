@@ -33,7 +33,7 @@ def getBaseConfig(**kwargs):
 				'CorrectionLevel': '', # Overwritten by expand function, set levels in data.py or mc.py
 				                       # No correction at all equals 'None', not ''
 				'Consumers': [
-					'ZJetLambdaNtupleConsumer',
+					'ZJetTreeConsumer',
 					'cutflow_histogram',
 				],
 				'EventWeight': 'eventWeight',

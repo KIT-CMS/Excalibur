@@ -37,7 +37,7 @@
     "Pipelines": {
         "finalcuts_AK5PFTaggedJetsCHSL1L2L3": {
             "Consumers": [
-                "ZJetLambdaNtupleConsumer", 
+                "ZJetTreeConsumer", 
                 "cutflow_histogram"
             ], 
             "CorrectionLevel": "L1L2L3", 
@@ -100,7 +100,7 @@
         }, 
         "nocuts_AK5PFTaggedJetsCHSL1L2L3": {
             "Consumers": [
-                "ZJetLambdaNtupleConsumer", 
+                "ZJetTreeConsumer", 
                 "cutflow_histogram"
             ], 
             "CorrectionLevel": "L1L2L3", 
@@ -157,7 +157,7 @@
         }, 
         "zcuts_AK5PFTaggedJetsCHSL1L2L3": {
             "Consumers": [
-                "ZJetLambdaNtupleConsumer", 
+                "ZJetTreeConsumer", 
                 "cutflow_histogram"
             ], 
             "CorrectionLevel": "L1L2L3", 

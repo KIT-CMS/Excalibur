@@ -5,7 +5,7 @@
 #include "ZJetTypes.h"
 
 
-class ZJetLambdaNtupleConsumer: public KappaLambdaNtupleConsumer<ZJetTypes> {
+class ZJetTreeConsumer: public KappaLambdaNtupleConsumer<ZJetTypes> {
 public:
 
 	virtual std::string GetConsumerId() const ARTUS_CPP11_OVERRIDE;
