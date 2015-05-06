@@ -15,7 +15,8 @@
    \brief Producer for tagged jet corrections (mainly JEC)
    
    Required config tags:
-   - JetEnergyCorrectionParameters (files containing the correction parameters in the right order)
+   - JEC (path and prefix of the correction files)
+   Not yet implemented:
    (- JetEnergyCorrectionUncertaintyParameters (default: empty))
    (- JetEnergyCorrectionUncertaintySource (default ""))
    (- JetEnergyCorrectionUncertaintyShift (default 0.0))
