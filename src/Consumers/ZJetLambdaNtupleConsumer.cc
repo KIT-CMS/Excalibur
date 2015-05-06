@@ -219,15 +219,7 @@ void ZJetLambdaNtupleConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == -1) return (*muon)->pfIso03;
-		}
-		return 0.;
-	} );
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muminusiso", [](ZJetEvent const& event, ZJetProduct const& product) -> float
-	{
-		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
-		{
-			if ((*muon)->charge() == -1) return (*muon)->pfIso03;
+			if ((*muon)->charge() == -1) return (*muon)->pfIso();
 		}
 		return 0.;
 	} );
