@@ -162,6 +162,124 @@ def pf_comparisons(args=None, additional_dictionary=None):
 		plots.append(d)
 	plotscript.plotscript(plots, args)
 
+
+def pf_fractions(args=None, additional_dictionary=None):
+	"""PF fractions and contributions to leading jet vs. ZpT, NPV, jet |eta|"""
+	plots = []
+
+	# for 'incoming' labels, add them to the PFfraction-labels
+	if additional_dictionary is not None:
+		labels = additional_dictionary.get('labels', ['', ''])
+	else:
+		labels = ['', '']
+	if labels != ['', '']:
+		labels = ["({0})".format(l) for l in labels]
+
+	for absolute_contribution in [False, True]:
+		for x_quantity, x_binning in zip(['zpt', 'abs(jet1eta)', 'npv'],
+			["30 40 50 60 75 95 125 180 300 1000",
+			"0 0.783 1.305 1.93 2.5 2.964 3.139 5.191",
+			"-0.5 4.5 8.5 15.5 21.5 45.5"],
+		):
+			d = {
+				"labels": [
+					"CH {0}".format(labels[0]),
+					"CH {0}".format(labels[1]),
+					r"$\\gamma$ {0}".format(labels[0]),
+					r"$\\gamma$ {0}".format(labels[1]),
+					"NH {0}".format(labels[0]),
+					"NH {0}".format(labels[1]),
+					r"$e$ {0}".format(labels[0]),
+					r"$e$ {0}".format(labels[1]),
+					r"$\\mu$ {0}".format(labels[0]),
+					r"$\\mu$ {0}".format(labels[1]),
+				],
+				"nicks": [
+					"CHad1",
+					"CHad2",
+					"g1",
+					"g2",
+					"NHad1",
+					"NHad2",
+					"e1",
+					"e2",
+					"m1",
+					"m2",
+				],
+				"colors":[
+					'#7293cb',  # light blue
+					'blue',
+					'#FAA75B',  # mustard yellow / orange
+					'orange',
+					'#68A55A',  # green
+					'green',
+					'#CE7058',  # brown
+					'brown',
+					'#9E67AB',  # violet
+					'purple',
+					'blue',
+					'orange',
+					'green',
+					'brown',
+					'purple',
+				],
+				"markers": ["fill", "o"]*5 + ["o"]*5,
+				"stacks": ["a", "b"]*5,
+				"tree_draw_options": ["prof"],
+				"legend_cols": 2,
+				"x_expressions": [x_quantity],
+				"x_bins": [x_binning],
+				"y_expressions": [i for i in ["jet1chf", "jet1pf", "jet1nhf", "jet1ef", "jet1mf"] for _ in (0,1)],
+				"y_label": "Leading Jet PF Energy Fraction",
+				"y_lims": [0.0, 1.0],
+				"analysis_modules": ["Ratio"],
+				"ratio_numerator_nicks": [
+					"CHad1",
+					"g1",
+					"NHad1",
+					"e1",
+					"m1",
+				],
+				"ratio_denominator_nicks": [
+					"CHad2",
+					"g2",
+					"NHad2",
+					"e2",
+					"m2",
+				],
+				'y_subplot_lims' : [0, 2],
+				'filename': "PFfractions_{}".format(x_quantity),
+			}
+			if x_quantity == 'zpt':
+				d["x_log"] = True
+			elif x_quantity == 'abs(jet1eta)':
+				d["alleta"] = "1"
+				d["legend"] = "upper left"
+				# add HF fractions
+				d["labels"] += [
+					r"HFhad {0}".format(labels[0]),
+					r"HFhad {0}".format(labels[1]),
+					r"HFem {0}".format(labels[0]),
+					r"HFem {0}".format(labels[1])]
+				d["ratio_numerator_nicks"] += ["HFhad1", "HFem1"]
+				d["ratio_denominator_nicks"] += ["HFhad2", "HFem2"]
+				d["y_expressions"] += ["jet1hfhf", "jet1hfhf", "jet1hfemf", "jet1hfemf"]
+				d["nicks"] += ["HFhad1","HFhad2", "HFem1", "HFem2"]
+				d["colors"] = d["colors"][:10]+['grey', 'black', '#D35658', 'red']+d["colors"][10:]+['grey', 'red']
+				d["markers"] = ["fill", "o"]*7 + ["o"]*7,
+				d["stacks"] = ["a", "b"]*7,
+			if absolute_contribution:
+				d["y_expressions"] = ["{0}*jet1pt".format(i) for i in d["y_expressions"]]
+				d.pop("y_lims")
+				d["filename"] = "PFcontributions_{}".format(x_quantity)
+				d["y_label"] = r"Leading Jet PF Energy / GeV"
+
+			if additional_dictionary != None:
+				d.update(additional_dictionary)
+			plots.append(d)
+	plotscript.plotscript(plots, args)
+
+
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
 	d = {
