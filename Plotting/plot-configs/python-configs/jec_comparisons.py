@@ -176,7 +176,7 @@ def comparison_E1E2(args=None):
 		'nicks': [
 			'Ex2',
 			'Ex1',
-		]
+		],
 		'y_subplot_lims' : [0.95, 1.05],
 		'y_subplot_label' : "Ex2/Ex1",
 		'y_errors' : [True, True, False],
