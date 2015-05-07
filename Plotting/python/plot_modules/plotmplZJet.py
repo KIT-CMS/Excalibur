@@ -42,8 +42,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		self.formatting_options.set_defaults(y_errors=[True])
 		self.formatting_options.set_defaults(legloc='center right')
 
-		self.formatting_options.set_defaults(energy='8')
-		self.formatting_options.set_defaults(lumi=19.789)
+		self.formatting_options.set_defaults(energies=['8'])
+		self.formatting_options.set_defaults(lumis=[19.8])
 
 		self.formatting_options.set_defaults(texts_x=0.03)
 		self.formatting_options.set_defaults(texts_y=0.97)
@@ -77,8 +77,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['output_dir'] = 'plots/live/'
 			plotData.plotdict['filename'] = 'plot'
 
-		if plotData.plotdict.get('nolumilabel', True):
-			plotData.plotdict['lumi'] = None
+		if not any([d["InputIsData"] for d in plotData.plotdict["input_json_dicts"]]):
+			plotData.plotdict['lumis'] = None
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
 		if 'ratio' in plotData.plotdict['nicks']:
