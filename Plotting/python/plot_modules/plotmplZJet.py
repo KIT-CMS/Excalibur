@@ -77,7 +77,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['output_dir'] = 'plots/live/'
 			plotData.plotdict['filename'] = 'plot'
 
-		if not any([d.get("InputIsData", False) for d in plotData.plotdict["input_json_dicts"]]):
+		if not any([d.get("InputIsData", False) for d in plotData.input_json_dicts]):
 			plotData.plotdict['lumis'] = None
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
