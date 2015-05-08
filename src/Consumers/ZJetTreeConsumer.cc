@@ -114,6 +114,41 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		return product.GetInvalidJetCount(settings, event);
 	} );
 	
+	// Reco jet - gen parton matches
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		KGenParticle* genParton = SafeMap::GetWithDefault(product.m_matchedGenPartons[settings.GetCorrectionLevel()],
+		                                                  static_cast<KJet*>(product.GetValidPrimaryJet(settings, event)),
+		                                                  (KGenParticle*)(0));
+		return (genParton != 0) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton1flavour", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		KGenParticle* genParton = SafeMap::GetWithDefault(product.m_matchedGenPartons[settings.GetCorrectionLevel()],
+		                                                  static_cast<KJet*>(product.GetValidPrimaryJet(settings, event)),
+		                                                  (KGenParticle*)(0));
+		return (genParton != 0) ? genParton->pdgId() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		if (product.GetValidJetCount(settings, event) > 1)
+		{
+			KGenParticle* genParton = SafeMap::GetWithDefault(product.m_matchedGenPartons[settings.GetCorrectionLevel()],
+		                                                      static_cast<KJet*>(product.GetValidJet(settings, event, 1)),
+		                                                      (KGenParticle*)(0));
+			return (genParton != 0) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
+		}
+		else
+		{
+			return DefaultValues::UndefinedDouble;
+		}
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("artusgenparton1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) // Artus producer, for debugging
+	{
+		KGenParticle* genParton = SafeMap::GetWithDefault((product.m_genParticleMatchedJets), product.m_validJets.at(0), (KGenParticle*)(0));
+		return (genParton != 0) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
+	} );
+	
 	// TODO if needed
 	// njets30, njets30barrel, genjet1pt, genjet1ptneutrinos, genjet1eta, genjet1phi, matchedgenjet1pt,
 	// matchedgenjet2pt, genjet2pt, deltaRgenjet1genjet2, deltaRjet1jet2, deltaRjet1genjet1, deltaRjet2genjet2

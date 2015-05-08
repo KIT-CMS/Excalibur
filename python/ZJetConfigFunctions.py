@@ -5,8 +5,8 @@ def getBaseConfig(**kwargs):
 		'SkipEvents': 0,
 		'EventCount': -1,
 		'Processors': [],
-		'InputFiles': [],	 # Overwritten by (data/mc).py, excalibur.py, json_modifier.py (if run in batch mode)
-		'OutputPath': 'out',  # Overwritten by excalibur.py
+		'InputFiles': [],  # Overwritten by (data/mc).py, excalibur.py, json_modifier.py (if run in batch mode)
+		'OutputPath': 'out', # Overwritten by excalibur.py
 		# ZJetCorrectionsProducer Settings
 		'Jec': '', # Path for JEC data, please set this later depending on input type
 		'L1Correction': 'L1FastJet',
@@ -88,7 +88,22 @@ def data(cfg, **kwargs):
 
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
-	# put the gen_producer first since e.g. l5_producer depend on it
+	cfg['Processors'] += [
+		'producer:RecoJetGenPartonMatchingProducer',
+		#'producer:RecoJetGenParticleMatchingProducer',
+		#'producer:RecoMuonGenParticleMatchingProducer',
+	]
+	cfg['GenParticles'] = 'genParticles'
+	cfg['Pipelines']['default']['Quantities'] += [
+		'matchedgenparton1pt',
+		'matchedgenparton1flavour',
+		'matchedgenparton2pt',
+		#'artusgenparton1pt'
+    ]
+
+	# RecoJetGenParticleMatchingProducer Settings
+	cfg['DeltaRMatchingRecoJetGenParticle'] = 0.3
+	cfg['JetMatchingAlgorithm'] = 'physics' # algorithmic or physics
 
 ##
 ##

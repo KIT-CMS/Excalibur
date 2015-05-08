@@ -31,6 +31,9 @@ class ZJetProduct : public KappaProduct
 	
 	// Added by TypeIMETProducer
 	mutable std::map<std::string, KMET> m_corrMET;
+	
+	// Added by GenPartonRecoJetMatchingProducer
+	mutable std::map<std::string, std::map<KJet*, KGenParticle*> > m_matchedGenPartons;
 
 
 	/////////////////////////////
