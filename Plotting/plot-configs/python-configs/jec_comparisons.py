@@ -249,12 +249,13 @@ def pf_fractions(args=None, additional_dictionary=None):
 				],
 				'y_subplot_lims' : [0, 2],
 				'filename': "PFfractions_{}".format(x_quantity),
+				'legend': "None",
 			}
 			if x_quantity == 'zpt':
 				d["x_log"] = True
 			elif x_quantity == 'abs(jet1eta)':
 				d["alleta"] = "1"
-				d["legend"] = "upper left"
+				d["save_legend"] = "legend"
 				# add HF fractions
 				d["labels"] += [
 					r"HFhad {0}".format(labels[0]),
