@@ -16,12 +16,13 @@ def rivet_fastnlo(args=None):
 		['', " (normalized)"],
 		['', '_normalizes'],
 	):
-		for quantity, x, xlabel, upper_limit in zip(['pT', 'y'], ["256", "514"], ['zpt', 'abs(zy)'], [100, 3]):
-			for file1, label1, filename_suffix, xx in zip(
+		for quantity, x, xlabel, upper_limit in zip(['pT', 'y'], ["d01-x01-y01", "d02-x01-y01"], ['zpt', 'abs(zy)'], [100, 3]):
+			for file1, label1, filename_suffix, path, weight in zip(
 				["/usr/users/dhaitz/home/qcd/work/rivet-results/Rivet.root", "/usr/users/dhaitz/home/artus/Excalibur/plots/genz{}.root".format(quantity.lower())],
 				["Sherpa+Rivet", 'Madgraph+Pythia'],
 				["fnlo", "mg"],
-				[x, 'nick0']
+				[x, '4'],
+				['1', '19.789'],
 			):
 				d = {
 					"analysis_modules": norm_modules + ["Ratio"],
@@ -34,7 +35,8 @@ def rivet_fastnlo(args=None):
 					"markers": ["o", "fill","o"],
 					"filename": quantity + "_riv-" + filename_suffix + filename_norm_suffix,
 					"title": title,
-					"x_expressions": ["0", xx],
+					"scale_factors": ["1", weight],
+					"x_expressions": ["0", path],
 					"x_label": xlabel,
 					"x_lims": [0.0, upper_limit],
 					"y_label": "Events" + y_label_suffix,
