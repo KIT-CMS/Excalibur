@@ -46,5 +46,30 @@ def rivet_fastnlo(args=None):
 
 	plotscript.plotscript(plots, args)
 
+
+def genz_root(args=None):
+	""" Create the root files from data for the Sherpa-Madgraph comparison."""
+	plots = []
+	for quantity, binning in zip(["pt", "y"], ["10,0,100", "25,0,2.5"]):
+		d = {
+			"files": ["/storage/a/dhaitz/excalibur/mc_ee_corr.root"],
+			"plot_modules": ["ExportRoot"],
+			"x_bins": [binning],
+			"x_expressions": ["genz{}".format(quantity)],
+			"folders": ["all_AK5PFJetsCHSL1L2L3"],
+			"weights": [],
+			"nicks": [],
+		}
+		for njets in range(5):
+			d['weights'].append("({})".format(
+				" && ".join(["epluspt>25", "eminuspt>25", "abs(epluseta)<2.5",
+				"abs(eminuseta)<2.5", "zmass>81", "zmass<101", "njets30<={0}".format(njets)])
+			))
+			d["nicks"].append(str(njets))
+
+		plots.append(d)
+	plotscript.plotscript(plots, args)
+
+
 if __name__ == '__main__':
 	rivet_fastnlo()
