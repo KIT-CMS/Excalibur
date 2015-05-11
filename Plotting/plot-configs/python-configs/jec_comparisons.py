@@ -170,6 +170,7 @@ def pf_fractions(args=None, additional_dictionary=None):
 	# for 'incoming' labels, add them to the PFfraction-labels
 	if additional_dictionary is not None:
 		labels = additional_dictionary.get('labels', ['', ''])
+		additional_dictionary.pop('labels')
 	else:
 		labels = ['', '']
 	if labels != ['', '']:
@@ -253,8 +254,10 @@ def pf_fractions(args=None, additional_dictionary=None):
 			}
 			if x_quantity == 'zpt':
 				d["x_log"] = True
+				d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 			elif x_quantity == 'abs(jet1eta)':
-				d["alleta"] = "1"
+				#d["alleta"] = "1"
+				d["zjetfolders"] = ["noetacuts"]
 				d["save_legend"] = "legend"
 				# add HF fractions
 				d["labels"] += [
@@ -324,6 +327,29 @@ def comparison_5374(args=None):
 	basic_comparisons(args, additional_dictionary=d)
 	basic_profile_comparisons(args, additional_dictionary=d)
 	pf_comparisons(args, additional_dictionary=d)
+	
+
+def comparison_datamc(args=None):
+	d = {
+		'files': [
+			'work/data.root',
+			'work/mc.root',
+		],
+		'labels': [
+			'data',
+			'mc',
+		],
+		'corrections': [
+			'L1L2L3Res',
+			'L1L2L3',
+		],
+		'weights': [
+			'1.0',
+			'19.789',
+		],
+	
+	}
+	pf_fractions(args, additional_dictionary=d)
 
 if __name__ == '__main__':
 	basic_comparisons()
