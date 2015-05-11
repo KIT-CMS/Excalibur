@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Excalibur.Plotting.plotscript as plotscript
+import Excalibur.Plotting.harryinterface as harryinterface
 
 
 def pdf_corr(args=None):
@@ -55,7 +55,7 @@ def pdf_corr(args=None):
 			]
 		}
 		dicts.append(d)
-	plotscript.plotscript(dicts, args)
+	harryinterface.harry_interface(dicts, args)
 
 
 if __name__ == '__main__':

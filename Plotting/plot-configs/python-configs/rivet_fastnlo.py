@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Artus.HarryPlotter.harry as harry
-import Excalibur.Plotting.plotscript as plotscript
+import Excalibur.Plotting.harryinterface as harryinterface
 
 
 def rivet_fastnlo(args=None):
@@ -44,7 +44,7 @@ def rivet_fastnlo(args=None):
 				}
 				plots.append(d)
 
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 
 def genz_root(args=None):
@@ -68,7 +68,7 @@ def genz_root(args=None):
 			d["nicks"].append(str(njets))
 
 		plots.append(d)
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 
 if __name__ == '__main__':

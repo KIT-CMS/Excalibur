@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Artus.HarryPlotter.harry as harry
-import Excalibur.Plotting.plotscript as plotscript
+import Excalibur.Plotting.harryinterface as harryinterface
 
 import numpy as np
 import argparse
@@ -161,7 +161,7 @@ def zee_unfolded(args=None):
 						d['x_lims'] = [30, 1000]
 						d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 					plots.append(d)
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 
 if __name__ == '__main__':

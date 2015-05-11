@@ -9,8 +9,8 @@ log = logging.getLogger(__name__)
 import Excalibur.Plotting.harryZJet as harryZJet
 
 
-def plotscript(dicts, unknown_args=None):
-	""" main """	
+def harry_interface(dicts, unknown_args=None):
+	""" main """
 	# get max processes name from command line
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--max-processes', type=int, default=8)

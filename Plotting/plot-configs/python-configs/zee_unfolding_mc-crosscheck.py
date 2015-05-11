@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Artus.HarryPlotter.harry as harry
-import Excalibur.Plotting.plotscript as plotscript
+import Excalibur.Plotting.harryinterface as harryinterface
 
 
 def zee_unfolding_crosscheck(args=None):
@@ -89,7 +89,7 @@ def zee_unfolding_crosscheck(args=None):
 				d['x_ticks'] = [30, 50, 70, 100, 230]
 
 			plots.append(d)
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 if __name__ == '__main__':
 	zee_unfolding_crosscheck()

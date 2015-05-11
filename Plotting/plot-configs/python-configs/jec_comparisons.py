@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Excalibur.Plotting.plotscript as plotscript
+import Excalibur.Plotting.harryinterface as harryinterface
 
 import argparse
 import copy
@@ -70,7 +70,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 			if additional_dictionary != None:
 				d.update(additional_dictionary)
 			plots.append(d)
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 
 def basic_comparisons(args=None, additional_dictionary=None):
@@ -118,7 +118,7 @@ def basic_comparisons(args=None, additional_dictionary=None):
 			d2.update(additional_dictionary)
 		plots.append(d2)
 
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 def basic_profile_comparisons(args=None, additional_dictionary=None):
 	""" Plots Z mass as a function of pT """
@@ -139,7 +139,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			d.update(additional_dictionary)
 		plots.append(d)
 
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 def pf_comparisons(args=None, additional_dictionary=None):
 	"""Absolute contribution of PF fractions vs Z pT."""
@@ -160,7 +160,7 @@ def pf_comparisons(args=None, additional_dictionary=None):
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
 		plots.append(d)
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 
 def pf_fractions(args=None, additional_dictionary=None):
@@ -281,7 +281,7 @@ def pf_fractions(args=None, additional_dictionary=None):
 			if additional_dictionary != None:
 				d.update(additional_dictionary)
 			plots.append(d)
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 
 def comparison_E1E2(args=None):

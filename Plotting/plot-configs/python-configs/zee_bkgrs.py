@@ -4,7 +4,7 @@
 import numpy as np
 
 import Artus.HarryPlotter.harry as harry
-import Excalibur.Plotting.plotscript as plotscript
+import Excalibur.Plotting.harryinterface as harryinterface
 
 
 def zee_bkgrs(args=None):
@@ -124,7 +124,7 @@ def zee_bkgrs(args=None):
 							})
 							plots.append(d)
 					"""
-	plotscript.plotscript(plots, args)
+	harryinterface.harry_interface(plots, args)
 
 
 if __name__ == '__main__':
