@@ -12,12 +12,12 @@ void RecoJetGenPartonMatchingProducer::Produce(KappaEvent const& event, KappaPro
 	ZJetSettings const& zJetSettings = static_cast<ZJetSettings const&>(settings);
 		
 	// Iterate over all jet correction levels
-	for (std::map<std::string, std::vector<std::shared_ptr<KJet> > >::iterator
+	for (std::map<std::string, std::vector<std::shared_ptr<KJet> > >::const_iterator
 	     itlevel = zJetProduct.m_correctedZJets.begin();
 	     itlevel != zJetProduct.m_correctedZJets.end(); ++itlevel)
 	{
 		// Iterate over all jets and match them to partons
-		for (std::vector<std::shared_ptr<KJet> >::iterator recoJet = itlevel->second.begin(); recoJet != itlevel->second.end(); ++recoJet)
+		for (std::vector<std::shared_ptr<KJet> >::const_iterator recoJet = itlevel->second.begin(); recoJet != itlevel->second.end(); ++recoJet)
 		{
 			// Use Artus reco jet gen particle matcher
 			KGenParticle* matchedParton = Match(zJetEvent, zJetProduct, zJetSettings, static_cast<KLV*>((*recoJet).get()));
@@ -29,7 +29,3 @@ void RecoJetGenPartonMatchingProducer::Produce(KappaEvent const& event, KappaPro
 		}
 	}
 }
-
-// TODO
-// iterator -> const_iterator for both loops
-// alternative way for loop: product.m_correctedZJets[itlevel->first].begin()
