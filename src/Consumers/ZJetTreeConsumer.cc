@@ -114,6 +114,20 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		return product.GetInvalidJetCount(settings, event);
 	} );
 	
+	// Gen jets
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (event.m_genJets != NULL && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Pt() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (event.m_genJets != NULL && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Eta() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (event.m_genJets != NULL && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Phi() : DefaultValues::UndefinedDouble;
+	} );
+	
 	// Reco jet - gen parton matches
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{

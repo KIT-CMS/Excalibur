@@ -88,6 +88,7 @@ def data(cfg, **kwargs):
 
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
+	#cfg['GenJets'] = 'AK5GenJets'
 	cfg['Processors'] += [
 		'producer:RecoJetGenPartonMatchingProducer',
 		#'producer:RecoJetGenParticleMatchingProducer',
@@ -95,6 +96,9 @@ def mc(cfg, **kwargs):
 	]
 	cfg['GenParticles'] = 'genParticles'
 	cfg['Pipelines']['default']['Quantities'] += [
+		'genjet1pt',
+		'genjet1eta',
+		'genjet1phi',
 		'matchedgenparton1pt',
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',
