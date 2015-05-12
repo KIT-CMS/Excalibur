@@ -87,16 +87,16 @@ class ZJetProduct : public KappaProduct
 	}
 
 	KLV* GetValidJet(ZJetSettings const& settings,
-						 ZJetEvent const& event,
-						 unsigned int index) const
+	                 ZJetEvent const& event,
+	                 unsigned int index) const
 	{
 		return GetValidJet(settings, event, index, settings.GetCorrectionLevel());
 	}
 
 	KLV* GetValidPrimaryJet(ZJetSettings const& settings,
-								ZJetEvent const& event) const
+	                        ZJetEvent const& event) const
 	{
-		return GetValidJet(settings, event, 0);
+		return GetValidJet(settings, event, 0, settings.GetCorrectionLevel());
 	}
 
 	// Access to invalid jets
