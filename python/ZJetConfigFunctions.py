@@ -92,8 +92,7 @@ def mc(cfg, **kwargs):
 	cfg['Processors'] += [
 		'producer:RecoJetGenPartonMatchingProducer',
 		'producer:RecoJetGenJetMatchingProducer',
-		#'producer:RecoJetGenParticleMatchingProducer',
-		#'producer:RecoMuonGenParticleMatchingProducer',
+		'producer:GenParticleProducer',
 	]
 	cfg['GenParticles'] = 'genParticles'
 	cfg['Pipelines']['default']['Quantities'] += [
@@ -106,6 +105,12 @@ def mc(cfg, **kwargs):
 		'matchedgenparton2pt',
 		'matchedgenjet1pt',
 		'matchedgenjet2pt',
+		'genzpt',
+		'genzeta',
+		'genzphi',
+		'genzy',
+		'genzmass',
+		'deltarzgenz',
 	]
 
 	# RecoJetGenParticleMatchingProducer Settings
@@ -114,6 +119,11 @@ def mc(cfg, **kwargs):
 
 	# RecoJetGenJetMatchingProducer Settings
 	cfg['DeltaRMatchingRecoJetGenJet'] = 0.25
+
+	# GenParticleProducer
+	cfg['GenParticleTypes'] = ["genParticle"]
+	cfg['GenParticlePdgIds'] = [13, -13, 23] # mu-, mu+, Z
+	cfg['GenParticleStatus'] = 2
 
 ##
 ##

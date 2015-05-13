@@ -176,4 +176,11 @@ class ZJetProduct : public KappaProduct
 		else
 			return NULL;
 	}
+	
+	// Access to gen Z
+	KGenParticle* GetGenZ() const
+	{
+		std::vector<KGenParticle*> genZs = SafeMap::GetWithDefault(m_genParticlesMap, 23, (std::vector<KGenParticle*>)(0));
+		return (genZs.size() > 0) ? genZs[0] : NULL;
+	}
 };
