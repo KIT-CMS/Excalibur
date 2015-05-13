@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Artus/KappaAnalysis/interface/Consumers/KappaLambdaNtupleConsumer.h"
-#include "Artus/Utility/interface/SafeMap.h"
 
 #include "ZJetTypes.h"
 

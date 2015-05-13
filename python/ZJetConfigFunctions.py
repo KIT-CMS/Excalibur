@@ -88,9 +88,10 @@ def data(cfg, **kwargs):
 
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
-	#cfg['GenJets'] = 'AK5GenJets'
+	cfg['GenJets'] = 'AK5GenJets'
 	cfg['Processors'] += [
 		'producer:RecoJetGenPartonMatchingProducer',
+		'producer:RecoJetGenJetMatchingProducer',
 		#'producer:RecoJetGenParticleMatchingProducer',
 		#'producer:RecoMuonGenParticleMatchingProducer',
 	]
@@ -102,12 +103,17 @@ def mc(cfg, **kwargs):
 		'matchedgenparton1pt',
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',
+		'matchedgenjet1pt',
+		'matchedgenjet2pt',
 		#'artusgenparton1pt'
-    ]
+	]
 
 	# RecoJetGenParticleMatchingProducer Settings
 	cfg['DeltaRMatchingRecoJetGenParticle'] = 0.3
 	cfg['JetMatchingAlgorithm'] = 'physics' # algorithmic or physics
+
+	# RecoJetGenJetMatchingProducer Settings
+	cfg['DeltaRMatchingRecoJetGenJet'] = 0.25
 
 ##
 ##

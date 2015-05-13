@@ -1,0 +1,27 @@
+
+#pragma once
+
+#include "ZJetTypes.h"
+
+#include "KappaTools/RootTools/Matching.h"
+
+/** Producer for reco jet gen jet matches
+ * 
+ *  Possible config tags:
+ *  - DeltaRMatchingRecoJetGenJet (default provided)
+ */
+
+class RecoJetGenJetMatchingProducer : public ZJetProducerBase
+{
+  public:
+    virtual std::string GetProducerId() const ARTUS_CPP11_OVERRIDE;
+    
+	RecoJetGenJetMatchingProducer() : ZJetProducerBase(){};
+
+	void Init(ZJetSettings const& settings);
+
+	void Produce(ZJetEvent const& event, ZJetProduct& product,
+				 ZJetSettings const& settings) const;
+
+  private:
+};

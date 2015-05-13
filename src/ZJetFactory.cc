@@ -7,6 +7,7 @@
 #include "Producers/ZJetCorrectionsProducer.h"
 #include "Producers/JetSorter.h"
 #include "Producers/RecoJetGenPartonMatchingProducer.h"
+#include "Producers/RecoJetGenJetMatchingProducer.h"
 
 // filters
 #include "Filters/ZFilter.h"
@@ -29,6 +30,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 		return new JetSorter();
 	else if (id == RecoJetGenPartonMatchingProducer().GetProducerId())
 		return new RecoJetGenPartonMatchingProducer();
+	else if (id == RecoJetGenJetMatchingProducer().GetProducerId())
+		return new RecoJetGenJetMatchingProducer();
 	else
 		return KappaFactory::createProducer(id);
 }

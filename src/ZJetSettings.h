@@ -25,6 +25,9 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(bool, RC)
 	IMPL_SETTING(bool, FlavourCorrections)
 	
+	// RecoJetGenJetMatchingProducer
+	IMPL_SETTING_DEFAULT(double, DeltaRMatchingRecoJetGenJet, 0.25)
+	
 	// ZJetCutsFilter
 	IMPL_SETTING_DEFAULT(int, CutNMuonsMin, 2)
 	IMPL_SETTING_DEFAULT(int, CutNMuonsMax, 3)

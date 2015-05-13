@@ -32,8 +32,11 @@ class ZJetProduct : public KappaProduct
 	// Added by TypeIMETProducer
 	mutable std::map<std::string, KMET> m_corrMET;
 	
-	// Added by GenPartonRecoJetMatchingProducer
+	// Added by RecoJetGenPartonMatchingProducer
 	mutable std::map<std::string, std::map<KJet*, KGenParticle*> > m_matchedGenPartons;
+	
+	// Added by RecoJetGenJetMatchingProducer
+	boost::ptr_map<std::string, std::vector<int> > m_matchedGenJets;
 
 
 	/////////////////////////////
@@ -145,5 +148,32 @@ class ZJetProduct : public KappaProduct
 		double scalPtEt = m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
 		double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
 		return 1.0f + scalPtEt / scalPtSq;
+	}
+
+	// Reco jet - gen parton matching result
+	KGenParticle* GetMatchedGenParton(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
+	{
+		if (GetValidJetCount(settings, event) > index)
+			return SafeMap::GetWithDefault(m_matchedGenPartons[settings.GetCorrectionLevel()],
+			                               static_cast<KJet*>(GetValidJet(settings, event, index)),
+			                               (KGenParticle*)(0));
+		else
+			return NULL;
+	}
+
+	// Reco jet - gen jet matching result
+	KLV* GetMatchedGenJet(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
+	{
+		std::vector<int> jetList = m_matchedGenJets.at(settings.GetCorrectionLevel());
+
+		if (index >= jetList.size())
+			return NULL;
+
+		unsigned int matchedJet = jetList.at(index);
+
+		if (GetValidJetCount(settings, event, "Gen") >= matchedJet)
+			return GetValidJet(settings, event, matchedJet, "Gen");
+		else
+			return NULL;
 	}
 };
