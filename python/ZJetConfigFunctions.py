@@ -100,12 +100,12 @@ def mc(cfg, **kwargs):
 		'genjet1pt',
 		'genjet1eta',
 		'genjet1phi',
+		'genjet2pt',
 		'matchedgenparton1pt',
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',
 		'matchedgenjet1pt',
 		'matchedgenjet2pt',
-		#'artusgenparton1pt'
 	]
 
 	# RecoJetGenParticleMatchingProducer Settings

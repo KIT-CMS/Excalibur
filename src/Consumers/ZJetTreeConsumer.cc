@@ -127,6 +127,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return (event.m_genJets != NULL && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Phi() : DefaultValues::UndefinedDouble;
 	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (event.m_genJets != NULL && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Pt() : DefaultValues::UndefinedDouble;
+	} );
 	
 	// Reco jet - gen parton matches
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
@@ -158,8 +162,8 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	} );
 	
 	// TODO if needed
-	// njets30, njets30barrel, genjet1pt, genjet1ptneutrinos, genjet1eta, genjet1phi, matchedgenjet1pt,
-	// matchedgenjet2pt, genjet2pt, deltaRgenjet1genjet2, deltaRjet1jet2, deltaRjet1genjet1, deltaRjet2genjet2
+	// njets30, njets30barrel, genjet1ptneutrinos,
+	// deltaRgenjet1genjet2, deltaRjet1jet2, deltaRjet1genjet1, deltaRjet2genjet2
 	
 	/////////
 	// MET //
