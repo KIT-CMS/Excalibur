@@ -75,18 +75,21 @@ def ZJet():
             # Copy shared libraries into working directory/lib
             print options.work
             os.makedirs(options.work + "lib")
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_configuration.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_consumer.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_core.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_externalcorr.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_filter.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_kappaanalysis.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_provider.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/libartus_utility.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/../Kappa/lib/libKappa.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/../KappaTools/lib/libKPlotTools.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/../KappaTools/lib/libKRootTools.so", options.work + 'lib/')
-            shutil.copy(getEnv('ARTUSPATH') + "/../KappaTools/lib/libKToolbox.so", options.work + 'lib/')
+            for lib in [
+                "/libartus_configuration.so",
+                "/libartus_consumer.so",
+                "/libartus_core.so",
+                "/libartus_externalcorr.so",
+                "/libartus_filter.so",
+                "/libartus_kappaanalysis.so",
+                "/libartus_provider.so",
+                "/libartus_utility.so",
+                "/../Kappa/lib/libKappa.so",
+                "/../KappaTools/lib/libKPlotTools.so",
+                "/../KappaTools/lib/libKRootTools.so",
+                "/../KappaTools/lib/libKToolbox.so"
+            ]:
+                shutil.copy(getEnv('ARTUSPATH') + lib, options.work + 'lib/')
             shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_regex.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
             shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_program_options.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
             outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp)
