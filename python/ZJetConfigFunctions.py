@@ -88,7 +88,7 @@ def data(cfg, **kwargs):
 
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
-	cfg['GenJets'] = 'AK5GenJets'
+	cfg['GenJets'] = 'AK5GenJetsNoNu'
 	cfg['Processors'] += [
 		'producer:RecoJetGenPartonMatchingProducer',
 		'producer:RecoJetGenJetMatchingProducer',
