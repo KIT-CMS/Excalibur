@@ -60,9 +60,14 @@ class InputRootZJet(inputroot.InputRoot):
 
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
+		# add 'weight' by default to weights
+		plotData.plotdict['weights'] = ["(weight * {0})".format(weight) for weight in plotData.plotdict['weights']]
 
-		# add 'weight' by default to weights by default
-		plotData.plotdict['weights'] = ["(weight * {0})".format (weight) for weight in plotData.plotdict['weights']]
+		# add lumi as weight for mc files
+		for i, rootfile in enumerate(plotData.plotdict['files']):
+			if not plotData.input_json_dicts[i]['InputIsData']:
+				log.info("Scaling sample by lumi: {0}".format(plotData.plotdict['lumis'][0]))
+				plotData.plotdict['weights'][i] = "(({1}) * ({0}))".format(plotData.plotdict['weights'][i], plotData.plotdict['lumis'][0])
 
 		# automatically replace quantity names, eg. ptbalance->jet1pt/zpt
 		for axis in ['x', 'y', 'z']:
