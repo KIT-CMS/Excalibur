@@ -18,6 +18,8 @@ work.*
 *__init__.py
 *.formatted
 *.root
+!ntuples/*.root
+!test/*.root
 logs/
 *.py.json
 
