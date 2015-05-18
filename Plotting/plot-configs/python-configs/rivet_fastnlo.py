@@ -51,14 +51,28 @@ def rivet_fastnlo(args=None):
 
 
 def genz_root(args=None):
+	base_root(
+		"/storage/a/dhaitz/excalibur/mc_ee_corr.root",
+		"genz",
+		args
+	)
+
+def z_root(args=None):
+	base_root(
+		"/storage/a/dhaitz/excalibur/artus/data_ee_corr_2015-02-18_10-34/out.root",
+		"z",
+		args
+	)
+
+def base_root(rootfile, quantityprefix, args=None):
 	""" Create the root files from data for the Sherpa-Madgraph comparison."""
 	plots = []
 	for quantity, binning in zip(["pt", "y"], ["10,0,100", "25,0,2.5"]):
 		d = {
-			"files": ["/storage/a/dhaitz/excalibur/mc_ee_corr.root"],
+			"files": [rootfile],
 			"plot_modules": ["ExportRoot"],
 			"x_bins": [binning],
-			"x_expressions": ["genz{}".format(quantity)],
+			"x_expressions": [quantityprefix + quantity],
 			"folders": ["all_AK5PFJetsCHSL1L2L3"],
 			"weights": [],
 			"nicks": [],
