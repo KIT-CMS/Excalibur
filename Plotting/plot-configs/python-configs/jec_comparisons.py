@@ -345,6 +345,17 @@ def comparison_datamc(args=None):
 	}
 	pf_fractions(args, additional_dictionary=d)
 
+def comparison_1215(args=None):
+	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
+	d = {
+		'files': [
+			'ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-18.root',
+			'ntuples/MC_13TeV_72X_E2_25ns_2015-05-19.root'
+		],
+		'labels': ['8 TeV', '13 TeV'],
+		'corrections': ['L1L2L3'],
+	}
+	full_comparison(args, d)
 
 
 if __name__ == '__main__':
