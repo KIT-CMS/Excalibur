@@ -20,16 +20,12 @@ class HarryParserZJet(harryparser.HarryParser):
                           are constructed from this, if not explicitly given. 
                           Default is '%(default)s'.""")
 
-		self.add_argument("--debug", action='store_true', help="short for --log-level debug")
 
 		self.add_argument('--list-functions', action='store_true', default=False,
 			help="Print the available json and python plot functions with comments/documentation")
 
 	def parse_known_args(self, args=None, namespace=None):
 		known_args, unknown_args = super(HarryParserZJet, self).parse_known_args(args=args, namespace=namespace)
-		# set debug output
-		if known_args.debug == True and known_args.log_level == self.get_default('log_level'):
-			known_args.log_level = 'debug'
 
 		if known_args.list_functions:
 			toolsZJet.print_jsons_and_functions(

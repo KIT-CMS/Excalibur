@@ -34,12 +34,6 @@ class InputRootZJet(inputroot.InputRoot):
 		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3Res"],
 		                                help="correction levels.")
 
-		# arguments to quickly switch to full alpha / eta range
-		self.zjet_input_options.add_argument("--allalpha", type=str, nargs="?", default="(jet2pt/zpt<0.2)", const="1",
-		                                help="If in finalcuts folder, dont apply alpha cut [Default: %(default)s]")
-		self.zjet_input_options.add_argument("--alleta", type=str, nargs="?", default="(abs(jet1eta)<1.3)", const="1",
-		                                help="If in finalcuts folder, dont apply eta cut [Default: %(default)s]")
-
 	def prepare_args(self, parser, plotData):
 		# this is needed so one can put together the folder name like in the old
 		# merlin plotting
