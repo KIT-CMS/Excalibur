@@ -115,6 +115,14 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->hfEMFraction : DefaultValues::UndefinedDouble;
 	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1btag", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->getTag("CombinedSecondaryVertexBJetTags", event.m_jetMetadata) : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1qgtag", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->getTag("QGlikelihood", event.m_jetMetadata) : DefaultValues::UndefinedDouble;
+	} );
 
 	// Second leading jet
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
