@@ -60,6 +60,10 @@ make
 after having done so, it can also be compile with `make` in the parent directory
 or with `make project` in Excalibur.
 
+The preceeding implementation can be found at: https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur -
+many ideas were and can still be taken from there.
+
+
 ## Usage of the Excalibur Framework
 
 ### ZJetAnalysis: C++ part
