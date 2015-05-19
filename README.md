@@ -43,7 +43,7 @@ To install these packages check them out using [git](http://git-scm.com/ "git"):
 git clone https://github.com/KappaAnalysis/Kappa.git
 git clone https://github.com/KappaAnalysis/KappaTools.git
 git clone https://github.com/artus-analysis/Artus.git
-git clone https://github.com/dhaitz/Excalibur.git
+git clone https://github.com/artus-analysis/Excalibur.git
 ```
 
 In a next step you need to compile all those packages:
@@ -67,7 +67,16 @@ many ideas were and can still be taken from there.
 ## Usage of the Excalibur Framework
 
 ### ZJetAnalysis: C++ part
-to do
+excalibur.py is the wrapper to run this Z+jet calibration tool. The first argument is the name of a config file located in `cfg/excalibur/` (the filename extension is optional). This config file takes parts from `ZJetConfigFunctions.py` as the base config which is then modified by `ZJetConfigBase.py`. The final json output will be used for the z+jet calibration tool.
+
+Optional useful arguments are
+- `-b` batch mode
+- `-c` only create config and exit
+- `-f n` use only `n` input files
+
+Examples
+- `excalibur.py data` to use the data.py config
+- `excalibur.py mc -b -f 100` to use the mc.py config in batch mode with only 100 input files
 
 ### Plotting (merlin): python part
 This part derives some classes from HarryPlotter to implement ZJet-specific stuff.
