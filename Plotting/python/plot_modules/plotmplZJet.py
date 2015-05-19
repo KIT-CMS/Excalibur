@@ -26,13 +26,10 @@ class PlotMplZJet(plotmpl.PlotMpl):
 				'#CE3B3E',  # red
 		]
 		self.cutlabeldict = {
-			"1": r"",
-			"(abs(jet1eta)<1.3)": r"|$\eta^{\mathrm{Leading \ jet}}$|$<1.3$",
-			"zpt>30": "$p_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
-			"(jet2pt/zpt<0.2)": r"$\alpha<0.2$",
-			"(jet2pt/zpt<0.3)": r"$\alpha<0.3$"
+			"eta": r"|$\eta^{\mathrm{Leading \ jet}}$|$<1.3$",
+			"zpt": "$p_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
+			"alpha": r"$\alpha<0.2$",
 		}
-		self.zptcut = "zpt>30"
 
 
 	def modify_argument_parser(self, parser, args):
@@ -55,7 +52,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			help="layout for the plots. E.g. 'document': serif, LaTeX, pdf; " +
 				 "'slides': sans serif, big, png; 'generic': slides + pdf. " +
 				 "Default is %(default)s")
-		self.formatting_options.add_argument('--cutlabel', type=bool, default=False,
+		self.formatting_options.add_argument('--cutlabel', action='store_true', default=False,
 			help="Place a label with the current cuts on the plot. [Defaut: %(default)s]")
 
 
@@ -87,15 +84,20 @@ class PlotMplZJet(plotmpl.PlotMpl):
 
 	def add_labels(self, plotData):
 		super(PlotMplZJet, self).add_labels(plotData)
+		folder_cutlabel = {
+			'nocuts': [],
+			'finalcuts': ['alpha', 'eta', 'zpt'],
+			'zcuts': ['zpt'],
+			'noalphacuts': ['eta', 'zpt'],
+			'noetacuts': ['alpha', 'zpt'],
+			'noalphanoetacuts': ['alpha', 'eta', 'zpt'],
+		}
 		for ax in [plotData.plot.axes[0]]:
 			if plotData.plotdict['cutlabel'] == True:
-				texts=[]
-				if ("incut" in plotData.plotdict['folders'][0][0]) or ("finalcuts" in plotData.plotdict['folders'][0][0]):
-					texts += [self.zptcut, plotData.plotdict['allalpha'], plotData.plotdict['alleta']]
-				elif ("zcuts" in plotData.plotdict['folders'][0][0]):
-					texts.append(self.zptcut)
-				texts = [self.cutlabeldict.get(*(text,)*2) for text in texts if self.cutlabeldict.get(*(text,)*2) != ""]
-				ax.text(0.03, 0.97, "\n".join(texts), va='top', ha='left', color='black', transform=ax.transAxes, size='large')
+				texts = folder_cutlabel.get(plotData.plotdict['zjetfolders'][0], [])
+				texts = [self.cutlabeldict.get(text, text) for text in texts]
+				text = "\n".join(texts)
+				ax.text(0.03, 0.97, text, va='top', ha='left', color='black', transform=ax.transAxes, size='large')
 
 
 	def set_matplotlib_defaults(self):
