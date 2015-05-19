@@ -284,6 +284,14 @@ def pf_fractions(args=None, additional_dictionary=None):
 	harryinterface.harry_interface(plots, args)
 
 
+def full_comparison(args=None, d=None):
+	""" Do all comparison plots"""
+	response_comparisons(args, d)
+	basic_comparisons(args, d)
+	basic_profile_comparisons(args, d)
+	pf_comparisons(args, d)
+	pf_fractions(args, d)
+
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
 	d = {
@@ -323,33 +331,21 @@ def comparison_5374(args=None):
 		'y_subplot_label' : "74/53",
 		'lumi': 0.309
 	}
-	response_comparisons(args, additional_dictionary=d)
-	basic_comparisons(args, additional_dictionary=d)
-	basic_profile_comparisons(args, additional_dictionary=d)
-	pf_comparisons(args, additional_dictionary=d)
-	
+	response_comparisons(args, d)
+	basic_comparisons(args, d)
+	basic_profile_comparisons(args, d)
+	pf_comparisons(args, d)
 
 def comparison_datamc(args=None):
+	"""full data mc comparisons for work/data.root and work/mc.root"""
 	d = {
-		'files': [
-			'work/data.root',
-			'work/mc.root',
-		],
-		'labels': [
-			'data',
-			'mc',
-		],
-		'corrections': [
-			'L1L2L3Res',
-			'L1L2L3',
-		],
-		'weights': [
-			'1.0',
-			'19.789',
-		],
-	
+		'files': ['work/data.root', 'work/mc.root'],
+		'labels': ['data', 'mc'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
 	}
 	pf_fractions(args, additional_dictionary=d)
+
+
 
 if __name__ == '__main__':
 	basic_comparisons()
