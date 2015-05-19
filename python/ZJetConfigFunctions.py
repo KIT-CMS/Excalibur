@@ -114,6 +114,13 @@ def mc(cfg, **kwargs):
 		'deltarzgenz',
 		'matchedgenmuon1pt',
 		'matchedgenmuon2pt',
+		'ngenmuons',
+		'genmupluspt',
+		'genmupluseta',
+		'genmuplusphi',
+		'genmuminuspt',
+		'genmuminuseta',
+		'genmuminusphi',
 	]
 
 	# RecoJetGenPartonMatchingProducer Settings
@@ -121,16 +128,17 @@ def mc(cfg, **kwargs):
 	cfg['JetMatchingAlgorithm'] = 'physics' # algorithmic or physics
 
 	# RecoJetGenJetMatchingProducer Settings
-	cfg['DeltaRMatchingRecoJetGenJet'] = 0.25
+	cfg['DeltaRMatchingRecoJetGenJet'] = 0.3
 
 	# RecoMuonGenParticleMatchingProducer Settings
 	cfg['RecoMuonMatchingGenParticleStatus'] = 1
-	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5
+	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
 
 	# GenParticleProducer
-	cfg['GenParticleTypes'] = ['genParticle']
+	cfg['GenParticleTypes'] = ['genParticle', 'genMuon']
 	cfg['GenParticlePdgIds'] = [23] # Z
 	cfg['GenParticleStatus'] = 2
+	cfg['GenMuonStatus'] = 1
 
 ##
 ##
