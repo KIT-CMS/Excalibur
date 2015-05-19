@@ -183,4 +183,13 @@ class ZJetProduct : public KappaProduct
 		std::vector<KGenParticle*> genZs = SafeMap::GetWithDefault(m_genParticlesMap, 23, (std::vector<KGenParticle*>)(0));
 		return (genZs.size() > 0) ? genZs[0] : NULL;
 	}
+
+	// Reco muon - gen muon matching result
+	KGenParticle* GetMatchedGenMuon(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
+	{
+		if (m_validMuons.size() > index)
+			return SafeMap::GetWithDefault(m_genParticleMatchedMuons, m_validMuons.at(index), (KGenParticle*)(0));
+		else
+			return NULL;
+	}
 };
