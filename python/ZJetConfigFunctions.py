@@ -136,6 +136,10 @@ def _2011(cfg, **kwargs):
 def _2012(cfg, **kwargs):
 	cfg['Year'] = 2012
 
+def _2015(cfg, **kwargs):
+	cfg['Year'] = 2015
+	cfg['MuonID'] = 'medium'
+
 
 ##
 ##
@@ -205,6 +209,9 @@ def mc_2011(cfg, **kwargs):
 def mc_2012(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_MC'
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
+
+def mc_2015(cfg, **kwargs):
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/PHYS14_V2/PHYS14_V2_MC'
 
 
 def mcee(cfg, **kwargs):
