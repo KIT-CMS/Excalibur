@@ -69,13 +69,13 @@ to do
 This part derives some classes from HarryPlotter to implement ZJet-specific stuff.
 See 
 - Plotting/python/, which contains the derived classes
-- Plotting/scripts/, which contains an ini script and the 'merlin' plotting executable
+- scripts/, which contains an ini script and the 'merlin' plotting executable
 - Plotting/plot-configs/, which contains json and python plot config files
 
 Source the ini file. Since HarryPlotter is designed for SCRAM, you need to execute
 the shell function  `standalone_merlin` if you're using merlin outside a SCRAM
-environment for the first time.(and resource the ini file).
-Type `merlin.py -h` to get a list of the plotting options.
+environment for the first time.(and re-source the ini file).
+Type `merlin.py --help` to get a list of the plotting options.
 
 Plot configs are stored as json or python files. Type `merlin.py --list-functions` to
 get a list of the available plot configs.
@@ -85,16 +85,19 @@ merlin has the additional --zjetfolder, --algorithms and --corrections arguments
 From these arguments, the folder name is constructed, according to the ZJet folder
 naming convention "ZJetFolder_AlgorithmCorrection".
 
-By default, for the 'finalcuts' folder an alpha and abs(jet1eta) cut are applied.
-This can be deactivated or changed with the --alleta and --allalpha arguments.
+By default, MC histograms (from Artus root files) are scaled to the given
+luminosity (--lumi) if at least one Data file is used for plotting.
 
-By default, MC histograms are scaled to the given luminosity (--lumi).
+The quantities.py file in Plotting/python/utiliy contains a dictionary for quantity
+aliases. E.g., type 'ptbalance' and this will be replaced with 'jet2pt/zpt'.
+
 
 ##### PlotMplZJet
 The --cutlabel argument places a label with the used cuts (Z pT, abs(jet1eta),
  alpha) on the plot.
 The plot axes can be automatically labelled via the entries of the LabelsDict in
-Plotting/python/utility/labelsZJet.py.
+Plotting/python/utility/labelsZJet.py (simple strings like 'zpt' are replaced with
+nicer Latex labels).
 
 
 ##### Json plot configs
@@ -104,9 +107,10 @@ and saved again. The "_comment" key has to be added manually and should contain
 a short description of the plot.
 - Plotting/plot-configs/json-configs/ contains some json files for plots
 
+
 ##### Python plot configs
 - Python functions allow to construct loops of plots, but cannot be saved or read
 as easily as json files. Execution of these functions with --python, a list of
-the available functions can be displayed with --functions. The docstring of the
-functions should contain a description.
+the available functions can be displayed with --list-functions. The docstring of
+the functions should contain a description.
 - Plotting/plot-configs/python-configs/ contains some python plotting scripts
