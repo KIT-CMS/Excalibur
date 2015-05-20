@@ -62,7 +62,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'y_subplot_lims': [0.9, 1.1],
 			}
 			if quantity == 'abs(jet1eta)':
-				d['alleta'] = "1"
+				d['zjetfolders'] = ["noetacuts"]
 				d['y_lims'] = [0.6, 1.1],
 			if quantity == 'zpt':
 				d['x_log'] = True
@@ -173,8 +173,14 @@ def pf_fractions(args=None, additional_dictionary=None):
 
 	# for 'incoming' labels, add them to the PFfraction-labels
 	if additional_dictionary is not None:
-		labels = additional_dictionary.get('labels', ['', ''])
-		additional_dictionary.pop('labels')
+		if 'labels' in additional_dictionary:
+			labels = additional_dictionary['labels']
+			additional_dictionary.pop('labels')
+		elif 'nicks' in additional_dictionary:
+			labels = additional_dictionary['nicks']
+			additional_dictionary.pop('nicks')
+		else:
+			labels = ['', '']
 	else:
 		labels = ['', '']
 	if labels != ['', '']:
@@ -260,9 +266,8 @@ def pf_fractions(args=None, additional_dictionary=None):
 				d["x_log"] = True
 				d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 			elif x_quantity == 'abs(jet1eta)':
-				#d["alleta"] = "1"
 				d["zjetfolders"] = ["noetacuts"]
-				d["save_legend"] = "legend"
+				d["save_legend"] = "PF_legend"
 				# add HF fractions
 				d["labels"] += [
 					r"HFhad {0}".format(labels[0]),
@@ -295,6 +300,7 @@ def full_comparison(args=None, d=None, data_quantities=True):
 	basic_profile_comparisons(args, d)
 	pf_fractions(args, d)
 
+
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
 	d = {
@@ -318,6 +324,7 @@ def comparison_E1E2(args=None):
 	basic_comparisons(args, additional_dictionary=d)
 	basic_profile_comparisons(args, additional_dictionary=d)
 
+
 def comparison_5374(args=None):
 	d = {
 		'files': [
@@ -334,10 +341,8 @@ def comparison_5374(args=None):
 		'y_subplot_label' : "74/53",
 		'lumi': 0.309
 	}
-	response_comparisons(args, d)
-	basic_comparisons(args, d)
-	basic_profile_comparisons(args, d)
-	pf_comparisons(args, d)
+	full_comparison(args, d)
+
 
 def comparison_datamc(args=None):
 	"""full data mc comparisons for work/data.root and work/mc.root"""
@@ -347,6 +352,7 @@ def comparison_datamc(args=None):
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 	}
 	pf_fractions(args, additional_dictionary=d)
+
 
 def comparison_1215(args=None):
 	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
@@ -360,6 +366,56 @@ def comparison_1215(args=None):
 		'y_subplot_label' : "13/8",
 	}
 	full_comparison(args, d, data_quantities=False)
+
+
+def comparison_53742(args=None):
+	"""Comparison between 2012 rereco (22Jan) and 2015 742 rereco of 8TeV DoubleMu."""
+	d = {
+		'files': [
+			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
+			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-05-20.root',
+		],
+		'nicks': ['742','53'],
+		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
+		'y_subplot_label' : "742/53",
+		'lumis': [0.309],
+	}
+	full_comparison(args, d)
+
+
+def comparison_740742(args=None):
+	"""Comparison between 740 and 2015 742 rereco of 8TeV DoubleMu."""
+	d = {
+		'files': [
+			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
+			'ntuples/Data_8TeV_74X_E2_50ns_noHlt_2015-05-20.root',
+		],
+		'nicks': ['742','740'],
+		#'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
+		'y_subplot_label' : "742/740",
+		'lumis': [0.309],
+	}
+	full_comparison(args, d)
+
+
+def comparison_53740742(args=None):
+	"""Comparison between 53X, 740 and 742 rereco of 8TeV data."""
+	d = {
+		'files': [
+			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
+			'ntuples/Data_8TeV_74X_E2_50ns_noHlt_2015-05-20.root',
+			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-05-20.root',
+		],
+		'markers': ['o', 'o', 'fill'],
+		'nicks': ['742','740', '53'],
+		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
+		'lumis': [0.309],
+		"ratio_numerator_nicks": ["742", "740"],
+		"ratio_denominator_nicks": ["53", "53"],
+	}
+	response_comparisons(args, d)
+	basic_comparisons(args, d, True)
+	basic_profile_comparisons(args, d)
 
 
 if __name__ == '__main__':
