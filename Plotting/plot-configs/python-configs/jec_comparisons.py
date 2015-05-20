@@ -95,11 +95,14 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		# TODO move this to more general location
 		xbins_dict = {
 			'mu1pt': ["25,0,150"],
+			'mupluspt': ["25,0,150"],
+			'muminuspt': ["25,0,150"],
 			'metpt': ["25,0,125"],
 			'ptbalance': ["25,0,2"],
 			'mpf': ["25,0,2"],
 			'jet2pt': ["25,0,100"],
 			'jet2eta': ["20,-5,5"],
+			'zpt': ["25,0,600"],
 		}
 		if quantity in xbins_dict:
 			d.update({"x_bins": xbins_dict[quantity]})
@@ -209,23 +212,23 @@ def pf_fractions(args=None, additional_dictionary=None):
 					"m2",
 				],
 				"colors":[
-					'#7293cb',  # light blue
 					'blue',
-					'#FAA75B',  # mustard yellow / orange
+					'#7293cb',  # light blue
 					'orange',
-					'#68A55A',  # green
+					'#FAA75B',  # mustard yellow / orange
 					'green',
-					'#CE7058',  # brown
+					'#68A55A',  # green
 					'brown',
-					'#9E67AB',  # violet
+					'#CE7058',  # brown
 					'purple',
+					'#9E67AB',  # violet
 					'blue',
 					'orange',
 					'green',
 					'brown',
 					'purple',
 				],
-				"markers": ["fill", "o"]*5 + ["o"]*5,
+				"markers": ["o", "fill"]*5 + ["o"]*5,
 				"stacks": ["a", "b"]*5,
 				"tree_draw_options": ["prof"],
 				"legend_cols": 2,
@@ -270,8 +273,8 @@ def pf_fractions(args=None, additional_dictionary=None):
 				d["ratio_denominator_nicks"] += ["HFhad2", "HFem2"]
 				d["y_expressions"] += ["jet1hfhf", "jet1hfhf", "jet1hfemf", "jet1hfemf"]
 				d["nicks"] += ["HFhad1","HFhad2", "HFem1", "HFem2"]
-				d["colors"] = d["colors"][:10]+['grey', 'black', '#D35658', 'red']+d["colors"][10:]+['grey', 'red']
-				d["markers"] = ["fill", "o"]*7 + ["o"]*7,
+				d["colors"] = d["colors"][:10]+['black', 'grey', 'red', '#D35658']+d["colors"][10:]+['grey', 'red']
+				d["markers"] = ["o", "fill"]*7 + ["o"]*7,
 				d["stacks"] = ["a", "b"]*7,
 			if absolute_contribution:
 				d["y_expressions"] = ["{0}*jet1pt".format(i) for i in d["y_expressions"]]
@@ -290,7 +293,6 @@ def full_comparison(args=None, d=None, data_quantities=True):
 	response_comparisons(args, d)
 	basic_comparisons(args, d, data_quantities)
 	basic_profile_comparisons(args, d)
-	pf_comparisons(args, d)
 	pf_fractions(args, d)
 
 def comparison_E1E2(args=None):
