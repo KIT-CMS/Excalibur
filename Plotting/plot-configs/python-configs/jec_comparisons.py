@@ -73,14 +73,15 @@ def response_comparisons(args2=None, additional_dictionary=None):
 	harryinterface.harry_interface(plots, args)
 
 
-def basic_comparisons(args=None, additional_dictionary=None):
+def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
 	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi',
-			 'npv', 'metpt', 'metphi', 'run', 'mu1pt', 'mu1eta', 'mu1phi', 'lumi',
-			 'event', 'ptbalance', 'mpf', 'jet2pt', 'jet2eta',
-			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt']:
+			 'npv', 'metpt', 'metphi', 'mu1pt', 'mu1eta', 'mu1phi',
+			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta',
+			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt'] \
+			 + (['run', 'lumi', 'event'] if data_quantities else []):
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
@@ -284,10 +285,10 @@ def pf_fractions(args=None, additional_dictionary=None):
 	harryinterface.harry_interface(plots, args)
 
 
-def full_comparison(args=None, d=None):
+def full_comparison(args=None, d=None, data_quantities=True):
 	""" Do all comparison plots"""
 	response_comparisons(args, d)
-	basic_comparisons(args, d)
+	basic_comparisons(args, d, data_quantities)
 	basic_profile_comparisons(args, d)
 	pf_comparisons(args, d)
 	pf_fractions(args, d)
@@ -349,13 +350,14 @@ def comparison_1215(args=None):
 	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
 	d = {
 		'files': [
-			'ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-18.root',
-			'ntuples/MC_13TeV_72X_E2_25ns_2015-05-19.root'
+			'ntuples/MC_13TeV_72X_E2_25ns_2015-05-20.root',
+			'ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root',
 		],
-		'labels': ['8 TeV', '13 TeV'],
+		'labels': ['13 TeV', '8 TeV'],
 		'corrections': ['L1L2L3'],
+		'y_subplot_label' : "13/8",
 	}
-	full_comparison(args, d)
+	full_comparison(args, d, data_quantities=False)
 
 
 if __name__ == '__main__':
