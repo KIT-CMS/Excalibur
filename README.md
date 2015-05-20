@@ -70,13 +70,17 @@ many ideas were and can still be taken from there.
 excalibur.py is the wrapper to run this Z+jet calibration tool. The first argument is the name of a config file located in `cfg/excalibur/` (the filename extension is optional). This config file takes parts from `ZJetConfigFunctions.py` as the base config which is then modified by `ZJetConfigBase.py`. The final json output will be used for the z+jet calibration tool.
 
 Optional useful arguments are
-- `-b` batch mode
+- `-b` batch mode. This parameters takes an optional argument for the computing
+resource use. See `-h`
 - `-c` only create config and exit
 - `-f n` use only `n` input files
 
 Examples
 - `excalibur.py data` to use the data.py config
 - `excalibur.py mc -b -f 100` to use the mc.py config in batch mode with only 100 input files
+
+Links to 'official' output files (which can be used by all users for plotting etc.)
+are stored in the ntuples/ folder.
 
 ### Plotting (merlin): python part
 This part derives some classes from HarryPlotter to implement ZJet-specific stuff.
