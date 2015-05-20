@@ -69,6 +69,7 @@ def ZJet():
             createRunfile(options.json, options.work + "/run-excalibur.sh", workpath = options.work)
             # Copy config files, scripts and artus executable into working directory
             shutil.copy(getEnv() + "/cfg/gc/json_modifier.py", options.work)
+            shutil.copy(getEnv() + "/cfg/gc/gc_base.conf", options.work)
             shutil.copy(getEnv() + "/scripts/ini_excalibur.sh", options.work)
             shutil.copy(options.json, options.work)
             shutil.copy(getEnv() + "/scripts/artus", options.work)
@@ -92,20 +93,21 @@ def ZJet():
                 shutil.copy(getEnv('ARTUSPATH') + lib, options.work + 'lib/')
             shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_regex.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
             shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_program_options.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
-            outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp)
+            outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch)
             outpath = options.work + "out/" + outpath
         else:
             outpath = options.work + "out/*.root"
 
+        print "go.py %s/%s.conf" % (options.work, options.out)
         try:
             subprocess.call(['go.py', options.work + "/" + options.out + ".conf"])
         except KeyboardInterrupt:
-            print "go.py %s/%s.conf" % (options.work, options.out)
             exit(0)
         except:
             print "grid-control run failed"
             exit(1)
 
+        print outpath
         if glob.glob(outpath):
             subprocess.call(['hadd', options.work + 'out.root'] + glob.glob(outpath))
         else:
@@ -169,8 +171,10 @@ def getoptions(configdir="", name='excalibur'):
              " - path: %s and .py can be omitted. No config implies mc -f" % configdir)
 
     # options
-    parser.add_argument('-b', '--batch', action='store_true',
-        help="run with grid-control")
+    parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
+        const=('naf' if 'naf' in socket.gethostname() else 'ekpsg'),
+        help="run with grid-control. Optional argument specifies the resources to run:"
+             "at EKP: 'ekpcluster' or 'ekpsg'   at NAF: 'naf'   at both: 'local' [Default: %(const)s]")
     parser.add_argument('-c', '--config', action='store_true',
         help="produce json config only")
     parser.add_argument('-C', '--clean', action='store_true',
@@ -289,12 +293,9 @@ def copyFile(source, target, replace={}):
     return text
 
 
-def createGridControlConfig(settings, filename, original=None, timestamp=''):
+def createGridControlConfig(settings, filename, original=None, timestamp='', batch=""):
     if original is None:
-        if 'naf' in socket.gethostname():
-            original = getEnv() + '/cfg/gc/gc_naf.conf'
-        else:
-            original = getEnv() + '/cfg/gc/gc.conf'
+        original = getEnv() + '/cfg/gc/gc_{}.conf'.format(batch)
     jobs = {
             0: 80, # MC
             1: 40, # DATA

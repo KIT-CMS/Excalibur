@@ -30,7 +30,11 @@ complete -F _artuscomplete_ excalibur.py
 
 # Set some user specific variables
 if [ $USER = "dhaitz" ]; then
-    export EXCALIBUR_WORK=/storage/a/dhaitz/zjet
+    if [[ $HOSTNAME == *"ekp"* ]]; then
+        export EXCALIBUR_WORK=/storage/a/dhaitz/zjet
+    elif [[ $HOSTNAME == *"naf"* ]]; then
+        export EXCALIBUR_WORK=/afs/desy.de/user/d/dhaitz/nfs/zjet
+    fi
 elif [ $USER = "gfleig" ]; then
     export EXCALIBUR_WORK=/storage/a/gfleig/zjet
 fi
