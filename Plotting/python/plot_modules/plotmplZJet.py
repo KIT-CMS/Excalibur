@@ -79,7 +79,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		if all(['Energy' in d for d in plotData.input_json_dicts]):
 			energies = [d['Energy'] for d in plotData.input_json_dicts]
 			if len(set(energies)) == 1:
-				plotData.plotdict['energies'] = energies[0]
+				plotData.plotdict['energies'] = [energies[0]]
 		else:
 			if all([d.get("Year", 0) == 2012 for d in plotData.input_json_dicts]):
 				plotData.plotdict['energies'] = [8]
