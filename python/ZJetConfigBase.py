@@ -20,139 +20,139 @@ import ZJetConfigFunctions
 
 
 def getConfig(inputtype, year, channel, **kwargs):
-    """
-        Main function to get a basic config.
+	"""
+		Main function to get a basic config.
 
-        According to the three main categories (type, year, channel), the config
-        is modified according to whats specified in ZJetConfigFunctions.
-        All combinations of the categories are considered, if config functions are available.
-    """
+		According to the three main categories (type, year, channel), the config
+		is modified according to whats specified in ZJetConfigFunctions.
+		All combinations of the categories are considered, if config functions are available.
+	"""
 
-    # python class/function names cant start with a number -> add '_' to year
-    l = [channel, inputtype, '_' + str(year)]
-    print "Getting cfg for", channel, inputtype, year
-    cfg = ZJetConfigFunctions.getBaseConfig(**kwargs)
+	# python class/function names cant start with a number -> add '_' to year
+	l = [channel, inputtype, '_' + str(year)]
+	print "Getting cfg for", channel, inputtype, year
+	cfg = ZJetConfigFunctions.getBaseConfig(**kwargs)
 
-    # iterate over all combinations and call updateConfig(single-entry tuples first):
-    for i in l:
-        updateConfig(cfg, (i), **kwargs)
-    for i in l:
-        for j in l:
-            updateConfig(cfg, (i, j), **kwargs)
-    for i in l:
-        for j in l:
-            for k in l:
-                updateConfig(cfg, (i, j, k), **kwargs)
+	# iterate over all combinations and call updateConfig(single-entry tuples first):
+	for i in l:
+		updateConfig(cfg, (i), **kwargs)
+	for i in l:
+		for j in l:
+			updateConfig(cfg, (i, j), **kwargs)
+	for i in l:
+		for j in l:
+			for k in l:
+				updateConfig(cfg, (i, j, k), **kwargs)
 
-    # Adjust met input if CHS jets are requested
-    if "CHS" in cfg['TaggedJets']:
-        cfg['Met'] = cfg['Met'] + 'CHS'
+	# Adjust met input if CHS jets are requested
+	if "CHS" in cfg['TaggedJets']:
+		cfg['Met'] = cfg['Met'] + 'CHS'
 
-    return cfg
+	return cfg
 
 
 def updateConfig(conf, tupl, **kwargs):
-    string = "".join(tupl)
-    if string in dir(ZJetConfigFunctions):
-        getattr(ZJetConfigFunctions, string)(conf, **kwargs)
+	string = "".join(tupl)
+	if string in dir(ZJetConfigFunctions):
+		getattr(ZJetConfigFunctions, string)(conf, **kwargs)
 
 
 def getPath(variable='EXCALIBURPATH', nofail=False):
-    try:
-        return os.environ[variable]
-    except:
-        print variable, "is not in shell variables:", os.environ.keys()
-        print "Please source scripts/ini_excalibur.sh and CMSSW!"
-        if nofail:
-            return None
-        exit(1)
+	try:
+		return os.environ[variable]
+	except:
+		print variable, "is not in shell variables:", os.environ.keys()
+		print "Please source scripts/ini_excalibur.sh and CMSSW!"
+		if nofail:
+			return None
+		exit(1)
 
 
 def setInputFiles(ekppath=None, nafpath=None):
-    """Return ekppath if you're at EKP, nafpath if at NAF. """
-    d = {'ekp': ekppath, 'naf': nafpath}
-    host = socket.gethostname()[:3]
-    if host in d:
-        if d[host] in [None, '']:
-            sys.exit("ERROR: You're at %s, but the path for this skim is not set here!" % host.upper())
-        else:
-            return d[host]
-    else:
-        sys.exit("ERROR: Cant determine input file location!")
+	"""Return ekppath if you're at EKP, nafpath if at NAF. """
+	d = {'ekp': ekppath, 'naf': nafpath}
+	host = socket.gethostname()[:3]
+	if host in d:
+		if d[host] in [None, '']:
+			sys.exit("ERROR: You're at %s, but the path for this skim is not set here!" % host.upper())
+		else:
+			return d[host]
+	else:
+		sys.exit("ERROR: Cant determine input file location!")
 
 
 def expand(config, cutModes, corrLevels, default="default"):
-    """create pipelines for each cut mode and correction level"""
-    pipelines = config['Pipelines']
-    p = config['Pipelines'][default]
+	"""create pipelines for each cut mode and correction level"""
+	pipelines = config['Pipelines']
+	p = config['Pipelines'][default]
 
-    # copy default pipeline for different cut variations
-    for cutMode in cutModes:
-        if cutMode == 'nocuts':
-            pipelines[cutMode] = copy.deepcopy(p)
-            removeList = ['filter:MuonPtCut', 'filter:MuonEtaCut', 'filter:LeadingJetPtCut', 'filter:ZPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
-            for cut in removeList:
-                if cut in pipelines[cutMode]['Processors']:
-                    pipelines[cutMode]['Processors'].remove(cut)
-        elif cutMode == 'zcuts':
-            pipelines[cutMode] = copy.deepcopy(p)
-            removelist = ['filter:LeadingJetPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
-            for cut in removelist:
-                if cut in pipelines[cutMode]['Processors']:
-                    pipelines[cutMode]['Processors'].remove(cut)
-        elif cutMode == 'noalphanoetacuts':
-            pipelines[cutMode] = copy.deepcopy(p)
-            removelist = ['filter:LeadingJetEtaCut', 'filter:AlphaCut']
-            for cut in removelist:
-                if cut in pipelines[cutMode]['Processors']:
-                    pipelines[cutMode]['Processors'].remove(cut)
-        elif cutMode == 'noalphacuts':
-            pipelines[cutMode] = copy.deepcopy(p)
-            removelist = ['filter:AlphaCut']
-            for cut in removelist:
-                if cut in pipelines[cutMode]['Processors']:
-                    pipelines[cutMode]['Processors'].remove(cut)
-        elif cutMode == 'noetacuts':
-            pipelines[cutMode] = copy.deepcopy(p)
-            removelist = ['filter:LeadingJetEtaCut']
-            for cut in removelist:
-                if cut in pipelines[cutMode]['Processors']:
-                    pipelines[cutMode]['Processors'].remove(cut)
-        elif cutMode == 'finalcuts':
-            pipelines[cutMode] = copy.deepcopy(p)
+	# copy default pipeline for different cut variations
+	for cutMode in cutModes:
+		if cutMode == 'nocuts':
+			pipelines[cutMode] = copy.deepcopy(p)
+			removeList = ['filter:MuonPtCut', 'filter:MuonEtaCut', 'filter:LeadingJetPtCut', 'filter:ZPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
+			for cut in removeList:
+				if cut in pipelines[cutMode]['Processors']:
+					pipelines[cutMode]['Processors'].remove(cut)
+		elif cutMode == 'zcuts':
+			pipelines[cutMode] = copy.deepcopy(p)
+			removelist = ['filter:LeadingJetPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
+			for cut in removelist:
+				if cut in pipelines[cutMode]['Processors']:
+					pipelines[cutMode]['Processors'].remove(cut)
+		elif cutMode == 'noalphanoetacuts':
+			pipelines[cutMode] = copy.deepcopy(p)
+			removelist = ['filter:LeadingJetEtaCut', 'filter:AlphaCut']
+			for cut in removelist:
+				if cut in pipelines[cutMode]['Processors']:
+					pipelines[cutMode]['Processors'].remove(cut)
+		elif cutMode == 'noalphacuts':
+			pipelines[cutMode] = copy.deepcopy(p)
+			removelist = ['filter:AlphaCut']
+			for cut in removelist:
+				if cut in pipelines[cutMode]['Processors']:
+					pipelines[cutMode]['Processors'].remove(cut)
+		elif cutMode == 'noetacuts':
+			pipelines[cutMode] = copy.deepcopy(p)
+			removelist = ['filter:LeadingJetEtaCut']
+			for cut in removelist:
+				if cut in pipelines[cutMode]['Processors']:
+					pipelines[cutMode]['Processors'].remove(cut)
+		elif cutMode == 'finalcuts':
+			pipelines[cutMode] = copy.deepcopy(p)
 
-    # remove template pipeline
-    pipelines.pop(default)
+	# remove template pipeline
+	pipelines.pop(default)
 
-    # copy pipelines with different correction levels, naming scheme: cut_AlgoName + CorrectionLevel
-    for name, p in pipelines.items():
-        for corrLevel in corrLevels:
-            if corrLevel == 'None':
-                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')] = copy.deepcopy(p)
-                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')]['CorrectionLevel'] = corrLevel
-            else:
-                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel] = copy.deepcopy(p)
-                pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel]['CorrectionLevel'] = corrLevel
-        del pipelines[name]
+	# copy pipelines with different correction levels, naming scheme: cut_AlgoName + CorrectionLevel
+	for name, p in pipelines.items():
+		for corrLevel in corrLevels:
+			if corrLevel == 'None':
+				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')] = copy.deepcopy(p)
+				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')]['CorrectionLevel'] = corrLevel
+			else:
+				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel] = copy.deepcopy(p)
+				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel]['CorrectionLevel'] = corrLevel
+		del pipelines[name]
 
-    return config
+	return config
 
 
 def pipelinediff(config, to=None):
-    print "Comparing", len(config['Pipelines']), "pipelines:"
-    if to == None:
-        to = filter(lambda x: 'finalcuts' in x, config['Pipelines'].keys())[0]
+	print "Comparing", len(config['Pipelines']), "pipelines:"
+	if to == None:
+		to = filter(lambda x: 'finalcuts' in x, config['Pipelines'].keys())[0]
 
-    for name, p in config['Pipelines'].items():
-        if name != to:
-            print "- Compare", name, "to", to
-            pipelinediff2(p, config['Pipelines'][to])
-    print
+	for name, p in config['Pipelines'].items():
+		if name != to:
+			print "- Compare", name, "to", to
+			pipelinediff2(p, config['Pipelines'][to])
+	print
 
 
 def pipelinediff2(p1=None, p2=None):
-    for k, v in p1.items():
-        if k in p2.keys():
-            if p1[k] != p2[k]:
-                print "    different %s: %s != %s" % (k, str(p1[k]), str(p2[k]))
+	for k, v in p1.items():
+		if k in p2.keys():
+			if p1[k] != p2[k]:
+				print "    different %s: %s != %s" % (k, str(p1[k]), str(p2[k]))
 
