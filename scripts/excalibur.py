@@ -106,7 +106,6 @@ def ZJet():
 			print "grid-control run failed"
 			exit(1)
 
-		print outpath
 		if glob.glob(outpath):
 			subprocess.call(['hadd', options.work + 'out.root'] + glob.glob(outpath))
 		else:
