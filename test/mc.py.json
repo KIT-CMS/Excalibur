@@ -6,29 +6,30 @@
     "CutMuonEtaMax": 2.3, 
     "CutMuonPtMin": 20.0, 
     "CutZPtMin": 30.0, 
-    "DeltaRMatchingRecoJetGenJet": 0.25, 
+    "DeltaRMatchingRecoJetGenJet": 0.3, 
     "DeltaRMatchingRecoJetGenParticle": 0.3, 
+    "DeltaRMatchingRecoMuonGenParticle": 0.5, 
     "DirectIso": true, 
     "EnableMetPhiCorrection": false, 
     "EventCount": -1, 
     "EventMetadata": "eventInfo", 
     "FlavourCorrections": false, 
     "GenJets": "AK5GenJetsNoNu", 
+    "GenMuonStatus": 1, 
     "GenParticlePdgIds": [
-        13, 
-        -13, 
         23
     ], 
     "GenParticleStatus": 2, 
     "GenParticleTypes": [
-        "genParticle"
+        "genParticle", 
+        "genMuon"
     ], 
     "GenParticles": "genParticles", 
     "InputFiles": [
         "/storage/a/dhaitz/skims/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/kappa_DYJetsToLL_M_50_madgraph_8TeV_665.root"
     ], 
     "InputIsData": false, 
-    "Jec": "/portal/ekpcms6/home/dhaitz/artus/Excalibur/data/jec/Winter14_V8/Winter14_V8_MC", 
+    "Jec": "/portal/ekpcms6/home/gfleig/new/Excalibur/data/jec/Winter14_V8/Winter14_V8_MC", 
     "JetID": "tight", 
     "JetIDVersion": 2014, 
     "JetMatchingAlgorithm": "physics", 
@@ -88,6 +89,8 @@
                 "jet1hfhf", 
                 "jet1hfemf", 
                 "jet1pf", 
+                "jet1btag", 
+                "jet1qgtag", 
                 "jet2pt", 
                 "jet2eta", 
                 "jet2phi", 
@@ -127,7 +130,16 @@
                 "genzphi", 
                 "genzy", 
                 "genzmass", 
-                "deltarzgenz"
+                "deltarzgenz", 
+                "matchedgenmuon1pt", 
+                "matchedgenmuon2pt", 
+                "ngenmuons", 
+                "genmupluspt", 
+                "genmupluseta", 
+                "genmuplusphi", 
+                "genmuminuspt", 
+                "genmuminuseta", 
+                "genmuminusphi"
             ]
         }, 
         "noalphacuts_AK5PFJetsCHSL1L2L3": {
@@ -167,6 +179,8 @@
                 "jet1hfhf", 
                 "jet1hfemf", 
                 "jet1pf", 
+                "jet1btag", 
+                "jet1qgtag", 
                 "jet2pt", 
                 "jet2eta", 
                 "jet2phi", 
@@ -206,7 +220,16 @@
                 "genzphi", 
                 "genzy", 
                 "genzmass", 
-                "deltarzgenz"
+                "deltarzgenz", 
+                "matchedgenmuon1pt", 
+                "matchedgenmuon2pt", 
+                "ngenmuons", 
+                "genmupluspt", 
+                "genmupluseta", 
+                "genmuplusphi", 
+                "genmuminuspt", 
+                "genmuminuseta", 
+                "genmuminusphi"
             ]
         }, 
         "noalphanoetacuts_AK5PFJetsCHSL1L2L3": {
@@ -245,6 +268,8 @@
                 "jet1hfhf", 
                 "jet1hfemf", 
                 "jet1pf", 
+                "jet1btag", 
+                "jet1qgtag", 
                 "jet2pt", 
                 "jet2eta", 
                 "jet2phi", 
@@ -284,7 +309,16 @@
                 "genzphi", 
                 "genzy", 
                 "genzmass", 
-                "deltarzgenz"
+                "deltarzgenz", 
+                "matchedgenmuon1pt", 
+                "matchedgenmuon2pt", 
+                "ngenmuons", 
+                "genmupluspt", 
+                "genmupluseta", 
+                "genmuplusphi", 
+                "genmuminuspt", 
+                "genmuminuseta", 
+                "genmuminusphi"
             ]
         }, 
         "nocuts_AK5PFJetsCHSL1L2L3": {
@@ -317,6 +351,8 @@
                 "jet1hfhf", 
                 "jet1hfemf", 
                 "jet1pf", 
+                "jet1btag", 
+                "jet1qgtag", 
                 "jet2pt", 
                 "jet2eta", 
                 "jet2phi", 
@@ -356,7 +392,16 @@
                 "genzphi", 
                 "genzy", 
                 "genzmass", 
-                "deltarzgenz"
+                "deltarzgenz", 
+                "matchedgenmuon1pt", 
+                "matchedgenmuon2pt", 
+                "ngenmuons", 
+                "genmupluspt", 
+                "genmupluseta", 
+                "genmuplusphi", 
+                "genmuminuspt", 
+                "genmuminuseta", 
+                "genmuminusphi"
             ]
         }, 
         "noetacuts_AK5PFJetsCHSL1L2L3": {
@@ -396,6 +441,8 @@
                 "jet1hfhf", 
                 "jet1hfemf", 
                 "jet1pf", 
+                "jet1btag", 
+                "jet1qgtag", 
                 "jet2pt", 
                 "jet2eta", 
                 "jet2phi", 
@@ -435,7 +482,16 @@
                 "genzphi", 
                 "genzy", 
                 "genzmass", 
-                "deltarzgenz"
+                "deltarzgenz", 
+                "matchedgenmuon1pt", 
+                "matchedgenmuon2pt", 
+                "ngenmuons", 
+                "genmupluspt", 
+                "genmupluseta", 
+                "genmuplusphi", 
+                "genmuminuspt", 
+                "genmuminuseta", 
+                "genmuminusphi"
             ]
         }, 
         "zcuts_AK5PFJetsCHSL1L2L3": {
@@ -472,6 +528,8 @@
                 "jet1hfhf", 
                 "jet1hfemf", 
                 "jet1pf", 
+                "jet1btag", 
+                "jet1qgtag", 
                 "jet2pt", 
                 "jet2eta", 
                 "jet2phi", 
@@ -511,7 +569,16 @@
                 "genzphi", 
                 "genzy", 
                 "genzmass", 
-                "deltarzgenz"
+                "deltarzgenz", 
+                "matchedgenmuon1pt", 
+                "matchedgenmuon2pt", 
+                "ngenmuons", 
+                "genmupluspt", 
+                "genmupluseta", 
+                "genmuplusphi", 
+                "genmuminuspt", 
+                "genmuminuseta", 
+                "genmuminusphi"
             ]
         }
     }, 
@@ -528,9 +595,11 @@
         "filter:ZFilter", 
         "producer:RecoJetGenPartonMatchingProducer", 
         "producer:RecoJetGenJetMatchingProducer", 
+        "producer:RecoMuonGenParticleMatchingProducer", 
         "producer:GenParticleProducer"
     ], 
     "RC": false, 
+    "RecoMuonMatchingGenParticleStatus": 1, 
     "SkipEvents": 0, 
     "TaggedJets": "AK5PFTaggedJetsCHS", 
     "ValidJetsInput": "uncorrected", 
