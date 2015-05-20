@@ -28,6 +28,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'jet1eta': '$\mathit{\eta}^{Leading \ Jet}$',
 			'jet1phi': r"$\mathit{\phi}^{Leading \ Jet}$",
 			'jet1pt': '$\mathit{p}_{T}^{Leading Jet}$',
+			'jet1btag': 'CSV b-Tag',
+			'jet1qgtag': 'QG Likelihood',
 			'(jet1nhf*jet1pt)': "Jet Neutral Hadron Energy / GeV",
 			'(jet1chf*jet1pt)': "Jet Charged Hadron Energy / GeV",
 			'(jet1mf*jet1pt)': "Jet Muon Energy / GeV",
