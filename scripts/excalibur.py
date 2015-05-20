@@ -94,9 +94,8 @@ def ZJet():
             shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_regex.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
             shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_program_options.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
             outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch)
-            outpath = options.work + "out/" + outpath
-        else:
-            outpath = options.work + "out/*.root"
+
+        outpath = options.work + "out/*.root"
 
         print "go.py %s/%s.conf" % (options.work, options.out)
         try:
@@ -310,12 +309,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
         '$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
     }
 
-    text = copyFile(original, filename, d)
-    # return the name of output files
-    text = text[text.find("se output pattern =") + 19:]
-    text = text[:text.find("\n")]
-    text = text.replace("@MY_JOBID@", "*")
-    return text.strip()
+    copyFile(original, filename, d)
 
 
 def createRunfile(configjson, filename='test.sh', original=None, workpath=None):
