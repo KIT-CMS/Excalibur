@@ -147,13 +147,16 @@ def mc(cfg, **kwargs):
 
 def _2011(cfg, **kwargs):
 	cfg['Year'] = 2011
+	cfg['Energy'] = 7
 
 
 def _2012(cfg, **kwargs):
 	cfg['Year'] = 2012
+	cfg['Energy'] = 8
 
 def _2015(cfg, **kwargs):
 	cfg['Year'] = 2015
+	cfg['Energy'] = 13
 	cfg['MuonID'] = 'medium'
 
 
