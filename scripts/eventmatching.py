@@ -10,7 +10,7 @@ def main():
     files = []
     trees = []
     stopWatch()
-    treeName = ["finalcuts_AK5PFTaggedJetsCHSL1L2L3/ntuple", "finalcuts_AK5PFTaggedJetsCHSL1L2L3/ntuple"]
+    treeName = ["nocuts_AK5PFJetsCHSL1L2L3/ntuple", "nocuts_AK5PFJetsCHSL1L2L3/ntuple"]
     if '-t' in sys.argv:
         treeName = [sys.argv.pop(sys.argv.index('-t') + 1), sys.argv.pop(sys.argv.index('-t') + 1)]
         print treeName
@@ -29,7 +29,7 @@ def main():
     print "\nGet list of runs, lumis, events:"
     lists = []
     for tree in trees:
-        lst = getRunLumiEvent(tree, 'e1event' if trees.index(tree) == 0 else 'event', 'lumisec' if trees.index(tree) == 0 else 'lumi')
+        lst = getRunLumiEvent(tree, 'event', 'lumi')
         lists.append(sorted(lst))
     stopWatch()
 
@@ -74,10 +74,7 @@ def getRunLumiEvent(tree, eventbranch='event', lumibranch='event'):
     nevt = tree.GetEntries()
     for i in xrange(nevt):
         tree.GetEntry(i)
-        if eventbranch == 'e1event':
-            result.append((int(tree.run), int(getattr(tree, lumibranch)), int(getattr(tree, 'eventnr1') * 1000000 + getattr(tree, 'eventnr2')), i))
-        else:
-            result.append((int(tree.run), int(getattr(tree, lumibranch)), int(getattr(tree, eventbranch)), i))
+        result.append((int(tree.run), int(tree.lumi), int(tree.event), i))
         if i % 1000 == 0:
             print "\r  %7d/%d" % (i, nevt),
             sys.stdout.flush() 
@@ -177,7 +174,7 @@ def compareTrees(tree1, tree2):
     branches2only = []
 
     for b2 in branches2orig:
-        b1 = ex1ex2dict.get(b2, b2)
+        b1 = b2 #ex1ex2dict.get(b2, b2)
         if b1 in branches1orig:
             branches1used.append(b1)
             branches2used.append(b2)
