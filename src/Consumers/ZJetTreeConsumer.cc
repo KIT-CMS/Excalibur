@@ -9,6 +9,18 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 {
 	// Add possible quantities for the lambda ntuples consumers
 	
+	////////////////////////
+	// General quantities //
+	////////////////////////
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("npu", [](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return event.m_genEventInfo->nPU;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("npumean", [](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return event.m_genEventInfo->nPUMean;
+	} );
+	
 	///////
 	// Z //
 	///////

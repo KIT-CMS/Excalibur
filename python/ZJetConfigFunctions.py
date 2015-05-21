@@ -98,6 +98,8 @@ def mc(cfg, **kwargs):
 	]
 	cfg['GenParticles'] = 'genParticles'
 	cfg['Pipelines']['default']['Quantities'] += [
+		'npu',
+		'npumean',
 		'genjet1pt',
 		'genjet1eta',
 		'genjet1phi',
