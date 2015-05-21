@@ -402,19 +402,23 @@ def comparison_53740742(args=None):
 	"""Comparison between 53X, 740 and 742 rereco of 8TeV data."""
 	d = {
 		'files': [
-			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
 			'ntuples/Data_8TeV_74X_E2_50ns_noHlt_2015-05-20.root',
+			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
 			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-05-20.root',
 		],
-		'markers': ['o', 'o', 'fill'],
-		'nicks': ['742','740', '53'],
+		'markers': ['.', '.', 'fill'],
+		'zorder': [30, 20, 10],
+		'nicks': ['740', '742', '53'],
 		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
 		'lumis': [0.309],
-		"ratio_numerator_nicks": ["742", "740"],
-		"ratio_denominator_nicks": ["53", "53"],
+		"ratio_numerator_nicks": ['742', '740'],
+		"ratio_denominator_nicks": ['53', '53'],
+		"x_errors": False,
+		"colors": ['black','red', '#7293cb', 'red', 'black'],
 	}
-	response_comparisons(args, d)
 	basic_comparisons(args, d, True)
+	d['markers'] = ['o', 'o', 'd']
+	response_comparisons(args, d)
 	basic_profile_comparisons(args, d)
 
 
