@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import Excalibur.Plotting.harryinterface as harryinterface
+from Excalibur.Plotting.utility.colors import histo_colors
+
 
 colors = {
-	"uds": "#7293cb",
-	"c": "#68A55A",
-	"b": "#D35658",
-	"g": "#FAA75B",
-	"undef": "grey"
+	"uds": histo_colors['blue'],
+	"c": histo_colors['green'],
+	"b": histo_colors['red'],
+	"g": histo_colors['yellow'],
+	"undef": histo_colors['grey'],
 }
 
 def flavour_fractions(args=None, additional_dictionary=None):
@@ -52,8 +54,9 @@ def flavour_fractions(args=None, additional_dictionary=None):
 
 	harryinterface.harry_interface(plots, args)
 
+
 def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
-	"""Plots Flavour jet1btag vs. jet1qgtag for different tagger zones"""
+	"""Plots jet1btag vs. jet1qgtag in 2D, inclusive and for different tagger zones"""
 	plots = []
 
 	for weights, filename, title in zip([
@@ -89,8 +92,8 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 
 		if weights is not None:
 			d['weights'] = weights
-			d['x_bins'] = "10,0,1"
-			d['y_bins'] = "10,0,1"
+			d['x_bins'] = "20,0,1"
+			d['y_bins'] = "20,0,1"
 			d['z_log'] = False
 
 		d.update(additional_dictionary)
@@ -98,10 +101,9 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 
 	harryinterface.harry_interface(plots, args)
 
+
 def flavour_jet_response(args=None, additional_dictionary=None):
 	"""Flavor response for simulated jets """
-	plots = []
-
 	d = {
 		"filename": "flavorJetResponse",
 		"legend": "lower center",
@@ -119,9 +121,8 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
-	plots.append(d)
+	harryinterface.harry_interface([d], args)
 
-	harryinterface.harry_interface(plots, args)
 
 def sortedflavour_histo(args=None, additional_dictionary=None):
 	"""Histogram of jet flavour (sorted) """
@@ -135,6 +136,7 @@ def sortedflavour_histo(args=None, additional_dictionary=None):
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
 	harryinterface.harry_interface([d], args)
+
 
 def flavour_comparison(args=None, additional_dictionary=None):
 	"""Flavour comparsion with jet1btag and jet1qgtag """
@@ -162,6 +164,7 @@ def flavour_comparison(args=None, additional_dictionary=None):
 		plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
+
 
 def flavour_mpf_response(args=None, additional_dictionary=None):
 	"""MPF Response for different Flavour Zones """
@@ -206,9 +209,9 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 		plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
+
 def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	"""Jet composition of the leading jet for different flavours"""
-	plots = []
 	d = {
 		"filename": "pf_fractions_vs_flavor",
 		"x_expressions": ["sortedabsflavour"],
@@ -236,9 +239,10 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 		"y_lims": [0.0, 1.0],
 		"tree_draw_options": ["prof"],
 	}
-	d.update(additional_dictionary)
-	plots.append(d)
-	harryinterface.harry_interface(plots, args)
+	if additional_dictionary is not None:
+		d.update(additional_dictionary)
+	harryinterface.harry_interface([d], args)
+
 
 def flavour(args=None):
 	"""Plots all flavour plots"""
