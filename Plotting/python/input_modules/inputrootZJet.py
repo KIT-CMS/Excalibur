@@ -69,4 +69,6 @@ class InputRootZJet(inputroot.InputRoot):
 			for i, item in enumerate(plotData.plotdict['{0}_expressions'.format(axis)]):
 				for key, value in self.quantities_replace_dict.iteritems():
 					if item != None and key in item:
+						if plotData.plotdict.get(axis+"_label", None) is None and len(set(plotData.plotdict[axis+"_expressions"]))==1:
+							plotData.plotdict[axis+"_label"] = plotData.plotdict[axis+"_expressions"][0]
 						plotData.plotdict['{0}_expressions'.format(axis)][i] = plotData.plotdict['{0}_expressions'.format(axis)][i].replace(key, value)
