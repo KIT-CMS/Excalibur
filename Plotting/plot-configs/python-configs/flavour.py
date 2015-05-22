@@ -3,6 +3,7 @@
 
 import Excalibur.Plotting.harryinterface as harryinterface
 from Excalibur.Plotting.utility.colors import histo_colors
+from Excalibur.Plotting.utility.binnings import binnings
 
 
 colors = {
@@ -19,7 +20,7 @@ def flavour_fractions(args=None, additional_dictionary=None):
 
 	for x_quantity, x_bins in zip(
 			['zpt', 'abs(jet1eta)'],
-			["30 40 50 60 75 95 125 180 300 1000", "0 0.783 1.305 1.93 2.5 2.964 3.139 5.191"]):
+			[binnings['zpt'], binnings['abseta']]):
 
 		d = {
 			"filename": "flavourFractions_vs_" + x_quantity,
