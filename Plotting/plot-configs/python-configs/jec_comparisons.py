@@ -82,7 +82,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			 'npv', 'metpt', 'metphi', 'mu1pt', 'mu1eta', 'mu1phi',
 			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta',
 			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt'] \
-			 + (['run', 'lumi', 'event'] if data_quantities else []):
+			 + (['run', 'lumi', 'event'] if data_quantities else ['npu', 'npumean']):
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
@@ -359,8 +359,8 @@ def comparison_1215(args=None):
 	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
 	d = {
 		'files': [
-			'ntuples/MC_13TeV_72X_E2_25ns_2015-05-20.root',
-			'ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root',
+			'ntuples/MC_13TeV_72X_E2_25ns_algo_2015-05-21.root',
+			'ntuples/MC_RD1_8TeV_53X_E2_50ns_algo_2015-05-21.root',
 		],
 		'labels': ['13 TeV', '8 TeV'],
 		'corrections': ['L1L2L3'],

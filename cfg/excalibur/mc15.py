@@ -14,5 +14,6 @@ def config():
 			cfg['Pipelines'][pipeline]['Quantities'].remove(tag)
 
 	cfg['JetMatchingAlgorithm'] = 'algorithmic'
-
+	cfg['CutAlphaMax'] = 0.3
+	
 	return cfg
