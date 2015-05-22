@@ -7,16 +7,20 @@ import time
 
 
 def main():
+    verbose_comparison = False
     files = []
     trees = []
     stopWatch()
-    treeName = ["nocuts_AK5PFJetsCHSL1L2L3/ntuple", "nocuts_AK5PFJetsCHSL1L2L3/ntuple"]
+    treeName = ["finalcuts_AK5PFJetsCHSL1L2L3Res/ntuple", "finalcuts_AK5PFJetsCHSL1L2L3Res/ntuple"]
+    if '-c' in sys.argv:
+        sys.argv.remove('-c')
+        verbose_comparison = True
     if '-t' in sys.argv:
         treeName = [sys.argv.pop(sys.argv.index('-t') + 1), sys.argv.pop(sys.argv.index('-t') + 1)]
         print treeName
         sys.argv.remove('-t')
     if len(sys.argv) < 3:
-        print "Usage: %s file1.root file2.root [-t treename1 treename2]" % sys.argv[0]
+        print "Usage: %s file1.root file2.root [-t treename1 treename2 -c]" % sys.argv[0]
         exit(0)
 
     print "Read %d files:" % (len(sys.argv) - 1)
@@ -55,8 +59,10 @@ def main():
     fout.Write()
     print "\nTrees written to file", fout.GetName()
     
-    print "\nCompare common trees:"
-    compareTrees(c1, c2)
+    if verbose_comparison:
+        print "\nCompare common trees:"
+        compareTrees(c1, c2)
+
     stopWatch(overall=True)
     
     
@@ -198,7 +204,7 @@ def compareTrees(tree1, tree2):
             v2 = getattr(tree2, b2)
             if b1 == 'eventnr':
                 v1 = int(tree1.eventnr1) * 1000000 + tree1.eventnr2
-            if abs(v1 - v2) > 1e-3 and b1 not in ['muplusiso', 'muminusiso', 'rho', 'njets', 'njetsinv'] and 'mu2' not in b1:
+            if abs(v1 - v2) > 1e-3 and b1 not in ['dummy'] and 'mu2' not in b1:
                 # print only eta differences if jets differ completely:
                 if abs(tree1.jet1eta - tree2.jet1eta) > 0.001 and b2 in ['jet1pt', 'jet1phi', 'jet1y', 'jet1chf', 'jet1nhf', 'jet1ef', 'jet1pf', 'jet1hfhf', 'jet1hfemf']:
                     continue
