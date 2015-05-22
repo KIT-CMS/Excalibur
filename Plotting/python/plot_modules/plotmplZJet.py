@@ -10,6 +10,7 @@ import Artus.HarryPlotter.plot_modules.plotmpl as plotmpl
 import Artus.Utility.tools as tools
 import Excalibur.Plotting.utility.matplotlib_rc as matplotlib_rc
 import Excalibur.Plotting.utility.labelsZJet as labelsZJet
+import Excalibur.Plotting.utility.colors as colors
 
 class PlotMplZJet(plotmpl.PlotMpl):
 
@@ -17,13 +18,15 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		super(PlotMplZJet, self).__init__()
 		self.nicelabels = labelsZJet.LabelsDictZJet()
 		self.default_bar_colors = [
-				'#7293cb',  # light blue
-				'#FAA75B',  # mustard yellow / orange
-				'#68A55A',  # green
-				'#CE7058',  # brown
-				'#9E67AB',  # violet
-				'#737373',  # grey
-				'#CE3B3E',  # red
+			colors.histo_colors[color] for color in [
+				'blue',
+				'yellow',
+				'green',
+				'brown',
+				'violet',
+				'grey',
+				'red'
+			]
 		]
 		self.cutlabeldict = {
 			"eta": r"|$\eta^{\mathrm{Leading \ jet}}$|$<1.3$",

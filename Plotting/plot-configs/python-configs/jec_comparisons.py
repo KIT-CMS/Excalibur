@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Excalibur.Plotting.harryinterface as harryinterface
+import Excalibur.Plotting.utility.colors as colors
 
 import argparse
 import copy
@@ -219,15 +220,15 @@ def pf_fractions(args=None, additional_dictionary=None):
 				],
 				"colors":[
 					'blue',
-					'#7293cb',  # light blue
+					colors.histo_colors['blue'],
 					'orange',
-					'#FAA75B',  # mustard yellow / orange
+					colors.histo_colors['yellow'],
 					'green',
-					'#68A55A',  # green
+					colors.histo_colors['green'],
 					'brown',
-					'#CE7058',  # brown
+					colors.histo_colors['brown'],
 					'purple',
-					'#9E67AB',  # violet
+					colors.histo_colors['violet'],
 					'blue',
 					'orange',
 					'green',
@@ -414,7 +415,7 @@ def comparison_53740742(args=None):
 		"ratio_numerator_nicks": ['742', '740'],
 		"ratio_denominator_nicks": ['53', '53'],
 		"x_errors": False,
-		"colors": ['black','red', '#7293cb', 'red', 'black'],
+		"colors": ['black','red', colors.histo_colors['blue'], 'red', 'black'],
 	}
 	basic_comparisons(args, d, True)
 	d['markers'] = ['o', 'o', 'd']
