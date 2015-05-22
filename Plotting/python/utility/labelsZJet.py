@@ -55,6 +55,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'physflavour': 'Flavour (Physics Definition)',
 			'rho': r'$\rho$',
 			'run': 'Run',
+			'sortedflavour': 'Flavour (Physics Definition)',
 			'sumet': '$\sum E^{T}$',
 			'zmass': '$\mathit{m}_{Z}$ / GeV',
 			'zphi': r"$\mathit{\phi}^{Z}$",
