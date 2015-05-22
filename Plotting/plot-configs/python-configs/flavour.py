@@ -140,6 +140,31 @@ def sortedflavour_histo(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 	harryinterface.harry_interface([d], args)
 
+def flavours(args=None, additional_dictionary=None):
+	"""Histogram of jet flavour (4 plots: q qbar g undef) """
+	d = {
+		'filename': 'flavours',
+		'cutlabel': True,
+		'x_label': 'Flavour',
+		'x_lims': [0.8, 7.2],
+		'x_expressions': [
+		  'matchedgenparton1flavour * (matchedgenparton1flavour > 0 && matchedgenparton1flavour < 20)',
+		  '0.4 + abs(matchedgenparton1flavour) * (matchedgenparton1flavour < 0 && matchedgenparton1flavour > -20)',
+		  '6 * (matchedgenparton1flavour == 21)',
+		  '6.8 * (matchedgenparton1flavour == -999)',
+		],
+		'x_bins': [' '.join(['{0} {0}.4 {0}.8 '.format(i) for i in range(1, 6)]) + '6 6.4 6.6 7 7.2'],
+		'x_ticks': [i+1.4 for i in range(0, 5)] + [6.2, 6.8],
+		'x_tick_labels': ['d', 'u', 's', 'c', 'b', 'g', 'undef'],
+		'markers': ['fill'],
+		'labels': ['quark', 'anti-quark', None, None],
+		'colors': [histo_colors['blue'], histo_colors['yellow'], histo_colors['green'], histo_colors['grey']],
+		'legend': 'upper center',
+	}
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	harryinterface.harry_interface([d], args)
+
 
 def flavour_comparison(args=None, additional_dictionary=None):
 	"""Flavour comparsion with jet1btag and jet1qgtag """
