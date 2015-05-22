@@ -37,7 +37,8 @@ def flavour_fractions(args=None, additional_dictionary=None):
 		elif x_quantity == 'abs(jet1eta)':
 			d["zjetfolders"] = ["noetacuts"]
 
-		d.update(additional_dictionary)
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
 		plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
@@ -59,10 +60,25 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 		"z_log": True,
 		"z_lims": [1, 500]
 	}
-	d.update(additional_dictionary)
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
 	plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
+
+
+def sortedflavour_histo(args=None, additional_dictionary=None):
+	"""Histogram of jet flavour (sorted) """
+	d = {
+		'x_expressions': ['sortedflavour'],
+		'x_bins': '12,-5.5,6.5',
+		'x_ticks': [i-5 for i in range(0, 12)],
+		'x_tick_labels': ['-b', '-c', '-s', '-u', '-d', 'undef', 'd', 'u', 's', 'c', 'b', 'g'],
+	}
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	harryinterface.harry_interface([d], args)
+
 
 def flavour(args=None):
 	"""Plots all flavour plots"""
@@ -76,3 +92,4 @@ def flavour(args=None):
 
 	flavour_fractions(args, d)
 	flavour_jet1btag_vs_jet1qgtag(args, d)
+	sortedflavour_histo(args, d)
