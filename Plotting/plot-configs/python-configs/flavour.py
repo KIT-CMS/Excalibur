@@ -119,6 +119,7 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		'tree_draw_options': 'prof',
 		'markers': ['.', '*', 'o', 'd'],
 		"cutlabel": True,
+		"lines": [1.],
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
@@ -129,6 +130,7 @@ def sortedflavour_histo(args=None, additional_dictionary=None):
 	"""Histogram of jet flavour (sorted) """
 	d = {
 		'filename': 'sortedflavourHisto',
+		'cutlabel': True,
 		'x_expressions': ['sortedflavour'],
 		'x_bins': '12,-5.5,6.5',
 		'x_ticks': [i-5 for i in range(0, 12)],
@@ -223,8 +225,8 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 		"labels": [
 			r"$\\mu$",
 			r"$e$",
-			"CHad",
 			r"$\\gamma$",
+			"CHad",
 			"NHad",
 		],
 		"markers": ["fill" ],
@@ -232,13 +234,15 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 		"y_expressions": [
 			"jet1mf",
 			"jet1ef",
-			"jet1chf",
 			"jet1pf",
+			"jet1chf",
 			"jet1nhf",
 		],
+		"colors": [histo_colors[c] for c in ['violet', 'brown', 'green', 'yellow', 'blue']],
 		"y_label": "Leading Jet PF Energy Fraction",
 		"y_lims": [0.0, 1.0],
 		"tree_draw_options": ["prof"],
+		"legend": "center left",
 	}
 	if additional_dictionary is not None:
 		d.update(additional_dictionary)
