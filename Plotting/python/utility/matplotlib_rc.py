@@ -34,7 +34,7 @@ class MplStyles():
 		# 'grid.linewidth':   1.3:   # thickness of grid lines
 		# 'lines.linewidth':  2.5:   # thickness of error bars
 		# 'lines.markersize': 2.5:   # size of markers
-		'text.usetex': True,
+		'text.usetex': False,
 		'legend.numpoints': 1,
 		'legend.fancybox': False,
 		'legend.shadow': False,
