@@ -399,6 +399,25 @@ def comparison_740742(args=None):
 	full_comparison(args, d)
 
 
+def comparison_740742_event_matched(args=None):
+	"""Comparison between event matched 740 and 2015 742 rereco of 8TeV DoubleMu. Takes output.root from eventmatching.py as input."""
+	d = {
+		'files': [
+			'output.root',
+			'output.root',
+		],
+		'folders': [
+			'common1',
+			'common2',
+		],
+		'nicks': ['742','740'],
+		#'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
+		'y_subplot_label' : "742/740",
+		'lumis': [0.309],
+	}
+	full_comparison(args, d)
+
+
 def comparison_53740742(args=None):
 	"""Comparison between 53X, 740 and 742 rereco of 8TeV data."""
 	d = {
