@@ -29,9 +29,9 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			]
 		]
 		self.cutlabeldict = {
-			"eta": r"|$\eta^{\mathrm{Leading \ jet}}$|$<1.3$",
-			"zpt": "$p_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
-			"alpha": r"$\alpha<0.2$",
+			"eta": r"|$\mathit{\eta}^{\mathrm{Leading \ jet}}$|$<1.3$",
+			"zpt": "$\mathit{p}_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
+			"alpha": r"$\mathit{\alpha}<0.2$",
 		}
 
 
