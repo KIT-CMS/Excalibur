@@ -15,7 +15,7 @@ colors = {
 }
 
 def flavour_fractions(args=None, additional_dictionary=None):
-	""" Plots Flavour fraction (Physics definition) vs zpt, abs(jet1eta)"""
+	""" Plots flavour fraction (q,qbar,g,undef) vs zpt, abs(jet1eta)"""
 	plots = []
 
 	for x_quantity, x_bins in zip(
@@ -25,20 +25,19 @@ def flavour_fractions(args=None, additional_dictionary=None):
 		d = {
 			"filename": "flavourFractions_vs_" + x_quantity,
 			"legend": "lower left",
-			"labels": ["undef", "g", "b", "c", "uds"],
-			"colors": [colors['undef'],colors['g'],colors['b'],colors['c'],colors['uds']],
+			"labels": ["undef", "g", "anti-quark", "quark"],
+			"colors": [colors['undef'], colors['g'], histo_colors['yellow'], histo_colors['blue']],
 			"markers": ["fill" ],
-			"stacks": ["a", "a", "a", "a", "a"],
+			"stacks": ["a", "a", "a", "a"],
 			"tree_draw_options": ["prof"],
 			"x_expressions": [x_quantity],
 			"x_bins": x_bins,
-			"y_label": "Flavour fraction (Physics definition)",
+			"y_label": "Flavour Fraction",
 			"y_expressions": [
-				"(matchedgenparton1flavour==-999)",
+				"(matchedgenparton1flavour==-999||matchedgenparton1flavour==0)",
 				"(abs(matchedgenparton1flavour)==21)",
-				"(abs(matchedgenparton1flavour)==5)",
-				"(abs(matchedgenparton1flavour)==4)",
-				"(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)"
+				"(matchedgenparton1flavour<0&&matchedgenparton1flavour>-6)",
+				"(matchedgenparton1flavour>0&&matchedgenparton1flavour<6)",
 			],
 			"y_lims": [0.0, 1.0],
 			"cutlabel": True,
