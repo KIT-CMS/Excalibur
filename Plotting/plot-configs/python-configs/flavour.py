@@ -126,20 +126,6 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 	harryinterface.harry_interface([d], args)
 
 
-def sortedflavour_histo(args=None, additional_dictionary=None):
-	"""Histogram of jet flavour (sorted) """
-	d = {
-		'filename': 'sortedflavourHisto',
-		'cutlabel': True,
-		'x_expressions': ['sortedflavour'],
-		'x_bins': '12,-5.5,6.5',
-		'x_ticks': [i-5 for i in range(0, 12)],
-		'x_tick_labels': ['-b', '-c', '-s', '-u', '-d', 'undef', 'd', 'u', 's', 'c', 'b', 'g'],
-	}
-	if additional_dictionary != None:
-		d.update(additional_dictionary)
-	harryinterface.harry_interface([d], args)
-
 def flavours(args=None, additional_dictionary=None):
 	"""Histogram of jet flavour (4 plots: q qbar g undef) """
 	d = {
@@ -284,9 +270,9 @@ def flavour(args=None):
 		"corrections": ["L1L2L3",]
 	}
 
+	flavours(args, d)
 	flavour_fractions(args, d)
 	flavour_jet1btag_vs_jet1qgtag(args, d)
-	sortedflavour_histo(args, d)
 	flavour_jet_response(args, d)
 	flavour_comparison(args, d)
 	flavour_mpf_response(args, d)
