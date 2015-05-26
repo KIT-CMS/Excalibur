@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-
 import logging
 import Artus.Utility.logger as logger
+import pprint
+import ROOT
+
 log = logging.getLogger(__name__)
 
 import numpy as np
@@ -27,20 +29,41 @@ class FlavourTagging(analysisbase.AnalysisBase):
 	def run(self, plotData=None):
 		super(FlavourTagging, self).run(plotData)
 
-		# get the values from the root histograms
-		# mean = plotData.plotdict["root_objects"][nick].GetMean()
+		#print plotData.plotdict["root_objects"]
 
-		# put together the lists with the response and composition values
-		#flavour_fractions = np.array(
-		#[
-		#	[uds(MC-Truth)_flavour_in_uds_zone, c(MC-Truth)_flavour_in_uds_zone, ... ],
-		#	[uds(MC-Truth)_flavour_in_c_zone, c(MC-Truth)_flavour_in_c_zone, ... ],
-		#	[..., ],
-		#	[...],
-		#)
-		#mean_response_values = np.array([mean_mpf_response_in_uds_zone, mean_mpf_response_in_c_zone, ...])
 
-		# solve the equation
-		#response_for_flavour = np.linalg.solve(flavour_fractions, mean_response_values)
+
+		mean_mpf_values = []
+		fractions = []
+		for i in xrange(4):
+			zone =  plotData.plotdict["flavour_tagging_zone_names"][i]
+			mean_mpf_values.append(plotData.plotdict["root_objects"][zone + "all"].GetMean())
+
+
+			sum_g = plotData.plotdict["root_objects"][zone + "g"].Integral()
+			sum_b = plotData.plotdict["root_objects"][zone + "b"].Integral()
+			sum_c = plotData.plotdict["root_objects"][zone + "c"].Integral()
+			sum_uds = plotData.plotdict["root_objects"][zone + "uds"].Integral()
+			sum_all = plotData.plotdict["root_objects"][zone + "all"].Integral()
+
+			fractions.append([
+				sum_uds / sum_all,
+				sum_c / sum_all,
+				sum_b / sum_all,
+				sum_g / sum_all,
+			])
+
+		flavour_fractions = np.array(fractions)
+		mean_response_values = np.array(mean_mpf_values)
+
+		response_for_flavour = np.linalg.solve(flavour_fractions, mean_response_values)
+
+		print response_for_flavour
 
 		# create ROOT histograms from values, push into plotdict
+		plotData.plotdict["root_objects"]['test'] = ROOT.TGraphErrors()
+		plotData.plotdict["nicks"].append("test")
+		plotData.plotdict["nicks_whitelist"] = ["test"]
+		for i in xrange(4):
+			plotData.plotdict["root_objects"]['test'].SetPoint(i, i+1, response_for_flavour[i])
+

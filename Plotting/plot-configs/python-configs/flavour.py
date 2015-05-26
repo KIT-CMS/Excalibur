@@ -129,7 +129,7 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 	"""Plots jet1btag vs. jet1qgtag in 2D, inclusive and for different tagger zones"""
 	plots = []
 
-	for weights, filename, title in zip([
+	for weights, filename, title, colormap in zip([
 				None,
 				'(abs(matchedgenparton1flavour)==4)',
 				'(abs(matchedgenparton1flavour)==5)',
@@ -143,7 +143,8 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 				'b quark jets',
 				'light quark jets',
 				'gluon jets'
-			]):
+			],
+			['Blues', 'Oranges', 'Reds', 'Blues', 'Greens']):
 		d = {
 			"filename": filename,
 			"legend": "None",
@@ -153,9 +154,12 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 			"y_expressions": "jet1qgtag",
 			"y_bins": "100,0,1",
 			"y_lims": [0.0, 1.0],
-			"colormap": "Blues",
+			"colormap": colormap,
 			"z_log": True
 		}
+
+		if weights is None:
+			d['plot_modules'] = ['PlotMplZJet', 'PlotTaggingZones']
 
 		if title is not None:
 			d['title'] = title
@@ -240,11 +244,60 @@ def flavour_comparison(args=None, additional_dictionary=None):
 				"(abs(matchedgenparton1flavour)==21)"
 			],
 			"x_lims": [0.0, 1.0],
-			"x_bins": "25,0,1",
-			"y_log": True
+			"x_bins": "25,0,1"
 		}
+		if x_quantity == "jet1btag":
+			d['y_log'] = True
+
 		d.update(additional_dictionary)
 		plots.append(d)
+
+	harryinterface.harry_interface(plots, args)
+
+def flavour_mpf_individual(args=None, additional_dictionary=None):
+	plots = []
+
+	weights = []
+	nicks = []
+	zone_names = [
+		'light_quark_zone_',
+		'c_quark_zone_',
+		'b_quark_zone_',
+		'gluon_zone_',
+	]
+
+	for weight_param, zone in zip([
+			'(jet1qgtag>0.9&&jet1btag<0.3)',
+			'(jet1btag>0.3&&jet1btag<0.7)',
+			'(jet1btag>0.9)',
+			'(jet1qgtag<0.1&&jet1btag<0.3)',
+		], zone_names):
+		nicks.append(zone + "all")
+		nicks.append(zone + "g")
+		nicks.append(zone + "b")
+		nicks.append(zone + "c")
+		nicks.append(zone + "uds")
+		weights.append("(matchedgenparton1flavour != -999)*" + weight_param)
+		weights.append("(abs(matchedgenparton1flavour)==21)*" + weight_param)
+		weights.append("(abs(matchedgenparton1flavour)==5)*" + weight_param)
+		weights.append("(abs(matchedgenparton1flavour)==4)*" + weight_param)
+		weights.append("(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)*" + weight_param)
+
+	d = {
+		"x_expressions": ["mpf"],
+		"legend": "None",
+		"x_lims": [0.0,2.0],
+		"x_bins": ["24,0,2"],
+		"x_ticks": [1,2,3,4],
+		"x_labels": ['uds', 'c', 'b', 'g'],
+		"nicks": nicks,
+		"weights": weights,
+		"analysis_modules": ["FlavourTagging"],
+		"flavour_tagging_zone_names": zone_names
+	}
+
+	d.update(additional_dictionary)
+	plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
 
@@ -256,7 +309,7 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 	for weight_param, filename, title in zip([
 			'(jet1qgtag>0.9&&jet1btag<0.3)',
 			'(jet1qgtag<0.1&&jet1btag<0.3)',
-			'(jet1btag>0.3&&jet1btag<0.9)',
+			'(jet1btag>0.3&&jet1btag<0.7)',
 			'(jet1btag>0.9)',
 		],[
 			'flavorMpfResponse_light_quark_zone',
@@ -271,10 +324,12 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 		]):
 		d = {
 			"filename": filename,
+			"title": title,
 			"x_expressions": ["mpf"],
 			"x_lims": [0.0,2.0],
 			"x_bins": ["24,0,2"],
 			"labels": ["g","b","c","uds"],
+			"nicks": ["g", "b", "c", "uds"],
 			"colors": [colors['g'],colors['b'],colors['c'],colors['uds']],
 			"markers": ["fill" ],
 			"stacks": ["a", "a", "a", "a"],
@@ -283,13 +338,12 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 				"(abs(matchedgenparton1flavour)==5)*" + weight_param,
 				"(abs(matchedgenparton1flavour)==4)*" + weight_param,
 				"(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)*" + weight_param
-			]
+			],
 		}
 
-		if title is not None:
-			d['title'] = title
 		d.update(additional_dictionary)
 		plots.append(d)
+
 	harryinterface.harry_interface(plots, args)
 
 
@@ -348,3 +402,4 @@ def flavour(args=None):
 	pf_fractions_vs_flavour(args, d)
 	flavour_composition_zones(args, d)
 	response_zones(args, d)
+	flavour_mpf_individual(args, d)
