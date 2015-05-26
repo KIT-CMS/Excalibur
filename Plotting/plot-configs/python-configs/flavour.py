@@ -29,6 +29,29 @@ zone_selections = {
 }
 
 
+def response_zones(args=None, additional_dictionary=None):
+	""" MPF response in the tagging zones."""
+	zone_labels = ['uds', 'g', 'c', 'b']
+	d = {
+		'x_expressions': [str(i) for i in range(1, len(zone_labels)+1)],
+		'y_expressions': 'mpf',
+		'weights': [zone_selections[zone] for zone in zone_labels],
+		'x_ticks': range(1, len(zone_labels)+1),
+		'x_tick_labels': zone_labels,
+		'tree_draw_options': 'prof',
+		'x_label': 'Tagging Zone',
+		'legend': None,
+		'markers': 'o',
+		'x_bins': " ".join( [str(x+0.5) for x in range(len(zone_labels)+1)] ),
+		'y_lims': [0.95, 1.05],
+		'colors': 'black',
+		'lines': [1.0],
+	}
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	harryinterface.harry_interface([d], args)
+
+
 def flavour_fractions(args=None, additional_dictionary=None):
 	""" Plots flavour fraction (q,qbar,g,undef) vs zpt, abs(jet1eta)"""
 	plots = []
@@ -322,3 +345,5 @@ def flavour(args=None):
 	flavour_comparison(args, d)
 	flavour_mpf_response(args, d)
 	pf_fractions_vs_flavour(args, d)
+	flavour_composition_zones(args, d)
+	response_zones(args, d)
