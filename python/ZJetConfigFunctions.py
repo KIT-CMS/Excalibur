@@ -51,7 +51,7 @@ def getBaseConfig(**kwargs):
 					'npv', 'rho', 'weight', #'nputruth',
 					'njets', 'njetsinv',  # number of valid and invalid jets
 					# Z quantities
-					'zpt', 'zeta', 'zy', 'zphi', 'zmass',
+					'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
 					# Leading jet
 					'jet1pt', 'jet1eta', 'jet1y', 'jet1phi',
 					'jet1chf', 'jet1nhf', 'jet1ef',
@@ -112,6 +112,7 @@ def mc(cfg, **kwargs):
 		'genzpt',
 		'genzeta',
 		'genzphi',
+		'genzeta',
 		'genzy',
 		'genzmass',
 		'deltarzgenz',

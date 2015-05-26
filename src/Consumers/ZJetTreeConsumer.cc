@@ -37,6 +37,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return product.m_z.p4.Phi();
 	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("zeta", [](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return product.m_z.p4.Eta();
+	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("zy", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.m_z.p4.Rapidity();
@@ -61,6 +65,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		KGenParticle* genZ = product.GetGenZ();
 		return (genZ != 0) ? genZ->p4.Phi() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzeta", [](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		KGenParticle* genZ = product.GetGenZ();
+		return (genZ != 0) ? genZ->p4.Eta() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzy", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
