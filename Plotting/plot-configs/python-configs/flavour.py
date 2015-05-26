@@ -8,9 +8,9 @@ from Excalibur.Plotting.utility.binnings import binnings
 
 colors = {
 	"uds": histo_colors['blue'],
-	"c": histo_colors['yellow'],
+	"c": histo_colors['green'],
 	"b": histo_colors['red'],
-	"g": histo_colors['green'],
+	"g": histo_colors['yellow'],
 	"undef": histo_colors['grey'],
 }
 
