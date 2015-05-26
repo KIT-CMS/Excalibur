@@ -26,19 +26,18 @@ class FlavourTagging(analysisbase.AnalysisBase):
 		# arguments are now available in the plotdict, can be modified if necessary
 		# plotData.plotdict['argument']
 
+		plotData.plotdict['flavour_tagging_zones_mc'] = [
+
+		]
+
 	def run(self, plotData=None):
 		super(FlavourTagging, self).run(plotData)
-
-		#print plotData.plotdict["root_objects"]
-
-
 
 		mean_mpf_values = []
 		fractions = []
 		for i in xrange(4):
 			zone =  plotData.plotdict["flavour_tagging_zone_names"][i]
 			mean_mpf_values.append(plotData.plotdict["root_objects"][zone + "all"].GetMean())
-
 
 			sum_g = plotData.plotdict["root_objects"][zone + "g"].Integral()
 			sum_b = plotData.plotdict["root_objects"][zone + "b"].Integral()
@@ -61,9 +60,9 @@ class FlavourTagging(analysisbase.AnalysisBase):
 		print response_for_flavour
 
 		# create ROOT histograms from values, push into plotdict
-		plotData.plotdict["root_objects"]['test'] = ROOT.TGraphErrors()
-		plotData.plotdict["nicks"].append("test")
-		plotData.plotdict["nicks_whitelist"] = ["test"]
+		plotData.plotdict["root_objects"]['flavour_response'] = ROOT.TGraphErrors()
+		plotData.plotdict["nicks"].append('flavour_response')
+		plotData.plotdict["nicks_whitelist"].append('flavour_response')
 		for i in xrange(4):
-			plotData.plotdict["root_objects"]['test'].SetPoint(i, i+1, response_for_flavour[i])
+			plotData.plotdict["root_objects"]['flavour_response'].SetPoint(i, i+1, response_for_flavour[i])
 

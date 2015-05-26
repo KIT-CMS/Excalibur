@@ -144,7 +144,7 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 				'light quark jets',
 				'gluon jets'
 			],
-			['Blues', 'Oranges', 'Reds', 'Blues', 'Greens']):
+			['Greys', 'Oranges', 'Reds', 'Blues', 'Greens']):
 		d = {
 			"filename": filename,
 			"legend": "None",
@@ -267,31 +267,35 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 	]
 
 	for weight_param, zone in zip([
-			'(jet1qgtag>0.9&&jet1btag<0.3)',
-			'(jet1btag>0.3&&jet1btag<0.7)',
-			'(jet1btag>0.9)',
-			'(jet1qgtag<0.1&&jet1btag<0.3)',
+			zone_selections['uds'],
+			zone_selections['c'],
+			zone_selections['b'],
+			zone_selections['g'],
 		], zone_names):
 		nicks.append(zone + "all")
 		nicks.append(zone + "g")
 		nicks.append(zone + "b")
 		nicks.append(zone + "c")
 		nicks.append(zone + "uds")
-		weights.append("(matchedgenparton1flavour != -999)*" + weight_param)
-		weights.append("(abs(matchedgenparton1flavour)==21)*" + weight_param)
-		weights.append("(abs(matchedgenparton1flavour)==5)*" + weight_param)
-		weights.append("(abs(matchedgenparton1flavour)==4)*" + weight_param)
-		weights.append("(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)*" + weight_param)
+		weights.append(weight_param)
+		weights.append(flavour_selections['g'] + "*" + weight_param)
+		weights.append(flavour_selections['b'] + "*" + weight_param)
+		weights.append(flavour_selections['c'] + "*" + weight_param)
+		weights.append(flavour_selections['uds'] + "*" + weight_param)
 
 	d = {
 		"x_expressions": ["mpf"],
 		"legend": "None",
-		"x_lims": [0.0,2.0],
+		"x_lims": [0.5,4.5],
 		"x_bins": ["24,0,2"],
 		"x_ticks": [1,2,3,4],
-		"x_labels": ['uds', 'c', 'b', 'g'],
+		"x_tick_labels": ['uds', 'c', 'b', 'gluon'],
+		"x_label": "Flavour (from tagging)",
+		"y_lims": [0.80, 1.25],
+		"y_label": "MPF Response",
 		"nicks": nicks,
 		"weights": weights,
+		"markers": ["o"],
 		"analysis_modules": ["FlavourTagging"],
 		"flavour_tagging_zone_names": zone_names
 	}
@@ -387,7 +391,8 @@ def flavour(args=None):
 	"""Plots all flavour plots"""
 	d = {
 		"files": [
-			"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root"
+			"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root",
+	#		"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root",
 		],
 		"algorithms": ["AK5PFJetsCHS",],
 		"corrections": ["L1L2L3",]
