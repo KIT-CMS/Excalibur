@@ -33,7 +33,7 @@ def main():
 			harryZJet.HarryPlotterZJet(list_of_args_strings=" ".join(unknown_args))
 
 	except SystemExit, e:
-		if "-h" in sys.argv:
+		if '-h' in sys.argv or '--help' in sys.argv:
 			harryZJet.HarryPlotterZJet()
 
 
