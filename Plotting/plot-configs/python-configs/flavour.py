@@ -182,7 +182,6 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"filename": "flavorJetResponse",
 		"legend": "lower center",
 		"x_expressions": ["sortedabsflavour"],
-		"x_label": "Flavour (Physics Definition)",
 		"x_ticks": [0,1,2,3,4,5,6],
 		"x_lims": [-0.5,6.5],
 		"x_tick_labels": ['undef.','d','u','s','c','b','g'],
@@ -356,7 +355,6 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	d = {
 		"filename": "pf_fractions_vs_flavor",
 		"x_expressions": ["sortedabsflavour"],
-		"x_label": "Flavour (Physics Definition)",
 		"x_ticks": [0,1,2,3,4,5,6],
 		"x_bins": ["7,-0.5,6.5"],
 		"x_tick_labels": ['undef.','d','u','s','c','b','g'],

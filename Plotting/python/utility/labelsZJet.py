@@ -55,7 +55,6 @@ class LabelsDictZJet(labels.LabelsDict):
 			'physflavour': 'Flavour (Physics Definition)',
 			'rho': r'$\rho$',
 			'run': 'Run',
-			'sortedflavour': 'Flavour (Physics Definition)',
 			'sumet': '$\sum E^{T}$',
 			'zmass': '$\mathit{m}_{Z}$ / GeV',
 			'zphi': r"$\mathit{\phi}^{Z}$",
@@ -72,7 +71,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'ptbalance': r"$\mathit{p}_T$ Balance",
 			'recogen': 'Jet Response $\mathit{p}_T^{RecoJet}/\mathit{p}_T^{GenJet}$',
 			'sys': 'Relative Uncertainty [$\%$]',
-			'sortedflavour': "Leading Jet Parton Flavour",
+			'sortedflavour': "Leading Jet Flavour",
+			'sortedabsflavour': "Leading Jet Flavour",
 			'tagflavour': 'Flavour (from Tagging)',
 			'unc': 'Leading Jet Uncertainty',
 		})
