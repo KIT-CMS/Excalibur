@@ -13,6 +13,21 @@ colors = {
 	"g": histo_colors['green'],
 	"undef": histo_colors['grey'],
 }
+flavour_selections = {
+	'g': '(abs(matchedgenparton1flavour)==21)',
+	'b': '(abs(matchedgenparton1flavour)==5)',
+	'c': '(abs(matchedgenparton1flavour)==4)',
+	'uds': '(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)',
+	'undef': '(matchedgenparton1flavour==0||matchedgenparton1flavour<-100)',
+}
+
+zone_selections = {
+	'uds': '(jet1qgtag>0.9 && jet1btag<0.3 && jet1btag>-1)',
+	'g': '(jet1qgtag<0.1 && jet1qgtag>-1 && jet1btag<0.3 && jet1btag>-1)',
+	'c': '(jet1btag>0.3 && jet1btag<0.7 && jet1qgtag>=0)',
+	'b': '(jet1btag>0.9 && jet1btag<1 && jet1qgtag>=0)',
+}
+
 
 def flavour_fractions(args=None, additional_dictionary=None):
 	""" Plots flavour fraction (q,qbar,g,undef) vs zpt, abs(jet1eta)"""
@@ -53,6 +68,37 @@ def flavour_fractions(args=None, additional_dictionary=None):
 		plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
+
+
+def flavour_composition_zones(args=None, additional_dictionary=None):
+	""" Flavour composition for the different tagging zones"""
+
+	# The plot is put together according to these two lists:
+	flavour_labels = [ 'undef', 'g', 'b', 'c', 'uds']
+	zone_labels = ['uds', 'g', 'c', 'b']
+
+	d = {
+		'y_expressions': [flavour_selections[x] for x in flavour_labels]*len(zone_labels),
+		'colors': [colors[i] for i in flavour_labels]*len(zone_labels),
+		'weights': 	[zone_selections[x] for x in zone_labels for i in range(len(flavour_labels))],
+		'stacks': [str(x) for x in range(1,len(zone_labels)+1) for i in range(len(flavour_labels))],
+		'x_expressions': [str(x) for x in range(1,len(zone_labels)+1) for i in range(len(flavour_labels))],
+		'labels': flavour_labels +[None]*len(flavour_labels)*(len(zone_labels)-1),
+		'x_ticks': range(1,1+len(zone_labels)),
+		'x_tick_labels': zone_labels,
+		'x_bins':[" ".join(["0.4"] + ["{0}.6 {1}.4".format(i, i+1) for i in range(len(zone_labels))] + [str(len(zone_labels)+2.2)])],
+		'x_label': 'Tagging Zone',
+		'y_label': 'Flavour Fraction',
+		'y_lims': [0, 1],
+		'legend': 'center right',
+		'tree_draw_options': 'prof',
+		'markers': ['fill'],
+	}
+
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	harryinterface.harry_interface([d], args)
+
 
 
 def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
