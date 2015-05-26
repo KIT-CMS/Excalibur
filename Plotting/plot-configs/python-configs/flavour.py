@@ -71,7 +71,7 @@ def flavour_fractions(args=None, additional_dictionary=None):
 
 
 def flavour_composition_zones(args=None, additional_dictionary=None):
-	""" Flavour composition for the different tagging zones"""
+	"""Flavour composition for the different tagging zones"""
 
 	# The plot is put together according to these two lists:
 	flavour_labels = [ 'undef', 'g', 'b', 'c', 'uds']
@@ -93,12 +93,12 @@ def flavour_composition_zones(args=None, additional_dictionary=None):
 		'legend': 'center right',
 		'tree_draw_options': 'prof',
 		'markers': ['fill'],
+		'filename': 'flavour_composition_zones',
 	}
 
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
 	harryinterface.harry_interface([d], args)
-
 
 
 def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
