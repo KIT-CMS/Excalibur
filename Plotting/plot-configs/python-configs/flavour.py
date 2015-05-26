@@ -31,7 +31,7 @@ zone_selections = {
 
 def response_zones(args=None, additional_dictionary=None):
 	""" MPF response in the tagging zones."""
-	zone_labels = ['uds', 'g', 'c', 'b']
+	zone_labels = ['uds', 'c', 'b', 'g']
 	d = {
 		'x_expressions': [str(i) for i in range(1, len(zone_labels)+1)],
 		'y_expressions': 'mpf',
@@ -42,10 +42,11 @@ def response_zones(args=None, additional_dictionary=None):
 		'x_label': 'Tagging Zone',
 		'legend': None,
 		'markers': 'o',
-		'x_bins': " ".join( [str(x+0.5) for x in range(len(zone_labels)+1)] ),
+		'x_bins': " ".join([str(x+0.5) for x in range(len(zone_labels)+1)]),
 		'y_lims': [0.95, 1.05],
 		'colors': 'black',
 		'lines': [1.0],
+		'filename': 'mpf_zones',
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
