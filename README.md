@@ -108,6 +108,9 @@ luminosity (--lumi) if at least one Data file is used for plotting.
 The quantities.py file in Plotting/python/utiliy contains a dictionary for quantity
 aliases. E.g., type 'ptbalance' and this will be replaced with 'jet2pt/zpt'.
 
+The binnings.py file in Plotting/python/utiliy contains a dictionary for special
+binnings for ZpT, jet eta, Npv. If you use e.g. `--x-bins zpt` (or dictionary key),
+the binning is replaced with the values from this dictionary.
 
 ##### PlotMplZJet
 The --cutlabel argument places a label with the used cuts (Z pT, abs(jet1eta),

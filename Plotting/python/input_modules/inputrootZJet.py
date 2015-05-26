@@ -14,6 +14,8 @@ import Artus.HarryPlotter.input_modules.inputroot as inputroot
 import Artus.Utility.jsonTools as jsonTools
 import Artus.HarryPlotter.utility.roottools as roottools
 import Excalibur.Plotting.utility.quantities as quantities
+from Excalibur.Plotting.utility.binnings import binnings
+
 
 class InputRootZJet(inputroot.InputRoot):
 
@@ -51,6 +53,11 @@ class InputRootZJet(inputroot.InputRoot):
 			plotData.plotdict['nicks'] = [os.path.splitext(os.path.basename(i))[0] for i in plotData.plotdict['files']]
 		if plotData.plotdict['x_expressions'] == None:
 			plotData.plotdict['x_expressions'] = plotData.plotdict['plot'].split("_")[-1]
+
+		# if x_bins is e.g. 'zpt', replace string with the values from the binning dictionary
+		for axis in ['x', 'y', 'z']:
+			if len(plotData.plotdict[axis+'_bins']) == 1 and plotData.plotdict[axis+'_bins'][0] in binnings.keys():
+				plotData.plotdict[axis+'_bins'][0] = binnings[plotData.plotdict[axis+'_bins'][0]]
 
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
