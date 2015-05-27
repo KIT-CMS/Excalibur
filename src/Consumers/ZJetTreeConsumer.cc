@@ -12,7 +12,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	////////////////////////
 	// General quantities //
 	////////////////////////
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("npu", [](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("npu", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return event.m_genEventInfo->nPU;
 	} );
@@ -160,11 +160,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	} );
 	
 	// General jet stuff
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("njets", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("njets", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.GetValidJetCount(settings, event);
 	} );
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("njetsinv", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("njetsinv", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.GetInvalidJetCount(settings, event);
 	} );
@@ -193,7 +193,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
 		return (genParton != 0) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton1flavour", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("matchedgenparton1flavour", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
 		return (genParton != 0) ? genParton->pdgId() : DefaultValues::UndefinedDouble;
@@ -253,7 +253,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	// MUONS //
 	///////////
 	
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("nmuons", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("nmuons", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.m_validMuons.size();
 	} );
@@ -341,7 +341,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	});
 
 	// Gen muons
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("ngenmuons", [](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("ngenmuons", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.m_genMuons.size();
 	} );
@@ -351,7 +351,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		{
 			if ((*genMuon)->charge() == 1) return (*genMuon)->p4.Pt();
 		}
-		return DefaultValues::UndefinedDouble;;
+		return DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genmupluseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float
 	{
@@ -359,7 +359,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		{
 			if ((*genMuon)->charge() == 1) return (*genMuon)->p4.Eta();
 		}
-		return DefaultValues::UndefinedDouble;;
+		return DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genmuplusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float
 	{
@@ -367,7 +367,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		{
 			if ((*genMuon)->charge() == 1) return (*genMuon)->p4.Phi();
 		}
-		return DefaultValues::UndefinedDouble;;
+		return DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genmuminuspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float
 	{
@@ -375,7 +375,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		{
 			if ((*genMuon)->charge() == -1) return (*genMuon)->p4.Pt();
 		}
-		return DefaultValues::UndefinedDouble;;
+		return DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genmuminuseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float
 	{
@@ -383,7 +383,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		{
 			if ((*genMuon)->charge() == -1) return (*genMuon)->p4.Phi();
 		}
-		return DefaultValues::UndefinedDouble;;
+		return DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genmuminusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float
 	{
@@ -391,7 +391,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		{
 			if ((*genMuon)->charge() == -1) return (*genMuon)->p4.Eta();
 		}
-		return DefaultValues::UndefinedDouble;;
+		return DefaultValues::UndefinedDouble;
 	} );
 
 	// Reco muon - gen muon matches
