@@ -95,6 +95,9 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			d["x_bins"] = ["25,0,400"]
 		# TODO move this to more general location
 		xbins_dict = {
+			'npv': ["41,-0.5,40.5"],
+			'npu': ["41,-0.5,40.5"],
+			'npumean': ["41,-0.5,40.5"],
 			'mu1pt': ["25,0,150"],
 			'mupluspt': ["25,0,150"],
 			'muminuspt': ["25,0,150"],
