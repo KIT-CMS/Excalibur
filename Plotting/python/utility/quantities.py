@@ -11,11 +11,11 @@ quantities_dict = {
 	'sortedflavour' : (
 		'matchedgenparton1flavour*(matchedgenparton1flavour<20 && matchedgenparton1flavour>(-20))'  # quarks: ok
 		+'+6*(matchedgenparton1flavour==21)'  # gluons: 21 -> 6
-		+'+0*(matchedgenparton1flavour==-999)'  # undef ->0
+		+'+7*(matchedgenparton1flavour==-999)'  # undef ->7
 	),
 	'sortedabsflavour' : (
 		'abs(matchedgenparton1flavour)*(abs(matchedgenparton1flavour)<20)'  # quarks: ok
 		+'+6*(abs(matchedgenparton1flavour)==21)'  # gluons: 21 -> 6
-		+'+0*(abs(matchedgenparton1flavour)==-999)'  # undef ->7
+		+'+7*(abs(matchedgenparton1flavour)==999)'  # undef ->7
 	),
 }

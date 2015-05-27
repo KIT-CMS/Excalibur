@@ -99,7 +99,7 @@ def flavour_composition_zones(args=None, additional_dictionary=None):
 
 	# The plot is put together according to these two lists:
 	flavour_labels = [ 'undef', 'g', 'b', 'c', 'uds']
-	zone_labels = ['uds', 'g', 'c', 'b']
+	zone_labels = ['uds', 'c', 'b', 'g']
 
 	d = {
 		'y_expressions': [flavour_selections[x] for x in flavour_labels]*len(zone_labels),
@@ -182,9 +182,10 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"filename": "flavorJetResponse",
 		"legend": "lower center",
 		"x_expressions": ["sortedabsflavour"],
-		"x_ticks": [0,1,2,3,4,5,6],
-		"x_lims": [-0.5,6.5],
-		"x_tick_labels": ['undef.','d','u','s','c','b','g'],
+		"x_label": "Jet Response",
+		"x_ticks": [1,2,3,4,5,6, 7],
+		"x_lims": [0.5,7.5],
+		"x_tick_labels": ['d','u','s','c','b','g', 'undef.'],
 		"y_expressions": ["ptbalance", "mpf", "genjet1pt/zpt", "jet1pt/genjet1pt"],
 		"labels": ["PtBalance", "MPF", "GenJet/RecoZ", "RecoJet/GenJet"],
 		"y_lims": [0.8, 1.1],
@@ -296,7 +297,8 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 		"weights": weights,
 		"markers": ["o"],
 		"analysis_modules": ["FlavourTagging"],
-		"flavour_tagging_zone_names": zone_names
+		"flavour_tagging_zone_names": zone_names,
+		"lines": [1.0]
 	}
 
 	d.update(additional_dictionary)
@@ -355,9 +357,10 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	d = {
 		"filename": "pf_fractions_vs_flavor",
 		"x_expressions": ["sortedabsflavour"],
-		"x_ticks": [0,1,2,3,4,5,6],
-		"x_bins": ["7,-0.5,6.5"],
-		"x_tick_labels": ['undef.','d','u','s','c','b','g'],
+		"x_ticks": [1,2,3,4,5,6,7],
+		"x_bins": ["13,0.5,7.5"],
+		'x_bins':[" ".join(["0.4"] + ["{0}.6 {1}.4".format(i, i+1) for i in range(7)] + [str(7+3.4)])],
+		"x_tick_labels": ['d','u','s','c','b','g', 'undef.'],
 		"labels": [
 			r"$\\mu$",
 			r"$e$",
@@ -378,7 +381,7 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 		"y_label": "Leading Jet PF Energy Fraction",
 		"y_lims": [0.0, 1.0],
 		"tree_draw_options": ["prof"],
-		"legend": "center left",
+		"legend": "center right",
 	}
 	if additional_dictionary is not None:
 		d.update(additional_dictionary)
