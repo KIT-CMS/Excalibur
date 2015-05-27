@@ -24,7 +24,8 @@ flavour_selections = {
 zone_selections = {
 	'uds': '(jet1qgtag>0.9 && jet1btag<0.3 && jet1btag>-1)',
 	'g': '(jet1qgtag<0.1 && jet1qgtag>-1 && jet1btag<0.3 && jet1btag>-1)',
-	'c': '(jet1btag>0.3 && jet1btag<0.7 && jet1qgtag>=0)',
+	'c': '(jet1btag>0.6 && jet1btag<0.9 && jet1qgtag>0.6 && jet1qgtag<0.9)', # earlier zone definition
+	#'c': '(jet1btag>0.3 && jet1btag<0.7 && jet1qgtag>=0)', # newer zone definition
 	'b': '(jet1btag>0.9 && jet1btag<1 && jet1qgtag>=0)',
 }
 
@@ -311,12 +312,11 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 	"""MPF Response for different Flavour Zones """
 	plots = []
 
-	for weight_param, filename, title in zip([
-			'(jet1qgtag>0.9&&jet1btag<0.3)',
-			'(jet1qgtag<0.1&&jet1btag<0.3)',
-			'(jet1btag>0.3&&jet1btag<0.7)',
-			'(jet1btag>0.9)',
-		],[
+	zones = ['uds', 'g', 'c', 'b']
+
+	for weight_param, filename, title in zip(
+		[zone_selections[zone] for zone in zones],
+		[
 			'flavorMpfResponse_light_quark_zone',
 			'flavorMpfResponse_gluon_zone',
 			'flavorMpfResponse_c_quark_zone',
