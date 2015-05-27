@@ -13,7 +13,7 @@ class HarryParserZJet(harryparser.HarryParser):
 		super(HarryParserZJet, self).__init__()
 
 		self.set_defaults(plot_modules=["PlotMplZJet"])
-		self.set_defaults(input_module="InputRootZJet")
+		self.set_defaults(input_modules="InputRootZJet")
 
 		self.add_argument('--list-functions', action='store_true', default=False,
 			help="Print the available json and python plot functions with comments/documentation")
