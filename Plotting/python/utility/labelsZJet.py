@@ -51,6 +51,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'muplusphi': '$\mathit{\phi}^{\mu+}$',
 			'mupluspt': '$\mathit{p}_{T}^{\mu+}$',
 			'njets30': '$\mathit{n}_{Jets, \mathit{p}_T>30 GeV}$',
+			'npu': '$\mathit{n}_{PU}$',
+			'npumean': r'$\langle\mathit{n}_{PU}\rangle$',
 			'npv': '$\mathit{n}_{PV}$',
 			'physflavour': 'Flavour (Physics Definition)',
 			'rho': r'$\rho$',
