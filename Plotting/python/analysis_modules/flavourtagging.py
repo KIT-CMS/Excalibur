@@ -34,10 +34,15 @@ class FlavourTagging(analysisbase.AnalysisBase):
 		super(FlavourTagging, self).run(plotData)
 
 		mean_mpf_values = []
-		fractions = []
+		mean_mpf_values_up = []
+		mean_mpf_values_down = []
+		list_of_fractions = []
 		for i in xrange(4):
 			zone =  plotData.plotdict["flavour_tagging_zone_names"][i]
 			mean_mpf_values.append(plotData.plotdict["root_objects"][zone + "all"].GetMean())
+			# vary mean error/up down (neede to determine errors on final response values)
+			mean_mpf_values_up.append(mean_mpf_values[-1] + plotData.plotdict["root_objects"][zone + "all"].GetMeanError())
+			mean_mpf_values_down.append(mean_mpf_values[-1] - plotData.plotdict["root_objects"][zone + "all"].GetMeanError())
 
 			sum_g = plotData.plotdict["root_objects"][zone + "g"].Integral()
 			sum_b = plotData.plotdict["root_objects"][zone + "b"].Integral()
@@ -45,24 +50,31 @@ class FlavourTagging(analysisbase.AnalysisBase):
 			sum_uds = plotData.plotdict["root_objects"][zone + "uds"].Integral()
 			sum_all = plotData.plotdict["root_objects"][zone + "all"].Integral()
 
-			fractions.append([
+			list_of_fractions.append([
 				sum_uds / sum_all,
 				sum_c / sum_all,
 				sum_b / sum_all,
 				sum_g / sum_all,
 			])
 
-		flavour_fractions = np.array(fractions)
+		for fractions in list_of_fractions:
+			if sum(fractions) != 1.:
+				log.warning("Flavour fractions do not sum up to 1!")
+
+		flavour_fractions = np.array(list_of_fractions)
 		mean_response_values = np.array(mean_mpf_values)
+		mean_response_values_up = np.array(mean_mpf_values_up)
+		mean_response_values_down = np.array(mean_mpf_values_down)
 
 		response_for_flavour = np.linalg.solve(flavour_fractions, mean_response_values)
-
-		print response_for_flavour
+		response_for_flavour_up = np.linalg.solve(flavour_fractions, mean_response_values_up)
+		response_for_flavour_down = np.linalg.solve(flavour_fractions, mean_response_values_down)
 
 		# create ROOT histograms from values, push into plotdict
-		plotData.plotdict["root_objects"]['flavour_response'] = ROOT.TGraphErrors()
+		plotData.plotdict["root_objects"]['flavour_response'] = ROOT.TGraphAsymmErrors()
 		plotData.plotdict["nicks"].append('flavour_response')
 		plotData.plotdict["nicks_whitelist"].append('flavour_response')
 		for i in xrange(4):
 			plotData.plotdict["root_objects"]['flavour_response'].SetPoint(i, i+1, response_for_flavour[i])
-
+			plotData.plotdict["root_objects"]['flavour_response'].SetPointEYhigh(i, response_for_flavour_up[i] - response_for_flavour[i])
+			plotData.plotdict["root_objects"]['flavour_response'].SetPointEYlow(i, response_for_flavour[i] - response_for_flavour_down[i])

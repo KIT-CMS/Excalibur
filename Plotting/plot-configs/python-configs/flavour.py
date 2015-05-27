@@ -38,7 +38,7 @@ def response_zones(args=None, additional_dictionary=None):
 		'y_expressions': 'mpf',
 		'weights': [zone_selections[zone] for zone in zone_labels],
 		'x_ticks': range(1, len(zone_labels)+1),
-		'x_tick_labels': zone_labels,
+		'x_tick_labels': [i+"-zone" for i in zone_labels],
 		'tree_draw_options': 'prof',
 		'x_label': 'Tagging Zone',
 		'legend': None,
@@ -278,7 +278,7 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 		nicks.append(zone + "b")
 		nicks.append(zone + "c")
 		nicks.append(zone + "uds")
-		weights.append(weight_param)
+		weights.append(weight_param +" * (matchedgenparton1flavour>-20)")
 		weights.append(flavour_selections['g'] + "*" + weight_param)
 		weights.append(flavour_selections['b'] + "*" + weight_param)
 		weights.append(flavour_selections['c'] + "*" + weight_param)
@@ -292,7 +292,7 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 		"x_ticks": [1,2,3,4],
 		"x_tick_labels": ['uds', 'c', 'b', 'gluon'],
 		"x_label": "Flavour (from tagging)",
-		"y_lims": [0.80, 1.25],
+		"y_lims": [0.95, 1.05],
 		"y_label": "MPF Response",
 		"nicks": nicks,
 		"weights": weights,
