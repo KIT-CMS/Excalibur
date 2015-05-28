@@ -181,9 +181,9 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 	"""Flavor response for simulated jets """
 	d = {
 		"filename": "flavorJetResponse",
-		"legend": "lower center",
+		"legend": "lower left",
 		"x_expressions": ["sortedabsflavour"],
-		"x_label": "Jet Response",
+		"y_label": "Jet Response",
 		"x_ticks": [1,2,3,4,5,6, 7],
 		"x_lims": [0.5,7.5],
 		"x_tick_labels": ['d','u','s','c','b','g', 'undef.'],
@@ -205,7 +205,7 @@ def flavours(args=None, additional_dictionary=None):
 	d = {
 		'filename': 'flavours',
 		'cutlabel': True,
-		'x_label': 'Flavour',
+		'x_label': 'Leading Jet Flavour',
 		'x_lims': [0.8, 7.2],
 		'x_expressions': [
 		  'matchedgenparton1flavour * (matchedgenparton1flavour > 0 && matchedgenparton1flavour < 20)',
@@ -393,7 +393,6 @@ def flavour(args=None):
 	d = {
 		"files": [
 			"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root",
-	#		"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root",
 		],
 		"algorithms": ["AK5PFJetsCHS",],
 		"corrections": ["L1L2L3",]
@@ -409,3 +408,4 @@ def flavour(args=None):
 	flavour_composition_zones(args, d)
 	response_zones(args, d)
 	flavour_mpf_individual(args, d)
+
