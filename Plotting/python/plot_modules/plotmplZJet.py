@@ -100,7 +100,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			'zcuts': ['zpt'],
 			'noalphacuts': ['eta', 'zpt'],
 			'noetacuts': ['alpha', 'zpt'],
-			'noalphanoetacuts': ['alpha', 'eta', 'zpt'],
+			'noalphanoetacuts': ['zpt'],
 		}
 		for ax in [plotData.plot.axes[0]]:
 			if plotData.plotdict['cutlabel'] == True:
