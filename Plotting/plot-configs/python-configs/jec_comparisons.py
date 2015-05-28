@@ -49,7 +49,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'y_expressions': [method],
 				'x_expressions': [quantity],
 				'x_bins': bins,
-				'y_lims': [0.8, 1.1],
+				'y_lims': [0.7, 1.15],
 				'x_errors': [1],
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
@@ -79,8 +79,9 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	
 	plots = []
 	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi',
-			 'npv', 'metpt', 'metphi', 'mu1pt', 'mu1eta', 'mu1phi',
-			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta',
+			 'npv', 'metpt', 'metphi', 'rawmetpt', 'rawmetphi',
+			 'mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi',
+			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi',
 			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt'] \
 			 + (['run', 'lumi', 'event'] if data_quantities else ['npu', 'npumean']):
 		# normal comparison
@@ -102,6 +103,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'mupluspt': ["25,0,150"],
 			'muminuspt': ["25,0,150"],
 			'metpt': ["25,0,125"],
+			'rawmetpt': ["25,0,125"],
 			'ptbalance': ["25,0,2"],
 			'mpf': ["25,0,2"],
 			'jet2pt': ["25,0,100"],
@@ -425,19 +427,27 @@ def comparison_53740742(args=None):
 	"""Comparison between 53X, 740 and 742 rereco of 8TeV data."""
 	d = {
 		'files': [
-			'ntuples/Data_8TeV_74X_E2_50ns_noHlt_2015-05-20.root',
-			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
-			'ntuples/Data_8TeV_53X_E2_50ns_noHlt_2015-05-20.root',
+			'output.root',
+			'output.root',
+			'output.root',
 		],
+		'folders': [
+			'common3',
+			'common2',
+			'common1',
+		],
+		'y_errors' : [True, True, True, False, False],
 		'markers': ['.', '.', 'fill'],
 		'zorder': [30, 20, 10],
 		'nicks': ['740', '742', '53'],
 		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
 		'lumis': [0.309],
+		'energies': [8],
 		"ratio_numerator_nicks": ['742', '740'],
 		"ratio_denominator_nicks": ['53', '53'],
 		"x_errors": False,
 		"colors": ['black','red', colors.histo_colors['blue'], 'red', 'black'],
+		'y_subplot_label' : "74X/53",
 	}
 	basic_comparisons(args, d, True)
 	d['markers'] = ['o', 'o', 'd']
