@@ -131,49 +131,64 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 	"""Plots jet1btag vs. jet1qgtag in 2D, inclusive and for different tagger zones"""
 	plots = []
 
-	for weights, filename, title, colormap in zip([
-				None,
-				'(abs(matchedgenparton1flavour)==4)',
-				'(abs(matchedgenparton1flavour)==5)',
-				'(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)',
-				'(abs(matchedgenparton1flavour)==21)'
-			],
-			['flavorTaggingZones', 'flavorTaggingZones_c', 'flavorTaggingZones_b', 'flavorTaggingZones_uds', 'flavorTaggingZones_g'],
-			[
-				'Tagger distribution',
-				'c quark jets',
-				'b quark jets',
-				'light quark jets',
-				'gluon jets'
-			],
-			['Greys', 'Oranges', 'Reds', 'Blues', 'Greens']):
-		d = {
-			"filename": filename,
-			"legend": "None",
-			"x_expressions": "jet1btag",
-			"x_bins": "100,0,1",
-			"x_lims": [0.0, 1.0],
-			"y_expressions": "jet1qgtag",
-			"y_bins": "100,0,1",
-			"y_lims": [0.0, 1.0],
-			"colormap": colormap,
-			"z_log": True
-		}
+	for z_value in [False, True]:
+		for weights, filename, title, colormap in zip([
+					None,
+					'(abs(matchedgenparton1flavour)==4)',
+					'(abs(matchedgenparton1flavour)==5)',
+					'(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)',
+					'(abs(matchedgenparton1flavour)==21)'
+				],
+				['flavorTaggingZones', 'flavorTaggingZones_c', 'flavorTaggingZones_b', 'flavorTaggingZones_uds', 'flavorTaggingZones_g'],
+				[
+					'Tagger distribution',
+					'c quark jets',
+					'b quark jets',
+					'light quark jets',
+					'gluon jets'
+				],
+				['Greys', 'Oranges', 'Reds', 'Blues', 'Greens']):
+			d = {
+				"filename": filename,
+				"legend": "None",
+				"x_expressions": "jet1btag",
+				"x_bins": "100,0,1",
+				"x_lims": [0.0, 1.0],
+				"y_expressions": "jet1qgtag",
+				"y_bins": "100,0,1",
+				"y_lims": [0.0, 1.0],
+				"colormap": colormap,
+				"z_log": True
+			}
 
-		if weights is None:
-			d['plot_modules'] = ['PlotMplZJet', 'PlotTaggingZones']
+			if z_value and weights is None:
+				continue
 
-		if title is not None:
-			d['title'] = title
+			if z_value:
+				d['filename'] = filename + "_fraction"
+				d['z_log'] = False
+				d['z_expressions'] = weights
+				d['z_lims'] = [0, 1]
+				d['z_label'] = "Fraction"
+				d['tree_draw_options'] = 'prof'
+				d['x_bins'] = "20,0,1"
+				d['y_bins'] = "20,0,1"
+				weights = None
 
-		if weights is not None:
-			d['weights'] = weights
-			d['x_bins'] = "20,0,1"
-			d['y_bins'] = "20,0,1"
-			d['z_log'] = False
+			if weights is None and not z_value:
+				d['plot_modules'] = ['PlotMplZJet', 'PlotTaggingZones']
 
-		d.update(additional_dictionary)
-		plots.append(d)
+			if title is not None:
+				d['title'] = title
+
+			if weights is not None:
+				d['weights'] = weights
+				d['x_bins'] = "20,0,1"
+				d['y_bins'] = "20,0,1"
+				d['z_log'] = False
+
+			d.update(additional_dictionary)
+			plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
 
