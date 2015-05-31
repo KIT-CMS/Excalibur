@@ -4,7 +4,8 @@
 import Excalibur.Plotting.harryinterface as harryinterface
 from Excalibur.Plotting.utility.colors import histo_colors
 from Excalibur.Plotting.utility.binnings import binnings
-
+import Artus.Utility.logger as logger
+import pprint
 
 colors = {
 	"uds": histo_colors['blue'],
@@ -260,6 +261,7 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 
 	weights = []
 	nicks = []
+	files = []
 	zone_names = [
 		'light_quark_zone_',
 		'c_quark_zone_',
@@ -267,42 +269,64 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 		'gluon_zone_',
 	]
 
-	for weight_param, zone in zip([
-			zone_selections['uds'],
-			zone_selections['c'],
-			zone_selections['b'],
-			zone_selections['g'],
-		], zone_names):
-		nicks.append(zone + "all")
-		nicks.append(zone + "g")
-		nicks.append(zone + "b")
-		nicks.append(zone + "c")
-		nicks.append(zone + "uds")
-		weights.append(weight_param +" * (matchedgenparton1flavour>-20)")
-		weights.append(flavour_selections['g'] + "*" + weight_param)
-		weights.append(flavour_selections['b'] + "*" + weight_param)
-		weights.append(flavour_selections['c'] + "*" + weight_param)
-		weights.append(flavour_selections['uds'] + "*" + weight_param)
+	mc_file = None
+	data_files = {}
+	file_types = []
+	if 'files' in additional_dictionary and len(additional_dictionary['files']) > 0:
+		mc_file = additional_dictionary['files'][0]
+		file_types.append("mc")
+		if len(additional_dictionary['files']) > 1:
+			for i in xrange(len(additional_dictionary['files'])-1):
+				data_files['data' + str(i+1)] = additional_dictionary['files'][i+1]
+				file_types.append('data' + str(i+1))
+	else:
+		logger.log.critical("No files given!")
+		return
+	for file_type in file_types:
+		for weight_param, zone in zip([
+				zone_selections['uds'],
+				zone_selections['c'],
+				zone_selections['b'],
+				zone_selections['g'],
+			], zone_names):
+
+			if file_type == 'mc':
+				nicks.append(zone + "all")
+				nicks.append(zone + "g")
+				nicks.append(zone + "b")
+				nicks.append(zone + "c")
+				nicks.append(zone + "uds")
+				weights.append(weight_param +" * (matchedgenparton1flavour>-20)")
+				weights.append(flavour_selections['g'] + "*" + weight_param)
+				weights.append(flavour_selections['b'] + "*" + weight_param)
+				weights.append(flavour_selections['c'] + "*" + weight_param)
+				weights.append(flavour_selections['uds'] + "*" + weight_param)
+				for i in xrange(5):
+					files.append(mc_file)
+			else:
+				nicks.append(zone + file_type)
+				weights.append(weight_param)
+				files.append(data_files[file_type])
 
 	d = {
 		"x_expressions": ["mpf"],
-		"legend": "None",
 		"x_lims": [0.5,4.5],
 		"x_bins": ["24,0,2"],
 		"x_ticks": [1,2,3,4],
 		"x_tick_labels": ['uds', 'c', 'b', 'gluon'],
 		"x_label": "Flavour (from tagging)",
-		"y_lims": [0.95, 1.05],
+		"y_lims": [0.92, 1.05],
 		"y_label": "MPF Response",
 		"nicks": nicks,
 		"weights": weights,
 		"markers": ["o"],
 		"analysis_modules": ["FlavourTagging"],
 		"flavour_tagging_zone_names": zone_names,
+		"flavour_tagging_data_files": [data_name for data_name in file_types[1:]],
 		"lines": [1.0]
 	}
-
 	d.update(additional_dictionary)
+	d['files'] = files
 	plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
@@ -407,5 +431,6 @@ def flavour(args=None):
 	pf_fractions_vs_flavour(args, d)
 	flavour_composition_zones(args, d)
 	response_zones(args, d)
-	flavour_mpf_individual(args, d)
 
+	d['files'].append("ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root")
+	flavour_mpf_individual(args, d)
