@@ -88,5 +88,138 @@ def base_root(rootfile, quantityprefix, args=None):
 	harryinterface.harry_interface(plots, args)
 
 
+def rivet(args=None, additional_dictionary=None):
+	""" compare rivet output to data"""
+
+	rootfile = '/usr/users/dhaitz/home/qcd/sherivf/unfolded/XXX_unfolded_Madgraph_inclusive.root'
+
+	plots=[]
+	for mc in [True, False]:
+		for norm in [False]:#, True]:
+			for index, (quantity, binning, label) in enumerate(zip(
+					['zpt', 'abs(zy)', 'zmass'],
+					['37,30,400', '25,0,2.5', '20,81,101'],
+					['zpt', 'zy', 'zmass']
+			)):
+				d = {
+					'input_modules': ['InputRootZJet', 'InputYoda'],
+					#'yodafiles': ['/storage/a/dhaitz/sherivf/sg_2015-06-01_14-32/Rivet.yoda'],  # override from command line
+					'files': [rootfile.replace("XXX", quantity)],
+					'folders': [""],
+					'nicks': 'root',
+					'analysis_modules': ['ScaleHistograms']+(['NormalizeToFirstHisto'] if norm else []) +['Ratio'],
+					'x_expressions': [('MC_unfolded' if mc else 'Data_unfolded')],
+					'x_bins': binning,
+					'nicks_whitelist': ['root', 'd0{0}'.format(str(index+1))],
+					'ratio_numerator_nicks': ['root'],
+					'ratio_denominator_nicks': ['MCgrid_CMS_2015_Zeed0{0}-x01-y01'.format(str(index+1))],
+					'y_subplot_lims': [0., 2.],
+					'x_label': label,
+					'filename': ('madgraph-sherpa_' if mc else 'data-sherpa_')+('shape_' if norm else '')+quantity,
+					'scale_factors': [(1./19789.) * (0.5 if quantity == 'abs(zy)' else 1)],
+					'title': ("Shape comparison" if norm else ""),
+					'y_label': r'$\\sigma$ / pb' + ("" if quantity == 'abs(zy)' else " $GeV^{-1}$"),
+					'labels': [('Madgraph' if mc else 'Data'), '_noLabel', 'Sherpa+Rivet'],
+					'energies': [8],
+					'scale': (1./96.),
+					'scale_nicks': ['MCgrid_CMS_2015_Zeed0{0}-x01-y01'.format(str(index+1))],
+				}
+				if quantity == 'zpt':
+					d['x_lims'] = [30, 400]
+					d['y_lims'] = [0.001, 20]
+					d['y_log'] = True
+				plots.append(d)
+	harryinterface.harry_interface(plots, args)
+
+
+def fastnlo_all(args=None, additional_dictionary=None):
+	""" study fastnlo tables for different PDF sets / members"""
+	plots = []
+	bindict = {
+			'zmass': ['20,81,101'],
+			'abs(zy)': ['25,0,2.5'],
+			'zpt': ['37,30,400'],
+	}
+	qdict = {'pT': 'zpt', 'y': 'abs(zy)', 'm': 'zmass'}
+
+	scale = False#True
+
+	# configure fastNLO input
+	n_members = 1
+	pdf_sets = ['CT10nlo.LHgrid', 'NNPDF21_100.LHgrid', 'abm11_3n_nlo.LHgrid', 'cteq65.LHgrid', 'MSTW2008nnlo90cl.LHgrid']
+	labels = ['CT10', 'NNPDF', 'ABM11', 'CTEQ6', 'MSTW']
+	colors = ['blue', 'red', 'green', 'purple', 'orange']
+	N = n_members * len(pdf_sets)
+
+	for quantity, sf in zip(['y', 'm', 'pT'], [0.5, 2, 20]):
+		d = {
+			'input_modules': 'InputFastNLOTable',
+			'pdf_sets': pdf_sets,
+			'members': range(n_members)*len(pdf_sets),
+			#'labels': ['Different PDF Sets'.format(N-1)] + [None]*(N-1),
+			'labels': labels,
+			'fastnlo_files': "/storage/a/dhaitz/sherivf/sg_2015-06-04_12-59/fnlo_{0}Z.txt".format(quantity),
+			'legend': 'upper right',
+			'markers': ['-',]*N,
+			'line_styles': ['-']*N,
+			'colors': colors,
+			'energies': [8],
+			'filename': "fastnlo_"+qdict[quantity],
+		}
+		if quantity == 'pT':
+			d['y_log'] = True
+	
+		# add comparison with unfolded data / MC
+		rootfile = '/usr/users/dhaitz/home/qcd/sherivf/unfolded/XXX_unfolded_Madgraph_inclusive.root'
+		mc = False
+
+		# nicks (for scaling)
+		nicks = []
+		for pdf_set in pdf_sets:
+			for n in range(n_members):
+				nicks.append("_".join([d['fastnlo_files'], pdf_set, str(n)]))
+
+		d.update({
+			'input_modules': ['InputRootZJet', 'InputFastNLOTable'],
+			'files': [rootfile.replace("XXX", qdict[quantity])],
+			'x_bins': bindict[qdict[quantity]],
+			'folders': [""],
+			'x_expressions': [('MC_unfolded' if mc else 'Data_unfolded')],
+			'labels': ['Data'] + d['labels'],
+			'colors': ['black'] + d['colors'],
+			'line_styles': [None] + d['line_styles'],
+			'markers': ['o'] + d['markers'],
+			'x_label': qdict[quantity],
+			'analysis_modules':['ScaleHistograms'],
+			'scale_factors': [1./19789.],
+			'scale_nicks': nicks,
+			'scale': (sf if scale else 1.)/1000.,
+			'y_label': r'$\\sigma$ / pb' + ("" if quantity == 'y' else " $GeV^{-1}$"),
+			'texts': [("fastNLO scaled by factor {0}".format(str(sf)) if scale else "")],
+		})
+		if quantity == 'pT':
+			d['y_lims'] = [0.001, 30]
+			d['legend'] = 'lower left'
+		elif quantity == 'y':
+			d['legend'] = 'lower left'
+
+		# ratio
+		if scale:
+			d['analysis_modules'].append('Ratio')
+			d['markers'] += ['-']*N
+			d['line_styles'] += ['-']*N
+			d['colors'] += colors
+			d.update({
+				'ratio_numerator_nicks': nicks,
+				'ratio_denominator_nicks': ['nick0'],
+				'y_subplot_lims': [0, 2],
+				'y_subplot_label': 'Ratio MC/Data',
+				
+			})
+			
+		plots.append(d)
+
+	harryinterface.harry_interface(plots, args)
+
 if __name__ == '__main__':
 	rivet_fastnlo()
