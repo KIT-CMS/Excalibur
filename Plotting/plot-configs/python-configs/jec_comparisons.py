@@ -3,7 +3,6 @@
 
 import Excalibur.Plotting.harryinterface as harryinterface
 import Excalibur.Plotting.utility.colors as colors
-from Excalibur.Plotting.utility.binnings import binnings
 
 import argparse
 import copy
@@ -42,7 +41,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 	# TODO put these default binning values somewhere more globally
 	for quantity, bins in zip(*get_list_slice([
 		['zpt', 'npv', 'abs(jet1eta)'],
-		[binnings['zpt'], binnings['npv'],binnings['abseta']]
+		['zpt', 'npv','abseta']
 	], known_args.no_quantities)):
 		for method in get_list_slice([['ptbalance', 'mpf']], known_args.no_methods)[0]:
 			d = {
@@ -159,7 +158,7 @@ def pf_comparisons(args=None, additional_dictionary=None):
 		d = {
 			'y_expressions': ["(jet1{0}f*jet1pt)".format(pf)],
 			'x_expressions': ['zpt'],
-			'x_bins': [binnings['zpt']],
+			'x_bins': ['zpt'],
 			'x_log': True,
 			'cutlabel': True,
 			'markers': ['.', 'd'],
@@ -194,9 +193,7 @@ def pf_fractions(args=None, additional_dictionary=None):
 
 	for absolute_contribution in [False, True]:
 		for x_quantity, x_binning in zip(['zpt', 'abs(jet1eta)', 'npv'],
-			[binnings['zpt'],
-			binnings['abseta'],
-			binnings['npv']],
+			['zpt', 'abseta', 'npv'],
 		):
 			d = {
 				"labels": [

@@ -3,7 +3,6 @@
 
 import Excalibur.Plotting.harryinterface as harryinterface
 from Excalibur.Plotting.utility.colors import histo_colors
-from Excalibur.Plotting.utility.binnings import binnings
 import Artus.Utility.logger as logger
 import pprint
 
@@ -60,10 +59,7 @@ def flavour_fractions(args=None, additional_dictionary=None):
 	""" Plots flavour fraction (q,qbar,g,undef) vs zpt, abs(jet1eta)"""
 	plots = []
 
-	for x_quantity, x_bins in zip(
-			['zpt', 'abs(jet1eta)'],
-			[binnings['zpt'], binnings['abseta']]):
-
+	for x_quantity, x_bins in zip(['zpt', 'abs(jet1eta)'],['zpt', 'abseta']):
 		d = {
 			"filename": "flavourFractions_vs_" + x_quantity,
 			"legend": "lower left",
