@@ -13,16 +13,16 @@ import os
 import Artus.HarryPlotter.input_modules.inputroot as inputroot
 import Artus.Utility.jsonTools as jsonTools
 import Artus.HarryPlotter.utility.roottools as roottools
-import Excalibur.Plotting.utility.quantities as quantities
-from Excalibur.Plotting.utility.binnings import binnings
+from Excalibur.Plotting.utility.expressionsZJet import ExpressionsDictZJet
+from Excalibur.Plotting.utility.binningsZJet import BinningsDictZJet
 
 
 class InputRootZJet(inputroot.InputRoot):
 
 	def __init__(self):
 		super(InputRootZJet, self).__init__()
-		# TODO: put this dict in dedicated module
-		self.quantities_replace_dict = quantities.quantities_dict
+		self.expressions = ExpressionsDictZJet()
+		self.binnings = BinningsDictZJet()
 
 	def modify_argument_parser(self, parser, args):
 		super(InputRootZJet, self).modify_argument_parser(parser, args)
@@ -54,11 +54,6 @@ class InputRootZJet(inputroot.InputRoot):
 		if plotData.plotdict['x_expressions'] == None:
 			plotData.plotdict['x_expressions'] = plotData.plotdict['plot'].split("_")[-1]
 
-		# if x_bins is e.g. 'zpt', replace string with the values from the binning dictionary
-		for axis in ['x', 'y', 'z']:
-			if len(plotData.plotdict[axis+'_bins']) == 1 and plotData.plotdict[axis+'_bins'][0] in binnings.keys():
-				plotData.plotdict[axis+'_bins'][0] = binnings[plotData.plotdict[axis+'_bins'][0]]
-
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
 		# add 'weight' by default to weights
@@ -70,12 +65,3 @@ class InputRootZJet(inputroot.InputRoot):
 				if plotData.input_json_dicts[i] is not None and not plotData.input_json_dicts[i].get('InputIsData', True):
 					log.info("Scaling sample by lumi: {0}".format(plotData.plotdict['lumis'][0]))
 					plotData.plotdict['weights'][i] = "(({1}) * ({0}))".format(plotData.plotdict['weights'][i], plotData.plotdict['lumis'][0])
-
-		# automatically replace quantity names, eg. ptbalance->jet1pt/zpt
-		for axis in ['x', 'y', 'z']:
-			for i, item in enumerate(plotData.plotdict['{0}_expressions'.format(axis)]):
-				for key, value in self.quantities_replace_dict.iteritems():
-					if item != None and key in item:
-						if plotData.plotdict.get(axis+"_label", None) is None and len(set(plotData.plotdict[axis+"_expressions"]))==1:
-							plotData.plotdict[axis+"_label"] = plotData.plotdict[axis+"_expressions"][0]
-						plotData.plotdict['{0}_expressions'.format(axis)][i] = plotData.plotdict['{0}_expressions'.format(axis)][i].replace(key, value)
