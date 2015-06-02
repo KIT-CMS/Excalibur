@@ -172,7 +172,7 @@ def getoptions(configdir="", name='excalibur'):
 	parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
 		const=('naf' if 'naf' in socket.gethostname() else 'ekpsg'),
 		help="run with grid-control. Optional argument specifies the resources to run:"
-			 "at EKP: 'ekpcluster' or 'ekpsg'   at NAF: 'naf'   at both: 'local' [Default: %(const)s]")
+			 "at EKP: 'ekpcluster', 'ekpsg' or 'ekpcloud'   at NAF: 'naf'   at both: 'local' [Default: %(const)s]")
 	parser.add_argument('-c', '--config', action='store_true',
 		help="produce json config only")
 	parser.add_argument('-C', '--clean', action='store_true',
