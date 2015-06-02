@@ -6,9 +6,9 @@ std::string RecoJetGenPartonMatchingProducer::GetProducerId() const {
 
 void RecoJetGenPartonMatchingProducer::Produce(KappaEvent const& event, KappaProduct& product, KappaSettings const& settings) const
 {
-	// Make ZJet zJetific product and event available
+	// Make ZJet specific product and event available
 	ZJetEvent const& zJetEvent = static_cast<ZJetEvent const&>(event);
-	ZJetProduct const& zJetProduct = static_cast<ZJetProduct const&>(product);
+	ZJetProduct& zJetProduct = static_cast<ZJetProduct&>(product);
 	ZJetSettings const& zJetSettings = static_cast<ZJetSettings const&>(settings);
 		
 	// Iterate over all jet correction levels

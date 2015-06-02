@@ -27,13 +27,13 @@ class ZJetProduct : public KappaProduct
 	//mutable std::map<std::string, std::vector<KJet*> > m_invalidZJets;
 	
 	// Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the product after creation
-	mutable std::map<std::string, std::vector<std::shared_ptr<KJet> > > m_correctedZJets;
+	std::map<std::string, std::vector<std::shared_ptr<KJet> > > m_correctedZJets;
 	
 	// Added by TypeIMETProducer
-	mutable std::map<std::string, KMET> m_corrMET;
+	std::map<std::string, KMET> m_corrMET;
 	
 	// Added by RecoJetGenPartonMatchingProducer
-	mutable std::map<std::string, std::map<KJet*, KGenParticle*> > m_matchedGenPartons;
+	std::map<std::string, std::map<KJet*, KGenParticle*> > m_matchedGenPartons;
 	
 	// Added by RecoJetGenJetMatchingProducer
 	boost::ptr_map<std::string, std::vector<int> > m_matchedGenJets;
@@ -129,7 +129,7 @@ class ZJetProduct : public KappaProduct
 		// Only L3 is corrected in TypeIMETProducer
 		if (std::string::npos != corrLevel.find("L3"))
 		{
-			return (&m_corrMET.at(corrLevel));
+			return const_cast<KMET*>(&(m_corrMET.at(corrLevel)));
 		}
 		else
 		{
@@ -154,7 +154,9 @@ class ZJetProduct : public KappaProduct
 	KGenParticle* GetMatchedGenParton(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
 	{
 		if (GetValidJetCount(settings, event) > index)
-			return SafeMap::GetWithDefault(m_matchedGenPartons[settings.GetCorrectionLevel()],
+			return SafeMap::GetWithDefault(SafeMap::GetWithDefault(m_matchedGenPartons,
+			                                                       settings.GetCorrectionLevel(),
+			                                                       std::map<KJet*, KGenParticle*>()),
 			                               static_cast<KJet*>(GetValidJet(settings, event, index)),
 			                               (KGenParticle*)(0));
 		else
