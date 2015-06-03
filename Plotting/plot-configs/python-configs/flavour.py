@@ -206,7 +206,7 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"x_lims": [0.5,7.5],
 		"x_tick_labels": ['d','u','s','c','b','g', 'undef.'],
 		"y_expressions": ["ptbalance", "mpf", "genjet1pt/zpt", "jet1pt/genjet1pt"],
-		"labels": ["PtBalance", "MPF", "GenJet/RecoZ", "RecoJet/GenJet"],
+		"labels": ["$p_T$ balance", "MPF", "$p_T$ GenJet/Z", "$p_T$ RecoJet/GenJet"],
 		"y_lims": [0.8, 1.1],
 		'tree_draw_options': 'prof',
 		'markers': ['.', '*', 'o', 'd'],
