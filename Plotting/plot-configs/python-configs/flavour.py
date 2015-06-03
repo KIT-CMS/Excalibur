@@ -133,7 +133,7 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 	plots = []
 
 	for z_value in [False, True]:
-		for weights, filename, title, colormap in zip([
+		for weights, filename, title, colormap, plot_zones in zip([
 					None,
 					'(abs(matchedgenparton1flavour)==4)',
 					'(abs(matchedgenparton1flavour)==5)',
@@ -148,7 +148,8 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 					'light quark jets',
 					'gluon jets'
 				],
-				['Greys', 'Oranges', 'Reds', 'Blues', 'Greens']):
+				['Greys', 'Oranges', 'Reds', 'Blues', 'Greens'],
+				['all', 'c', 'b', 'uds', 'g']):
 			d = {
 				"filename": filename,
 				"legend": "None",
@@ -159,6 +160,8 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 				"y_bins": "100,0,1",
 				"y_lims": [0.0, 1.0],
 				"colormap": colormap,
+				"plot_tagging_zones": plot_zones,
+				"plot_modules": ['PlotMplZJet', 'PlotTaggingZones'],
 				"z_log": True
 			}
 
@@ -175,9 +178,6 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 				d['x_bins'] = "10,0,1"
 				d['y_bins'] = "10,0,1"
 				weights = None
-
-			if weights is None and not z_value:
-				d['plot_modules'] = ['PlotMplZJet', 'PlotTaggingZones']
 
 			if title is not None and not z_value:
 				d['title'] = title
