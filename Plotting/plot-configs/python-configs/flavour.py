@@ -200,6 +200,7 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"filename": "flavorJetResponse",
 		"legend": "lower left",
 		"x_expressions": ["sortedabsflavour"],
+		"x_label": "Leading Jet Flavour",
 		"y_label": "Jet Response",
 		"x_ticks": [1,2,3,4,5,6, 7],
 		"x_lims": [0.5,7.5],
@@ -398,6 +399,7 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	d = {
 		"filename": "pf_fractions_vs_flavor",
 		"x_expressions": ["sortedabsflavour"],
+		"x_label": "Leading Jet Flavour",
 		"x_ticks": [1,2,3,4,5,6,7],
 		"x_bins": ["13,0.5,7.5"],
 		'x_bins':[" ".join(["0.4"] + ["{0}.6 {1}.4".format(i, i+1) for i in range(7)] + [str(7+3.4)])],
