@@ -9,7 +9,7 @@ ROOTLDFLAGS    = $(shell root-config --ldflags --libs)
 PROJECT        = Excalibur
 EXECUTABLE     = artus
 CXX            = g++
-FLAGS          = -O2 -pedantic -Wfatal-errors -lprofiler -ltcmalloc -Wall -Wno-unused-local-typedefs -c -std=c++0x -g -fPIC
+FLAGS          = -O2 -pedantic -Wfatal-errors -lprofiler -ltcmalloc -Wall -Wno-unused-local-typedefs -c -std=c++11 -g -fPIC
 CFLAGS         = $(FLAGS)\
  -Isrc/ -Iexternal/OfflineCorrection/ -Iexternal/ -I../\
  $(ROOTCFLAGS) -I$(BOOSTPATH)/include/ -I$(KAPPATOOLSPATH)/../
