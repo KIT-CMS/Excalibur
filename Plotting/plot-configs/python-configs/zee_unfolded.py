@@ -40,9 +40,9 @@ def zee_unfolded(args=None):
 
 	plots = []
 	for njetweight, njetlabel, njetsuffix in zip(*get_list_slice([
-		["1", "njets30<2", "njets30>1"],
-		["", "$ n_{jets(p_T>30GeV)}<=1$", "$ n_{jets(p_T>30GeV)}>1$"],
-		["", "_njets0-1", "_njets2"]
+		["1", "njets30<1", "njets30<2", "njets30>1"],
+		["", "$ n_{jets(p_T>30GeV)}<1$", "$ n_{jets(p_T>30GeV)}<=1$", "$ n_{jets(p_T>30GeV)}>1$"],
+		["", "_njets0", "_njets0-1", "_njets2"]
 	], known_args.no_njets)):
 		for ybin, ybinlabel, ybinsuffix in zip(*get_list_slice([
 					["1"] + ["abs(zy)<{1} && abs(zy)>{0}".format(low, up) for low, up in zip(ybins[:-1], ybins[1:])],
@@ -54,15 +54,15 @@ def zee_unfolded(args=None):
 				['/store/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']
 			], known_args.no_mcs)):
 				for quantity, bins in zip(*get_list_slice([
-					['zpt', 'zmass', 'zy'],
-					[[15, 30, 40, 60, 80, 100, 140, 200, 1000], "10,81,101", "10,-3,3"]
+					['zpt', 'zmass', 'abs(zy)'],
+					["40,0,400", "20,81,101", "25,0,2.5"]
 				], known_args.no_quantities)):
 					d = {
 						'x_expressions': [
 							quantity,
 							quantity,
-							"gen"+quantity,
-							"gen"+quantity,
+							quantity.replace("z", "genz"),
+							quantity.replace("z", "genz"),
 							] +
 							[quantity]*7,
 						'y_expressions': [
@@ -88,19 +88,19 @@ def zee_unfolded(args=None):
 							path + '/store/background_ee_dytautau.root',
 						],
 						'scale_factors': [
-							1,
+							1.,
 
-							1,
-							1,
-							1,
+							19.789,
+							19.789,
+							19.789,
 
-							-1,
-							-1,
-							-1,
-							-1,
-							-1,
-							-1,
-							-1,
+							-19.789,
+							-19.789,
+							-19.789,
+							-19.789,
+							-19.789,
+							-19.789,
+							-19.789,
 						],
 						'nicks': [
 							'data_reco',
@@ -118,9 +118,10 @@ def zee_unfolded(args=None):
 							'data_reco',
 						],
 						'folders': ['all_AK5PFJetsCHSL1L2L3'],
-						'weights': "(({}) && ({}) && ({}))".format(zcuts, ybin, njetweight),
+						'weights': "(({0}) && ({1}) && ({2}) && ({3}))".format(zcuts, ybin, njetweight, ("1" if quantity == 'zpt' else 'zpt>30')),
 						'analysis_modules': [
 							'Unfolding',
+							'Ratio'
 						],
 						#module options
 						'unfolding': ['data_reco', 'mc_reco'],
@@ -128,38 +129,42 @@ def zee_unfolded(args=None):
 						'unfolding_mc_gen': 'mc_gen',
 						'unfolding_mc_reco': 'mc_reco',
 						'unfolding_new_nicks': ['data_unfolded', 'mc_unfolded'],
+						'unfolding_iterations': 4,
 						'libRooUnfold': '~/home/RooUnfold-1.1.1/libRooUnfold.so',
-				
-		
+
+						'ratio_numerator_nicks': 'data_unfolded',
+						'ratio_denominator_nicks': 'mc_unfolded',
+
 						'nicks_blacklist': [
 							'responsematrix',
-							'gen',
+							#'gen',
 							'reco',
 						],
 
-						'lumi': 19.8,
-						'energy': '8',
-						'y_ratio_lims': [0.5, 1.5],
+						'lumis': [19.8],
+						'energies': [8],
+						'y_subplot_lims': [0.5, 1.5],
 
 						'texts': [ybinlabel, njetlabel],
 						'texts_x':[0.03],
 						'texts_y': [0.97, 0.87],
 		
-						'labels': ['Data', 'MC'],
-						'x_bins': bins,
-						'y_bins': bins,
+						'labels': ['MC_gen', 'Data_unfolded', 'MC_unfolded', 'ratio'],
+						'x_bins': [bins],
+						'y_bins': [None]*2+[bins]+[None]*8,
 						'x_label': quantity,
 						'y_label': 'Events',
 
-						'ratio': True,
+						'y_errors': [None],
+
 						'filename': quantity + "_unfolded_" + mc_label + ybinsuffix + njetsuffix,
 
 					}
 					if quantity == 'zpt':
-						d['x_log'] = True
-						d['y_log'] = True
-						d['x_lims'] = [30, 1000]
-						d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+						#d['x_log'] = True
+						pass#d['y_log'] = True
+						#d['x_lims'] = [30, 1000]
+						#d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 					plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
