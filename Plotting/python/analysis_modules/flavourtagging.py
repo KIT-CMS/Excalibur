@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import Artus.Utility.logger as logger
-import pprint
+from pprint import pprint
 import ROOT
 
 log = logging.getLogger(__name__)
@@ -35,8 +35,6 @@ class FlavourTagging(analysisbase.AnalysisBase):
 		mc_mean_mpf_values_up = []
 		mc_mean_mpf_values_down = []
 		list_of_fractions = []
-
-		print plotData.plotdict["root_objects"].keys()
 
 		for i in xrange(4):
 			zone =  plotData.plotdict["flavour_tagging_zone_names"][i]
