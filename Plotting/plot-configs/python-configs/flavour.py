@@ -18,7 +18,7 @@ flavour_selections = {
 	'g': '(abs(matchedgenparton1flavour)==21)',
 	'b': '(abs(matchedgenparton1flavour)==5)',
 	'c': '(abs(matchedgenparton1flavour)==4)',
-	'uds': '(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)',
+	'uds': '(abs(matchedgenparton1flavour)>0&&abs(matchedgenparton1flavour)<4)',
 	'undef': '(matchedgenparton1flavour==0||matchedgenparton1flavour<-100)',
 }
 
@@ -44,10 +44,10 @@ def response_zones(args=None, additional_dictionary=None):
 		'tree_draw_options': 'prof',
 		'x_label': 'Tagging Zone',
 		'labels': ['MC', 'Data'],
-		'markers': 'o',
+		'markers': ['o', 's'],
 		'x_bins': " ".join([str(x+0.5) for x in range(len(zone_labels)+1)]),
 		'y_lims': [0.92, 1.05],
-		'colors': ['black', 'red'],
+		'colors': ['red', 'black'],
 		'lines': [1.0],
 		'filename': 'mpf_zones',
 	}
@@ -279,6 +279,10 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 	weights = []
 	nicks = []
 	files = []
+	corrections = []
+	x_expressions = []
+	y_expressions = []
+	tree_draw_options = []
 	zone_names = [
 		'light_quark_zone_',
 		'c_quark_zone_',
@@ -287,19 +291,41 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 	]
 
 	mc_file = None
+	mc_corrections = None
 	data_files = {}
+	data_corrections = {}
 	file_types = []
+	x_bins = []
 	if 'files' in additional_dictionary and len(additional_dictionary['files']) > 0:
 		mc_file = additional_dictionary['files'][0]
+		mc_corrections = additional_dictionary['corrections'][0]
+		file_types.append("mc_truth")
 		file_types.append("mc")
 		if len(additional_dictionary['files']) > 1:
 			for i in xrange(len(additional_dictionary['files'])-1):
 				data_files['data' + str(i+1)] = additional_dictionary['files'][i+1]
+				data_corrections['data' + str(i+1)] = additional_dictionary['corrections'][i+1]
 				file_types.append('data' + str(i+1))
 	else:
 		logger.log.critical("No files given!")
 		return
 	for file_type in file_types:
+		if file_type == 'mc_truth':
+			nicks.append("mc_truth")
+			x_expressions.append(
+				flavour_selections['uds'] + "*1+"
+				+ flavour_selections['c'] + "*2+"
+				+ flavour_selections['b'] + "*3+"
+				+ flavour_selections['g'] + "*4"
+			)
+			y_expressions.append("mpf")
+			files.append(mc_file)
+			weights.append("1")
+			tree_draw_options.append("prof")
+			x_bins.append("4,0.5,4.5")
+			corrections.append(mc_corrections)
+			continue
+
 		for weight_param, zone in zip([
 				zone_selections['uds'],
 				zone_selections['c'],
@@ -320,31 +346,47 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 				weights.append(flavour_selections['uds'] + "*" + weight_param)
 				for i in xrange(5):
 					files.append(mc_file)
+					corrections.append(mc_corrections)
+					x_expressions.append("mpf")
+					y_expressions.append(None)
+					tree_draw_options.append("")
+					x_bins.append("24,0,2")
 			else:
 				nicks.append(zone + file_type)
 				weights.append(weight_param)
 				files.append(data_files[file_type])
-
+				corrections.append(data_corrections[file_type])
+				x_expressions.append("mpf")
+				y_expressions.append(None)
+				tree_draw_options.append("")
+				x_bins.append("24,0,2")
 	d = {
-		"x_expressions": ["mpf"],
+		"filename": "mpf",
+		"x_expressions": x_expressions,
 		"x_lims": [0.5,4.5],
-		"x_bins": ["24,0,2"],
+		"x_bins": x_bins,
 		"x_ticks": [1,2,3,4],
 		"x_tick_labels": ['uds', 'c', 'b', 'gluon'],
 		"x_label": "Flavour (from tagging)",
+		"y_expressions": y_expressions,
 		"y_lims": [0.92, 1.05],
 		"y_label": "MPF Response",
-		'labels': ['MC', 'Data'],
+		"labels": ['MCTruth', 'MC', 'Data'],
+		"colors": ['blue', 'red', 'black'],
+		"markers": ["o", "o", "s"],
+		"legend": "upper center",
 		"nicks": nicks,
 		"weights": weights,
-		"markers": ["o"],
 		"analysis_modules": ["FlavourTagging"],
 		"flavour_tagging_zone_names": zone_names,
-		"flavour_tagging_data_files": [data_name for data_name in file_types[1:]],
-		"lines": [1.0]
+		"flavour_tagging_data_files": [data_name for data_name in file_types[2:]],
+		"lines": [1.0],
+		"nicks_whitelist": ["mc_truth"],
+		'tree_draw_options': tree_draw_options,
 	}
 	d.update(additional_dictionary)
 	d['files'] = files
+	d['corrections'] = corrections
 	plots.append(d)
 
 	harryinterface.harry_interface(plots, args)
@@ -450,7 +492,7 @@ def flavour(args=None):
 	pf_fractions_vs_flavour(args, d)
 	flavour_composition_zones(args, d)
 
-
 	d['files'].append("ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root")
+	d['corrections'].append("L1L2L3Res")
 	response_zones(args, d)
 	flavour_mpf_individual(args, d)
