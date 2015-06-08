@@ -77,7 +77,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['filename'] = 'plot'
 
 		# auto determine lumi and energy
-		if not any([d.get("InputIsData", False) for d in plotData.input_json_dicts]):
+		if plotData.input_json_dicts != [{}] and not any([d.get("InputIsData", False) for d in plotData.input_json_dicts]):
 			plotData.plotdict['lumis'] = None
 		if all(['Energy' in d for d in plotData.input_json_dicts]):
 			energies = [d['Energy'] for d in plotData.input_json_dicts]
