@@ -10,7 +10,7 @@ def getBaseConfig(**kwargs):
 		# ZJetCorrectionsProducer Settings
 		'Jec': '', # Path for JEC data, please set this later depending on input type
 		'L1Correction': 'L1FastJet',
-		'RC': False,  # Also provide random cone offset JEC, and use for type-I
+		'RC': True,  # Also provide random cone offset JEC, and use for type-I
 		'FlavourCorrections': False,  # Calculate additional MC flavour corrections
 		# ZProducer Settings
 		'ZMassRange': 20.,
