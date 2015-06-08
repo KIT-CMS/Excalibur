@@ -22,7 +22,7 @@ def zee_unc(args=None):
 			"Divide", 
 			"ShiftBinContents", 
 			"AbsoluteBinContents", 
-			"ScaleBinContents"
+			"ScaleHistograms"
 		], 
 		"colors": [
 			"black", 
@@ -132,7 +132,7 @@ def zee_unc(args=None):
 		"relative_error": True, 
 		"title": "own work", 
 		"scale": 100, 
-		"scale_bin_contents": [
+		"scale_nicks": [
 			"background", 
 			"unfolding"
 		], 
