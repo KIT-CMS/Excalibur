@@ -52,7 +52,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'x_errors': [1],
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
-				'legloc': 'best',
+				'legend': 'best',
 				'cutlabel': True,
 
 				'analysis_modules': ['Ratio'],
