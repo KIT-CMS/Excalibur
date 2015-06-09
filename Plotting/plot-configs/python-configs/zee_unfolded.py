@@ -54,8 +54,8 @@ def zee_unfolded(args=None):
 				['/store/mc_ee_corr.root', '/store/mc_ee_powheg_corr.root']
 			], known_args.no_mcs)):
 				for quantity, bins in zip(*get_list_slice([
-					['zpt', 'zmass', 'abs(zy)'],
-					["40,0,400", "20,81,101", "25,0,2.5"]
+					['zpt', 'zmass', 'abs(zy)', 'zy', 'zphi'],
+					["40,0,400", "20,81,101", "25,0,2.5", "25,-2.5,2.5", "32,-3.2,3.2"]
 				], known_args.no_quantities)):
 					d = {
 						'x_expressions': [
