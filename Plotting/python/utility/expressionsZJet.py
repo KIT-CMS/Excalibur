@@ -18,6 +18,7 @@ class ExpressionsDictZJet(ExpressionsDict):
 			'ptbalance': '(jet1pt/zpt)',
 			'deltaphizjet1' : '(abs(abs(abs(zphi-jet1phi)-TMath::Pi())-TMath::Pi()))',
 			'deltaphijet1jet2' : '(abs(abs(abs(jet1phi-jet2phi)-TMath::Pi())-TMath::Pi()))',
+			'deltaetajet1jet2' : '(abs(jet1eta-jet2eta))',
 			'deltaphizmet' : '(abs(abs(abs(zphi-metphi)-TMath::Pi())-TMath::Pi()))',
 			'sortedflavour' : (
 				'matchedgenparton1flavour*(matchedgenparton1flavour<20 && matchedgenparton1flavour>(-20))'  # quarks: ok

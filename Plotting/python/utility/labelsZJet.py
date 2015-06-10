@@ -82,6 +82,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'sortedabsflavour': "Leading Jet Flavour",
 			'tagflavour': 'Flavour (from Tagging)',
 			'unc': 'Leading Jet Uncertainty',
+			'deltaetajet1jet2': "$\Delta\eta_{Jet1}^{Jet2}$"
 		})
 		if additional_labels != None:
 			self.labels_dict.update(additional_labels)
