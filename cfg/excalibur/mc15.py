@@ -15,5 +15,6 @@ def config():
 
 	cfg['JetMatchingAlgorithm'] = 'algorithmic'
 	cfg['CutAlphaMax'] = 0.3
+	cfg['RC'] = False # No RC JEC files available at the moment
 	
 	return cfg
