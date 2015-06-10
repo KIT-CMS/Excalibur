@@ -119,12 +119,12 @@ def rivet(args=None, additional_dictionary=None):
 					'nicks': 'root',
 					'x_expressions': [('MC_unfolded' if mc else 'Data_unfolded')],
 					'x_bins': binning,
-					'scale_factors': [(1./19789.) * (0.5 if quantity == 'abs(zy)' else 1)],
+					'scale_factors': [1./19789.],
 
 					'ratio_numerator_nicks': ['root'],
 					'ratio_denominator_nicks': ['MCgrid_CMS_2015_Zeed0{0}-x01-y01'.format(str(index+1))],
 
-					'scale': (1./n_yodacontributions),
+					'scale': (1./n_yodacontributions * (2 if quantity == 'abs(zy)' else 1)),
 					'scale_nicks': ['MCgrid_CMS_2015_Zeed0{0}-x01-y01'.format(str(index+1))],
 
 					'nicks_whitelist': ['root', 'd0{0}'.format(str(index+1))],
@@ -134,9 +134,9 @@ def rivet(args=None, additional_dictionary=None):
 					'colors': [('red' if mc else 'black')]*2 + [histo_colors['blue']],
 					'energies': [8],
 					'x_label': label,
-					'y_label': r'$\\sigma$ / pb' + ("" if quantity == 'abs(zy)' else " $GeV^{-1}$"),
+					'y_label': r'$\\sigma$ / pb' + ("" if quantity in ['abs(zy)', 'zy', 'zphi'] else " $GeV^{-1}$"),
 
-					'filename': ('madgraph-sherpa_' if mc else 'data-sherpa_')+('shape_' if norm else '')+quantity,
+					'filename': ('madgraph' if mc else 'data')+'-vs-sherpa_'+('shape_' if norm else '')+quantity,
 
 				}
 				if quantity == 'zpt':
