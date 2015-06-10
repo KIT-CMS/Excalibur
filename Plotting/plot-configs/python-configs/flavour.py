@@ -49,6 +49,7 @@ def response_zones(args=None, additional_dictionary=None):
 		'colors': ['red', 'black'],
 		'lines': [1.0],
 		'filename': 'mpf_zones',
+		"cutlabel": True,
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
@@ -357,7 +358,7 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 				tree_draw_options.append("")
 				x_bins.append("24,0,2")
 	d = {
-		"filename": "mpf",
+		"filename": "mpf_result",
 		"x_expressions": x_expressions,
 		"x_lims": [0.5,4.5],
 		"x_bins": x_bins,
@@ -379,6 +380,7 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 		"lines": [1.0],
 		"nicks_whitelist": ["mc_truth"],
 		'tree_draw_options': tree_draw_options,
+		"cutlabel": True,
 	}
 	d.update(additional_dictionary)
 	d['files'] = files
