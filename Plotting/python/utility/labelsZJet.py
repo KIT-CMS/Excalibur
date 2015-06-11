@@ -34,6 +34,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'(jet1chf*jet1pt)': "Jet Charged Hadron Energy / GeV",
 			'(jet1mf*jet1pt)': "Jet Muon Energy / GeV",
 			'(jet1pf*jet1pt)': "Jet Photon Energy / GeV",
+			'jet2eta': '$\mathit{\eta}^{Jet2}$',
 			'jet2pt': '$\mathit{p}_{T}^{Jet2}$',
 			'jet2phi': r"$\mathit{\phi}^{Second \ Jet}$",
 			'jetsvalid': 'Number of Valid Jets $n$',
