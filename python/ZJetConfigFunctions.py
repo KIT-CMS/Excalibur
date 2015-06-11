@@ -60,6 +60,8 @@ def getBaseConfig(**kwargs):
 					#'jet1unc',  # Leading jet uncertainty
 					# Second jet
 					'jet2pt', 'jet2eta', 'jet2phi',
+					# 3rd jet
+					'jet3pt', 'jet3eta', 'jet3phi',
 					# MET and related
 					'mpf', 'rawmpf', 'metpt', 'metphi', 'rawmetpt', 'rawmetphi', 'sumet',
 				],

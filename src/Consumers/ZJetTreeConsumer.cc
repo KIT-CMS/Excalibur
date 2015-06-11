@@ -158,6 +158,20 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return (product.GetValidJetCount(settings, event) > 1) ? product.GetValidJet(settings, event, 1)->p4.Eta() : DefaultValues::UndefinedDouble;
 	} );
+
+	// 3rd leading jet
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet3pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetValidJetCount(settings, event) > 2) ? product.GetValidJet(settings, event, 2)->p4.Pt() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet3phi", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetValidJetCount(settings, event) > 2) ? product.GetValidJet(settings, event, 2)->p4.Phi() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet3eta", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetValidJetCount(settings, event) > 2) ? product.GetValidJet(settings, event, 2)->p4.Eta() : DefaultValues::UndefinedDouble;
+	} );
 	
 	// General jet stuff
 	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("njets", [settings](ZJetEvent const& event, ZJetProduct const& product)
