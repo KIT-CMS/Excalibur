@@ -469,59 +469,6 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 	harryinterface.harry_interface([d], args)
 
-def flavour_alpha(args=None, additional_dictionary=None):
-	plots = []
-
-	for zjetfolder in [None, 'noalphacuts']:
-		for fraction in [False,True]:
-			for x_value, x_bins, x_lims, y_value, y_bins, y_lims, filename in zip(
-				["jet2eta", 'jet2pt', 'jet2eta', 'deltaphijet1jet2'],
-				['50,-5,5', "25,0,50", "20,-5,5", "25,-0,3.14159"],
-				[[-5,5],[0,50],[-5,5],[0,3.14159]],
-				[None, None, 'jet2phi', 'deltaetajet1jet2'],
-				[None, None, "20,-3.2,3.2", "20,0,5"],
-				[None, None, [-3.2, 3.2], [0, 5]],
-				["jet2eta", "jet2pt", "jet2eta_VS_jet2phi", "deltaphijet1jet2_VS_deltaetajet1jet2", ""]):
-
-				for weights, file_name_postfix in zip(
-					[None, 'matchedgenjet2pt > 0', 'matchedgenjet2pt < 0'],
-					['', '_genjet', '_pileup']):
-
-					if fraction and (not y_value or not weights):
-						continue
-
-					d = {
-						"filename": filename + file_name_postfix,
-						"x_expressions": [x_value],
-						"x_bins": [x_bins],
-						"x_lims": x_lims,
-						"cutlabel": True,
-					}
-
-					if not fraction and weights is not None:
-						d[weights] = weights
-
-					if y_value is not None:
-						d['y_expressions'] = [y_value]
-						d['y_bins'] = [y_bins]
-						d['y_lims'] = y_lims
-						d['colormap'] = "Blues"
-
-						if fraction:
-							d['filename'] += "_fraction"
-							d['z_expressions'] = weights
-							d['z_lims'] = [0, 1]
-							d['tree_draw_options'] = 'prof'
-							d['z_label'] = "Fraction of Events"
-
-					if zjetfolder is not None:
-						d['zjetfolders'] = [zjetfolder]
-						d['filename'] += "_" + zjetfolder
-
-					if additional_dictionary is not None:
-						d.update(additional_dictionary)
-					plots.append(d)
-	harryinterface.harry_interface(plots, args)
 
 def flavour(args=None):
 	"""Plots all flavour plots"""
@@ -532,8 +479,7 @@ def flavour(args=None):
 		"algorithms": ["AK5PFJetsCHS",],
 		"corrections": ["L1L2L3",]
 	}
-
-	flavour_alpha(args, d)
+	
 	flavours(args, d)
 	flavour_fractions(args, d)
 	flavour_jet1btag_vs_jet1qgtag(args, d)

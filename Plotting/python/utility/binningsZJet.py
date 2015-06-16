@@ -23,4 +23,11 @@ class BinningsDictZJet(BinningsDict):
 			'abseta': absetabins,
 
 			'phi': '20,-3.14159,3.14159',
+
+			'jet2eta': '50,-5,5',
+			'jet2pt': '25,0,50',
+
+			'deltaphijet1jet2': '25,-0,3.14159',
+			'deltaetajet1jet2': '20,0,5',
+			'deltarjet1jet2': '40,0,7'
 		})

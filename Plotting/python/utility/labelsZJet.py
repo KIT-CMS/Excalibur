@@ -83,7 +83,9 @@ class LabelsDictZJet(labels.LabelsDict):
 			'sortedabsflavour': "Leading Jet Flavour",
 			'tagflavour': 'Flavour (from Tagging)',
 			'unc': 'Leading Jet Uncertainty',
-			'deltaetajet1jet2': "$\Delta\eta_{Jet1}^{Jet2}$"
+			'deltaetajet1jet2': "$\Delta\eta(\mathrm{Jet1},\mathrm{Jet2})$",
+			"deltaphijet1jet2": "$\Delta\phi(\mathrm{Jet1},\mathrm{Jet2})$",
+			"deltarjet1jet2": "$\Delta R(\mathrm{Jet1},\mathrm{Jet2})$",
 		})
 		if additional_labels != None:
 			self.labels_dict.update(additional_labels)
