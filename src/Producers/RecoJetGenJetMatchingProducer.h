@@ -14,7 +14,7 @@
 class RecoJetGenJetMatchingProducer : public ZJetProducerBase
 {
   public:
-    virtual std::string GetProducerId() const ARTUS_CPP11_OVERRIDE;
+    virtual std::string GetProducerId() const override;
     
 	RecoJetGenJetMatchingProducer() : ZJetProducerBase(){};
 

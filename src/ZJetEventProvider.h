@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "Artus/Core/interface/Cpp11Support.h"
 #include "Artus/KappaAnalysis/interface/KappaEventProvider.h"
 
 #include "ZJetTypes.h"
@@ -20,5 +19,5 @@ class ZJetEventProvider : public KappaEventProvider<ZJetTypes>
 
 	ZJetEventProvider(FileInterface2& fi, InputTypeEnum inpType);
 
-	virtual void WireEvent(setting_type const& settings) ARTUS_CPP11_OVERRIDE;
+	virtual void WireEvent(setting_type const& settings) override;
 };

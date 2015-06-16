@@ -18,8 +18,8 @@ class RecoJetGenPartonMatchingProducer: public RecoJetGenParticleMatchingProduce
 
 public:
 
-	std::string GetProducerId() const ARTUS_CPP11_OVERRIDE;
+	std::string GetProducerId() const override;
 
 	void Produce(KappaEvent const& event, KappaProduct& product,
-	             KappaSettings const& settings) const ARTUS_CPP11_OVERRIDE;
+	             KappaSettings const& settings) const override;
 };

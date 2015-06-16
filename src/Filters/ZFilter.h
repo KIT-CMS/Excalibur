@@ -12,11 +12,11 @@
 class ZFilter : public ZJetFilterBase
 {
   public:
-	virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE;
+	virtual std::string GetFilterId() const override;
 
 	ZFilter() : ZJetFilterBase(){};
 
 	virtual bool DoesEventPass(
 	    ZJetEvent const& event, ZJetProduct const& product,
-	    ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE;
+	    ZJetSettings const& settings) const override;
 };
