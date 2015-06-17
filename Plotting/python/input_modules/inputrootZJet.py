@@ -49,7 +49,7 @@ class InputRootZJet(inputroot.InputRoot):
 			plotData.plotdict['folders'] = folders
 
 		# automatically set nicks, x-expressions if not explicitly given
-		if plotData.plotdict['nicks'] == None and len(set(plotData.plotdict['files'])) > 1:
+		if plotData.plotdict['nicks'] == None and plotData.plotdict['files'] != None and len(set(plotData.plotdict['files'])) > 1:
 			plotData.plotdict['nicks'] = [os.path.splitext(os.path.basename(i))[0] for i in plotData.plotdict['files']]
 
 		super(InputRootZJet, self).prepare_args(parser, plotData)
