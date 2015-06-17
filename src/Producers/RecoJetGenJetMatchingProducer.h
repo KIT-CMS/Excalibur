@@ -18,14 +18,13 @@ class RecoJetGenJetMatchingProducer : public ZJetProducerBase
 
 	RecoJetGenJetMatchingProducer() : ZJetProducerBase(){};
 
-	void Init(ZJetSettings const& settings);
+	void Init(ZJetSettings const& settings) override;
 
 	void Produce(ZJetEvent const& event, ZJetProduct& product,
-	             ZJetSettings const& settings) const;
+	             ZJetSettings const& settings) const override;
 
+  private:
 	void MatchCollection(ZJetEvent const& event, ZJetProduct& product,
 	                     ZJetSettings const& settings, std::string const corrLevel,
 	                     double const deltaR) const;
-
-  private:
 };
