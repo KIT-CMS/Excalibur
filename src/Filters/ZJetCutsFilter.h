@@ -236,9 +236,10 @@ class BackToBackCut : public ZJetFilterBase
 	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
 							   ZJetSettings const& settings) const override
 	{
-		double jet1Phi = product.GetValidPrimaryJet(settings, event)->p4.Phi();
-		double zPhi = product.m_z.p4.Phi();
-		return (std::abs(std::abs(jet1Phi - zPhi) - ROOT::Math::Pi()) < backToBack);
+		// ||Delta phi(Z, jet1)| - pi| < 0.34
+		double deltaPhi = ROOT::Math::VectorUtil::DeltaPhi(
+				product.m_z.p4, product.GetValidPrimaryJet(settings, event)->p4);
+		return M_PI - std::abs(deltaPhi) < backToBack;
 	}
 
   private:
