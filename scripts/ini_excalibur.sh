@@ -37,4 +37,8 @@ if [ $USER = "dhaitz" ]; then
     fi
 elif [ $USER = "gfleig" ]; then
     export EXCALIBUR_WORK=/storage/a/gfleig/zjet
+elif [ $USER = "berger" ]; then
+    export EXCALIBUR_WORK=/storage/a/berger/zjet
+    alias merlin='merlin.py'
+    alias excalibur='excalibur.py'
 fi
