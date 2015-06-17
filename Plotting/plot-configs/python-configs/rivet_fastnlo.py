@@ -105,9 +105,9 @@ def rivet(args=None, additional_dictionary=None):
 	for mc in [True, False]:
 		for norm in [False]:
 			for index, (quantity, binning, label) in enumerate(zip(
-					['zpt', 'abs(zy)', 'zmass', 'zphi'],
-					['37,30,400', '25,0.,2.5', '20,81,101', '32,-3.2,3.2'],
-					['zpt', 'abs(zy)', 'zmass', 'zphi']
+					['zpt', 'zy', 'zmass', 'zphi'],
+					['37,30,400', '25,-2.5,2.5', '20,81,101', '32,-3.2,3.2'],
+					['zpt', 'zy', 'zmass', 'zphi']
 			)):
 				d = {
 					'input_modules': ['InputRootZJet', 'InputYoda'],
