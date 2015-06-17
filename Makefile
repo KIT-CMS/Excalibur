@@ -9,7 +9,7 @@ ROOTLDFLAGS    = $(shell root-config --ldflags --libs)
 PROJECT        = Excalibur
 EXECUTABLE     = artus
 CXX            = g++
-FLAGS          = -O2 -Wall -Wno-unused-local-typedefs -Wpedantic -Wfatal-errors -lprofiler -ltcmalloc -c -std=c++03 -g -fPIC \
+FLAGS          = -O2 -Wall -Wno-unused-local-typedefs -Wpedantic -Wfatal-errors -lprofiler -ltcmalloc -c -std=c++11 -g -fPIC \
 #                -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers  # when boost fixes these issues, we can use these flags, too
 CFLAGS         = $(FLAGS)\
  -Isrc/ -Iexternal/OfflineCorrection/ -Iexternal/ -I../\
