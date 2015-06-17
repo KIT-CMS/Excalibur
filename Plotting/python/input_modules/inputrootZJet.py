@@ -51,8 +51,6 @@ class InputRootZJet(inputroot.InputRoot):
 		# automatically set nicks, x-expressions if not explicitly given
 		if plotData.plotdict['nicks'] == None and len(set(plotData.plotdict['files'])) > 1:
 			plotData.plotdict['nicks'] = [os.path.splitext(os.path.basename(i))[0] for i in plotData.plotdict['files']]
-		if plotData.plotdict['x_expressions'] == None:
-			plotData.plotdict['x_expressions'] = plotData.plotdict['plot'].split("_")[-1]
 
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
