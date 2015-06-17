@@ -24,6 +24,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'genjet1pt': '$\mathit{p}_{T}^{Leading Gen Jet}$',
 			'genjet2pt': '$\mathit{p}_{T}^{GenJet2}$',
 			'genzpt': '${Z}^{GEN} \ \mathit{p}_{T}$ / GeV',
+			'genzy': '$\mathit{y}_{GenZ}$',
+			'abs(genzy)': '|$\mathit{y}_{GenZ}$|',
 			'jet1area': 'Leading Jet Area',
 			'jet1eta': '$\mathit{\eta}^{Leading \ Jet}$',
 			'jet1phi': r"$\mathit{\phi}^{Leading \ Jet}$",
