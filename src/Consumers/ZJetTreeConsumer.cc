@@ -183,6 +183,27 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		return product.GetInvalidJetCount(settings, event);
 	} );
 	
+	// Radiation Jets
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("radiationjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetRadiationJetCount(settings, event) > 0) ? product.GetRadiationJet(settings, event, 0)->p4.Pt() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("radiationjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetRadiationJetCount(settings, event) > 0) ? product.GetRadiationJet(settings, event, 0)->p4.Phi() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("radiationjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetRadiationJetCount(settings, event) > 0) ? product.GetRadiationJet(settings, event, 0)->p4.Eta() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("radiationjet1index", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetRadiationJetCount(settings, event) > 0) ? product.GetRadiationJetIndex(settings, event, 0) : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("nradiationjets", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return product.GetRadiationJetCount(settings, event);
+	} );
 	// Gen jets
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
@@ -199,6 +220,14 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return (event.m_genJets != NULL && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Pt() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet2eta", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (event.m_genJets != NULL && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Eta() : DefaultValues::UndefinedDouble;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet2phi", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (event.m_genJets != NULL && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Phi() : DefaultValues::UndefinedDouble;
 	} );
 	
 	// Reco jet - gen parton matches

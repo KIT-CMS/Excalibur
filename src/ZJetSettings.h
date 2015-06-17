@@ -27,6 +27,9 @@ class ZJetSettings : public KappaSettings
 	
 	// RecoJetGenJetMatchingProducer
 	IMPL_SETTING_DEFAULT(double, DeltaRMatchingRecoJetGenJet, 0.25)
+
+	// RadiationJetProducer
+	IMPL_SETTING_DEFAULT(double, DeltaRRadiationJet, 1.0)
 	
 	// ZJetCutsFilter
 	IMPL_SETTING_DEFAULT(int, CutNMuonsMin, 2)
@@ -38,4 +41,6 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(float, CutZPtMin)
 	IMPL_SETTING(float, CutBackToBack)
 	IMPL_SETTING(float, CutAlphaMax)
+	IMPL_SETTING_DEFAULT(float, CutBetaMax, 1.0)
+
 };

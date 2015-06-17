@@ -272,3 +272,30 @@ class AlphaCut : public ZJetFilterBase
   private:
 	float alphaMax;
 };
+
+///////////
+// Beta  //
+///////////
+class BetaCut : public ZJetFilterBase
+{
+	public:
+		virtual std::string GetFilterId() const ARTUS_CPP11_OVERRIDE { return "BetaCut"; }
+		
+		BetaCut() : ZJetFilterBase(){};
+		
+		virtual void Init(ZJetSettings const& settings) ARTUS_CPP11_OVERRIDE
+		{
+				ZJetFilterBase::Init(settings);
+				betaMax = settings.GetCutBetaMax();
+		}
+		
+		virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const ARTUS_CPP11_OVERRIDE
+		{
+			// Always true if there is only one jet in the event
+			return (product.GetRadiationJetCount(settings, event) > 1) ? (product.GetRadiationJet(settings, event, 1)->p4.Pt()/product.m_z.p4.Pt() < betaMax) : true;
+		}
+		
+	private:
+		float betaMax;
+};

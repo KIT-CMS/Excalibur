@@ -106,6 +106,8 @@ def mc(cfg, **kwargs):
 		'genjet1eta',
 		'genjet1phi',
 		'genjet2pt',
+		'genjet2eta',
+		'genjet2phi',
 		'matchedgenparton1pt',
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',
@@ -190,6 +192,7 @@ def mm(cfg, **kwargs):
 		'producer:JetSorter',
 		'producer:ZProducer',
 		'filter:ZFilter',
+		'producer:RadiationJetProducer',
 	]
 	
 	# ValidMuonsProducer
@@ -204,6 +207,8 @@ def mm(cfg, **kwargs):
 		'mu1pt', 'mu1eta', 'mu1phi',
 		'mu2pt', 'mu2eta', 'mu2phi',
 		'nmuons',
+		'radiationjet1pt', 'radiationjet1phi', 'radiationjet1eta',
+		'radiationjet1index', 'nradiationjets'
 	]
 
 	cfg['CutMuonPtMin'] = 20.0

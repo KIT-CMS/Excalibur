@@ -8,6 +8,7 @@
 #include "Producers/JetSorter.h"
 #include "Producers/RecoJetGenPartonMatchingProducer.h"
 #include "Producers/RecoJetGenJetMatchingProducer.h"
+#include "Producers/RadiationJetProducer.h"
 
 // filters
 #include "Filters/ZFilter.h"
@@ -32,6 +33,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 		return new RecoJetGenPartonMatchingProducer();
 	else if (id == RecoJetGenJetMatchingProducer().GetProducerId())
 		return new RecoJetGenJetMatchingProducer();
+	else if (id == RadiationJetProducer().GetProducerId())
+		return new RadiationJetProducer();
 	else
 		return KappaFactory::createProducer(id);
 }
@@ -58,6 +61,8 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 		return new MaxNMuonsCut();
 	else if (id == AlphaCut().GetFilterId())
 		return new AlphaCut();
+	else if (id == BetaCut().GetFilterId())
+		return new BetaCut();	
 	else
 		return KappaFactory::createFilter(id);
 }
