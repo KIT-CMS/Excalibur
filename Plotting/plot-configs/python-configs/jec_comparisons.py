@@ -361,7 +361,7 @@ def comparison_1215(args=None):
 	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
 	d = {
 		'files': [
-			'ntuples/MC_13TeV_72X_E2_25ns_algo_2015-05-21.root',
+			'ntuples/MC_13TeV_72X_E2_50ns_algo_2015-06-16.root',
 			'ntuples/MC_RD1_8TeV_53X_E2_50ns_algo_2015-05-21.root',
 		],
 		'labels': ['13 TeV', '8 TeV'],
