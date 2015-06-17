@@ -204,6 +204,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return product.GetRadiationJetCount(settings, event);
 	} );
+
 	// Gen jets
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
