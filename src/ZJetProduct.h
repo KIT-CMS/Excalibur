@@ -166,7 +166,8 @@ class ZJetProduct : public KappaProduct
 	// Reco jet - gen jet matching result
 	KLV* GetMatchedGenJet(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
 	{
-		std::vector<int> jetList = m_matchedGenJets.at(settings.GetCorrectionLevel());
+		std::vector<int> defaultValue = std::vector<int>(0);
+		std::vector<int> jetList = SafeMap::GetPtrMapWithDefault(m_matchedGenJets, settings.GetCorrectionLevel(), defaultValue);
 
 		if (index >= jetList.size())
 			return NULL;
