@@ -39,6 +39,12 @@ elif [ $USER = "gfleig" ]; then
     export EXCALIBUR_WORK=/storage/a/gfleig/zjet
 elif [ $USER = "berger" ]; then
     export EXCALIBUR_WORK=/storage/a/berger/zjet
+    export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
     alias merlin='merlin.py'
     alias excalibur='excalibur.py'
+    alias merlinp='merlin.py --python'
+    alias merlinw='merlin.py --www'
+    alias merlinl='merlin.py --live evince'
+    alias merlinlp='merlin.py --live evince --python'
+    alias merlinlx='merlin.py --live evince -x'
 fi
