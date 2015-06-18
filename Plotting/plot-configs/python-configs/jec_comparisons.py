@@ -382,6 +382,37 @@ def comparison_1215(args=None):
 	full_comparison(args, d, data_quantities=False)
 
 
+def comparison_121515(args=None):
+	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
+	d = {
+		'files': [
+			'ntuples/MC_13TeV_72X_E2_50ns_algo_2015-06-16.root',
+			'ntuples/MC_13TeV_72X_E2_25ns_algo_2015-06-18.root',
+			'ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root',
+		],
+		'labels': ['13 TeV (50ns)', '13 TeV (25ns)', '8 TeV'],
+		'corrections': [''],
+		'y_subplot_label' : "13/8",
+		'y_errors' : [True, True, True, False, False],
+		'markers': ['o', 'd', 'fill'],
+		'zorder': [30, 20, 10],
+		'nicks': ['13b', '13a', '8'],
+#		'weights': ['(run==208307||run==208339||run==208341||run==208351||run==208353)'],
+		'lumis': [0.309],
+		'energies': None,
+		"ratio_numerator_nicks": ['13b', '13a'],
+		"ratio_denominator_nicks": ['8', '8'],
+		"x_errors": False,
+		"colors": ['red','black', colors.histo_colors['blue'], 'red', 'black'],
+	}
+	basic_comparisons(args, d, data_quantities=False)
+	basic_profile_comparisons(args, d)
+	d['markers'] = ['o', 'd', '^']
+	response_comparisons(args, d)
+	del d['colors']
+	del d['markers']
+	pf_fractions(args, d)
+
 def comparison_53742(args=None):
 	"""Comparison between 2012 rereco (22Jan) and 2015 742 rereco of 8TeV DoubleMu."""
 	d = {
