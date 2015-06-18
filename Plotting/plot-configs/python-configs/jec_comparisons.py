@@ -108,7 +108,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi',
 			 'npv', 'metpt', 'metphi', 'rawmetpt', 'rawmetphi',
 			 'mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi',
-			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi',
+			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',
 			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt'] \
 			 + (['run', 'lumi', 'event'] if data_quantities else ['npu', 'npumean']):
 		# normal comparison
