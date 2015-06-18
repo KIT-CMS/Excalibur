@@ -77,6 +77,34 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
+	# TODO move this to more general location
+	x_dict = {
+		'npv': ["41,-0.5,40.5"],
+		'npu': ["41,-0.5,40.5"],
+		'npumean': ["41,-0.5,40.5"],
+		'mu1pt': ["25,0,150"],
+		'mupluspt': ["25,0,150"],
+		'muminuspt': ["25,0,150"],
+		'metpt': ["25,0,125"],
+		'rawmetpt': ["25,0,125"],
+		'ptbalance': ["25,0,2"],
+		'mpf': ["25,0,2"],
+		'jet2pt': ["25,0,100"],
+		'mu1phi': ["40,-3.1415,3.1415", "lower center"],
+		'jet2phi': ["40,-3.1415,3.1415", "lower center"],
+		'jet1phi': ["40,-3.1415,3.1415", "lower center"],
+		'metphi': ["40,-3.1415,3.1415", "lower center"],
+		'zphi': ["40,-3.1415,3.1415", "lower center"],
+		'jet2eta': ["20,-5,5"],
+		'zpt': ["25,0,600"],
+		'jet1pt': ["25,0,400"],
+		'zpt': ["25,0,400"],
+		'alpha': ["50,0,1"],
+	}
+	for q in x_dict:
+		if len(x_dict[q]) == 1:
+			x_dict[q] += ['best']
+
 	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi',
 			 'npv', 'metpt', 'metphi', 'rawmetpt', 'rawmetphi',
 			 'mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi',
@@ -90,29 +118,12 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'analysis_modules': ['Ratio'],
 			'y_subplot_lims': [0, 2],
 		}
-		if quantity in ['jet1pt', 'zpt']:
-			d["y_log"] = True
-			d["x_bins"] = ["25,0,400"]
-		# TODO move this to more general location
-		xbins_dict = {
-			'npv': ["41,-0.5,40.5"],
-			'npu': ["41,-0.5,40.5"],
-			'npumean': ["41,-0.5,40.5"],
-			'mu1pt': ["25,0,150"],
-			'mupluspt': ["25,0,150"],
-			'muminuspt': ["25,0,150"],
-			'metpt': ["25,0,125"],
-			'rawmetpt': ["25,0,125"],
-			'ptbalance': ["25,0,2"],
-			'mpf': ["25,0,2"],
-			'jet2pt': ["25,0,100"],
-			'jet2eta': ["20,-5,5"],
-			'zpt': ["25,0,600"],
-		}
-		if quantity in xbins_dict:
-			d.update({"x_bins": xbins_dict[quantity]})
+		d["y_log"] = quantity in ['jet1pt', 'zpt']
+		if quantity in x_dict:
+			d["x_bins"] = [x_dict[quantity][0]]
+			d["legend"] = x_dict[quantity][1]
 
-		if additional_dictionary != None:
+		if additional_dictionary:
 			d.update(additional_dictionary)
 		plots.append(d)
 
@@ -123,7 +134,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'filename': quantity+"_shapeComparison",
 			'title': "Shape Comparison",
 		})
-		if additional_dictionary != None:
+		if additional_dictionary:
 			d2.update(additional_dictionary)
 		plots.append(d2)
 
