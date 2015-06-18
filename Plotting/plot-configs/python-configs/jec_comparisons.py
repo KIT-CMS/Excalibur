@@ -362,7 +362,7 @@ def comparison_1215(args=None):
 	d = {
 		'files': [
 			'ntuples/MC_13TeV_72X_E2_50ns_algo_2015-06-16.root',
-			'ntuples/MC_RD1_8TeV_53X_E2_50ns_algo_2015-05-21.root',
+			'ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root',
 		],
 		'labels': ['13 TeV', '8 TeV'],
 		'corrections': ['L1L2L3'],
