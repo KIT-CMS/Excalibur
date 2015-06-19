@@ -56,6 +56,10 @@ class PlotMplZJet(plotmpl.PlotMpl):
 				 "Default is %(default)s")
 		self.formatting_options.add_argument('--cutlabel', action='store_true', default=False,
 			help="Place a label with the current cuts on the plot. [Defaut: %(default)s]")
+		self.formatting_options.add_argument("--marker-colors", type=str, nargs="+",
+			help="Plot colors for markers.")
+		self.formatting_options.add_argument("--bar-colors", type=str, nargs="+",
+			help="Plot colors for bars.")
 
 
 	def prepare_args(self, parser, plotData):
@@ -75,6 +79,12 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['formats'] = ['pdf']
 			plotData.plotdict['output_dir'] = 'plots/live/'
 			plotData.plotdict['filename'] = 'plot'
+
+		# marker and bar colors
+		if plotData.plotdict['marker_colors'] is not None:
+			self.default_marker_colors = plotData.plotdict['marker_colors']
+		if plotData.plotdict['bar_colors'] is not None:
+			self.default_bar_colors = plotData.plotdict['bar_colors']
 
 		# auto determine lumi and energy
 		if plotData.input_json_dicts != [{}] and not any([d.get("InputIsData", False) for d in plotData.input_json_dicts]):
