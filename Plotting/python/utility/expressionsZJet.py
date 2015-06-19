@@ -31,4 +31,5 @@ class ExpressionsDictZJet(ExpressionsDict):
 				+'+6*(abs(matchedgenparton1flavour)==21)'  # gluons: 21 -> 6
 				+'+7*(abs(matchedgenparton1flavour)==999)'  # undef ->7
 			),
+			'deltarjet1radiationjet1': 'sqrt((abs(abs(abs(jet1phi-radiationjet1phi)-TMath::Pi())-TMath::Pi()))*(abs(abs(abs(jet1phi-radiationjet1phi)-TMath::Pi())-TMath::Pi()))+(abs(jet1eta-radiationjet1eta)**2))',
 		})
