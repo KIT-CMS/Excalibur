@@ -518,16 +518,20 @@ def comparison_53740742(args=None):
 
 
 def rootfile_53742(args=None):
-	"""Create a root file with zpt-jet1eta 2D histograms for 53 and 742. Matched events. Sent to Ia 18.06.2015"""
+	"""
+	Create a root file with zpt-jet1eta 2D histograms for 53 and 742. Matched events. Sent to Ia 18.06.2015
+	Input file created with eventmatching tool:
+	eventmatching.py /storage/a/gfleig/zjet/excalibur/data742RC_2015-06-06_21-56/out.root /storage/a/gfleig/zjet/excalibur/dataRC_2015-06-06_12-09/out.root -t finalcuts_AK5PFJetsCHSRC/ntuple -o
+	"""
 	d = {
 		'files': ['/home/gfleig/new/Excalibur/53742_newRC_RConly_event_matched_finalcuts.root'],
 		'folders': ['common1', 'common2'],
+		'labels': ['742', '53'],
+		'plot_modules': ['ExportRoot'],
 		'x_expressions': ['zpt'],
 		'y_expressions': ['jet1eta'],
 		'x_bins': ["100,0,500"],
 		'y_bins': ["26,-1.3,1.3"],
-		'labels': ['53', '742'],
-		'plot_modules': ['ExportRoot'],
 	}
 	harryinterface.harry_interface([d], args)
 
