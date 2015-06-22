@@ -41,9 +41,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		self.formatting_options.set_defaults(x_errors=[False])
 		self.formatting_options.set_defaults(y_errors=[True])
 		self.formatting_options.set_defaults(legloc='center right')
-
 		self.formatting_options.set_defaults(lumis=[19.8])
-
+		self.formatting_options.set_defaults(colormap="Blues")
 		self.formatting_options.set_defaults(texts_x=0.03)
 		self.formatting_options.set_defaults(texts_y=0.97)
 
