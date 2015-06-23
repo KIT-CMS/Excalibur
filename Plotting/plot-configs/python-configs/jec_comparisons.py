@@ -521,17 +521,82 @@ def rootfile_53742(args=None):
 	"""
 	Create a root file with zpt-jet1eta 2D histograms for 53 and 742. Matched events. Sent to Ia 18.06.2015
 	Input file created with eventmatching tool:
-	eventmatching.py /storage/a/gfleig/zjet/excalibur/data742RC_2015-06-06_21-56/out.root /storage/a/gfleig/zjet/excalibur/dataRC_2015-06-06_12-09/out.root -t finalcuts_AK5PFJetsCHSRC/ntuple -o
+	eventmatching.py /storage/a/gfleig/zjet/excalibur/data742RC_2015-06-23_13-48/out.root /storage/a/gfleig/zjet/excalibur/dataRC_2015-06-06_12-09/out.root -t nocuts_AK5PFJetsCHSRC/ntuple finalcuts_AK5PFJetsCHSRC/ntuple -o -n 742 53
+	eventmatching.py /storage/a/gfleig/zjet/excalibur/data742RC_2015-06-23_13-48/out.root /storage/a/gfleig/zjet/excalibur/dataRC_2015-06-06_12-09/out.root -t nocuts_AK5PFJetsCHSRC/ntuple noetacuts_AK5PFJetsCHSRC/ntuple -o -n 742 53
 	"""
 	d = {
-		'files': ['/home/gfleig/new/Excalibur/53742_newRC_RConly_event_matched_finalcuts.root'],
-		'folders': ['common1', 'common2'],
+		'files': ['/home/gfleig/new/Excalibur/work/53742_newRC_RConly_event_matched_finalcuts_nocuts.root'],
+		'folders': ['common742', 'common53'],
 		'labels': ['742', '53'],
 		'plot_modules': ['ExportRoot'],
+	}
+	d1 = {
 		'x_expressions': ['zpt'],
 		'y_expressions': ['jet1eta'],
 		'x_bins': ["100,0,500"],
 		'y_bins': ["26,-1.3,1.3"],
+	}
+	d2 = {
+		'x_expressions': ['zpt'],
+		'y_expressions': ['jet1pt'],
+		'x_bins': ["100,0,500"],
+		'y_bins': ["40,0,400"],
+	}
+	d3 = {
+		'x_expressions': ['zpt'],
+		'y_expressions': ['ptbalance'],
+		'x_bins': ["100,0,500"],
+		'y_bins': ["210,0.,2.1"],
+	}
+	harryinterface.harry_interface([dict(d,**d1)], args)
+	harryinterface.harry_interface([dict(d,**d2)], args)
+	harryinterface.harry_interface([dict(d,**d3)], args)
+
+	# outer eta region: 1.3<|jet1eta|<2.5
+	d = {
+		'files': ['/home/gfleig/new/Excalibur/work/53742_newRC_RConly_event_matched_noetacuts_nocuts.root'],
+		'folders': ['common742', 'common53'],
+		'labels': ['742', '53'],
+		'plot_modules': ['ExportRoot'],
+		'weights' : ["(abs(jet1eta)<2.5&&abs(jet1eta)>1.3)"],
+	}
+	d1 = {
+		'x_expressions': ['zpt'],
+		'y_expressions': ['jet1eta'],
+		'x_bins': ["100,0,500"],
+		'y_bins': ["50,-2.5,2.5"],
+		'filename': 'outereta_jet1eta_VS_zpt',
+	}
+	d2 = {
+		'x_expressions': ['zpt'],
+		'y_expressions': ['jet1pt'],
+		'x_bins': ["100,0,500"],
+		'y_bins': ["40,0,400"],
+		'filename': 'outereta_jet1pt_VS_zpt',
+	}
+	d3 = {
+		'x_expressions': ['zpt'],
+		'y_expressions': ['ptbalance'],
+		'x_bins': ["100,0,500"],
+		'y_bins': ["210,0.,2.1"],
+		'filename': 'outereta_ptbalance_VS_zpt',
+	}
+	harryinterface.harry_interface([dict(d,**d1)], args)
+	harryinterface.harry_interface([dict(d,**d2)], args)
+	harryinterface.harry_interface([dict(d,**d3)], args)
+
+	# jet1pt_VS_zpt for 53 (only), where jet is corrected with Winter V8 JEC:
+	d = {
+		'files': ['ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root'],
+		'algorithms': ['AK5PFJetsCHS'],
+		'corrections': ['L1L2L3Res'],
+		'labels': ['53'],
+		'plot_modules': ['ExportRoot'],
+		'x_expressions': ['zpt'],
+		'y_expressions': ['jet1pt'],
+		'x_bins': ["100,0,500"],
+		'y_bins': ["40,0,400"],
+		'filename': 'fully_corrected_jet1pt_VS_zpt',
 	}
 	harryinterface.harry_interface([d], args)
 
