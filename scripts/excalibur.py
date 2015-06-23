@@ -114,8 +114,8 @@ def ZJet():
 
 		try:
 			print "Symlink to output file created: ", "%s/work/%s.root" % (getEnv(), options.out)
-			if not os.path.exists(getEnv() + "work/"):
-				os.makedirs(getEnv() + "work/")
+			if not os.path.exists(getEnv() + "/work/"):
+				os.makedirs(getEnv() + "/work/")
 			os.symlink(options.work + "out.root", "%s/work/%s.root" % (getEnv(), options.out))
 		except OSError, e:
 			if e.errno == errno.EEXIST:
