@@ -15,6 +15,8 @@ def main():
 	parser = argparse.ArgumentParser(description='Event matching tool.')
 	parser.add_argument('input_files', metavar='file.root', type=str, nargs='+', default=None,
 		help="two or three input files that should be matched")
+	parser.add_argument('-n', '--nicks', type=str, nargs='+', default=list(["1", "2", "3"]),
+		help="nicks of root trees")
 	parser.add_argument('-o', '--common', action='store_true',
 		help="only write common events to output file")
 	parser.add_argument('-t', '--tree', type=str, nargs='+', default=list(["finalcuts_AK5PFJetsCHSL1L2L3Res/ntuple"]),
@@ -28,6 +30,9 @@ def main():
 	# Expand tree list to length of input files list using the last item in tree list
 	if len(args.tree) < len(args.input_files):
 		args.tree[len(args.tree):] = [args.tree[-1]]*(len(args.input_files)-len(args.tree))
+	# Expand nicks list to length of input files list
+	if len(args.nicks) < len(args.input_files):
+		sys.exit("%d nicks are required!") % len(args.input_files)
 
 	print "Read %d files:" % len(args.input_files)
 	for i in range(0, len(args.input_files)):
@@ -63,28 +68,28 @@ def main():
 	print "\nCopy to output trees:"
 	fout = ROOT.TFile("output.root", "RECREATE")
 	if len(args.input_files) == 3:
-		c1 = cpTree(com123, trees[0], "common1", 0)
+		c1 = cpTree(com123, trees[0], "common" + args.nicks[0], 0)
 		stopWatch()
-		c2 = cpTree(com123, trees[1], "common2", 1)
+		c2 = cpTree(com123, trees[1], "common" + args.nicks[1], 1)
 		stopWatch()
-		c3 = cpTree(com123, trees[2], "common3", 2)
+		c3 = cpTree(com123, trees[2], "common" + args.nicks[2], 2)
 		stopWatch()
 		if not args.common:
-			cpTree(o1, trees[0], "only1", 0)
+			cpTree(o1, trees[0], "only" + args.nicks[0], 0)
 			stopWatch()
-			cpTree(o2, trees[1], "only2", 0)  # treeIndex 0 is correct
+			cpTree(o2, trees[1], "only" + args.nicks[1], 0)  # treeIndex 0 is correct
 			stopWatch()
-			cpTree(o3, trees[2], "only3", 0)  # treeIndex 0 is correct
+			cpTree(o3, trees[2], "only" + args.nicks[2], 0)  # treeIndex 0 is correct
 			stopWatch()
 	else:
-		c1 = cpTree(com12, trees[0], "common1", 0)
+		c1 = cpTree(com12, trees[0], "common" + args.nicks[0], 0)
 		stopWatch()
-		c2 = cpTree(com12, trees[1], "common2", 1)
+		c2 = cpTree(com12, trees[1], "common" + args.nicks[1], 1)
 		stopWatch()
 		if not args.common:
-			cpTree(o1, trees[0], "only1", 0)
+			cpTree(o1, trees[0], "only" + args.nicks[0], 0)
 			stopWatch()
-			cpTree(o2, trees[1], "only2", 0)  # treeIndex 0 is correct
+			cpTree(o2, trees[1], "only" + args.nicks[1], 0)  # treeIndex 0 is correct
 			stopWatch()
 
 	fout.Write()
