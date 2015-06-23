@@ -238,5 +238,60 @@ def fastnlo_all(args=None, additional_dictionary=None):
 
 	harryinterface.harry_interface(plots, args)
 
+
+def sherpa_gens(args=None, additional_dictionary=None):
+	"""Comparisons for Sherpa and Madgraph,Powheg Gen."""
+	plots = []
+	bins = [30, 70, 120, 400]
+	bins = []
+	for index, (quantity, binning) in enumerate(zip(
+		["genzpt", "abs(genzy)", "genzmass", "genzphi"],
+		["37,30,400", "25,0,2.5", "20,81,101", "phi"]
+		)):
+		for index2, (lower, upper) in enumerate(zip(bins[:-1]+[30], bins[1:]+[1000])):
+			d = {
+				"yoda_files": ["/storage/a/dhaitz/sherivf/sg_2015-06-22_17-41/Rivet.yoda"],
+
+				"x_expressions": [quantity],
+				"x_bins": [binning],
+
+				"nicks_whitelist": ["d0"+str(index+1), "madg","powh", "ratio"],
+				"ratio_numerator_nicks": ["MCgrid_CMS_2015_Zeed0{}-x01-y01".format(index+1)],
+
+				"analysis_modules": ["ScaleHistograms", "Ratio"],
+				'scale': (1./96.),
+				'scale_nicks': ["MCgrid_CMS_2015_Zeed0{}-x01-y01".format(index+1)],
+
+				"files": ["/storage/a/dhaitz/excalibur/mc_ee_corr.root",
+					"/storage/a/dhaitz/excalibur/mc_ee_powheg_corr.root"],
+				"folders": ["all_AK5PFJetsCHSL1L2L3"],
+				"input_modules": ["InputRootZJet", "InputYoda"],
+				"labels": ["Sherpa+Rivet", "Madgraph DYJets", "Powheg DY", "ratio", "ratio2"],
+				'scale_factors': [1e-3],
+
+				"y_label": "xsec",
+				"legend": "lower center",
+				"marker_colors": ["black", "red", "black", "red"],
+				"line_styles": [None, "-", "-", "-", "-"],
+				"step": [False, True, True, False, False],
+				"markers": ["fill", ".", ".", ".", "."],
+				"nicks": ["madg", "powh"],
+				"ratio_denominator_nicks": ["madg", "powh"],
+				"ratio_result_nicks": ["ratio0", "ratio1"],
+				"weights": ["(genepluspt>25&&geneminuspt>25&&abs(geneminuseta)<2.4&&abs(genepluseta)<2.4&&genzmass>81&&genzmass<101&&genzpt>{0}&&genzpt<{1})".format(lower, upper)],
+				"y_subplot_lims": [0.5, 1.5],
+
+				'filename': "ptbin_{3}_{2}_{0}-{1}".format(lower, upper, index2, quantity)
+			}
+			if quantity == 'abs(genzy)':
+				d['x_lims'] = [0, 2.5]
+			elif quantity == 'genzpt':
+				d['y_log'] = True
+				d['legend'] = 'upper right'
+			elif quantity == 'genzmass':
+				d['legend'] = 'center left'
+			plots.append(d)
+	harryinterface.harry_interface(plots, args)
+
 if __name__ == '__main__':
 	rivet_fastnlo()
