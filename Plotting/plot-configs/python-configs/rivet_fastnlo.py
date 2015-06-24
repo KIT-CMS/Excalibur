@@ -95,7 +95,7 @@ def rivet(args=None, additional_dictionary=None):
 	"""Compare Rivet (YODA) output to (unfolded) Data and MC, different quantities, with/without normalization."""
 
 	rootfile = '/usr/users/dhaitz/home/qcd/sherivf/unfolded/{0}_unfolded_Madgraph_inclusive.root'
-	yodafile = '/storage/a/dhaitz/sherivf/sg_2015-06-04_20-16/Rivet.yoda'
+	yodafile = '/storage/a/dhaitz/sherivf/sg_2015-06-23_13-42/Rivet.yoda'
 	if '--yoda-files' in args:
 		yodafile = args[args.index('--yoda-files')+1]
 	# YODA files add when merging so we have to rescale according to the number of contributions
@@ -105,9 +105,9 @@ def rivet(args=None, additional_dictionary=None):
 	for mc in [True, False]:
 		for norm in [False]:
 			for index, (quantity, binning, label) in enumerate(zip(
-					['zpt', 'zy', 'zmass', 'zphi'],
-					['37,30,400', '25,-2.5,2.5', '20,81,101', '32,-3.2,3.2'],
-					['zpt', 'zy', 'zmass', 'zphi']
+					['zpt', 'abs(zy)', 'zmass', 'zphi'][:3],
+					['37,30,400', '25,0,2.5', '20,81,101', 'phi'][:3],
+					['zpt', 'abs(zy)', 'zmass', 'zphi'][:3]
 			)):
 				d = {
 					'input_modules': ['InputRootZJet', 'InputYoda'],
@@ -124,7 +124,7 @@ def rivet(args=None, additional_dictionary=None):
 					'ratio_numerator_nicks': ['root'],
 					'ratio_denominator_nicks': ['MCgrid_CMS_2015_Zeed0{0}-x01-y01'.format(str(index+1))],
 
-					'scale': (1./n_yodacontributions * (2 if quantity == 'abs(zy)' else 1)),
+					'scale': (1./n_yodacontributions * (1 if quantity == 'abs(zy)' else 1)),
 					'scale_nicks': ['MCgrid_CMS_2015_Zeed0{0}-x01-y01'.format(str(index+1))],
 
 					'nicks_whitelist': ['root', 'd0{0}'.format(str(index+1))],
@@ -175,7 +175,7 @@ def fastnlo_all(args=None, additional_dictionary=None):
 			'members': range(n_members)*len(pdf_sets),
 			#'labels': ['Different PDF Sets'.format(N-1)] + [None]*(N-1),
 			'labels': labels,
-			'fastnlo_files': ["/storage/a/dhaitz/sherivf/sg_2015-06-04_20-16/fnlo_{0}Z.txt".format(quantity)],
+			'fastnlo_files': ["/storage/a/dhaitz/sherivf/sg_2015-06-23_15-43/fnlo_{0}Z.txt".format(quantity)],
 			'legend': 'upper right',
 			'markers': ['-',]*N,
 			'line_styles': ['-']*N,
@@ -242,56 +242,67 @@ def fastnlo_all(args=None, additional_dictionary=None):
 def sherpa_gens(args=None, additional_dictionary=None):
 	"""Comparisons for Sherpa and Madgraph,Powheg Gen."""
 	plots = []
-	bins = [30, 70, 120, 400]
-	bins = []
-	for index, (quantity, binning) in enumerate(zip(
-		["genzpt", "abs(genzy)", "genzmass", "genzphi"],
-		["37,30,400", "25,0,2.5", "20,81,101", "phi"]
-		)):
-		for index2, (lower, upper) in enumerate(zip(bins[:-1]+[30], bins[1:]+[1000])):
-			d = {
-				"yoda_files": ["/storage/a/dhaitz/sherivf/sg_2015-06-22_17-41/Rivet.yoda"],
 
-				"x_expressions": [quantity],
-				"x_bins": [binning],
+	normalize = True
+	for index, quantity, binning, label in zip(
+		[0,1,2,3,6,7],
+		["genzpt", "abs(genzy)", "genzmass", "genzphi", "geneminuspt", "geneminuseta"],
+		["37,30,400", "25,0,2.5", "20,81,101", "12,-3,3", "40,0,200", "60,-3,3"],
+		["xsecpt", "xsecabsy", "xsecm", "xsecphi", "xsecpt", "xseceta"],
+	):
+		d = {
+			#"yoda_files": ["/storage/a/dhaitz/sherivf/sg_2015-06-23_16-01/Rivet.yoda"],
 
-				"nicks_whitelist": ["d0"+str(index+1), "madg","powh", "ratio"],
-				"ratio_numerator_nicks": ["MCgrid_CMS_2015_Zeed0{}-x01-y01".format(index+1)],
+			"x_expressions": [quantity],
+			"x_bins": [binning],
 
-				"analysis_modules": ["ScaleHistograms", "Ratio"],
-				'scale': (1./96.),
-				'scale_nicks': ["MCgrid_CMS_2015_Zeed0{}-x01-y01".format(index+1)],
+			"nicks_whitelist": ["d0"+str(index+1), "madg","powh", "ratio"],
+			"ratio_numerator_nicks": ["MCgrid_CMS_2015_Zeed{:02d}-x01-y01".format(index+1)],
 
-				"files": ["/storage/a/dhaitz/excalibur/mc_ee_corr.root",
-					"/storage/a/dhaitz/excalibur/mc_ee_powheg_corr.root"],
-				"folders": ["all_AK5PFJetsCHSL1L2L3"],
-				"input_modules": ["InputRootZJet", "InputYoda"],
-				"labels": ["Sherpa+Rivet", "Madgraph DYJets", "Powheg DY", "ratio", "ratio2"],
-				'scale_factors': [1e-3],
+			"analysis_modules": ["ScaleHistograms"]
+				+(["NormalizeToFirstHisto"] if normalize else [])
+				+["Ratio"],
+			'scale_nicks': ["MCgrid_CMS_2015_Zeed0{}-x01-y01".format(index+1)],
+			'scale': 1./96., # contributions
 
-				"y_label": "xsec",
-				"legend": "lower center",
-				"marker_colors": ["black", "red", "black", "red"],
-				"line_styles": [None, "-", "-", "-", "-"],
-				"step": [False, True, True, False, False],
-				"markers": ["fill", ".", ".", ".", "."],
-				"nicks": ["madg", "powh"],
-				"ratio_denominator_nicks": ["madg", "powh"],
-				"ratio_result_nicks": ["ratio0", "ratio1"],
-				"weights": ["(genepluspt>25&&geneminuspt>25&&abs(geneminuseta)<2.4&&abs(genepluseta)<2.4&&genzmass>81&&genzmass<101&&genzpt>{0}&&genzpt<{1})".format(lower, upper)],
-				"y_subplot_lims": [0.5, 1.5],
+			"ratio_denominator_nicks": ["madg", "powh"],
+			"ratio_result_nicks": ["ratio0", "ratio1"],
 
-				'filename': "ptbin_{3}_{2}_{0}-{1}".format(lower, upper, index2, quantity)
-			}
-			if quantity == 'abs(genzy)':
-				d['x_lims'] = [0, 2.5]
-			elif quantity == 'genzpt':
-				d['y_log'] = True
-				d['legend'] = 'upper right'
-			elif quantity == 'genzmass':
-				d['legend'] = 'center left'
-			plots.append(d)
+			"weights": ["(genepluspt>25&&geneminuspt>25&&((geneminuseta>-2.4&&geneminuseta<-1.566)||(geneminuseta>-1.442&&geneminuseta<1.442)||(geneminuseta>1.566&&geneminuseta<2.4))&&((genepluseta>-2.4&&genepluseta<-1.566)||(genepluseta>-1.442&&genepluseta<1.442)||(genepluseta>1.566&&genepluseta<2.4))&&genzmass>81&&genzmass<101&&genzpt>30)"],
+
+			"files": ["/storage/a/dhaitz/excalibur/mc_ee_corr_norecocuts.root",
+				"/storage/a/dhaitz/excalibur/mc_ee_powheg_corr_norecocuts.root"],
+			"nicks": ["madg", "powh"],
+			"folders": ["all_AK5PFJetsCHSL1L2L3"],
+			"input_modules": ["InputRootZJet", "InputYoda"],
+			'scale_factors': [1e-3], # MC: fb->pb
+
+			"y_label": label,
+			"labels": ["Sherpa+Rivet", "Madgraph DYJets", "Powheg DY", "ratio", "ratio2"],
+			"legend": "lower center",
+			"marker_colors": ["black", "red", "black", "red"],
+			"line_styles": [None, "-", "-", None, None],
+			"step": [False, True, True, False, False],
+			"markers": ["fill", ".", ".", ".", "."],
+			"title": ("Shape comparison" if normalize else ""),
+
+			"y_subplot_lims": [0.75, 1.25],
+			"energies": [8],
+
+		}
+		if quantity == 'genzpt':
+			d['y_log'] = True
+			d['legend'] = 'upper right'
+		elif quantity == 'genzmass' or quantity == 'geneminuseta':
+			d['legend'] = None
+		elif quantity == 'geneminuspt':
+			d['legend'] = 'upper right'
+
+		plots.append(d)
 	harryinterface.harry_interface(plots, args)
+
+
+#def 
 
 if __name__ == '__main__':
 	rivet_fastnlo()
