@@ -305,7 +305,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == 1) return (*muon)->p4.Pt();
+			if ((*muon)->charge() > 0) return (*muon)->p4.Pt();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -313,7 +313,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == 1) return (*muon)->p4.Eta();
+			if ((*muon)->charge() > 0) return (*muon)->p4.Eta();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -321,7 +321,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == 1) return (*muon)->p4.Phi();
+			if ((*muon)->charge() > 0) return (*muon)->p4.Phi();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -329,7 +329,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == 1) return (*muon)->pfIso();
+			if ((*muon)->charge() > 0) return (*muon)->pfIso();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -337,7 +337,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == -1) return (*muon)->p4.Pt();
+			if ((*muon)->charge() < 0) return (*muon)->p4.Pt();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -345,7 +345,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == -1) return (*muon)->p4.Eta();
+			if ((*muon)->charge() < 0) return (*muon)->p4.Eta();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -353,7 +353,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == -1) return (*muon)->p4.Phi();
+			if ((*muon)->charge() < 0) return (*muon)->p4.Phi();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -361,7 +361,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() == -1) return (*muon)->pfIso();
+			if ((*muon)->charge() < 0) return (*muon)->pfIso();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -393,7 +393,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() == 1) return (*genMuon)->p4.Pt();
+			if ((*genMuon)->charge() > 0) return (*genMuon)->p4.Pt();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -401,7 +401,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() == 1) return (*genMuon)->p4.Eta();
+			if ((*genMuon)->charge() > 0) return (*genMuon)->p4.Eta();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -409,7 +409,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() == 1) return (*genMuon)->p4.Phi();
+			if ((*genMuon)->charge() > 0) return (*genMuon)->p4.Phi();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -417,7 +417,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() == -1) return (*genMuon)->p4.Pt();
+			if ((*genMuon)->charge() < 0) return (*genMuon)->p4.Pt();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -425,7 +425,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() == -1) return (*genMuon)->p4.Phi();
+			if ((*genMuon)->charge() < 0) return (*genMuon)->p4.Phi();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
@@ -433,7 +433,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() == -1) return (*genMuon)->p4.Eta();
+			if ((*genMuon)->charge() < 0) return (*genMuon)->p4.Eta();
 		}
 		return DefaultValues::UndefinedDouble;
 	} );
