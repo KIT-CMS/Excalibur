@@ -67,8 +67,8 @@ void TypeIMETProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
 			px = px - (m_metPhiCorrectionParameters.at(0) + m_metPhiCorrectionParameters.at(1) * event.m_vertexSummary->nVertices);
 			py = py - (m_metPhiCorrectionParameters.at(2) + m_metPhiCorrectionParameters.at(3) * event.m_vertexSummary->nVertices);
 
-			corrMET.p4.SetPt(sqrt(px * px + py * py));
-			corrMET.p4.SetPhi(atan2(py, px));
+			corrMET.p4.SetPt(float(sqrt(px * px + py * py)));
+			corrMET.p4.SetPhi(float(atan2(py, px)));
 		}
 		
 		// Store corrected MET in product
