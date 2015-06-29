@@ -196,9 +196,9 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return (product.GetRadiationJetCount(settings, event) > 0) ? product.GetRadiationJet(settings, event, 0)->p4.Eta() : DefaultValues::UndefinedFloat;
 	} );
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("radiationjet1index", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("radiationjet1index", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (product.GetRadiationJetCount(settings, event) > 0) ? product.GetRadiationJetIndex(settings, event, 0) : DefaultValues::UndefinedFloat;
+		return (product.GetRadiationJetCount(settings, event) > 0) ? int(product.GetRadiationJetIndex(settings, event, 0)) : DefaultValues::UndefinedInt;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("nradiationjets", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
