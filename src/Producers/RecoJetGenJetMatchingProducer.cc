@@ -31,9 +31,9 @@ void RecoJetGenJetMatchingProducer::MatchCollection(ZJetEvent const& event, ZJet
                                                     double const deltaR) const
 {
 	// Iterate over all corrected jets to copy them in local object since they are shared pointers and we need actual jets
-	unsigned int jetCount = product.GetValidJetCount(settings, event, corrLevel);
+	unsigned long jetCount = product.GetValidJetCount(settings, event, corrLevel);
 	KJets recoJets(jetCount);
-	for (unsigned int jetIndex = 0; jetIndex < jetCount; ++jetIndex)
+	for (unsigned long jetIndex = 0; jetIndex < jetCount; ++jetIndex)
 	{
 		recoJets[jetIndex] = *(static_cast<KJet*>(product.GetValidJet(settings, event, jetIndex, corrLevel)));
 	}

@@ -113,9 +113,9 @@ void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel, std:
 												   ZJetSettings const& settings) const
 {
 	// Create a copy of all jets in the event (first temporarily for the JEC)
-	unsigned int jetCount = product.GetValidJetCount(settings, event, inCorrLevel);
+	unsigned long jetCount = product.GetValidJetCount(settings, event, inCorrLevel);
 	std::vector<KJet> correctJetsForJecTools(jetCount);
-	for (unsigned int jetIndex = 0; jetIndex < jetCount; ++jetIndex)
+	for (unsigned long jetIndex = 0; jetIndex < jetCount; ++jetIndex)
 	{
 		correctJetsForJecTools[jetIndex] = *(static_cast<KJet*>(product.GetValidJet(settings, event, jetIndex, inCorrLevel)));
 	}
@@ -128,7 +128,7 @@ void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel, std:
 	// Create shared pointers and store them in the product
 	product.m_correctedZJets[outCorrLevel].clear();
 	product.m_correctedZJets[outCorrLevel].resize(correctJetsForJecTools.size());
-	unsigned int jetIndex = 0;
+	unsigned long jetIndex = 0;
 	for (typename std::vector<KJet>::const_iterator jet = correctJetsForJecTools.begin(); jet != correctJetsForJecTools.end(); ++jet)
 	{
 		product.m_correctedZJets[outCorrLevel][jetIndex] = std::shared_ptr<KJet>(new KJet(*jet));

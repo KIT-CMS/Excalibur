@@ -40,14 +40,14 @@ class ZJetProduct : public KappaProduct
 
 	// Added by RadiationJetsProducer
 	std::map<std::string, std::vector<KJet*> > m_radiationJets;
-	std::map<std::string, std::vector<int> > m_radiationJetsIndex;
+	std::map<std::string, std::vector<unsigned long> > m_radiationJetsIndex;
 
 	/////////////////////////////
 	// Functions for Consumers //
 	/////////////////////////////
 	
 	// Access to valid/corrected jets
-	unsigned int GetValidJetCount(ZJetSettings const& settings,
+	unsigned long GetValidJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
 								  std::string corrLevel) const
 	{
@@ -65,7 +65,7 @@ class ZJetProduct : public KappaProduct
 		}
 	}
 
-	unsigned int GetValidJetCount(ZJetSettings const& settings,
+	unsigned long GetValidJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event) const
 	{
 		return GetValidJetCount(settings, event, settings.GetCorrectionLevel());
@@ -73,11 +73,11 @@ class ZJetProduct : public KappaProduct
 
 	KLV* GetValidJet(ZJetSettings const& settings,
 					 ZJetEvent const& event,
-					 unsigned int index,
+					 unsigned long index,
 					 std::string corrLevel) const
 	{
 		assert(GetValidJetCount(settings, event, corrLevel) > index);
-		
+
 		// Gen jets
 		if (corrLevel == "Gen") {
 			return &(event.m_genJets->at(index));
@@ -94,7 +94,7 @@ class ZJetProduct : public KappaProduct
 
 	KLV* GetValidJet(ZJetSettings const& settings,
 	                 ZJetEvent const& event,
-	                 unsigned int index) const
+	                 unsigned long index) const
 	{
 		return GetValidJet(settings, event, index, settings.GetCorrectionLevel());
 	}
@@ -106,7 +106,7 @@ class ZJetProduct : public KappaProduct
 	}
 	
 	// Access to radiation jets
-	unsigned int GetRadiationJetCount(ZJetSettings const& settings,
+	unsigned long GetRadiationJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
 								  std::string corrLevel) const
 	{
@@ -119,15 +119,15 @@ class ZJetProduct : public KappaProduct
 		}
 	}
 	
-	unsigned int GetRadiationJetCount(ZJetSettings const& settings,
+	unsigned long GetRadiationJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event) const
 	{
 		return GetRadiationJetCount(settings, event, settings.GetCorrectionLevel());
 	}
 	
-	unsigned int GetRadiationJetIndex(ZJetSettings const& settings,
+	unsigned long GetRadiationJetIndex(ZJetSettings const& settings,
 					 ZJetEvent const& event,
-					 unsigned int index,
+					 unsigned long index,
 					 std::string corrLevel) const
 	{
 		assert(GetRadiationJetCount(settings, event, corrLevel) > index);
@@ -141,16 +141,16 @@ class ZJetProduct : public KappaProduct
 		}
 	}
 	
-	unsigned int GetRadiationJetIndex(ZJetSettings const& settings,
+	unsigned long GetRadiationJetIndex(ZJetSettings const& settings,
 	                 ZJetEvent const& event,
-	                 unsigned int index) const
+	                 unsigned long index) const
 	{
 		return GetRadiationJetIndex(settings, event, index, settings.GetCorrectionLevel());
 	}
 	
 	KLV* GetRadiationJet(ZJetSettings const& settings,
 					 ZJetEvent const& event,
-					 unsigned int index,
+					 unsigned long index,
 					 std::string corrLevel) const
 	{
 		assert(GetRadiationJetCount(settings, event, corrLevel) > index);
@@ -166,14 +166,14 @@ class ZJetProduct : public KappaProduct
 
 	KLV* GetRadiationJet(ZJetSettings const& settings,
 	                 ZJetEvent const& event,
-	                 unsigned int index) const
+	                 unsigned long index) const
 	{
 		return GetRadiationJet(settings, event, index, settings.GetCorrectionLevel());
 	}
 	
 
 	// Access to invalid jets
-	unsigned int GetInvalidJetCount(ZJetSettings const& settings,
+	unsigned long GetInvalidJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
 								  std::string corrLevel) const
 	{
@@ -187,7 +187,7 @@ class ZJetProduct : public KappaProduct
 		}
 	}
 
-	unsigned int GetInvalidJetCount(ZJetSettings const& settings,
+	unsigned long GetInvalidJetCount(ZJetSettings const& settings,
 									ZJetEvent const& event) const
 	{
 		return GetInvalidJetCount(settings, event, settings.GetCorrectionLevel());
@@ -217,11 +217,11 @@ class ZJetProduct : public KappaProduct
 	{
 		double scalPtEt = m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
 		double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
-		return 1.0f + scalPtEt / scalPtSq;
+		return 1.0 + scalPtEt / scalPtSq;
 	}
 
 	// Reco jet - gen parton matching result
-	KGenParticle* GetMatchedGenParton(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
+	KGenParticle* GetMatchedGenParton(ZJetEvent const& event, ZJetSettings const& settings, unsigned long index) const
 	{
 		if (GetValidJetCount(settings, event) > index)
 			return SafeMap::GetWithDefault(SafeMap::GetWithDefault(m_matchedGenPartons,
@@ -234,7 +234,7 @@ class ZJetProduct : public KappaProduct
 	}
 
 	// Reco jet - gen jet matching result
-	KLV* GetMatchedGenJet(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
+	KLV* GetMatchedGenJet(ZJetEvent const& event, ZJetSettings const& settings, unsigned long index) const
 	{
 		std::vector<int> defaultValue = std::vector<int>(0);
 		std::vector<int> jetList = SafeMap::GetPtrMapWithDefault(m_matchedGenJets, settings.GetCorrectionLevel(), defaultValue);
@@ -242,7 +242,7 @@ class ZJetProduct : public KappaProduct
 		if (index >= jetList.size())
 			return nullptr;
 
-		unsigned int matchedJet = jetList.at(index);
+		unsigned long matchedJet = jetList.at(index);
 
 		if (GetValidJetCount(settings, event, "Gen") >= matchedJet)
 			return GetValidJet(settings, event, matchedJet, "Gen");

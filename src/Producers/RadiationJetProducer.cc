@@ -27,7 +27,7 @@ void RadiationJetProducer::Produce(ZJetEvent const& event,
 void RadiationJetProducer::GetRadiationJets(std::string corrLevel, ZJetEvent const& event,
                                             ZJetProduct& product, ZJetSettings const& settings) const
 {
-	unsigned int jetCount = product.GetValidJetCount(settings, event, corrLevel);
+	unsigned long jetCount = product.GetValidJetCount(settings, event, corrLevel);
 	// Reserve memory for 10 radiation jets to avoid reallocation
 	product.m_radiationJets[corrLevel].clear();
 	product.m_radiationJets[corrLevel].reserve(10);
@@ -35,7 +35,7 @@ void RadiationJetProducer::GetRadiationJets(std::string corrLevel, ZJetEvent con
 	product.m_radiationJetsIndex[corrLevel].reserve(10);
 
 	KJet* primaryJet = static_cast<KJet*>(product.GetValidJet(settings, event, 0, corrLevel));
-	for (unsigned int jetIndex = 1; jetIndex < jetCount; ++jetIndex)
+	for (unsigned long jetIndex = 1; jetIndex < jetCount; ++jetIndex)
 	{
 		KJet* jet = static_cast<KJet*>(product.GetValidJet(settings, event, jetIndex, corrLevel));
 		double jetDeltaR = ROOT::Math::VectorUtil::DeltaR(jet->p4, primaryJet->p4);
