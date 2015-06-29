@@ -41,7 +41,6 @@ def ZJet():
 		conf = custom.config()
 		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
 		if conf["OutputPath"] == "out":
-			print "out", options.out
 			conf["OutputPath"] = options.out + '.root'
 		if options.skip:
 			conf['EventCount'] = options.skip[1]
