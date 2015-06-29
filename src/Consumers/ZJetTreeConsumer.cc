@@ -54,37 +54,37 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzpt", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genZ = product.GetGenZ();
-		return (genZ != 0) ? genZ->p4.Pt() : DefaultValues::UndefinedDouble;
+		return (genZ != nullptr) ? genZ->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzeta", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genZ = product.GetGenZ();
-		return (genZ != 0) ? genZ->p4.Eta() : DefaultValues::UndefinedDouble;
+		return (genZ != nullptr) ? genZ->p4.Eta() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzphi", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genZ = product.GetGenZ();
-		return (genZ != 0) ? genZ->p4.Phi() : DefaultValues::UndefinedDouble;
+		return (genZ != nullptr) ? genZ->p4.Phi() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzeta", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genZ = product.GetGenZ();
-		return (genZ != 0) ? genZ->p4.Eta() : DefaultValues::UndefinedDouble;
+		return (genZ != nullptr) ? genZ->p4.Eta() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzy", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genZ = product.GetGenZ();
-		return (genZ != 0) ? genZ->p4.Rapidity() : DefaultValues::UndefinedDouble;
+		return (genZ != nullptr) ? genZ->p4.Rapidity() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genzmass", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genZ = product.GetGenZ();
-		return (genZ != 0) ? genZ->p4.mass() : DefaultValues::UndefinedDouble;
+		return (genZ != nullptr) ? genZ->p4.mass() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("deltarzgenz", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genZ = product.GetGenZ();
-		return (genZ != 0) ? ROOT::Math::VectorUtil::DeltaR(genZ->p4, product.m_z.p4) : DefaultValues::UndefinedDouble;
+		return (genZ != nullptr) ? ROOT::Math::VectorUtil::DeltaR(genZ->p4, product.m_z.p4) : DefaultValues::UndefinedDouble;
 	} );
 	
 	//////////
@@ -208,56 +208,56 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	// Gen jets
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (event.m_genJets != NULL && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Pt() : DefaultValues::UndefinedDouble;
+		return (event.m_genJets != nullptr && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (event.m_genJets != NULL && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Eta() : DefaultValues::UndefinedDouble;
+		return (event.m_genJets != nullptr && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Eta() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (event.m_genJets != NULL && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Phi() : DefaultValues::UndefinedDouble;
+		return (event.m_genJets != nullptr && event.m_genJets->size() > 0) ? event.m_genJets->at(0).p4.Phi() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (event.m_genJets != NULL && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Pt() : DefaultValues::UndefinedDouble;
+		return (event.m_genJets != nullptr && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet2eta", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (event.m_genJets != NULL && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Eta() : DefaultValues::UndefinedDouble;
+		return (event.m_genJets != nullptr && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Eta() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genjet2phi", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (event.m_genJets != NULL && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Phi() : DefaultValues::UndefinedDouble;
+		return (event.m_genJets != nullptr && event.m_genJets->size() > 1) ? event.m_genJets->at(1).p4.Phi() : DefaultValues::UndefinedDouble;
 	} );
 	
 	// Reco jet - gen parton matches
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
-		return (genParton != 0) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
+		return (genParton != nullptr) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("matchedgenparton1flavour", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
-		return (genParton != 0) ? genParton->pdgId() : DefaultValues::UndefinedDouble;
+		return (genParton != nullptr) ? genParton->pdgId() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenparton2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 1);
-		return (genParton != 0) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
+		return (genParton != nullptr) ? genParton->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	
 	// Reco jet - gen jet matches
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
-		return (genJet != 0) ? genJet->p4.Pt() : DefaultValues::UndefinedDouble;
+		return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
-		return (genJet != 0) ? genJet->p4.Pt() : DefaultValues::UndefinedDouble;
+		return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	
 	/////////
@@ -442,12 +442,12 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenmuon1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genMuon = product.GetMatchedGenMuon(event, settings, 0);
-		return (genMuon != 0) ? genMuon->p4.Pt() : DefaultValues::UndefinedDouble;
+		return (genMuon != nullptr) ? genMuon->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenmuon2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		KGenParticle* genMuon = product.GetMatchedGenMuon(event, settings, 1);
-		return (genMuon != 0) ? genMuon->p4.Pt() : DefaultValues::UndefinedDouble;
+		return (genMuon != nullptr) ? genMuon->p4.Pt() : DefaultValues::UndefinedDouble;
 	} );
 
 

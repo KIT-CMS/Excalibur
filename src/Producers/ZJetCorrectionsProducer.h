@@ -62,15 +62,15 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
 							  ZJetSettings const& settings) const;
 
   private:
-	FactorizedJetCorrector* m_l1 = 0;
-	FactorizedJetCorrector* m_rc = 0;
-	FactorizedJetCorrector* m_l2 = 0;
-	FactorizedJetCorrector* m_l3 = 0;
-	FactorizedJetCorrector* m_l5g = 0;
-	FactorizedJetCorrector* m_l5q = 0;
-	FactorizedJetCorrector* m_l5b = 0;
-	FactorizedJetCorrector* m_l5c = 0;
-	FactorizedJetCorrector* m_l2l3res = 0;
+	FactorizedJetCorrector* m_l1 = nullptr;
+	FactorizedJetCorrector* m_rc = nullptr;
+	FactorizedJetCorrector* m_l2 = nullptr;
+	FactorizedJetCorrector* m_l3 = nullptr;
+	FactorizedJetCorrector* m_l5g = nullptr;
+	FactorizedJetCorrector* m_l5q = nullptr;
+	FactorizedJetCorrector* m_l5b = nullptr;
+	FactorizedJetCorrector* m_l5c = nullptr;
+	FactorizedJetCorrector* m_l2l3res = nullptr;
 	
-	JetCorrectionUncertainty* correctionUncertainty = 0;
+	JetCorrectionUncertainty* correctionUncertainty = nullptr;
 };

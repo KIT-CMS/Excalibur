@@ -17,7 +17,7 @@ void RecoJetGenPartonMatchingProducer::Produce(KappaEvent const& event, KappaPro
 	{
 		// Use Artus reco jet gen particle matcher
 		KGenParticle* matchedParton = Match(zJetEvent, zJetProduct, zJetSettings, static_cast<KLV*>(*recoJet));
-		if (matchedParton != NULL)
+		if (matchedParton != nullptr)
 		{
 			// Map of reco jets and matched gen partons for all requested correction levels
 			zJetProduct.m_matchedGenPartons["None"][static_cast<KJet*>(*recoJet)] = matchedParton;
@@ -34,7 +34,7 @@ void RecoJetGenPartonMatchingProducer::Produce(KappaEvent const& event, KappaPro
 		{
 			// Use Artus reco jet gen particle matcher
 			KGenParticle* matchedParton = Match(zJetEvent, zJetProduct, zJetSettings, static_cast<KLV*>((*recoJet).get()));
-			if (matchedParton != NULL)
+			if (matchedParton != nullptr)
 			{
 				// Map of reco jets and matched gen partons for all requested correction levels
 				zJetProduct.m_matchedGenPartons[itlevel->first][(*recoJet).get()] = matchedParton;

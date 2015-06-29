@@ -228,9 +228,9 @@ class ZJetProduct : public KappaProduct
 			                                                       settings.GetCorrectionLevel(),
 			                                                       std::map<KJet*, KGenParticle*>()),
 			                               static_cast<KJet*>(GetValidJet(settings, event, index)),
-			                               (KGenParticle*)(0));
+			                               (KGenParticle*)(nullptr));
 		else
-			return NULL;
+			return nullptr;
 	}
 
 	// Reco jet - gen jet matching result
@@ -240,29 +240,29 @@ class ZJetProduct : public KappaProduct
 		std::vector<int> jetList = SafeMap::GetPtrMapWithDefault(m_matchedGenJets, settings.GetCorrectionLevel(), defaultValue);
 
 		if (index >= jetList.size())
-			return NULL;
+			return nullptr;
 
 		unsigned int matchedJet = jetList.at(index);
 
 		if (GetValidJetCount(settings, event, "Gen") >= matchedJet)
 			return GetValidJet(settings, event, matchedJet, "Gen");
 		else
-			return NULL;
+			return nullptr;
 	}
 	
 	// Access to gen Z
 	KGenParticle* GetGenZ() const
 	{
 		std::vector<KGenParticle*> genZs = SafeMap::GetWithDefault(m_genParticlesMap, 23, (std::vector<KGenParticle*>)(0));
-		return (genZs.size() > 0) ? genZs[0] : NULL;
+		return (genZs.size() > 0) ? genZs[0] : nullptr;
 	}
 
 	// Reco muon - gen muon matching result
 	KGenParticle* GetMatchedGenMuon(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
 	{
 		if (m_validMuons.size() > index)
-			return SafeMap::GetWithDefault(m_genParticleMatchedMuons, m_validMuons.at(index), (KGenParticle*)(0));
+			return SafeMap::GetWithDefault(m_genParticleMatchedMuons, m_validMuons.at(index), (KGenParticle*)(nullptr));
 		else
-			return NULL;
+			return nullptr;
 	}
 };
