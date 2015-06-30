@@ -136,3 +136,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		if self.mpl_version >= 121:
 			matplotlib.rcParams['ytick.minor.width'] = 0.5
 
+		if self.mpl_version >= 121:
+			matplotlib.rcParams['legend.frameon'] = False
+
