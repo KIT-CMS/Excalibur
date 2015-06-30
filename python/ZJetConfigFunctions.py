@@ -190,7 +190,7 @@ def mm(cfg, **kwargs):
 		'producer:ZJetCorrectionsProducer',
 		'producer:TypeIMETProducer',
 		'producer:JetSorter',
-		'producer:ZProducer',
+		'producer:ZmmProducer',
 		'filter:ZFilter',
 		'producer:RadiationJetProducer',
 	]
