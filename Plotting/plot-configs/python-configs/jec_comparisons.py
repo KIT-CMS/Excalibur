@@ -31,6 +31,51 @@ def get_special_parser(args):
 		known_args, args = parser.parse_known_args(args)
 	return known_args, args
 
+def response_extrapolation(args=None, additional_dictionary=None):
+	plots = []
+
+	d = {
+		'filename': 'extrapolation',
+		'files': ['ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root', 'ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root'],
+		'labels': [r'$\\mathit{p}_{T}$ balance (MC)', r'$\\mathit{p}_{T}$ balance (Data)', 'MPF (MC)', 'MPF (Data)', r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$', r'$\\mathit{p}_{T}$ balance', 'MPF', '', '', '', '', '', '', '', '', ''],
+		'algorithms': ["AK5PFJetsCHS",],
+		'corrections': ['L1L2L3', 'L1L2L3Res'],
+		'zjetfolders': 'noalphacuts',
+		'lines': [1.0],
+		'legend': 'lower left',
+		'x_expressions': 'alpha',
+		'x_bins': '6,0,0.3',
+		'x_lims': [0,0.3],
+		'y_expressions': ['ptbalance', 'ptbalance', 'mpf', 'mpf', "jet1pt/genjet1pt"],
+		'y_label': 'Jet Response',
+		'y_lims': [0.88,1.03],
+		'nicks': ['ptbalance_mc', 'ptbalance_data', 'mpf_mc', 'mpf_data', 'reco_gen_jet'],
+		'colors': ['orange', 'darkred', 'royalblue', 'darkblue', 'darkgreen', 'darkred', 'darkblue'],
+		'markers': ['s', 'o', 's', 'o', '*', 'o', 'o'],
+		'marker_fill_styles': ['none', 'none', 'full', 'full', 'full', 'none', 'full'],
+		'line_styles': [None, None, None, None, None, None, None, '--', '--', '--', '--', '--', '--', '--'],
+		'line_widths': ['1'],
+		'tree_draw_options': 'prof',
+		'analysis_modules': ['Ratio', 'FunctionPlot'],
+		'plot_modules': ['PlotMplZJet', 'PlotExtrapolationText'],
+		'functions': ['[0]+[1]*x'],
+		'function_fit': ['ptbalance_mc', 'ptbalance_data', 'mpf_mc', 'mpf_data', 'reco_gen_jet', 'ptbalance_ratio', 'mpf_ratio'],
+		'function_parameters': ['1,1'],
+		'function_ranges': ['0,0.3'],
+		'function_nicknames': ['ptbalance_mc_fit', 'ptbalance_data_fit', 'mpf_mc_fit', 'mpf_data_fit', 'reco_gen_jet_fit', 'ptbalance_ratio_fit', 'mpf_ratio_fit'],
+		'ratio_numerator_nicks': ['ptbalance_data', 'mpf_data'],
+		'ratio_denominator_nicks': ['ptbalance_mc', 'mpf_mc'],
+		'ratio_result_nicks': ['ptbalance_ratio', 'mpf_ratio'],
+		'y_subplot_lims': [0.966, 1.015],
+		'y_subplot_label': 'Data / MC',
+		'subplot_fraction': 40,
+		'subplot_legend': 'lower left',
+	}
+
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	plots.append(d)
+	harryinterface.harry_interface(plots, args)
 
 def response_comparisons(args2=None, additional_dictionary=None):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
