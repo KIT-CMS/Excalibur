@@ -34,6 +34,7 @@ def response_zones(args=None, additional_dictionary=None):
 	""" MPF response in the tagging zones."""
 	zone_labels = ['uds', 'c', 'b', 'g']
 	file_amount = len(additional_dictionary['files'])
+
 	d = {
 		'x_expressions': [str(i) for i in range(1, len(zone_labels)+1) for j in range(file_amount)],
 		'y_expressions': 'mpf',
@@ -45,7 +46,7 @@ def response_zones(args=None, additional_dictionary=None):
 		'labels': ['MC', 'Data'],
 		'markers': ['o', 's'],
 		'x_bins': " ".join([str(x+0.5) for x in range(len(zone_labels)+1)]),
-		'y_lims': [0.92, 1.05],
+		'y_lims': [0.85, 1.05],
 		'colors': ['red', 'black'],
 		'lines': [1.0],
 		'filename': 'mpf_zones',
@@ -55,6 +56,34 @@ def response_zones(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 	harryinterface.harry_interface([d], args)
 
+
+def flavour_response_zones(args=None, additional_dictionary=None):
+	""" MPF response in the tagging zones."""
+	for flavour_selection in ['uds', 'c', 'b', 'g']:
+		zone_labels = ['uds', 'c', 'b', 'g']
+		weights = [flavour_selections[flavour_selection] + "*" +  zone_selections[zone] for zone in zone_labels]
+		print weights
+		d = {
+			'x_expressions': [str(i) for i in range(1, len(zone_labels)+1)],
+			'y_expressions': 'mpf',
+			'weights': weights,
+			'x_ticks': range(1, len(zone_labels)+1),
+			'x_tick_labels': [i+"-zone" for i in zone_labels],
+			'tree_draw_options': 'prof',
+			'x_label': 'Tagging Zone',
+			'markers': 'o',
+			'x_bins': " ".join([str(x+0.5) for x in range(len(zone_labels)+1)]),
+			'y_lims': [0.85, 1.05],
+			'colors': 'red',
+			'lines': [1.0],
+			'title': flavour_selection + ' quarks',
+			'filename': 'mpf_zones_' + flavour_selection,
+			"cutlabel": True,
+			"legend": None
+		}
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		harryinterface.harry_interface([d], args)
 
 def flavour_fractions(args=None, additional_dictionary=None):
 	""" Plots flavour fraction (q,qbar,g,undef) vs zpt, abs(jet1eta)"""
@@ -488,6 +517,7 @@ def flavour(args=None):
 	flavour_mpf_response(args, d)
 	pf_fractions_vs_flavour(args, d)
 	flavour_composition_zones(args, d)
+	flavour_response_zones(args, d)
 
 	d['files'].append("ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root")
 	d['corrections'].append("L1L2L3Res")
