@@ -1,4 +1,7 @@
+#include "KappaTools/Toolbox/StringTools.h"
+
 #include "Producers/ZJetCorrectionsProducer.h"
+
 
 std::string ZJetCorrectionsProducer::GetProducerId() const {
 	return "ZJetCorrectionsProducer";
@@ -7,18 +10,12 @@ std::string ZJetCorrectionsProducer::GetProducerId() const {
 void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 {
 	ZJetProducerBase::Init(settings);
-	
-	// CHS or no CHS jets?
-	std::string algoName = settings.GetTaggedJets();
-	if (algoName.find("CHS") == std::string::npos) {
-		algoName = algoName.substr(0, 5);
-	}
-	else
-	{
-		algoName = algoName.substr(0, 5) + "chs";
-	}
+
+	// convert usual algo name (ak5PFJetsCHS) to txt file algo name (AK5PFchs)
+	std::vector<std::string> algoNameAndType = KappaTools::split(settings.GetTaggedJets(), "Jets");
+	std::string algoName = KappaTools::toupper(algoNameAndType[0].substr(0, 2)) + algoNameAndType[0].substr(2, std::string::npos) + KappaTools::tolower(algoNameAndType[1]);
 	LOG(INFO) << "\t -- Jet corrections enabled for " << algoName << " jets using the following JEC files:";
-		
+
 	// JEC initialization
 	std::vector<JetCorrectorParameters> jecParameters;
 	
