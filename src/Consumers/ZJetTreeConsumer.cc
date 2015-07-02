@@ -264,7 +264,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	// MET //
 	/////////
 	
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("metpt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("met", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.GetMet(settings, event)->p4.Pt();
 	} );
@@ -276,7 +276,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return product.GetMet(settings, event)->sumEt;
 	} );
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("rawmetpt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("rawmet", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return product.GetMet(settings, event, "None")->p4.Pt();
 	} );

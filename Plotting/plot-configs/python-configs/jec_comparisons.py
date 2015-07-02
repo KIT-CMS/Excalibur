@@ -130,8 +130,8 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'mu1pt': ["25,0,150"],
 		'mupluspt': ["25,0,150"],
 		'muminuspt': ["25,0,150"],
-		'metpt': ["25,0,125"],
-		'rawmetpt': ["25,0,125"],
+		'met': ["25,0,125"],
+		'rawmet': ["25,0,125"],
 		'ptbalance': ["25,0,2"],
 		'mpf': ["25,0,2"],
 		'jet2pt': ["25,0,100"],
@@ -151,7 +151,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			x_dict[q] += ['best']
 
 	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi',
-			 'npv', 'rho', 'metpt', 'metphi', 'rawmetpt', 'rawmetphi',
+			 'npv', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi',
 			 'mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi',
 			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',
 			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt'] \
