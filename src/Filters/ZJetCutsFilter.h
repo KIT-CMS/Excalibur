@@ -16,7 +16,6 @@
  * z pt
  * back to back
  * alpha (second jet pt to z pt)
- * 
  */
 
 
@@ -29,7 +28,7 @@ class MinNMuonsCut : public ZJetFilterBase
 	virtual std::string GetFilterId() const override { return "MinNMuonsCut"; }
 
 	MinNMuonsCut() : ZJetFilterBase(){};
-	
+
 	virtual void Init(ZJetSettings const& settings) override
 	{
 		ZJetFilterBase::Init(settings);
@@ -56,7 +55,7 @@ class MaxNMuonsCut : public ZJetFilterBase
 	virtual std::string GetFilterId() const override { return "MaxNMuonsCut"; }
 
 	MaxNMuonsCut() : ZJetFilterBase(){};
-	
+
 	virtual void Init(ZJetSettings const& settings) override
 	{
 		ZJetFilterBase::Init(settings);
@@ -83,7 +82,7 @@ class MuonPtCut : public ZJetFilterBase
 	virtual std::string GetFilterId() const override { return "MuonPtCut"; }
 
 	MuonPtCut() : ZJetFilterBase(){};
-	
+
 	virtual void Init(ZJetSettings const& settings) override
 	{
 		ZJetFilterBase::Init(settings);
@@ -114,7 +113,7 @@ class MuonEtaCut : public ZJetFilterBase
 	virtual std::string GetFilterId() const override { return "MuonEtaCut"; }
 
 	MuonEtaCut() : ZJetFilterBase(){};
-	
+
 	virtual void Init(ZJetSettings const& settings) override
 	{
 		ZJetFilterBase::Init(settings);
@@ -145,7 +144,7 @@ class LeadingJetPtCut : public ZJetFilterBase
 	virtual std::string GetFilterId() const override { return "LeadingJetPtCut"; }
 
 	LeadingJetPtCut() : ZJetFilterBase(){};
-	
+
 	virtual void Init(ZJetSettings const& settings) override
 	{
 		ZJetFilterBase::Init(settings);
@@ -199,7 +198,7 @@ class ZPtCut : public ZJetFilterBase
 	virtual std::string GetFilterId() const override { return "ZPtCut"; }
 
 	ZPtCut() : ZJetFilterBase(){};
-	
+
 	virtual void Init(ZJetSettings const& settings) override
 	{
 		ZJetFilterBase::Init(settings);
