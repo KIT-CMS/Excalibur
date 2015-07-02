@@ -3,17 +3,18 @@
 # Dominik Haitz <dhaitz@cern.ch>
 # usage: make help
 
-ROOTCFLAGS     = $(shell root-config --cflags)
+
+ROOTCFLAGS     = $(shell root-config --cflags | sed 's/-I/-isystem /')
 ROOTLDFLAGS    = $(shell root-config --ldflags --libs)
 
 PROJECT        = Excalibur
 EXECUTABLE     = artus
 CXX            = g++
-FLAGS          = -O2 -Wall -Wno-unused-local-typedefs -Wpedantic -Wfatal-errors -lprofiler -ltcmalloc -c -std=c++11 -g -fPIC \
-#                -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers  # when boost fixes these issues, we can use these flags, too
-CFLAGS         = $(FLAGS)\
- -Isrc/ -Iexternal/OfflineCorrection/ -Iexternal/ -I../\
- $(ROOTCFLAGS) -I$(BOOSTPATH)/include/ -I$(KAPPATOOLSPATH)/../
+STANDARDFLAGS  = -O2 -Wall -Wextra -Wpedantic -Wfatal-errors -lprofiler -ltcmalloc -c -std=c++11 -g -fPIC
+MOREWARNINGS   = -Wswitch-default -Wswitch-enum -Wsync-nand -Wunused-local-typedefs -Wtrampolines -Wno-aggressive-loop-optimizations -Wpacked -Wwrite-strings -Wstrict-overflow=3 -Wredundant-decls -Wuseless-cast -Wdisabled-optimization -Wunsafe-loop-optimizations -Wmissing-declarations -Wnormalized=nfkc -Wlogical-op -Wstack-protector -Wmissing-include-dirs -Wvector-operation-performance -Wmissing-format-attribute -Wundef -Wcast-qual -Wcast-align -Wno-unused-parameter
+PLUSWARNINGS   = -Wshadow -Wconversion -Wzero-as-null-pointer-constant -Wfloat-equal -Wdouble-promotion
+# -Wpadded -Winline
+CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) -Isrc/ -isystem ../ -isystem $(BOOSTPATH)/include/ -I$(KAPPATOOLSPATH)/../
 LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA\
  -L$(BOOSTPATH)/lib/ -lboost_regex\
  -L../Artus/ -lartus_configuration -lartus_consumer -lartus_core -lartus_filter -lartus_provider -lartus_utility -lartus_kappaanalysis -lartus_externalcorr\
@@ -30,8 +31,8 @@ $(EXECUTABLE): $(OBJECTS) $(HEADERS)
 	@$(CXX) $(LDFLAGS) $(OBJECTS) -o scripts/$@
 	@echo $(EXECUTABLE) "built successfully."
 
-.cc.o:
-	@echo $(CXX) $(FLAGS) $<
+.cc.o: $(HEADERS)
+	@echo $(CXX) CFLAGS $<
 	@$(CXX) $(CFLAGS) $< -o $@
 
 clean:
