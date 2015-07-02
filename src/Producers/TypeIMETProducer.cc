@@ -36,8 +36,8 @@ void TypeIMETProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
 	for (unsigned int corrLevelIndex = 0; corrLevelIndex < m_corrLevels.size(); corrLevelIndex++)
 	{
 		KLV correction;
-		float sumEtCorrection = 0;
-		
+		double sumEtCorrection = 0;
+
 		// Iterate over individual jets and sum up the differences between L1L2L3(Res) and L1
 		for (unsigned int jetIndex = 0; jetIndex < product.m_correctedZJets.at(m_corrLevels[corrLevelIndex]).size(); ++jetIndex)
 		{
@@ -48,7 +48,7 @@ void TypeIMETProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
 			{
 				KLV* l1Jet = (SafeMap::Get(product.m_correctedZJets, m_l1Corr).at(jetIndex)).get();
 				correction.p4 +=  l1Jet->p4 - corrJet->p4;
-				sumEtCorrection += correction.p4.Pt();
+				sumEtCorrection += double(correction.p4.Pt());
 			}
 		}
 		KMET corrMET = *event.m_met;

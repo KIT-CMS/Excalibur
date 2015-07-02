@@ -267,7 +267,7 @@ class AlphaCut : public ZJetFilterBase
 							   ZJetSettings const& settings) const override
 	{
 		// Always true if there is only one jet in the event
-		return (product.GetValidJetCount(settings, event) > 1) ? (product.GetValidJet(settings, event, 1)->p4.Pt()/product.m_z.p4.Pt() < alphaMax) : true;
+		return (product.GetValidJetCount(settings, event) > 1) ? (product.GetValidJet(settings, event, 1)->p4.Pt() < alphaMax * product.m_z.p4.Pt()) : true;
 	}
 
   private:
@@ -294,7 +294,7 @@ class BetaCut : public ZJetFilterBase
 							   ZJetSettings const& settings) const override
 		{
 			// Always true if there is no radiation jet in the event
-			return (product.GetRadiationJetCount(settings, event) > 0) ? (product.GetRadiationJet(settings, event, 0)->p4.Pt() / product.m_z.p4.Pt() < betaMax) : true;
+			return (product.GetRadiationJetCount(settings, event) > 0) ? (product.GetRadiationJet(settings, event, 0)->p4.Pt() < betaMax * product.m_z.p4.Pt()) : true;
 		}
 		
 	private:
