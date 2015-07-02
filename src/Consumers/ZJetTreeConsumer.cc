@@ -12,9 +12,9 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	////////////////////////
 	// General quantities //
 	////////////////////////
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("npudata", [](ZJetEvent const& event, ZJetProduct const& product)
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("npu", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return product.npudata;
+		return event.m_genEventInfo->nPU;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("npumean", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
@@ -453,6 +453,4 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 
 	// Needs to be called at the end
 	KappaLambdaNtupleConsumer::Init(settings);
-
-
 }
