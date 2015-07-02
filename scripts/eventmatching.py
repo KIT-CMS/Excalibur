@@ -44,7 +44,7 @@ def main():
 	print "\nGet list of runs, lumis, events:"
 	lists = []
 	for tree in trees:
-		lst = getRunLumiEvent(tree, 'event', 'lumi')
+		lst = getRunLumiEvent(tree)
 		lists.append(sorted(lst))
 	stopWatch()
 
@@ -59,11 +59,6 @@ def main():
 			tmp, tmp, o2 = compareLists(com13, lists[1])
 			tmp, tmp, o1 = compareLists(com23, lists[0])
 	stopWatch()
-	
-	#for item1, item2 in zip(o1, o2):
-	#	print item1, item2
-	#for item in com12:
-	#	print item
 	
 	print "\nCopy to output trees:"
 	fout = ROOT.TFile("output.root", "RECREATE")
@@ -114,13 +109,17 @@ def stopWatch(n=[], overall=False):
 	if overall:
 		print "  -- Overall time:   %1.3f s" % (n[-1] - n[0])
 
-def getRunLumiEvent(tree, eventbranch='event', lumibranch='event'):
+def getRunLumiEvent(tree):
 	"""get list of (run, lumi, event, entry index) from a tree"""
 	result = []
 	nevt = tree.GetEntries()
+	eventbranch = 'event'
+	if not hasattr(tree, eventbranch):
+		eventbranch = 'evt'
+
 	for i in xrange(nevt):
 		tree.GetEntry(i)
-		result.append((int(tree.run), int(tree.lumi), int(tree.event), i))
+		result.append((int(tree.run), int(tree.lumi), int(getattr(tree, eventbranch)), i))
 		if i % 1000 == 0:
 			print "\r  %7d/%d" % (i, nevt),
 			sys.stdout.flush() 
