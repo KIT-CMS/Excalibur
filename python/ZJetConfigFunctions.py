@@ -24,9 +24,9 @@ def getBaseConfig(**kwargs):
 		'JetID' : 'tight',
 		'JetIDVersion' : 2014,
 		'JetMetadata' : 'jetMetadata',
-		'TaggedJets' : 'AK5PFTaggedJetsCHS',
+		'TaggedJets' : 'ak5PFJetsCHS',
 		# PU
-		'PileupDensity' : 'KT6Area',
+		'PileupDensity' : 'pileupDensity',
 		# Pipelines
 		'Pipelines': {
 			'default': {
