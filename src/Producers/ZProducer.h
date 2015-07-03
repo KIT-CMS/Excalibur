@@ -8,12 +8,12 @@
  * 	Needs min 2 valid leptons and max 3 valid leptons!
  */
 
-template<class TLepton>
+template<class TLepton1, class TLepton2>
 class ZProducerBase : public ZJetProducerBase
 {
   public:
 
-	ZProducerBase(std::vector<TLepton*> ZJetProduct::*validLeptons) : ZJetProducerBase(), m_validLeptonsMember(validLeptons) {};
+	ZProducerBase(std::vector<TLepton1*> ZJetProduct::*validLeptons1, std::vector<TLepton2*> ZJetProduct::*validLeptons2) : ZJetProducerBase(), m_validLeptonsMember1(validLeptons1), m_validLeptonsMember2(validLeptons2) {};
 
 	virtual void Produce(ZJetEvent const& event, ZJetProduct& product,
 	                     ZJetSettings const& settings) const override
@@ -23,12 +23,12 @@ class ZProducerBase : public ZJetProducerBase
 	// Note: If we have more than 3 muons in an event, this may produce double
 	// counting
 	std::vector<KLV> z_cand;
-	for (unsigned int i = 0; i < (product.*m_validLeptonsMember).size(); ++i)
+	for (unsigned int i = 0; i < (product.*m_validLeptonsMember1).size(); ++i)
 	{
-		for (unsigned int j = i + 1; j < (product.*m_validLeptonsMember).size(); ++j)
+		for (unsigned int j = i + 1; j < (product.*m_validLeptonsMember2).size(); ++j)
 		{
-			KLepton* const m1 = (product.*m_validLeptonsMember).at(i);
-			KLepton* const m2 = (product.*m_validLeptonsMember).at(j);
+			KLepton* const m1 = (product.*m_validLeptonsMember1).at(i);
+			KLepton* const m2 = (product.*m_validLeptonsMember2).at(j);
 			if (m1->charge() + m2->charge() == 0)
 			{
 				KLV z;
@@ -69,20 +69,27 @@ class ZProducerBase : public ZJetProducerBase
 
 ;
  private:
-	std::vector<TLepton*> ZJetProduct::*m_validLeptonsMember;
+	std::vector<TLepton1*> ZJetProduct::*m_validLeptonsMember1;
+	std::vector<TLepton2*> ZJetProduct::*m_validLeptonsMember2;
 };
 
 
-class ZmmProducer: public ZProducerBase<KMuon>{
+class ZmmProducer: public ZProducerBase<KMuon, KMuon>{
 public:
 	virtual std::string GetProducerId() const override {return "ZmmProducer";};
-	ZmmProducer(): ZProducerBase<KMuon>(&ZJetProduct::m_validMuons){}
+	ZmmProducer(): ZProducerBase<KMuon, KMuon>(&ZJetProduct::m_validMuons, &ZJetProduct::m_validMuons){}
 };
 
-class ZeeProducer: public ZProducerBase<KElectron>{
+class ZeeProducer: public ZProducerBase<KElectron, KElectron>{
 public:
 	virtual std::string GetProducerId() const override {return "ZeeProducer";};
-	ZeeProducer(): ZProducerBase<KElectron>(&ZJetProduct::m_validElectrons){}
+	ZeeProducer(): ZProducerBase<KElectron, KElectron>(&ZJetProduct::m_validElectrons, &ZJetProduct::m_validElectrons){}
+};
+
+class ZemProducer: public ZProducerBase<KElectron, KMuon>{
+public:
+	virtual std::string GetProducerId() const override {return "ZemProducer";};
+	ZemProducer(): ZProducerBase<KElectron, KMuon>(&ZJetProduct::m_validElectrons, &ZJetProduct::m_validMuons){}
 };
 
 
