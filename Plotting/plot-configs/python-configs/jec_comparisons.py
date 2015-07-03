@@ -351,6 +351,32 @@ def pf_fractions(args=None, additional_dictionary=None):
 			plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
+def jet_resolution_vs_pt(args=None, additional_dictionary=None):
+	plots = []
+
+	d = {
+		'files': ['/storage/8/cmetzlaff//excalibur/data_2015-07-01_15-53/out.root', '/storage/8/cmetzlaff//excalibur/mc_2015-07-01_15-45/out.root'],
+		'labels': ['data', 'mc'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'x_expressions': 'zpt',
+		'x_bins': 'zpt',
+		#'x_lims': [0, 250],
+		'y_expressions': 'ptbalance',
+		'y_lims': [0.0, 0.3],
+		'y_label': 'Jet response resolution',
+		'nicks': ['data', 'mc'],
+		'markers': ['o', 'o'],
+		'marker_fill_styles': ['full', 'none'],
+		'tree_draw_options': 'prof',
+		'analysis_modules': ['JetResolution'],
+		'response_nicks': ['data', 'mc'],
+		'resolution_nicks': ['data_resolution', 'mc_resolution']
+	}
+
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	plots.append(d)
+	harryinterface.harry_interface(plots, args)
 
 def full_comparison(args=None, d=None, data_quantities=True):
 	""" Do all comparison plots"""
