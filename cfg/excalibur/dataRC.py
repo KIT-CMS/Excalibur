@@ -12,6 +12,6 @@ def config():
     cfg['Processors'].remove("filter:HltFilter")
     cfg['Processors'].remove("producer:HltProducer")
     cfg['Processors'].remove("producer:TypeIMETProducer")
-    cfg = base.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['RC'])
+    cfg = base.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['RC', 'None'])
 
     return cfg
