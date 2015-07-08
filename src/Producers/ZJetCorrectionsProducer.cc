@@ -51,19 +51,19 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	{
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_qJ" + "_" + algoName + ".txt"));
 		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_qJ" << "_" << algoName << ".txt";
-		m_l2l3res = new FactorizedJetCorrector(jecParameters);
+		m_l5q = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_gJ" + "_" + algoName + ".txt"));
 		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_gJ" << "_" << algoName << ".txt";
-		m_l2l3res = new FactorizedJetCorrector(jecParameters);
+		m_l5g = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_cJ" + "_" + algoName + ".txt"));
 		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_cJ" << "_" << algoName << ".txt";
-		m_l2l3res = new FactorizedJetCorrector(jecParameters);
+		m_l5c = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L5Flavor_bJ" + "_" + algoName + ".txt"));
 		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L5Flavor_bJ" << "_" << algoName << ".txt";
-		m_l2l3res = new FactorizedJetCorrector(jecParameters);
+		m_l5b = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 	}
 
@@ -90,7 +90,7 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event, ZJetProduct& produ
 	CorrectJetCollection("None", "L1", m_l1, event, product, settings);
 	if (settings.GetRC())
 	{
-		CorrectJetCollection("None", "RC", m_l1, event, product, settings);
+		CorrectJetCollection("None", "RC", m_rc, event, product, settings);
 	}
 	CorrectJetCollection("L1", "L1L2L3", m_l2, event, product, settings); // Output is named L1L2L3 since L1L2 -> L1L2L3 does not do anything and we need L1L2L3 for further corrections/access
 	// CorrectJetCollection("L1L2", "L1L2L3", m_l3, event, product, settings); // L3Absolute does not do anything yet..
