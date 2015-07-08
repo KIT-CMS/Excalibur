@@ -108,6 +108,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return (product.GetValidJetCount(settings, event) > 0) ? product.GetValidPrimaryJet(settings, event)->p4.Phi() : DefaultValues::UndefinedFloat;
 	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1area", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->area : DefaultValues::UndefinedFloat;
+	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1pf", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return (product.GetValidJetCount(settings, event) > 0) ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->photonFraction : DefaultValues::UndefinedFloat;
