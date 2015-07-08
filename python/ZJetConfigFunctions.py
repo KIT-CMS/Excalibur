@@ -63,7 +63,7 @@ def getBaseConfig(**kwargs):
 					# 3rd jet
 					'jet3pt', 'jet3eta', 'jet3phi',
 					# MET and related
-					'mpf', 'rawmpf', 'metpt', 'metphi', 'rawmetpt', 'rawmetphi', 'sumet',
+					'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet',
 				],
 			},
 		},
