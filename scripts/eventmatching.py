@@ -21,6 +21,8 @@ def main():
 		help="only write common events to output file")
 	parser.add_argument('-t', '--tree', type=str, nargs='+', default=list(["finalcuts_AK5PFJetsCHSL1L2L3Res/ntuple"]),
 		help="tree names (default: %(default)s)")
+	parser.add_argument('-f', '--out', type=str, default="output.root",
+		help="output file name (default: %(default)s)")
 	parser.add_argument('-v', '--verbose', action='store_true',
 		help="verbose comparison of common trees")
 	
@@ -61,7 +63,7 @@ def main():
 	stopWatch()
 	
 	print "\nCopy to output trees:"
-	fout = ROOT.TFile("output.root", "RECREATE")
+	fout = ROOT.TFile(args.out, "RECREATE")
 	if len(args.input_files) == 3:
 		c1 = cpTree(com123, trees[0], "common" + args.nicks[0], 0)
 		stopWatch()
