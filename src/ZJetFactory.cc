@@ -3,7 +3,6 @@
 // producers
 #include "Producers/ZProducer.h"
 #include "Producers/TypeIMETProducer.h"
-//#include "Producers/ZJetValidJetsProducer.h"
 #include "Producers/ZJetCorrectionsProducer.h"
 #include "Producers/JetSorter.h"
 #include "Producers/RecoJetGenPartonMatchingProducer.h"
@@ -23,8 +22,6 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 		return new ZmmProducer();
 	else if (id == TypeIMETProducer().GetProducerId())
 		return new TypeIMETProducer();
-	//else if (id == ZJetValidTaggedJetsProducer().GetProducerId())
-	//	return new ZJetValidTaggedJetsProducer();
 	else if (id == ZJetCorrectionsProducer().GetProducerId())
 		return new ZJetCorrectionsProducer();
 	else if (id == JetSorter().GetProducerId())
@@ -62,7 +59,7 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 	else if (id == AlphaCut().GetFilterId())
 		return new AlphaCut();
 	else if (id == BetaCut().GetFilterId())
-		return new BetaCut();	
+		return new BetaCut();
 	else
 		return KappaFactory::createFilter(id);
 }
