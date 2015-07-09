@@ -58,6 +58,8 @@ def getBaseConfig(**kwargs):
 					'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
 					'jet1area',
 					'jet1btag', 'jet1qgtag',
+					'jet1l1', 'jet1rc', 'jet1l2',
+					'jet1ptraw', 'jet1ptl1',
 					#'jet1unc',  # Leading jet uncertainty
 					# Second jet
 					'jet2pt', 'jet2eta', 'jet2phi',
@@ -82,7 +84,7 @@ def getBaseConfig(**kwargs):
 
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True
-	cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi']
+	cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi', 'jet1ptl1l2l3', 'jet1res']
 	cfg['Processors'] += [
 		'filter:JsonFilter',
 		'producer:HltProducer',
