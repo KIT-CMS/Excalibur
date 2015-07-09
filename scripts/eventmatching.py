@@ -125,8 +125,9 @@ def getRunLumiEvent(tree):
 	result = []
 	nevt = tree.GetEntries()
 	eventbranch = 'event'
-	if not hasattr(tree, eventbranch):
-		eventbranch = 'evt'
+	for name in ['event', 'evt', 'eventnr']:
+		if not hasattr(tree, eventbranch) and hasattr(tree, name):
+			eventbranch = name
 
 	for i in xrange(nevt):
 		tree.GetEntry(i)
@@ -143,9 +144,9 @@ def compareLists(list1, list2):
 	   in list 2"""
 	n = 0
 	m = 0
+	common = []
 	only1 = []
 	only2 = []
-	common = []
 	while n < len(list1) and m < len(list2):
 		if n % 1000 == 0 or m % 1000 == 0 and m != 0 and n!=0:
 			print "\r  tree1:%7d/%d, tree2:%7d/%d -> common:%7d, tree1: %5d, tree2: %5d" % (
