@@ -81,6 +81,11 @@ def setInputFiles(ekppath=None, nafpath=None):
 		sys.exit("ERROR: Cant determine input file location!")
 
 
+def changeNamingScheme(cfg, old=True):
+	"""Switch back to the old naming scheme or enforce the new one"""
+	cfg['TaggedJets'] = 'AK5PFTaggedJetsCHS' if old else 'ak5PFJetsCHS'
+	cfg['PileupDensity'] = 'KT6Area' if old else 'pileupDensity'
+
 def expand(config, cutModes, corrLevels, default="default"):
 	"""create pipelines for each cut mode and correction level"""
 	pipelines = config['Pipelines']

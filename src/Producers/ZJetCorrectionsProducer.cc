@@ -12,7 +12,10 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	ZJetProducerBase::Init(settings);
 
 	// convert usual algo name (ak5PFJetsCHS) to txt file algo name (AK5PFchs)
-	std::vector<std::string> algoNameAndType = KappaTools::split(settings.GetTaggedJets(), "Jets");
+	std::string jetName = "Jets";
+	if (settings.GetTaggedJets().find("Tagged") != std::string::npos ) // to be removed after transition phase
+		jetName = "TaggedJets";
+	std::vector<std::string> algoNameAndType = KappaTools::split(settings.GetTaggedJets(), jetName);
 	std::string algoName = KappaTools::toupper(algoNameAndType[0].substr(0, 2)) + algoNameAndType[0].substr(2, std::string::npos) + KappaTools::tolower(algoNameAndType[1]);
 	LOG(INFO) << "\t -- Jet corrections enabled for " << algoName << " jets using the following JEC files:";
 
