@@ -25,7 +25,9 @@ def main():
 		help="output file name (default: %(default)s)")
 	parser.add_argument('-v', '--verbose', action='store_true',
 		help="verbose comparison of common trees")
-	
+	parser.add_argument('-i', '--ignore', type=str, nargs='+', default=None,
+		help="List of quantities to be ignored in the verbose comparison")
+
 	args = parser.parse_args()
 	if len(args.input_files) < 2:
 		sys.exit("At least two ROOT files are required!")
@@ -94,12 +96,12 @@ def main():
 	
 	if args.verbose:
 		print "\nCompare common trees 1 and 2:"
-		compareTrees(c1, c2)
+		compareTrees(c1, c2, args.ignore)
 		if len(args.input_files) == 3:
 			print "\nCompare common trees 1 and 3:"
-			compareTrees(c1, c3)
+			compareTrees(c1, c3, args.ignore)
 			print "\nCompare common trees 2 and 3:"
-			compareTrees(c2, c3)
+			compareTrees(c2, c3, args.ignore)
 
 	stopWatch(overall=True)
 	
@@ -194,25 +196,7 @@ def cpTree(eventList, tree, name, treeIndex=0, deactivate=None):
 	return outputTree
 
 
-def compareTrees(tree1, tree2):
-	ex1ex2dict = {
-		# ex2  :  ex1
-		'event': 'eventnr',
-		'lumi': 'lumisec',
-		'metphi': 'METphi',
-		'jet1ef': 'jet1chargedemfraction',
-		'jet1chf': 'jet1chargedhadfraction',
-		'jet1nhf': 'jet1neutralhadfraction', 
-		'jet1mf': 'jet1muonfraction',
-		'jet1hfhf': 'jet1HFhadfraction',
-		'jet1hfemf': 'jet1HFemfraction',
-		'jet1pf': 'jet1photonfraction', 
-		'metpt': 'METpt',
-		'metphi': 'METphi',
-		'rawmetpt': 'rawMETpt',
-		'rawmetphi': 'rawMETphi',
-		'sumet': 'sumEt', 
-	}
+def compareTrees(tree1, tree2, ignored=None):
 	branches1orig = [b.GetName() for b in tree1.GetListOfBranches()] # branches of tree1
 	branches2orig = [b.GetName() for b in tree2.GetListOfBranches()] # branches of tree2
 	branches1used = [] # branches of tree1 that are in sync with tree2
@@ -245,7 +229,7 @@ def compareTrees(tree1, tree2):
 			v2 = getattr(tree2, b2)
 			if b1 == 'eventnr':
 				v1 = int(tree1.eventnr1) * 1000000 + tree1.eventnr2
-			if abs(v1 - v2) > 1e-3 and b1 not in ['dummy'] and 'mu2' not in b1:
+			if abs(v1 - v2) > 1e-3 and b1 not in ignored:
 				# print only eta differences if jets differ completely:
 				if abs(tree1.jet1eta - tree2.jet1eta) > 0.001 and b2 in ['jet1pt', 'jet1phi', 'jet1y', 'jet1chf', 'jet1nhf', 'jet1ef', 'jet1pf', 'jet1hfhf', 'jet1hfemf']:
 					continue
