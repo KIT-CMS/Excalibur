@@ -27,6 +27,8 @@ def main():
 		help="verbose comparison of common trees")
 	parser.add_argument('-i', '--ignore', type=str, nargs='+', default=None,
 		help="List of quantities to be ignored in the verbose comparison")
+	parser.add_argument('-d', '--dictionary', type=str, nargs='+', default=None,
+		help="Translation of branchnames between the trees in the form branchname1:branchname2")
 
 	args = parser.parse_args()
 	if len(args.input_files) < 2:
@@ -95,8 +97,13 @@ def main():
 	print "\nTrees written to file", fout.GetName()
 	
 	if args.verbose:
+		translation = {}
+		if args.dictionary:
+			for d in args.dictionary:
+				k, v = d.split(':', 1)
+				translation[k] = v
 		print "\nCompare common trees 1 and 2:"
-		compareTrees(c1, c2, args.ignore)
+		compareTrees(c1, c2, args.ignore, translation)
 		if len(args.input_files) == 3:
 			print "\nCompare common trees 1 and 3:"
 			compareTrees(c1, c3, args.ignore)
@@ -196,25 +203,27 @@ def cpTree(eventList, tree, name, treeIndex=0, deactivate=None):
 	return outputTree
 
 
-def compareTrees(tree1, tree2, ignored=None):
+def compareTrees(tree1, tree2, ignored=None, nameconversion=None):
+	if not nameconversion:
+		nameconversion = {}		# ex2  :  ex1
 	branches1orig = [b.GetName() for b in tree1.GetListOfBranches()] # branches of tree1
 	branches2orig = [b.GetName() for b in tree2.GetListOfBranches()] # branches of tree2
 	branches1used = [] # branches of tree1 that are in sync with tree2
 	branches2used = []
-	branches1only = [b for b in branches1orig]
-	branches2only = []
+	branches1only = []
+	branches2only = [b for b in branches1orig]
 
-	for b2 in branches2orig:
-		b1 = b2 #ex1ex2dict.get(b2, b2)
-		if b1 in branches1orig:
+	for b1 in branches1orig:
+		b2 = nameconversion.get(b1, b1)
+		if b2 in branches2orig:
 			branches1used.append(b1)
 			branches2used.append(b2)
-			branches1only.remove(b1)
+			branches2only.remove(b2)
 		else:
-			branches2only.append(b1)
+			branches1only.append(b1)
 	print "  * Branch comparison:"
 	print "  %4d branches only in tree1: %s" % (len(branches1only), ", ".join(branches1only))
-	print "  %4d branches only in tree1: %s" % (len(branches2only), ", ".join(branches2only))
+	print "  %4d branches only in tree2: %s" % (len(branches2only), ", ".join(branches2only))
 	print "  %4d common branches" % len(branches1used)
 	assert len(branches1used) == len(branches2used)
 
@@ -231,10 +240,6 @@ def compareTrees(tree1, tree2, ignored=None):
 				v1 = int(tree1.eventnr1) * 1000000 + tree1.eventnr2
 			if abs(v1 - v2) > 1e-3 and b1 not in ignored:
 				# print only eta differences if jets differ completely:
-				if abs(tree1.jet1eta - tree2.jet1eta) > 0.001 and b2 in ['jet1pt', 'jet1phi', 'jet1y', 'jet1chf', 'jet1nhf', 'jet1ef', 'jet1pf', 'jet1hfhf', 'jet1hfemf']:
-					continue
-				if abs(tree1.jet2eta - tree2.jet2eta) > 0.001 and b2 in ['jet2pt', 'jet2phi', 'jet2y']:
-					continue
 				print "\rIn entry %7d, %s differs: %s = %s, %s = %s" % (i, b2, b1, v1, b2, v2)
 	print "\rEntry", i
 
