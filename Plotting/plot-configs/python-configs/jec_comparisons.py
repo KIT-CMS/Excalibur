@@ -592,11 +592,11 @@ def rootfile_53742(args=None):
 	"""
 	Create a root file with zpt-jet1eta 2D histograms for 53 and 742. Matched events. Sent to Ia 18.06.2015
 	Input file created with eventmatching tool:
-	eventmatching.py /storage/a/gfleig/zjet/excalibur/data742RC_2015-06-23_13-48/out.root /storage/a/gfleig/zjet/excalibur/dataRC_2015-06-06_12-09/out.root -t nocuts_AK5PFJetsCHSRC/ntuple finalcuts_AK5PFJetsCHSRC/ntuple -o -n 742 53
-	eventmatching.py /storage/a/gfleig/zjet/excalibur/data742RC_2015-06-23_13-48/out.root /storage/a/gfleig/zjet/excalibur/dataRC_2015-06-06_12-09/out.root -t nocuts_AK5PFJetsCHSRC/ntuple noetacuts_AK5PFJetsCHSRC/ntuple -o -n 742 53
+	eventmatching.py /storage/a/dhaitz/zjet/excalibur/data742RC_2015-07-09_11-49/out.root /storage/a/dhaitz/zjet/excalibur/dataRC_2015-07-09_10-45/out.root  -t nocuts_AK5PFJetsCHSRC/ntuple finalcuts_AK5PFJetsCHSRC/ntuple -o -n 742 53 -f 53742_newRC_RConly_event_matched_finalcuts_nocuts.root
+	eventmatching.py /storage/a/dhaitz/zjet/excalibur/data742RC_2015-07-09_11-49/out.root /storage/a/dhaitz/zjet/excalibur/dataRC_2015-07-09_10-45/out.root  -t nocuts_AK5PFJetsCHSRC/ntuple noetacuts_AK5PFJetsCHSRC/ntuple -o -n 742 53 -f 53742_newRC_RConly_event_matched_noetacuts_nocuts.root
 	"""
 	d = {
-		'files': ['/home/gfleig/new/Excalibur/work/53742_newRC_RConly_event_matched_finalcuts_nocuts.root'],
+		'files': ['/storage/a/dhaitz/zjet/53742_newRC_RConly_fixedArea_event_matched_finalcuts_nocuts.root'],
 		'folders': ['common742', 'common53'],
 		'labels': ['742', '53'],
 		'plot_modules': ['ExportRoot'],
@@ -625,7 +625,7 @@ def rootfile_53742(args=None):
 
 	# outer eta region: 1.3<|jet1eta|<2.5
 	d = {
-		'files': ['/home/gfleig/new/Excalibur/work/53742_newRC_RConly_event_matched_noetacuts_nocuts.root'],
+		'files': ['/storage/a/dhaitz/zjet/53742_newRC_RConly_fixedArea_event_matched_noetacuts_nocuts.root'],
 		'folders': ['common742', 'common53'],
 		'labels': ['742', '53'],
 		'plot_modules': ['ExportRoot'],
