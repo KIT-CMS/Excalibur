@@ -21,6 +21,10 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 {
 	if (id == ZmmProducer().GetProducerId())
 		return new ZmmProducer();
+	else if (id == ZeeProducer().GetProducerId())
+		return new ZeeProducer();
+	else if (id == ZemProducer().GetProducerId())
+		return new ZemProducer();
 	else if (id == TypeIMETProducer().GetProducerId())
 		return new TypeIMETProducer();
 	else if (id == ZJetCorrectionsProducer().GetProducerId())
