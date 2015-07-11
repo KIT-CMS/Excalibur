@@ -498,6 +498,72 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 	harryinterface.harry_interface([d], args)
 
+def zones_export(mc = True, args=None, additional_dictionary=None):
+	plots = []
+
+	d = {
+		"x_expressions": ["mpf"],
+		"x_bins": ["24,0,2"],
+		"nicks": [],
+		"weights": [],
+		"plot_modules": ['ExportRoot'],
+	}
+
+	zone_prefix = 'MC'
+	if not mc:
+		zone_prefix = 'Data'
+
+	zone_names = [
+		zone_prefix + '_MPF_Zone1Q',
+		zone_prefix + '_MPF_Zone3C',
+		zone_prefix + '_MPF_Zone4B',
+		zone_prefix + '_MPF_Zone2G',
+	]
+
+	for weight_param, zone in zip([
+				zone_selections['uds'],
+				zone_selections['c'],
+				zone_selections['b'],
+				zone_selections['g'],
+			], zone_names):
+		d['nicks'].append(zone)
+		if mc:
+			d['weights'].append(weight_param +" * (matchedgenparton1flavour>-20)")
+
+			for key in flavour_selections:
+				d['nicks'].append(zone + "_" + key)
+				d['weights'].append(flavour_selections[key] + "*" + weight_param)
+		else:
+			d['weights'].append(weight_param)
+
+	if additional_dictionary is not None:
+		d.update(additional_dictionary)
+	plots.append(d)
+	harryinterface.harry_interface(plots, args)
+
+
+def zones_export_mc(args=None):
+	d = {
+		"filename": "output2DTagging_MC_ZJet",
+		"files": [
+			"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root",
+		],
+		"algorithms": ["AK5PFJetsCHS",],
+		"corrections": ["L1L2L3",],
+	}
+	zones_export(True, args, d)
+
+def zones_export_data(args=None):
+	d = {
+		"filename": "output2DTagging_Data_ZJet",
+		"files": [
+			"ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root",
+		],
+		"algorithms": ["AK5PFJetsCHS",],
+		"corrections": ["L1L2L3Res",],
+	}
+	zones_export(False, args, d)
+
 
 def flavour(args=None):
 	"""Plots all flavour plots"""
