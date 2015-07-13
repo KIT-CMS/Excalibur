@@ -40,7 +40,7 @@ class InputJEC(inputfile.InputFile):
 		"""Iterate over files, create JECfile object, get histo and put into plotdict."""
 		for file in plotData.plotdict["files"]:
 			jec_file = toolsZJet.JECfile(file[0])
-			histo = jec_file.get_corr_histo(plotData.plotdict["y_bins"], fixed_values=[plotData.plotdict["area"], plotData.plotdict["rho"]])
+			histo = jec_file.get_corr_histo(plotData.plotdict["y_bins"], area=plotData.plotdict["area"], rho=plotData.plotdict["rho"])
 			plotData.plotdict.setdefault("nicks", []).append("nick0")
 			plotData.plotdict.setdefault("root_objects", {})["nick0"] = histo
 		plotData.plotdict["nicks"].pop(0)

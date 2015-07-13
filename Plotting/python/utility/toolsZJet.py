@@ -106,7 +106,7 @@ class JECfile(object):
 		self.binning.append(float(self.lines_short[-1][1])) #last bin
 
 
-	def get_corr_histo(self, input_var_binning, fixed_values=[]):
+	def get_corr_histo(self, input_var_binning, area=None, rho=None):
 		"""Use this method to evaluate the JEC file with a certain binning (and some fixed parameters if needed)"""
 
 		#create root histo
@@ -119,10 +119,23 @@ class JECfile(object):
 			z_bins=None, profile_histogram=True, name="name"
 		)
 
+		input_values_dict = {
+			#'jetpt': y, #set this in each iteration
+			'jetarea': area,
+			'rho': rho,
+		}
+
 		#iterate over bin and input variable, fill histo
 		for x in range(len(self.lines_short)):
 			for y in self._get_bin_centers(input_var_binning[0][0]):
-				corr_factor = self._get_corr_factor(x, ([y]+fixed_values)[:self.n_input_vars])
+
+				# prepare input values
+				input_values_dict['jetpt'] = y
+				input_values = []
+				for quantity in self.input_vars:
+					input_values.append(input_values_dict[quantity])
+
+				corr_factor = self._get_corr_factor(x, (input_values)[:self.n_input_vars])
 				if corr_factor is not None:
 					self.jec_histo.Fill(self.binning[x], y, corr_factor)
 
@@ -138,8 +151,7 @@ class JECfile(object):
 
 			input_limits = [float(i) for i in l[1+2*(self.n_bin_vars+index):3+2*(self.n_bin_vars+index)]]
 			if (input_value < input_limits[0] or input_value > input_limits[1]):
-
-				log.debug(var_name + " " + input_value + " not in limits "+ ",".join(input_limits))
+				log.debug(str(var_name) + " " + str(input_value) + " not in limits "+ ",".join([str(item) for item in input_limits]))
 				return None
 		try:
 			return eval(self.formula)
