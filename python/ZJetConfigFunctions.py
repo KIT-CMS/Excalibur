@@ -84,18 +84,18 @@ def getBaseConfig(**kwargs):
 
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True
-	cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi', 'jet1ptl1l2l3', 'jet1res']
+	cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi']
 	cfg['Processors'] += [
 		'filter:JsonFilter',
 		'producer:HltProducer',
 		'filter:HltFilter',
 	]
 	cfg['ProvideResidualCorrections'] = True
+	cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
 
 
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
-	cfg['GenJets'] = 'ak5GenJetsNoNu'
 	cfg['Processors'] += [
 		'producer:RecoJetGenPartonMatchingProducer',
 		'producer:RecoJetGenJetMatchingProducer',
@@ -168,7 +168,8 @@ def _2012(cfg, **kwargs):
 def _2015(cfg, **kwargs):
 	cfg['Year'] = 2015
 	cfg['Energy'] = 13
-	cfg['MuonID'] = 'medium'
+	cfg['TaggedJets'] = 'ak4PFJetsCHS'
+	cfg['PileupDensity'] = 'pileupDensity'
 
 
 ##
@@ -236,16 +237,21 @@ def data_2012(cfg, **kwargs):
 	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
 	cfg['MetPhiCorrectionParameters'] = [0.2661, 0.3217, -0.2251, -0.1747]
 
+def data_2015(cfg, **kwargs):
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Spring15_V1/PY8_RunIISpring15DR74_bx50_MC'
+
 def mc_2011(cfg, **kwargs):
+	cfg['GenJets'] = 'AK5GenJetsNoNu'
 	pass
 
 def mc_2012(cfg, **kwargs):
+	cfg['GenJets'] = 'AK5GenJetsNoNu'
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_MC'
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
 
 def mc_2015(cfg, **kwargs):
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/PHYS14_V2/PHYS14_V2_MC'
-
+	cfg['GenJets'] = 'ak4GenJetsNoNu'
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Spring15_V1/PY8_RunIISpring15DR74_bx50_MC'
 
 def mcee(cfg, **kwargs):
 	pass
@@ -256,6 +262,9 @@ def _2011mm(cfg, **kwargs):
 
 def _2012mm(cfg, **kwargs):
 	pass
+
+def _2015mm(cfg, **kwargs):
+	cfg['MuonID'] = 'medium'
 
 
 ##
@@ -279,6 +288,9 @@ def data_2011mm(cfg, **kwargs):
 
 def data_2012mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Mu8_v%d' % v for v in range(1, 30)]
+
+def data_2015mm(cfg, **kwargs):
+	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v%d' % v for v in range(1, 5)]
 
 
 def data_2012ee(cfg, **kwargs):
