@@ -37,15 +37,7 @@ def getBaseConfig(**kwargs):
 					'cutflow_histogram',
 				],
 				'EventWeight': 'eventWeight',
-				'Processors': [ # Overwritten/cleaned by expand function, set cuts in data.py or mc.py
-					'filter:MuonPtCut',
-					'filter:MuonEtaCut',
-					'filter:LeadingJetPtCut',
-					'filter:LeadingJetEtaCut',
-					'filter:AlphaCut',
-					'filter:ZPtCut',
-					'filter:BackToBackCut',
-				],
+				'Processors': [], # Overwritten/cleaned by expand function, set cuts in data.py or mc.py
 				'Quantities': [
 					# General quantities
 					'npv', 'rho', 'weight', #'nputruth',
@@ -177,7 +169,53 @@ def _2015(cfg, **kwargs):
 
 
 def ee(cfg, **kwargs):
-	pass
+	cfg['Electrons'] = 'electrons'
+	cfg['ElectronMetadata'] = 'electronMetadata'
+	cfg['Processors'] = [
+		'producer:ValidElectronsProducer',
+		'filter:MinElectronsCountFilter',
+		'filter:MaxElectronsCountFilter',
+		'producer:ValidTaggedJetsProducer',
+		'filter:ValidJetsFilter',
+		'producer:ZJetCorrectionsProducer',
+		#'producer:TypeIMETProducer',
+		'producer:JetSorter',
+		'producer:ZeeProducer',
+		'filter:ZFilter',
+		'producer:RadiationJetProducer',
+	]
+	cfg['ElectronID'] = 'none'
+	cfg['ElectronIsoType'] = 'none'
+	cfg['ElectronIso'] = 'none'
+	cfg['ElectronReco'] = 'none'
+	
+	cfg['MinNElectrons'] = 2
+	cfg['MaxNElectrons'] = 3
+
+	cfg['CutElectronPtMin'] = 25.0
+	cfg['CutElectronEtaMax'] = 2.4
+	cfg['CutLeadingJetPtMin'] = 12.0
+	cfg['CutLeadingJetEtaMax'] = 1.3
+	cfg['CutZPtMin'] = 30.0
+	cfg['CutBackToBack'] = 0.34
+	cfg['CutAlphaMax'] = 0.2
+
+	cfg['Pipelines']['default']['Quantities'] += [
+		'epluspt', 'epluseta', 'eplusphi', 'eplusiso',
+		'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
+		'e1pt', 'e1eta', 'e1phi',
+		'e2pt', 'e2eta', 'e2phi',
+		'nelectrons',
+	]
+	cfg['Pipelines']['default']['Processors'] = [
+		'filter:ElectronPtCut',
+		'filter:ElectronEtaCut',
+		'filter:LeadingJetPtCut',
+		'filter:LeadingJetEtaCut',
+		'filter:AlphaCut',
+		'filter:ZPtCut',
+		'filter:BackToBackCut',
+	]
 
 def em(cfg, **kwargs):
 	pass
@@ -198,6 +236,15 @@ def mm(cfg, **kwargs):
 		'producer:ZmmProducer',
 		'filter:ZFilter',
 		'producer:RadiationJetProducer',
+	]
+	cfg['Pipelines']['default']['Processors'] = [
+		'filter:MuonPtCut',
+		'filter:MuonEtaCut',
+		'filter:LeadingJetPtCut',
+		'filter:LeadingJetEtaCut',
+		'filter:AlphaCut',
+		'filter:ZPtCut',
+		'filter:BackToBackCut',
 	]
 	
 	# ValidMuonsProducer
@@ -301,7 +348,7 @@ def data_2015mm(cfg, **kwargs):
 
 
 def data_2012ee(cfg, **kwargs):
-	pass
+	cfg['HltPaths'] = ['HLT_Ele17_Ele8_v%d' % v for v in range(1, 30)]
 
 
 def data_2012em(cfg, **kwargs):
