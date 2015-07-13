@@ -11,11 +11,6 @@ def config():
 
 	base.remove_quantities(cfg, ['jet1btag','jet1qgtag', 'jet1ptl1l2l3', 'jet1res', 'jet1rc'])
 
-	# remove JSON filter until JSON file is released by CMS
-	if 'filter:JsonFilter' in cfg['Processors']:
-		cfg['Processors'].remove('filter:JsonFilter')
-	print "\n\n\033[93mWARNING: NOT USING JSON FILE!!\033[0m\n\n"
-
 	cfg['RC'] = False
 	cfg['ProvideResidualCorrections'] = False
 
