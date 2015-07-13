@@ -10,11 +10,15 @@ ROOTLDFLAGS    = $(shell root-config --ldflags --libs)
 PROJECT        = Excalibur
 EXECUTABLE     = artus
 CXX            = g++
-STANDARDFLAGS  = -O2 -Wall -Wextra -Wpedantic -Wfatal-errors -lprofiler -ltcmalloc -c -std=c++11 -g -fPIC
-MOREWARNINGS   = -Wswitch-default -Wswitch-enum -Wsync-nand -Wunused-local-typedefs -Wtrampolines -Wno-aggressive-loop-optimizations -Wpacked -Wwrite-strings -Wstrict-overflow=3 -Wredundant-decls -Wuseless-cast -Wdisabled-optimization -Wunsafe-loop-optimizations -Wmissing-declarations -Wnormalized=nfkc -Wlogical-op -Wstack-protector -Wmissing-include-dirs -Wvector-operation-performance -Wmissing-format-attribute -Wundef -Wcast-qual -Wcast-align -Wno-unused-parameter
-PLUSWARNINGS   = -Wshadow -Wconversion -Wzero-as-null-pointer-constant -Wfloat-equal -Wdouble-promotion
+STANDARDFLAGS  = -O2 -Wall -Wextra -Wpedantic -Wfatal-errors -c -std=c++11 -g -fPIC
+MOREWARNINGS   = -Wswitch-default -Wswitch-enum -Wpacked -Wwrite-strings -Wstrict-overflow=3 -Wredundant-decls -Wdisabled-optimization -Wmissing-declarations -Wstack-protector -Wmissing-include-dirs -Wmissing-format-attribute -Wundef -Wcast-qual -Wcast-align -Wno-unused-parameter
+GCCWARNINGS    = -lprofiler -ltcmalloc -Wvector-operation-performance -Wnormalized=nfkc -Wlogical-op -Wuseless-cast -Wunsafe-loop-optimizations -Wsync-nand -Wunused-local-typedefs -Wtrampolines -Wno-aggressive-loop-optimizations
+GCCPLUSWARN    = -Wdouble-promotion -Wzero-as-null-pointer-constant 
+PLUSWARNINGS   = -Wshadow -Wconversion -Wfloat-equal -Wno-unused-private-field
 # -Wpadded -Winline
-CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) -Isrc/ -isystem ../ -isystem $(BOOSTPATH)/include/ -I$(KAPPATOOLSPATH)/../
+CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) \
+ -Isrc/ -isystem ../ -isystem $(BOOSTPATH)/include/ -I$(KAPPATOOLSPATH)/../\
+ $(GCCWARNINGS) $(GCCPLUSWARN)
 LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA\
  -L$(BOOSTPATH)/lib/ -lboost_regex\
  -L../Artus/ -lartus_configuration -lartus_consumer -lartus_core -lartus_filter -lartus_provider -lartus_utility -lartus_kappaanalysis -lartus_externalcorr\
