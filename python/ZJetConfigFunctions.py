@@ -291,7 +291,7 @@ def data_2012(cfg, **kwargs):
 
 
 def data_2015(cfg, **kwargs):
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Spring15_V1/PY8_RunIISpring15DR74_bx50_MC'
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
 	#json file from /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/DCSOnly
 	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/json_DCSONLY_Run2015B.txt']
 
@@ -306,7 +306,7 @@ def mc_2012(cfg, **kwargs):
 
 def mc_2015(cfg, **kwargs):
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Spring15_V1/PY8_RunIISpring15DR74_bx50_MC'
+	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
 
 def mcee(cfg, **kwargs):
 	pass
