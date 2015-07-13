@@ -37,6 +37,8 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING_DEFAULT(int, CutNMuonsMax, 3)
 	IMPL_SETTING(float, CutMuonPtMin)
 	IMPL_SETTING(float, CutMuonEtaMax)
+	IMPL_SETTING(float, CutElectronPtMin)
+	IMPL_SETTING(float, CutElectronEtaMax)
 	IMPL_SETTING(float, CutLeadingJetPtMin)
 	IMPL_SETTING(float, CutLeadingJetEtaMax)
 	IMPL_SETTING(float, CutZPtMin)

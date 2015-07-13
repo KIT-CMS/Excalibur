@@ -492,6 +492,96 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		return (genMuon != nullptr) ? genMuon->p4.Pt() : DefaultValues::UndefinedFloat;
 	} );
 
+	///////////////
+	// ELECTRONS //
+	///////////////
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("nelectrons", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return product.m_validElectrons.size();
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("e1pt", [](event_type const& event, product_type const& product) {
+		return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->p4.Pt() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("e1phi", [](event_type const& event, product_type const& product) {
+		return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->p4.Phi() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("e1eta", [](event_type const& event, product_type const& product) {
+		return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->p4.Eta() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("e2pt", [](event_type const& event, product_type const& product) {
+		return product.m_validElectrons.size() >= 2 ? product.m_validElectrons[1]->p4.Pt() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("e2phi", [](event_type const& event, product_type const& product) {
+		return product.m_validElectrons.size() >= 2 ? product.m_validElectrons[1]->p4.Phi() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("e2eta", [](event_type const& event, product_type const& product) {
+		return product.m_validElectrons.size() >= 2 ? product.m_validElectrons[1]->p4.Eta() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("epluspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() > 0) return (*electron)->p4.Pt();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("epluseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() > 0) return (*electron)->p4.Eta();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("eplusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() > 0) return (*electron)->p4.Phi();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("eplusiso", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() > 0) return float((*electron)->pfIso());
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("eminuspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() < 0) return (*electron)->p4.Pt();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("eminuseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() < 0) return (*electron)->p4.Eta();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("eminusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() < 0) return (*electron)->p4.Phi();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("eminusiso", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
+		{
+			if ((*electron)->charge() < 0) return float((*electron)->pfIso());
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+
 
 	// Needs to be called at the end
 	KappaLambdaNtupleConsumer::Init(settings);

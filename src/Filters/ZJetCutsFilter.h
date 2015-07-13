@@ -11,6 +11,8 @@
  * max nmuons
  * muon pt
  * muon eta
+ * electron pt
+ * electron eta
  * leading jet pt
  * leading jet eta
  * z pt
@@ -132,6 +134,67 @@ class MuonEtaCut : public ZJetFilterBase
 
   private:
 	float muonEtaMax;
+};
+
+/////////////
+// Electron Pt //
+/////////////
+class ElectronPtCut : public ZJetFilterBase
+{
+  public:
+	virtual std::string GetFilterId() const override { return "ElectronPtCut"; }
+
+	ElectronPtCut() : ZJetFilterBase(){};
+
+	virtual void Init(ZJetSettings const& settings) override
+	{
+		ZJetFilterBase::Init(settings);
+		electronPtMin = settings.GetCutElectronPtMin();
+	}
+
+	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const override
+	{
+		// Only the first two Electrons need to pass this cut
+		bool allPassed = true;
+		allPassed = allPassed && product.m_validElectrons[0]->p4.Pt() > electronPtMin;
+		allPassed = product.m_validElectrons.size() >= 2 ? (allPassed && product.m_validElectrons[1]->p4.Pt() > electronPtMin) : allPassed;
+		return allPassed;
+	}
+
+  private:
+	float electronPtMin;
+};
+
+
+//////////////
+// Electron Eta //
+//////////////
+class ElectronEtaCut : public ZJetFilterBase
+{
+  public:
+	virtual std::string GetFilterId() const override { return "ElectronEtaCut"; }
+
+	ElectronEtaCut() : ZJetFilterBase(){};
+
+	virtual void Init(ZJetSettings const& settings) override
+	{
+		ZJetFilterBase::Init(settings);
+		electronEtaMax = settings.GetCutElectronEtaMax();
+	}
+
+	virtual bool DoesEventPass(ZJetEvent const& event, ZJetProduct const& product,
+							   ZJetSettings const& settings) const override
+	{
+		// Only the first two electrons need to pass this cut
+		bool allPassed = true;
+		allPassed = allPassed && std::abs(product.m_validElectrons[0]->p4.Eta()) < electronEtaMax;
+		allPassed = product.m_validElectrons.size() >= 2 ? (allPassed && std::abs(product.m_validElectrons[1]->p4.Eta()) < electronEtaMax) : allPassed;
+		return allPassed;
+	}
+
+  private:
+	float electronEtaMax;
 };
 
 

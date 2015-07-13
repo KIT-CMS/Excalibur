@@ -49,6 +49,10 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 		return new MuonPtCut();
 	else if (id == MuonEtaCut().GetFilterId())
 		return new MuonEtaCut();
+	else if (id == ElectronPtCut().GetFilterId())
+		return new ElectronPtCut();
+	else if (id == ElectronEtaCut().GetFilterId())
+		return new ElectronEtaCut();
 	else if (id == LeadingJetPtCut().GetFilterId())
 		return new LeadingJetPtCut();
 	else if (id == LeadingJetEtaCut().GetFilterId())
