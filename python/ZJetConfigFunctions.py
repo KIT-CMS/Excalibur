@@ -236,6 +236,13 @@ def data_2012(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_DATA'
 	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
 	cfg['MetPhiCorrectionParameters'] = [0.2661, 0.3217, -0.2251, -0.1747]
+	cfg['Processors'] += [
+		'producer:NPUProducer',
+	]
+	cfg['Minbxsec'] = 68.5
+	cfg['NPUFile'] = ZJetConfigBase.getPath() + '/data/pileup/pumean_pixelcorr_data2012.txt'
+	cfg['Pipelines']['default']['Quantities'] += ['npumeandata']
+
 
 def data_2015(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Spring15_V1/PY8_RunIISpring15DR74_bx50_MC'

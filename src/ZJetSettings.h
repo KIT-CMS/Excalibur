@@ -44,4 +44,7 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(float, CutAlphaMax)
 	IMPL_SETTING_DEFAULT(float, CutBetaMax, 1.0)
 
+	IMPL_SETTING(std::string, NPUFile);
+	IMPL_SETTING(double, Minbxsec);
+
 };

@@ -42,6 +42,8 @@ class ZJetProduct : public KappaProduct
 	std::map<std::string, std::vector<KJet*> > m_radiationJets;
 	std::map<std::string, std::vector<unsigned long> > m_radiationJetsIndex;
 
+	double npumean_data;
+
 	/////////////////////////////
 	// Functions for Consumers //
 	/////////////////////////////
