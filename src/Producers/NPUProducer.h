@@ -11,7 +11,7 @@ class NPUProducer : public ZJetProducerBase
   public:
 	std::string GetProducerId() const;
 
-	NPUProducer() : ZJetProducerBase() {};
+	NPUProducer() : ZJetProducerBase(), lastrun(0), lastls(0) {};
 
 	void Init(ZJetSettings const& settings);
 
@@ -19,7 +19,7 @@ class NPUProducer : public ZJetProducerBase
 						 ZJetSettings const& settings) const;
 
   private:
-	std::map<int, std::map<int, double> > m_pumean;
-	mutable int lastrun;
-	mutable int lastls;
+	std::map<unsigned long, std::map<unsigned long, double> > m_pumean;
+	mutable unsigned long lastrun;
+	mutable unsigned long lastls;
 };
