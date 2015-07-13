@@ -23,7 +23,7 @@ AllowShortFunctionsOnASingleLine: All
 #BreakBeforeTernaryOperators: true
 #BreakConstructorInitializersBeforeComma: false
 #BinPackParameters: true
-#ColumnLimit:     100
+ColumnLimit:     100
 #ConstructorInitializerAllOnOneLineOrOnePerLine: false
 #ExperimentalAutoDetectBinPacking: false
 #IndentCaseLabels: false
