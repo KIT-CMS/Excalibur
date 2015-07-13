@@ -71,7 +71,7 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	}
 
 	// L2L3Residual
-	if (settings.GetInputIsData())
+	if (settings.GetInputIsData() && settings.GetProvideResidualCorrections())
 	{
 		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L2L3Residual" + "_" + algoName + ".txt"));
 		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L2L3Residual" << "_" << algoName << ".txt";
@@ -104,7 +104,7 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event, ZJetProduct& produ
 		CorrectJetCollection("L1L2L3", "L1L2L3L5c", m_l5c, event, product, settings);
 		CorrectJetCollection("L1L2L3", "L1L2L3L5b", m_l5b, event, product, settings);
 	}
-	if (settings.GetInputIsData())
+	if (settings.GetInputIsData() && settings.GetProvideResidualCorrections())
 	{
 		CorrectJetCollection("L1L2L3", "L1L2L3Res", m_l2l3res, event, product, settings);
 	}

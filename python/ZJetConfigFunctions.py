@@ -90,6 +90,7 @@ def data(cfg, **kwargs):
 		'producer:HltProducer',
 		'filter:HltFilter',
 	]
+	cfg['ProvideResidualCorrections'] = True
 
 
 def mc(cfg, **kwargs):

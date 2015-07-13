@@ -24,6 +24,7 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(std::string, L1Correction)
 	IMPL_SETTING(bool, RC)
 	IMPL_SETTING(bool, FlavourCorrections)
+	IMPL_SETTING(bool, ProvideResidualCorrections)
 	
 	// RecoJetGenJetMatchingProducer
 	IMPL_SETTING_DEFAULT(double, DeltaRMatchingRecoJetGenJet, 0.25)

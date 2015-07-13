@@ -14,7 +14,7 @@ void TypeIMETProducer::Init(ZJetSettings const& settings)
 	m_corrLevels.emplace_back("L1L2L3");
 	
 	// Residual correctiuons if input is data
-	if (settings.GetInputIsData())
+	if (settings.GetInputIsData() && settings.GetProvideResidualCorrections())
 	{
 		m_corrLevels.emplace_back("L1L2L3Res");
 	}
