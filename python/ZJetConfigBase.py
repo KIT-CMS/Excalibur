@@ -161,3 +161,9 @@ def pipelinediff2(p1=None, p2=None):
 			if p1[k] != p2[k]:
 				print "    different %s: %s != %s" % (k, str(p1[k]), str(p2[k]))
 
+def remove_quantities(cfg, quantities):
+	for pipeline in cfg['Pipelines']:
+		for quantity in quantities:
+			if quantity in cfg['Pipelines'][pipeline]['Quantities']:
+				cfg['Pipelines'][pipeline]['Quantities'].remove(quantity)
+
