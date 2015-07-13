@@ -244,7 +244,7 @@ class ZJetProduct : public KappaProduct
 		if (index >= jetList.size())
 			return nullptr;
 
-		unsigned long matchedJet = jetList.at(index);
+		unsigned long matchedJet = static_cast<unsigned long>(jetList.at(index));
 
 		if (GetValidJetCount(settings, event, "Gen") >= matchedJet)
 			return GetValidJet(settings, event, matchedJet, "Gen");

@@ -125,7 +125,7 @@ void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel, std:
 
 	// Apply jet energy corrections and uncertainty shift
 	correctJets(&correctJetsForJecTools, factorizedJetCorrector, correctionUncertainty,
-				event.m_pileupDensity->rho, event.m_vertexSummary->nVertices, -1,
+				event.m_pileupDensity->rho, static_cast<int>(event.m_vertexSummary->nVertices), -1,
 				settings.GetJetEnergyCorrectionUncertaintyShift(), false);
 
 	// Create shared pointers and store them in the product
