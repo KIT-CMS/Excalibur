@@ -91,40 +91,23 @@ def expand(config, cutModes, corrLevels, default="default"):
 	pipelines = config['Pipelines']
 	p = config['Pipelines'][default]
 
-	# copy default pipeline for different cut variations
+	# define cut variations and copy default pipeline for different cut variations
+	modes = {
+		'nocuts': ['MuonPt', 'MuonEta', 'LeadingJetPt', 'ZPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
+		'zcuts': ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
+		'noalphanoetacuts': ['LeadingJetEta', 'Alpha'],
+		'noalphacuts': ['Alpha'],
+		'noetacuts': ['LeadingJetEta'],
+		'finalcuts': [],
+	}
 	for cutMode in cutModes:
-		if cutMode == 'nocuts':
-			pipelines[cutMode] = copy.deepcopy(p)
-			removeList = ['filter:MuonPtCut', 'filter:MuonEtaCut', 'filter:LeadingJetPtCut', 'filter:ZPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
-			for cut in removeList:
-				if cut in pipelines[cutMode]['Processors']:
-					pipelines[cutMode]['Processors'].remove(cut)
-		elif cutMode == 'zcuts':
-			pipelines[cutMode] = copy.deepcopy(p)
-			removelist = ['filter:LeadingJetPtCut', 'filter:BackToBackCut', 'filter:LeadingJetEtaCut', 'filter:AlphaCut']
-			for cut in removelist:
-				if cut in pipelines[cutMode]['Processors']:
-					pipelines[cutMode]['Processors'].remove(cut)
-		elif cutMode == 'noalphanoetacuts':
-			pipelines[cutMode] = copy.deepcopy(p)
-			removelist = ['filter:LeadingJetEtaCut', 'filter:AlphaCut']
-			for cut in removelist:
-				if cut in pipelines[cutMode]['Processors']:
-					pipelines[cutMode]['Processors'].remove(cut)
-		elif cutMode == 'noalphacuts':
-			pipelines[cutMode] = copy.deepcopy(p)
-			removelist = ['filter:AlphaCut']
-			for cut in removelist:
-				if cut in pipelines[cutMode]['Processors']:
-					pipelines[cutMode]['Processors'].remove(cut)
-		elif cutMode == 'noetacuts':
-			pipelines[cutMode] = copy.deepcopy(p)
-			removelist = ['filter:LeadingJetEtaCut']
-			for cut in removelist:
-				if cut in pipelines[cutMode]['Processors']:
-					pipelines[cutMode]['Processors'].remove(cut)
-		elif cutMode == 'finalcuts':
-			pipelines[cutMode] = copy.deepcopy(p)
+		if cutMode not in modes:
+			print "cutMode", cutMode, "not defined!"
+			exit(1)
+		pipelines[cutMode] = copy.deepcopy(p)
+		for cut in ["filter:%sCut" % m for m in modes[cutMode]]:
+			if cut in pipelines[cutMode]['Processors']:
+				pipelines[cutMode]['Processors'].remove(cut)
 
 	# remove template pipeline
 	pipelines.pop(default)
