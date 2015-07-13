@@ -44,7 +44,7 @@ class MinNMuonsCut : public ZJetFilterBase
 	}
 
   private:
-	unsigned int nMuonsMin;
+	unsigned long nMuonsMin;
 };
 
 
@@ -71,7 +71,7 @@ class MaxNMuonsCut : public ZJetFilterBase
 	}
 
   private:
-	unsigned int nMuonsMax;
+	unsigned long nMuonsMax;
 };
 
 

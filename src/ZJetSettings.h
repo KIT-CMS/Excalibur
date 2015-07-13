@@ -13,11 +13,11 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING_DEFAULT(float, JetPtMin, 10.)
 	IMPL_SETTING(bool, EnableMetPhiCorrection)
 	IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
-	
+
 	// ZJetValidJetsProducer
 	//IMPL_SETTING_DEFAULT(std::string, JetAlgorithm, "")
 	//IMPL_SETTING_STRINGLIST_DEFAULT(GlobalAlgorithms, {});
-	
+
 	// ZJetCorrectionsProducer
 	IMPL_SETTING_DEFAULT(std::string, CorrectionLevel, "None")
 	IMPL_SETTING(std::string, Jec)
@@ -25,16 +25,16 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(bool, RC)
 	IMPL_SETTING(bool, FlavourCorrections)
 	IMPL_SETTING(bool, ProvideResidualCorrections)
-	
+
 	// RecoJetGenJetMatchingProducer
 	IMPL_SETTING_DEFAULT(double, DeltaRMatchingRecoJetGenJet, 0.25)
 
 	// RadiationJetProducer
 	IMPL_SETTING_DEFAULT(double, DeltaRRadiationJet, 1.0)
-	
+
 	// ZJetCutsFilter
-	IMPL_SETTING_DEFAULT(int, CutNMuonsMin, 2)
-	IMPL_SETTING_DEFAULT(int, CutNMuonsMax, 3)
+	IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMin, 2)
+	IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMax, 3)
 	IMPL_SETTING(float, CutMuonPtMin)
 	IMPL_SETTING(float, CutMuonEtaMax)
 	IMPL_SETTING(float, CutElectronPtMin)
