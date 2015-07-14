@@ -371,7 +371,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() > 0) return static_cast<float>((*muon)->pfIso());
+			if ((*muon)->charge() > 0) return (*muon)->pfIso();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
@@ -403,7 +403,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin(); muon != product.m_validMuons.end(); muon++)
 		{
-			if ((*muon)->charge() < 0) return static_cast<float>((*muon)->pfIso());
+			if ((*muon)->charge() < 0) return (*muon)->pfIso();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
@@ -545,7 +545,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
 		{
-			if ((*electron)->charge() > 0) return static_cast<float>((*electron)->pfIso());
+			if ((*electron)->charge() > 0) return (*electron)->pfIso();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
@@ -577,7 +577,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KElectron*>::const_iterator electron = product.m_validElectrons.begin(); electron != product.m_validElectrons.end(); electron++)
 		{
-			if ((*electron)->charge() < 0) return static_cast<float>((*electron)->pfIso());
+			if ((*electron)->charge() < 0) return (*electron)->pfIso();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
