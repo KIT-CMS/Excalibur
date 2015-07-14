@@ -672,5 +672,21 @@ def rootfile_53742(args=None):
 	harryinterface.harry_interface([d], args)
 
 
+def comparison_run2(args=None):
+	"""Comparison for run2 samples."""
+	d = {
+		'files': [
+			'work/data15.root',
+			'work/mc15.root',
+		],
+		'nicks': ['Data','MC'],
+		'y_subplot_label' : "Data/MC",
+		'algorithms': ['ak4PFJetsCHS'],
+		'corrections': ['L1L2L3'],
+		'lumis': [0.023],
+	}
+	full_comparison(args, d)
+
+
 if __name__ == '__main__':
 	basic_comparisons()
