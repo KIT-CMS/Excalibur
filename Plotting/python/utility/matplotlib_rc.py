@@ -38,17 +38,17 @@ class MplStyles():
 		'legend.numpoints': 1,
 		'legend.fancybox': False,
 		'legend.shadow': False,
-		'legend.borderpad': 0.3,    # border whitespace in fontsize units
-		#legend.markerscale   : 1.0    # the relative size of legend markers vs. original
-		'legend.labelspacing': 0.2,    # the vertical space between the legend entries in fraction of fontsize
-		#legend.handlelength  : 2.     # the length of the legend lines in fraction of fontsize
-		#legend.handleheight  : 0.7     # the height of the legend handle in fraction of fontsize
-		'legend.handletextpad': 0.4,    # the space between the legend line and legend text in fraction of fontsize
+		'legend.borderpad': 0.3,	# border whitespace in fontsize units
+		#legend.markerscale   : 1.0	# the relative size of legend markers vs. original
+		'legend.labelspacing': 0.2,	# the vertical space between the legend entries in fraction of fontsize
+		#legend.handlelength  : 2.	 # the length of the legend lines in fraction of fontsize
+		#legend.handleheight  : 0.7	 # the height of the legend handle in fraction of fontsize
+		'legend.handletextpad': 0.4,	# the space between the legend line and legend text in fraction of fontsize
 		#legend.borderaxespad : 0.5   # the border between the axes and legend edge in fraction of fontsize
-		#legend.columnspacing : 2.    # the border between the axes and legend edge in fraction of fontsize
-		#legend.shadow        : False
-		#legend.frameon       : True   # whether or not to draw a frame around legend
-		#legend.framealpha    : 1.0    # opacity of of legend frame
+		#legend.columnspacing : 2.	# the border between the axes and legend edge in fraction of fontsize
+		#legend.shadow		: False
+		#legend.frameon	   : True   # whether or not to draw a frame around legend
+		#legend.framealpha	: 1.0	# opacity of of legend frame
 		#legend.scatterpoints : 3 # number of scatter points
 
 		'font.family': 'sans-serif',
@@ -132,15 +132,15 @@ def getstyle(style='cmsstyle_JetMET'):
 
 
 if __name__ == "__main__":
-    fontsFound = True
-    s = MplStyles()
-    styles = sys.argv[1:]
-    if not styles:
-        styles = [d for d in dir(s) if type(getattr(s, d)) == dict]
-    for style in styles:
-        d = getattr(s, style)
-        print "Style: %s" % style
-        fontsFound = fontsFound and s.checkFonts(d)
-        for k, v in d.items():
-            print "  {0:24}: {1}".format(k, repr(v))
+	fontsFound = True
+	s = MplStyles()
+	styles = sys.argv[1:]
+	if not styles:
+		styles = [d for d in dir(s) if type(getattr(s, d)) == dict]
+	for style in styles:
+		d = getattr(s, style)
+		print "Style: %s" % style
+		fontsFound = fontsFound and s.checkFonts(d)
+		for k, v in d.items():
+			print "  {0:24}: {1}".format(k, repr(v))
 
