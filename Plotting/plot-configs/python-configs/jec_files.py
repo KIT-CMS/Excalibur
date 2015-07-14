@@ -51,6 +51,8 @@ def jec_files(args=None, additional_dictionary=None):
 					"filename": typ.lower() + "_" + leveldict.get(level, level).lower(),
 					"files": matching_files[0]
 				})
+				if additional_dictionary is not None:
+					d.update(additional_dictionary)
 				plots.append(d)
 			else:
 				print typ, level, "NOT FOUND:", len(matching_files)

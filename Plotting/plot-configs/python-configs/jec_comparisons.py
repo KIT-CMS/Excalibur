@@ -6,6 +6,8 @@ import Excalibur.Plotting.utility.colors as colors
 
 import argparse
 import copy
+import jec_factors
+import jec_files
 
 
 # TODO to more general location
@@ -686,6 +688,15 @@ def comparison_run2(args=None):
 		'lumis': [0.023],
 	}
 	full_comparison(args, d)
+	jec_files.jec_files(args + [
+		'--jec-dir','data/jec/PY8_RunIISpring15DR74_bx50',
+		'--jec-algo', 'AK4PFchs',
+	])
+	jec_factors.jec_factors(args, {
+		'files': ['work/data15.root'],
+		'algorithms': ['ak4PFJetsCHS'],
+		'corrections': ['L1L2L3'],
+	})
 
 
 if __name__ == '__main__':

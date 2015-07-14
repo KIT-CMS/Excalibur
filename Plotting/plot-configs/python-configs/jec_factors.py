@@ -33,6 +33,8 @@ def jec_factors(args=None, additional_dictionary=None):
 			'y_label': 'jet1pt',
 			'z_label': 'JEC Correction Factor',
 		}
+		if additional_dictionary is not None:
+			d.update(additional_dictionary)
 		plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
