@@ -380,6 +380,24 @@ def jet_resolution_vs_pt(args=None, additional_dictionary=None):
 	plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
+def cutflow(args=None, additional_dictionary=None):
+	"""cutflow plots, relative and absolute """
+	plots = []
+	for rel in [True, False]:
+		d = {
+			'x_expressions': ['cutFlowWeighted'],
+			'analysis_modules': ['Cutflow'],
+			'rel_cuts': rel,
+			'y_lims': [0, 1],
+			'y_errors': [False],
+			'filename': 'cutflow' + ('_relative' if rel else ''),
+		}
+		plots.append(d)
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+	harryinterface.harry_interface(plots, args)
+
+
 def full_comparison(args=None, d=None, data_quantities=True):
 	""" Do all comparison plots"""
 	response_comparisons(args, d)
@@ -682,6 +700,7 @@ def comparison_run2(args=None):
 			'work/mc15.root',
 		],
 		'nicks': ['Data','MC'],
+		'labels': ['Data','MC'],
 		'y_subplot_label' : "Data/MC",
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
@@ -697,6 +716,9 @@ def comparison_run2(args=None):
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
 	})
+
+	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3']})
+	cutflow(args, d)
 
 
 if __name__ == '__main__':
