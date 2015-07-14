@@ -345,7 +345,7 @@ def data_2012mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Mu8_v%d' % v for v in range(1, 30)]
 
 def data_2015mm(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v%d' % v for v in range(1, 5)]
+	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v%d' % v for v in range(1, 100)]
 
 
 def data_2012ee(cfg, **kwargs):
