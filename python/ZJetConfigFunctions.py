@@ -319,7 +319,7 @@ def _2012mm(cfg, **kwargs):
 	pass
 
 def _2015mm(cfg, **kwargs):
-	cfg['MuonID'] = 'medium'
+	cfg['MuonID'] = 'tight'
 
 
 ##
