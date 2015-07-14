@@ -41,7 +41,9 @@ def print_jsons_and_functions(json_path, python_path):
 
 def call_python_function(function_name, python_path, unknown_args=None):
 	"""call a python if it is present in any module in the path."""
-	module_list = get_module_list(python_path)
+	module_list = []
+	for path in python_path.split(':'):
+		module_list += get_module_list(path)
 	for module in module_list:
 		functions = inspect.getmembers(module, inspect.isfunction)
 		for func in functions:
