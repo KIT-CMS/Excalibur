@@ -703,7 +703,7 @@ def comparison_run2(args=None):
 		'y_subplot_label' : "Data/MC",
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
-		'lumis': [0.023],
+		'lumis': [0.00559],
 	}
 	full_comparison(args, d)
 	jec_files.jec_files([
