@@ -35,6 +35,8 @@ class InputRootZJet(inputroot.InputRoot):
 		                                help="jet algorithms.")
 		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3Res"],
 		                                help="correction levels.")
+		self.zjet_input_options.add_argument("--no-weight", action="store_true", default=False,
+		                                help="Dont apply 'weight' by default.")
 
 	def prepare_args(self, parser, plotData):
 		# this is needed so one can put together the folder name like in the old
@@ -55,7 +57,8 @@ class InputRootZJet(inputroot.InputRoot):
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
 		# add 'weight' by default to weights
-		plotData.plotdict['weights'] = ["(weight * {0})".format(weight) for weight in plotData.plotdict['weights']]
+		if not plotData.plotdict['no_weight']:
+			plotData.plotdict['weights'] = ["(weight * {0})".format(weight) for weight in plotData.plotdict['weights']]
 
 		# add lumi as weight for mc files
 		if any([d.get('InputIsData', False) for d in plotData.input_json_dicts]):
