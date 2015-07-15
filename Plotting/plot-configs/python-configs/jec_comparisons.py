@@ -95,7 +95,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'y_expressions': [method],
 				'x_expressions': [quantity],
 				'x_bins': bins,
-				'y_lims': [0.7, 1.15],
+				'y_lims': [0.5, 1.5],
 				'x_errors': [1],
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
@@ -106,7 +106,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 
 				'filename': method + "_" + quantity.replace("(", "").replace(")", ""),
 				
-				'y_subplot_lims': [0.9, 1.1],
+				'y_subplot_lims': [0.5, 1.5],
 			}
 			if quantity == 'abs(jet1eta)':
 				d['zjetfolders'] = ["noetacuts"]
@@ -143,9 +143,9 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'metphi': ["20,-3.1415,3.1415", "lower center"],
 		'zphi': ["20,-3.1415,3.1415", "lower center"],
 		'jet2eta': ["20,-5,5"],
-		'zpt': ["20,0,600"],
 		'jet1pt': ["20,0,400"],
 		'zpt': ["20,0,400"],
+		'zy': ["25,-2.5,2.5"],
 		'alpha': ["20,0,1"],
 	}
 	for q in x_dict:
@@ -706,18 +706,22 @@ def comparison_run2(args=None):
 		'lumis': [0.00559],
 	}
 	full_comparison(args, d)
-	jec_files.jec_files([
-		'--jec-dir','data/jec/PY8_RunIISpring15DR74_bx50',
-		'--jec-algo', 'AK4PFchs',
-	])
+
+	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3']})
+	cutflow(args, d)
+
 	jec_factors.jec_factors(args, {
 		'files': ['work/data15.root'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
 	})
 
-	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3']})
-	cutflow(args, d)
+def comparison_run2_jec(args=None):
+	""" evaluate the latest JEC files for RUn2"""
+	jec_files.jec_files([
+		'--jec-dir','data/jec/PY8_RunIISpring15DR74_bx50',
+		'--jec-algo', 'AK4PFchs',
+	])
 
 
 if __name__ == '__main__':
