@@ -696,10 +696,9 @@ def comparison_run2(args=None):
 	"""Comparison for run2 samples."""
 	d = {
 		'files': [
-			'work/data15.root',
+			'data15.root',
 			'work/mc15.root',
 		],
-		'nicks': ['Data','MC'],
 		'labels': ['Data','MC'],
 		'y_subplot_label' : "Data/MC",
 		'algorithms': ['ak4PFJetsCHS'],
@@ -707,7 +706,7 @@ def comparison_run2(args=None):
 		'lumis': [0.023],
 	}
 	full_comparison(args, d)
-	jec_files.jec_files(args + [
+	jec_files.jec_files([
 		'--jec-dir','data/jec/PY8_RunIISpring15DR74_bx50',
 		'--jec-algo', 'AK4PFchs',
 	])
