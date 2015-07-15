@@ -20,4 +20,6 @@ def config():
 	print "\n\n\033[93mWARNING: USING AK5 Gen Jets!!\033[0m\n\n"
 	cfg['GenJets'] = 'ak5GenJetsNoNu'
 
+	cfg['CutAlphaMax'] = 0.3
+
 	return cfg

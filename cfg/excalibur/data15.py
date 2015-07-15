@@ -14,4 +14,6 @@ def config():
 	cfg['RC'] = False
 	cfg['ProvideResidualCorrections'] = False
 
+	cfg['CutAlphaMax'] = 0.3
+
 	return cfg
