@@ -21,7 +21,7 @@ def getBaseConfig(**kwargs):
 		'MetPhiCorrectionParameters': [], # Please set this later depending on input type
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
-		'JetID' : 'tight',
+		'JetID' : 'loose',
 		'JetIDVersion' : 2014,
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak5PFJetsCHS',
