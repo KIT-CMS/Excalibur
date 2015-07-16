@@ -38,6 +38,8 @@ class InputRootZJet(inputroot.InputRoot):
 		self.zjet_input_options.add_argument("--no-weight", action="store_true", default=False,
 		                                help="Dont apply 'weight' by default.")
 
+		self.input_options.set_defaults(read_config=True)
+
 	def prepare_args(self, parser, plotData):
 		# this is needed so one can put together the folder name like in the old
 		# merlin plotting
