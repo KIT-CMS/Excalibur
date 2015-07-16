@@ -204,6 +204,20 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			d.update(additional_dictionary)
 		plots.append(d)
 
+		d = {
+			'x_expressions': ['npv'],
+			'y_expressions': ['rho'],
+			'analysis_modules': ['Ratio'],
+			'tree_draw_options': 'prof',
+			'cutlabel': True,
+			'markers': ['o', 'd'],
+			'y_subplot_lims': [0.5, 1.5],
+			'x_bins': "25,0.5,25.5",
+		}
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		plots.append(d)
+
 	harryinterface.harry_interface(plots, args)
 
 def pf_comparisons(args=None, additional_dictionary=None):
