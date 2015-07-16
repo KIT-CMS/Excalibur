@@ -98,6 +98,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 				'markers': ['.', '*'],
 				'legend': 'best',
 				'cutlabel': True,
+				'lines': [1.0],
 
 				'analysis_modules': ['Ratio'],
 
@@ -709,7 +710,7 @@ def comparison_run2(args=None):
 	cutflow(args, d)
 
 	jec_factors.jec_factors(args, {
-		'files': ['work/data15.root'],
+		'files': ['work/mc15.root'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
 	})
