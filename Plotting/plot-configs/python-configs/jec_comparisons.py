@@ -718,7 +718,7 @@ def comparison_run2(args=None):
 
 def comparison_run2_jec(args=None):
 	""" evaluate the latest JEC files for RUn2"""
-	jec_files.jec_files([
+	jec_files.jec_files(args+[
 		'--jec-dir','data/jec/PY8_RunIISpring15DR74_bx50',
 		'--jec-algo', 'AK4PFchs',
 	])
