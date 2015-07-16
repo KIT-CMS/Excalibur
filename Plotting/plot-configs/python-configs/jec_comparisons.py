@@ -34,8 +34,6 @@ def get_special_parser(args):
 	return known_args, args
 
 def response_extrapolation(args=None, additional_dictionary=None):
-	plots = []
-
 	d = {
 		'filename': 'extrapolation',
 		'files': ['ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root', 'ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root'],
@@ -48,7 +46,7 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'x_expressions': 'alpha',
 		'x_bins': '6,0,0.3',
 		'x_lims': [0,0.3],
-		'y_expressions': ['ptbalance', 'ptbalance', 'mpf', 'mpf', "jet1pt/genjet1pt"],
+		'y_expressions': ['ptbalance', 'ptbalance', 'mpf', 'mpf', "jet1pt/matchedgenjet1pt"],
 		'y_label': 'Jet Response',
 		'y_lims': [0.88,1.03],
 		'nicks': ['ptbalance_mc', 'ptbalance_data', 'mpf_mc', 'mpf_data', 'reco_gen_jet'],
@@ -76,8 +74,7 @@ def response_extrapolation(args=None, additional_dictionary=None):
 
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
-	plots.append(d)
-	harryinterface.harry_interface(plots, args)
+	harryinterface.harry_interface([d], args)
 
 def response_comparisons(args2=None, additional_dictionary=None):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
