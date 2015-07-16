@@ -282,6 +282,7 @@ def data_2011(cfg, **kwargs):
 def data_2012(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_DATA'
 	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
+	cfg['Lumi'] = 19.712
 	cfg['MetPhiCorrectionParameters'] = [0.2661, 0.3217, -0.2251, -0.1747]
 
 	cfg['Processors'] += ['producer:NPUProducer']
@@ -294,6 +295,7 @@ def data_2015(cfg, **kwargs):
 	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
 	#json file from /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
 	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt']
+	cfg['Lumi'] = 0.00559
 
 def mc_2011(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'

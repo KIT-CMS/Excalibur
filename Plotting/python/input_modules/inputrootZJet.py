@@ -62,6 +62,10 @@ class InputRootZJet(inputroot.InputRoot):
 		if not plotData.plotdict['no_weight']:
 			plotData.plotdict['weights'] = ["(weight * {0})".format(weight) for weight in plotData.plotdict['weights']]
 
+		# get int. lumi from input dicts
+		lumis = [input_json_dict.get('Lumi', None) for input_json_dict in plotData.input_json_dicts if input_json_dict.get('Lumi', None) is not None]
+		plotData.plotdict['lumis'] = lumis
+
 		# add lumi as weight for mc files
 		if any([d.get('InputIsData', False) for d in plotData.input_json_dicts]):
 			for i, rootfile in enumerate(plotData.plotdict['files']):
