@@ -29,11 +29,15 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			]
 		]
 		self.cutlabeldict = {
-			"eta": r"|$\mathit{\eta}^{\mathrm{Leading \ jet}}$|$<1.3$",
-			"zpt": "$\mathit{p}_\mathrm{T}^\mathrm{Z}>30 \ GeV$",
-			"alpha": r"$\mathit{\alpha}<0.2$",
+			"CutAlphaMax": r"$\mathit{\alpha}<@VALUE@$",
+			"CutLeadingJetEtaMax": r"|$\mathit{\eta}^{\mathrm{Leading \ jet}}$|$<@VALUE@$",
+			"CutZPtMin": "$\mathit{p}_\mathrm{T}^\mathrm{Z}>@VALUE@ \ GeV$",
 		}
-
+		self.cutvaluedict = {
+			'CutAlphaMax': '0.2',
+			'CutLeadingJetEtaMax': '1.3',
+			'CutZPtMin': '30',
+		}
 
 	def modify_argument_parser(self, parser, args):
 		super(PlotMplZJet, self).modify_argument_parser(parser, args)
@@ -100,17 +104,31 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		if 'ratio' in plotData.plotdict['nicks']:
 			plotData.plotdict['colors'][plotData.plotdict['nicks'].index('ratio')] = 'black'
 
+		# iterate over keys in cutvaluedict and input_json_dicts to replace
+		# the default cut values with the ones actually used in the input files
+		for key in self.cutvaluedict.keys():
+			valuelist = []
+			for input_dict in plotData.input_json_dicts:
+				if key in input_dict:
+					valuelist.append(input_dict[key])
+			if len(set(valuelist)) == 1 and len(valuelist)>0:
+				self.cutvaluedict[key] = (str(int(valuelist[0])) if key == 'CutZPtMin' else str(valuelist[0]))
 
 	def add_labels(self, plotData):
 		super(PlotMplZJet, self).add_labels(plotData)
 		folder_cutlabel = {
 			'nocuts': [],
-			'finalcuts': ['alpha', 'eta', 'zpt'],
-			'zcuts': ['zpt'],
-			'noalphacuts': ['eta', 'zpt'],
-			'noetacuts': ['alpha', 'zpt'],
-			'noalphanoetacuts': ['zpt'],
+			'finalcuts': ['CutAlphaMax', 'CutLeadingJetEtaMax', 'CutZPtMin'],
+			'zcuts': ['CutZPtMin'],
+			'noalphacuts': ['CutLeadingJetEtaMax', 'CutZPtMin'],
+			'noetacuts': ['CutAlphaMax', 'CutZPtMin'],
+			'noalphanoetacuts': ['CutZPtMin'],
 		}
+
+		# put the cut values into the labels
+		for key in self.cutlabeldict.keys():
+			self.cutlabeldict[key] = self.cutlabeldict[key].replace('@VALUE@', self.cutvaluedict[key])
+
 		for ax in [plotData.plot.axes[0]]:
 			if plotData.plotdict['cutlabel'] == True:
 				texts = folder_cutlabel.get(plotData.plotdict['zjetfolders'][0], [])
