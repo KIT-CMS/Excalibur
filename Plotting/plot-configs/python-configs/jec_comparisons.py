@@ -213,6 +213,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'markers': ['o', 'd'],
 			'y_subplot_lims': [0.5, 1.5],
 			'x_bins': "25,0.5,25.5",
+			'legend': 'upper left',
 		}
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
