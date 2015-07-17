@@ -257,6 +257,7 @@ def mm(cfg, **kwargs):
 		'mupluspt', 'mupluseta', 'muplusphi', 'muplusiso',
 		'muminuspt', 'muminuseta', 'muminusphi', 'muminusiso',
 		'mu1pt', 'mu1eta', 'mu1phi',
+		'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
 		'mu2pt', 'mu2eta', 'mu2phi',
 		'nmuons',
 		'radiationjet1pt', 'radiationjet1phi', 'radiationjet1eta',
