@@ -17,11 +17,11 @@ GCCPLUSWARN    = -Wdouble-promotion -Wzero-as-null-pointer-constant
 PLUSWARNINGS   = -Wshadow -Wconversion -Wfloat-equal -Wno-unused-private-field
 # -Wpadded -Winline
 CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) \
- -Isrc/ -isystem ../ -isystem $(BOOSTPATH)/include/ -I$(KAPPATOOLSPATH)/../\
+ -Isrc/ -isystem ../ -isystem $(BOOSTPATH)/include/ \
  $(GCCWARNINGS) $(GCCPLUSWARN)
-LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA\
+LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA \
  -L$(BOOSTPATH)/lib/ -lboost_regex\
- -L../Artus/ -lartus_configuration -lartus_consumer -lartus_core -lartus_filter -lartus_provider -lartus_utility -lartus_kappaanalysis -lartus_externalcorr\
+ -L../Artus/ -lartus_configuration -lartus_consumer -lartus_core -lartus_filter -lartus_provider -lartus_utility -lartus_kappaanalysis -lartus_externalcorr \
  -L$(KAPPAPATH)/lib/ -L$(KAPPATOOLSPATH)/lib/ -lKappa -lKRootTools -lKToolbox
 
 OBJECTS = $(patsubst %.cc,%.o,$(wildcard src/*.cc src/*/*.cc))
