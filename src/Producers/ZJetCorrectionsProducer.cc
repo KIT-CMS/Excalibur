@@ -108,6 +108,21 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event, ZJetProduct& produ
 	{
 		CorrectJetCollection("L1L2L3", "L1L2L3Res", m_l2l3res, event, product, settings);
 	}
+
+	// write to product so the consumer can access the jet pt of the UNSORTED jets
+	if (product.m_validJets.size() > 0)
+	{
+		product.jetpt_l1 = product.m_correctedZJets["L1"][0]->p4.Pt();
+		product.jetpt_l1l2l3 = product.m_correctedZJets["L1L2L3"][0]->p4.Pt();
+		if (settings.GetRC())
+		{
+			product.jetpt_rc = product.m_correctedZJets["RC"][0]->p4.Pt();
+		}
+		if (settings.GetProvideResidualCorrections())
+		{
+			product.jetpt_l1l2l3res = product.m_correctedZJets["L1L2L3Res"][0]->p4.Pt();
+		}
+	}
 }
 
 void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel, std::string outCorrLevel,

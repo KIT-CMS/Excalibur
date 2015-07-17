@@ -29,6 +29,12 @@ class ZJetProduct : public KappaProduct
 	// Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the product after creation
 	std::map<std::string, std::vector<std::shared_ptr<KJet> > > m_correctedZJets;
 	
+	// Added by ZJetCorrectionsProducer, necessary to cross-check the applied JEC factors: pT of jets has to be saved BEFORE sorting
+	float jetpt_l1;
+	float jetpt_rc;
+	float jetpt_l1l2l3;
+	float jetpt_l1l2l3res;
+
 	// Added by TypeIMETProducer
 	std::map<std::string, KMET> m_corrMET;
 	
@@ -42,6 +48,7 @@ class ZJetProduct : public KappaProduct
 	std::map<std::string, std::vector<KJet*> > m_radiationJets;
 	std::map<std::string, std::vector<unsigned long> > m_radiationJetsIndex;
 
+	// Added by NPUProducer
 	double npumean_data;
 
 	/////////////////////////////

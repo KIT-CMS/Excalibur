@@ -158,32 +158,32 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	// correction factors
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1l1", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (product.GetValidJetCount(settings, event) > 0) ?  (product.GetValidJet(settings, event, 0, "L1")->p4.Pt() / product.GetValidJet(settings, event, 0, "None")->p4.Pt()) : DefaultValues::UndefinedFloat;
+		return (product.GetValidJetCount(settings, event) > 0) ?  (product.jetpt_l1 / product.GetValidJet(settings, event, 0, "None")->p4.Pt()) : DefaultValues::UndefinedFloat;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1rc", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (product.GetValidJetCount(settings, event) > 0) ?  (product.GetValidJet(settings, event, 0, "RC")->p4.Pt() / product.GetValidJet(settings, event, 0, "None")->p4.Pt()) : DefaultValues::UndefinedFloat;
+		return (product.GetValidJetCount(settings, event) > 0) ?  (product.jetpt_rc / product.GetValidJet(settings, event, 0, "None")->p4.Pt()) : DefaultValues::UndefinedFloat;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1l2", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (product.GetValidJetCount(settings, event) > 0) ?  (product.GetValidJet(settings, event, 0, "L1L2L3")->p4.Pt() / product.GetValidJet(settings, event, 0, "L1")->p4.Pt()) : DefaultValues::UndefinedFloat;
+		return (product.GetValidJetCount(settings, event) > 0) ?  (product.jetpt_l1l2l3 / product.jetpt_l1) : DefaultValues::UndefinedFloat;
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1res", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (product.GetValidJetCount(settings, event) > 0) ?  (product.GetValidJet(settings, event, 0, "L1L2L3Res")->p4.Pt() / product.GetValidJet(settings, event, 0, "L1L2L3")->p4.Pt()) : DefaultValues::UndefinedFloat;
+		return (product.GetValidJetCount(settings, event) > 0) ?  (product.jetpt_l1l2l3res / product.jetpt_l1l2l3) : DefaultValues::UndefinedFloat;
 	} );
 
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1ptl1", [settings](ZJetEvent const& event, ZJetProduct const& product)
-	{
-		return (product.GetValidJetCount(settings, event) > 0) ?  product.GetValidJet(settings, event, 0, "L1")->p4.Pt() : DefaultValues::UndefinedFloat;
-	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1ptraw", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
 		return (product.GetValidJetCount(settings, event) > 0) ?  product.GetValidJet(settings, event, 0, "None")->p4.Pt() : DefaultValues::UndefinedFloat;
 	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1ptl1", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (product.GetValidJetCount(settings, event) > 0) ?  product.jetpt_l1 : DefaultValues::UndefinedFloat;
+	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("jet1ptl1l2l3", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (product.GetValidJetCount(settings, event) > 0) ?  product.GetValidJet(settings, event, 0, "L1L2L3")->p4.Pt() : DefaultValues::UndefinedFloat;
+		return (product.GetValidJetCount(settings, event) > 0) ?  product.jetpt_l1l2l3res : DefaultValues::UndefinedFloat;
 	} );
 
 
