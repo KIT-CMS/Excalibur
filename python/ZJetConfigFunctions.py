@@ -22,7 +22,7 @@ def getBaseConfig(**kwargs):
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
 		'JetID' : 'loose',
-		'JetIDVersion' : 2014,
+		'JetIDVersion' : "73X",
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak5PFJetsCHS',
 		# PU
@@ -156,6 +156,7 @@ def _2011(cfg, **kwargs):
 def _2012(cfg, **kwargs):
 	cfg['Year'] = 2012
 	cfg['Energy'] = 8
+	cfg['JetIDVersion'] = 2014
 
 def _2015(cfg, **kwargs):
 	cfg['Year'] = 2015
