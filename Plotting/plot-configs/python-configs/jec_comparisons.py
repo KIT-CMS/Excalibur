@@ -435,6 +435,8 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	basic_comparisons(args, d, data_quantities, only_normalized)
 	basic_profile_comparisons(args, d)
 	pf_fractions(args, d)
+	response_extrapolation(args, d)
+	jet_resolution(args, d)
 
 
 def comparison_E1E2(args=None):
