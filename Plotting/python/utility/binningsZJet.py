@@ -21,6 +21,7 @@ class BinningsDictZJet(BinningsDict):
 			'npv':"-0.5 4.5 8.5 15.5 21.5 45.5",
 			'eta':" ".join([str(y) for y in [-i for i in [float(x) for x in absetabins.split(" ")][7:0:-1]]+[float(x) for x in absetabins.split(" ")]]),
 			'abseta': absetabins,
+			'jet1abseta': absetabins,
 
 			'phi': '20,-3.14159,3.14159',
 

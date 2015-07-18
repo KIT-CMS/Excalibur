@@ -26,6 +26,7 @@ class ExpressionsDictZJet(ExpressionsDict):
 			'deltaetajet1jet2' : '(abs(jet1eta-jet2eta))',
 			'deltarjet1jet2': 'sqrt((abs(abs(abs(jet1phi-jet2phi)-TMath::Pi())-TMath::Pi()))*(abs(abs(abs(jet1phi-jet2phi)-TMath::Pi())-TMath::Pi()))+(abs(jet1eta-jet2eta)**2))',
 			'deltaphizmet' : '(abs(abs(abs(zphi-metphi)-TMath::Pi())-TMath::Pi()))',
+			'jet1abseta' : 'abs(jet1eta)',
 			'sortedflavour' : (
 				'matchedgenparton1flavour*(matchedgenparton1flavour<20 && matchedgenparton1flavour>(-20))'  # quarks: ok
 				+'+6*(matchedgenparton1flavour==21)'  # gluons: 21 -> 6
