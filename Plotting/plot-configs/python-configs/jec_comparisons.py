@@ -34,13 +34,13 @@ def get_special_parser(args):
 	return known_args, args
 
 def response_extrapolation(args=None, additional_dictionary=None):
+	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters."""
 	d = {
 		'filename': 'extrapolation',
-		'files': ['ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root', 'ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root'],
-		'labels': [r'$\\mathit{p}_{T}$ balance (MC)', r'$\\mathit{p}_{T}$ balance (Data)', 'MPF (MC)', 'MPF (Data)', r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$', r'$\\mathit{p}_{T}$ balance', 'MPF', '', '', '', '', '', '', '', '', ''],
+		'labels': [r'$\\mathit{p}_{T}$ balance (Data)', r'$\\mathit{p}_{T}$ balance (MC)', 'MPF (Data)', 'MPF (MC)', r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$', r'$\\mathit{p}_{T}$ balance', 'MPF', '', '', '', '', '', '', '', '', ''],
 		'algorithms': ["AK5PFJetsCHS",],
-		'corrections': ['L1L2L3', 'L1L2L3Res'],
-		'zjetfolders': 'noalphacuts',
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'zjetfolders': ['noalphacuts'],
 		'lines': [1.0],
 		'legend': 'lower left',
 		'x_expressions': 'alpha',
@@ -49,7 +49,7 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'y_expressions': ['ptbalance', 'ptbalance', 'mpf', 'mpf', "jet1pt/matchedgenjet1pt"],
 		'y_label': 'Jet Response',
 		'y_lims': [0.88,1.03],
-		'nicks': ['ptbalance_mc', 'ptbalance_data', 'mpf_mc', 'mpf_data', 'reco_gen_jet'],
+		'nicks': ['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc', 'reco_gen_jet'],
 		'colors': ['orange', 'darkred', 'royalblue', 'darkblue', 'darkgreen', 'darkred', 'darkblue'],
 		'markers': ['s', 'o', 's', 'o', '*', 'o', 'o'],
 		'marker_fill_styles': ['none', 'none', 'full', 'full', 'full', 'none', 'full'],
@@ -59,10 +59,10 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'analysis_modules': ['Ratio', 'FunctionPlot'],
 		'plot_modules': ['PlotMplZJet', 'PlotExtrapolationText'],
 		'functions': ['[0]+[1]*x'],
-		'function_fit': ['ptbalance_mc', 'ptbalance_data', 'mpf_mc', 'mpf_data', 'reco_gen_jet', 'ptbalance_ratio', 'mpf_ratio'],
+		'function_fit': ['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc', 'reco_gen_jet', 'ptbalance_ratio', 'mpf_ratio'],
 		'function_parameters': ['1,1'],
 		'function_ranges': ['0,0.3'],
-		'function_nicknames': ['ptbalance_mc_fit', 'ptbalance_data_fit', 'mpf_mc_fit', 'mpf_data_fit', 'reco_gen_jet_fit', 'ptbalance_ratio_fit', 'mpf_ratio_fit'],
+		'function_nicknames': ['ptbalance_data_fit', 'ptbalance_mc_fit', 'mpf_data_fit', 'mpf_mc_fit', 'reco_gen_jet_fit', 'ptbalance_ratio_fit', 'mpf_ratio_fit'],
 		'ratio_numerator_nicks': ['ptbalance_data', 'mpf_data'],
 		'ratio_denominator_nicks': ['ptbalance_mc', 'mpf_mc'],
 		'ratio_result_nicks': ['ptbalance_ratio', 'mpf_ratio'],
