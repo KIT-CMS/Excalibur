@@ -8,9 +8,7 @@ export PYTHONPATH=$PYTHONCONFIGS:$PYTHONPATH
 
 export PYTHONLINKDIR=$EXCALIBURPATH/../python-links
 export PATH=$EXCALIBURPATH/Plotting/scripts:$PATH
-if [ -d "$PYTHONLINKDIR" ]; then
-    export PYTHONPATH=$PYTHONLINKDIR:$PYTHONPATH
-fi
+[[ -z "${PYTHONPATH}" ]] && export export PYTHONPATH=$PYTHONLINKDIR || export PYTHONPATH=$PYTHONLINKDIR:$PYTHONPATH
 
 # This function creates a folder with links to python directories, like SCRAM
 # TODO enable merlin standalone usage without reinventing SCRAM ...
