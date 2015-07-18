@@ -367,32 +367,48 @@ def pf_fractions(args=None, additional_dictionary=None):
 			plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
-def jet_resolution_vs_pt(args=None, additional_dictionary=None):
+def jet_resolution(args=None, additional_dictionary=None):
+	"""Plot the jet resolution vs pt, abs(eta) and npv."""
 	plots = []
 
-	d = {
-		'files': ['/storage/8/cmetzlaff//excalibur/data_2015-07-01_15-53/out.root', '/storage/8/cmetzlaff//excalibur/mc_2015-07-01_15-45/out.root'],
-		'labels': ['data', 'mc'],
-		'corrections': ['L1L2L3Res', 'L1L2L3'],
-		'x_expressions': 'zpt',
-		'x_bins': 'zpt',
-		'x_lims': [30, 1000],
-		'x_log': True,
-		'y_expressions': 'ptbalance',
-		'y_lims': [0.0, 0.5],
-		'y_label': 'Jet response resolution',
-		'nicks': ['data', 'mc'],
-		'markers': ['o', 'o'],
-		'marker_fill_styles': ['full', 'none'],
-		'tree_draw_options': 'prof',
-		'analysis_modules': ['JetResolution'],
-		'response_nicks': ['data', 'mc'],
-		'resolution_nicks': ['data_resolution', 'mc_resolution']
+	methoddict = {
+		'mpf': 'MPF',
+		'ptbalance': r'$\\mathit{p}_T$ balance',
 	}
+	for quantity in ['zpt', 'npv', 'jet1abseta']:
+		for method in ['mpf', 'ptbalance']:
+			d = {
+				'labels': ['data', 'mc'],
+				'cutlabel': True,
+				'corrections': ['L1L2L3Res', 'L1L2L3'],
+				'x_expressions': quantity,
+				'x_bins': [quantity],
+				'x_log': (True if quantity == 'zpt' else False),
+				'y_expressions': method,
+				'y_lims': [0.0, 0.5],
+				'y_label': 'Jet resolution ({})'.format(methoddict[method]),
+				'nicks': ['data', 'mc'],
+				'markers': ['o', 'o'],
+				'marker_fill_styles': ['full', 'none'],
+				'x_errors': [True],
+				'tree_draw_options': 'prof',
+				'analysis_modules': ['JetResolution'],
+				'response_nicks': ['data', 'mc'],
+				'resolution_nicks': ['data_resolution', 'mc_resolution'],
+				'filename': 'jet_resolution_{0}_vs_{1}'.format(method, quantity),
+			}
+			if quantity == 'zpt':
+				d['x_lims'] = [30, 1000]
+				d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+			elif quantity == 'jet1abseta':
+				d['zjetfolders'] = ['noetacuts']
+				d['x_lims'] = [0, 5.2]
+			elif quantity == 'npv':
+				d['x_lims'] = [0, 40]
 
-	if additional_dictionary != None:
-		d.update(additional_dictionary)
-	plots.append(d)
+			if additional_dictionary != None:
+				d.update(additional_dictionary)
+			plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
 def cutflow(args=None, additional_dictionary=None):
