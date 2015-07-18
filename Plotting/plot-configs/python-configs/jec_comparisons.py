@@ -118,7 +118,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 	harryinterface.harry_interface(plots, args)
 
 
-def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True):
+def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	
 	plots = []
@@ -170,7 +170,8 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 
 		if additional_dictionary:
 			d.update(additional_dictionary)
-		plots.append(d)
+		if not only_normalized:
+			plots.append(d)
 
 		# shape comparison
 		d2 = copy.deepcopy(d)
@@ -412,10 +413,10 @@ def cutflow(args=None, additional_dictionary=None):
 	harryinterface.harry_interface(plots, args)
 
 
-def full_comparison(args=None, d=None, data_quantities=True):
+def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False):
 	""" Do all comparison plots"""
 	response_comparisons(args, d)
-	basic_comparisons(args, d, data_quantities)
+	basic_comparisons(args, d, data_quantities, only_normalized)
 	basic_profile_comparisons(args, d)
 	pf_fractions(args, d)
 
@@ -717,9 +718,8 @@ def comparison_run2(args=None):
 		'y_subplot_label' : "Data/MC",
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
-		'lumis': [0.00559],
 	}
-	full_comparison(args, d)
+	full_comparison(args, d, only_normalized=True)
 
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3']})
 	cutflow(args, d)
