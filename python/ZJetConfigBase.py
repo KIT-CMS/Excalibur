@@ -45,7 +45,7 @@ def getConfig(inputtype, year, channel, **kwargs):
 				updateConfig(cfg, (i, j, k), **kwargs)
 
 	# Adjust met input if CHS jets are requested
-	if "CHS" in cfg['TaggedJets']:
+	if "CHS" in cfg['TaggedJets'] or "Puppi" in cfg['TaggedJets']:
 		cfg['Met'] = cfg['Met'] + 'CHS'
 
 	return cfg

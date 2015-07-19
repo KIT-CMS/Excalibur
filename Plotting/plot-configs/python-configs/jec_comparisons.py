@@ -438,6 +438,19 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	response_extrapolation(args, d)
 	jet_resolution(args, d)
 
+def comparsion_CHS_Puppi(args=None):
+	""" Do full comparison for E1 and E2 ntuples """
+	d = {
+		'files': [
+			'work/mc15.root',
+			'work/mc15Puppi.root',
+		],
+		"algorithms": ["ak4PFJetsCHS", "ak4PFJetsPuppi"],
+		'corrections': [''],
+		'labels': ['CHS (MC)', 'Puppic (MC)'],
+	}
+	full_comparison(args, d)
+	jet_resolution_vs_pt(args, additional_dictionary=d)
 
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
