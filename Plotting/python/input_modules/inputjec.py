@@ -38,9 +38,16 @@ class InputJEC(inputfile.InputFile):
 
 	def run(self, plotData):
 		"""Iterate over files, create JECfile object, get histo and put into plotdict."""
+		add_rho_area_label = False 
+
 		for file in plotData.plotdict["files"]:
+			if ('L1' in file[0] or 'RC' in file[0]):
+				add_rho_area_label = True
 			jec_file = toolsZJet.JECfile(file[0])
 			histo = jec_file.get_corr_histo(plotData.plotdict["y_bins"], area=plotData.plotdict["area"], rho=plotData.plotdict["rho"])
 			plotData.plotdict.setdefault("nicks", []).append("nick0")
 			plotData.plotdict.setdefault("root_objects", {})["nick0"] = histo
 		plotData.plotdict["nicks"].pop(0)
+
+		if add_rho_area_label:
+			plotData.plotdict['texts'] = [r'$\mathit{\rho}$' + ': {0}\nJet Area: {1}'.format(plotData.plotdict['rho'], plotData.plotdict['area'])]
