@@ -759,7 +759,7 @@ def comparison_run2(args=None):
 		'files': ['work/mc15.root'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
-	})
+	}, rc=False, res=False)
 
 def comparison_run2_jec(args=None):
 	""" evaluate the latest JEC files for RUn2"""

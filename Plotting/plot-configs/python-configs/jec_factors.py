@@ -4,19 +4,29 @@
 import Excalibur.Plotting.harryinterface as harryinterface
 
 
-def jec_factors(args=None, additional_dictionary=None):
+def jec_factors(args=None, additional_dictionary=None, rc=True, res=False):
 	""" Plot JEC factors from artus output ntuples.
 
-		Creates 4 plots for L1, RC, L2L3 and Res
+		Creates plots for L1 and L2L3, optionally also RC and Res
 		Usage e.g.:  merlin.py --py jec_factors -i work/data.root
 	"""
 	plots = []
 
-	for level, title, basept in zip(
-		['l1', 'rc', 'l2', 'res'],
-		['L1', 'L1RC', 'L2', 'Res'],
-		['raw', 'raw', 'l1', 'l1l2l3']
-	):
+	#level: (title, basept)
+	jec_dict = {
+		'l1': ('L1', 'raw'),
+		'l2': ('L2', 'l1'),
+		'rc': ('L1RC', 'raw'),
+		'res': ('Res', 'l1l2l3')
+	}
+
+	corr_levels = ['l1', 'l2']
+	if rc:
+		corr_levels.append('rc')
+	if res:
+		corr_levels.append('res')
+
+	for level, (title, basept) in zip(corr_levels, [jec_dict[level] for level in corr_levels]):
 		d = {
 			'x_expressions': ['jet1eta'],
 			'y_expressions': ['jet1pt'+basept],
