@@ -92,7 +92,7 @@ def ZJet():
 				shutil.copy(getEnv('ARTUSPATH') + lib, options.work + 'lib/')
 			shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_regex.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
 			shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_program_options.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
-			outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch)
+			outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch, jobs=options.jobs)
 
 		outpath = options.work + "out/*.root"
 
@@ -196,6 +196,8 @@ def getoptions(configdir="", name='excalibur'):
 		help="open output file in ROOT TBrowser after completion")
 	parser.add_argument('-R', '--resume', action='store_true',
 		help="resume the grid-control run and hadd after interrupting it.")
+	parser.add_argument('-j', '--jobs', type=int, default=None,
+		help="set the number of jobs (for batch mode)")
 
 	opt = parser.parse_args()
 
@@ -290,17 +292,18 @@ def copyFile(source, target, replace={}):
 	return text
 
 
-def createGridControlConfig(settings, filename, original=None, timestamp='', batch=""):
+def createGridControlConfig(settings, filename, original=None, timestamp='', batch="", jobs=None):
 	if original is None:
 		original = getEnv() + '/cfg/gc/gc_{}.conf'.format(batch)
-	jobs = {
+	jobdict = {
 			0: 80, # MC
 			1: 40, # DATA
 	}
-	fpj = len(settings['InputFiles']) / float(jobs.get(settings['InputIsData'], 70))
-	fpj = int(fpj + 1)
+	n_jobs = (jobs if jobs is not None else jobdict.get(settings['InputIsData'], 70)) 
+	files_per_job = len(settings['InputFiles']) / float(n_jobs)
+	files_per_job = int(files_per_job + 1)
 	d = {
-		'files per job = 100': 'files per job = ' + str(fpj),
+		'files per job = 100': 'files per job = ' + str(files_per_job),
 		'@NICK@': settings["OutputPath"][:-5],
 		'@TIMESTAMP@': timestamp,
 		'$EXCALIBURPATH': getEnv(),
