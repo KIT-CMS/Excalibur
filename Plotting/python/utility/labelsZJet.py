@@ -71,6 +71,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'mupluseta': '$\mathit{\eta}^{\mu+}$',
 			'muplusphi': '$\mathit{\phi}^{\mu+}$',
 			'mupluspt': '$\mathit{p}_{T}^{\mu+}$ / GeV',
+			'njets': 'Number of Valid Jets per Event',
 			'njets30': '$\mathit{n}_{Jets, \mathit{p}_T>30 GeV}$',
 			'npu': '$\mathit{n}_{PU}$',
 			'npumean': r'$\langle\mathit{n}_{PU}\rangle$',
