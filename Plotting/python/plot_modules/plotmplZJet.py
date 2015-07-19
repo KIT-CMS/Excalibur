@@ -45,7 +45,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		self.formatting_options.set_defaults(x_errors=[False])
 		self.formatting_options.set_defaults(y_errors=[True])
 		self.formatting_options.set_defaults(legloc='center right')
-		self.formatting_options.set_defaults(lumis=[19.8])
 		self.formatting_options.set_defaults(colormap="Blues")
 		self.formatting_options.set_defaults(texts_x=0.03)
 		self.formatting_options.set_defaults(texts_y=0.97)
@@ -90,15 +89,10 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			self.default_bar_colors = plotData.plotdict['bar_colors']
 
 		# auto determine lumi and energy
-		if plotData.input_json_dicts != [{}] and not any([d.get("InputIsData", False) for d in plotData.input_json_dicts]):
-			plotData.plotdict['lumis'] = None
 		if all(['Energy' in d for d in plotData.input_json_dicts]):
 			energies = [d['Energy'] for d in plotData.input_json_dicts]
 			if len(set(energies)) == 1:
 				plotData.plotdict['energies'] = [energies[0]]
-		else:
-			if all([d.get("Year", 0) == 2012 for d in plotData.input_json_dicts]):
-				plotData.plotdict['energies'] = [8]
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
 		if 'ratio' in plotData.plotdict['nicks']:
