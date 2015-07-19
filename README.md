@@ -5,6 +5,8 @@ Analysis repository for Z + jet studies and jet energy calibration.
 It is based on [Artus](https://github.com/artus-analysis/Artus "Artus Analysis") which in turn is (largely) based on [Kappa](https://github.com/KappaAnalysis "Kappa and KappaTools").
 The predecessor of this framework was also named excalibur and can be found [here](https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur "excalibur")  (protected).
 
+Please also have a look at the documentation for [Artus](https://github.com/artus-analysis/Artus/blob/master/README.md "Artus Readme") and [HarryPlotter](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
+
 ## Installation of the Excalibur Framework
 
 ### Requirements
@@ -88,6 +90,8 @@ See
 - Plotting/python/, which contains the derived classes
 - scripts/, which contains an ini script and the 'merlin' plotting executable
 - Plotting/plot-configs/, which contains json and python plot config files
+
+Please also have a look at the [HarryPlotter documentation](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
 
 Source the ini file. Since HarryPlotter is designed for SCRAM, you need to execute
 the shell function  `standalone_merlin` if you're using merlin outside a SCRAM
