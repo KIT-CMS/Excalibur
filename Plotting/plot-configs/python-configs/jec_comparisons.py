@@ -199,7 +199,8 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'y_subplot_lims': [0.99, 1.01],
 			'x_log': True,
 			'y_lims': [90.19, 92.19],
-			'x_bins': "30 40 50 60 75 95 125 180 300 1000",
+			'x_bins': "zpt",
+			'markers': ['o', 'd'],
 		}
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
