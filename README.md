@@ -68,6 +68,22 @@ many ideas were and can still be taken from there.
 
 ## Usage of the Excalibur Framework
 
+There are two parts in this repository (listed with the corresponding top level folders):
+- Excalibur (C++ code + python configs) doing the analysis and producing flat trees
+    - Makefile
+    - `cfg` (configuration)
+    - `data` (correction factors, weight files, etc.)
+    - `ntuples` (links to skims used as input files)
+    - `scripts` (init scripts etc.)
+    - `src` (the code)
+    - `test` (test scripts)
+
+- Merlin (python plotting code) producing plots from the flat trees.
+    - plotting (Merlin code and configs)
+    - plots (ouput files created by Merlin)
+    - websync (temporary folder for web sync with `--www`)
+
+
 ### ZJetAnalysis: C++ part
 excalibur.py is the wrapper to run this Z+jet calibration tool. The first argument is the name of a config file located in `cfg/excalibur/` (the filename extension is optional). This config file takes parts from `ZJetConfigFunctions.py` as the base config which is then modified by `ZJetConfigBase.py`. The final json output will be used for the z+jet calibration tool.
 
