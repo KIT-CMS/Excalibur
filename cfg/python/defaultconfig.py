@@ -1,4 +1,4 @@
-import ZJetConfigBase
+import configtools
 
 def getBaseConfig(**kwargs):
 	cfg = {
@@ -283,21 +283,21 @@ def data_2011(cfg, **kwargs):
 	pass
 
 def data_2012(cfg, **kwargs):
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_DATA'
-	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
+	cfg['Jec'] = configtools.getPath() + '/data/jec/Winter14_V8/Winter14_V8_DATA'
+	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
 	cfg['Lumi'] = 19.712
 	cfg['MetPhiCorrectionParameters'] = [0.2661, 0.3217, -0.2251, -0.1747]
 
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['Minbxsec'] = 68.5
-	cfg['NPUFile'] = ZJetConfigBase.getPath() + '/data/pileup/pumean_pixelcorr_data2012.txt'
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_pixelcorr_data2012.txt'
 	cfg['Pipelines']['default']['Quantities'] += ['npumeandata']
 
 
 def data_2015(cfg, **kwargs):
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
 	#json file from /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
-	cfg['JsonFiles'] = [ZJetConfigBase.getPath() + '/data/json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt']
+	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt']
 	cfg['Lumi'] = 0.00559
 
 def mc_2011(cfg, **kwargs):
@@ -306,12 +306,12 @@ def mc_2011(cfg, **kwargs):
 
 def mc_2012(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/Winter14_V8/Winter14_V8_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/jec/Winter14_V8/Winter14_V8_MC'
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
 
 def mc_2015(cfg, **kwargs):
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
-	cfg['Jec'] = ZJetConfigBase.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
 
 def mcee(cfg, **kwargs):
 	pass

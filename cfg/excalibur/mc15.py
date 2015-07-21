@@ -1,15 +1,15 @@
-import ZJetConfigBase as base
+import configtools
 
 
 def config():
-	cfg = base.getConfig('mc', 2015, 'mm')
-	cfg["InputFiles"] = base.setInputFiles(
+	cfg = configtools.getConfig('mc', 2015, 'mm')
+	cfg["InputFiles"] = configtools.setInputFiles(
 		ekppath="/storage/a/mfischer/skims/MF_AnyMu_2015_746/recent/DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV/*.root",
 		nafpath="/pnfs/desy.de/cms/tier2/store/user/mafische/skims/MF_AnyMu_2015_746/2015-07-17/DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV/*.root",
 	)
-	cfg = base.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
+	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
 	
-	base.remove_quantities(cfg, ['jet1btag','jet1qgtag', 'jet1rc'])
+	configtools.remove_quantities(cfg, ['jet1btag','jet1qgtag', 'jet1rc'])
 
 	cfg['JetMatchingAlgorithm'] = 'algorithmic'
 	#cfg['CutAlphaMax'] = 0.3

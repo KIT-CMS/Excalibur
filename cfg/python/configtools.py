@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""ArtusConfigBase provides the tools to make a valid artus config.
+"""configtools provides the tools to make a valid artus config.
 
 The most used functions are:
   - BaseConfig to generate a default configuration
