@@ -30,13 +30,13 @@ class InputRootZJet(inputroot.InputRoot):
 		# special arguments for custom zjet folder naming conventions
 		self.zjet_input_options = parser.add_argument_group("ZJet input options")
 		self.zjet_input_options.add_argument("--zjetfolders", type=str, nargs='*', default=['finalcuts'],
-		                                help="zjet folders (nocuts, finalcuts....")
+		                                help="'zjetfolders'/cutlevels for the input folder names (nocuts, finalcuts....) [Default: %(default)s]")
 		self.zjet_input_options.add_argument("--algorithms", type=str, nargs='*', default=["AK5PFJetsCHS"],
-		                                help="jet algorithms.")
+		                                help="Jet algorithms for the input folder names. [Default: %(default)s]")
 		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3Res"],
-		                                help="correction levels.")
+		                                help="correction levels for the input folder names. [Default: %(default)s]")
 		self.zjet_input_options.add_argument("--no-weight", action="store_true", default=False,
-		                                help="Dont apply 'weight' by default.")
+		                                help="Dont apply 'weight' by default when plotting from a TTree/TNtuple.")
 
 		self.input_options.set_defaults(read_config=True)
 

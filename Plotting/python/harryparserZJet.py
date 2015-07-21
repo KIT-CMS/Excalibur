@@ -16,7 +16,7 @@ class HarryParserZJet(harryparser.HarryParser):
 		self.set_defaults(input_modules="InputRootZJet")
 
 		self.add_argument('--list-functions', action='store_true', default=False,
-			help="Print the available json and python plot functions with comments/documentation")
+			help="Print a list of the available json and python plot functions and their comments/documentation.")
 
 	def parse_known_args(self, args=None, namespace=None):
 		known_args, unknown_args = super(HarryParserZJet, self).parse_known_args(args=args, namespace=namespace)

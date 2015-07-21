@@ -116,6 +116,9 @@ The binnings.py file in Plotting/python/utiliy contains a dictionary for special
 binnings for ZpT, jet eta, Npv. If you use e.g. `--x-bins zpt` (or dictionary key),
 the binning is replaced with the values from this dictionary.
 
+When plotting from a TTree/TNtuple, the 'weight' entry is automatically used as
+weight. Diable this with `--no-weight`.
+
 ##### PlotMplZJet
 The --cutlabel argument places a label with the used cuts (Z pT, abs(jet1eta),
  alpha) on the plot.

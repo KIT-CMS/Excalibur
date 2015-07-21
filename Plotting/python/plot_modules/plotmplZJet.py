@@ -57,11 +57,11 @@ class PlotMplZJet(plotmpl.PlotMpl):
 				 "'slides': sans serif, big, png; 'generic': slides + pdf. " +
 				 "Default is %(default)s")
 		self.formatting_options.add_argument('--cutlabel', action='store_true', default=False,
-			help="Place a label with the current cuts on the plot. [Defaut: %(default)s]")
+			help="Add a label with the cuts (ZpT. alpha, jet eta) for the used Artus-pipeline. [Defaut: %(default)s]")
 		self.formatting_options.add_argument("--marker-colors", type=str, nargs="+",
-			help="Plot colors for markers.")
+			help="Specify only the colors for markers.")
 		self.formatting_options.add_argument("--bar-colors", type=str, nargs="+",
-			help="Plot colors for bars.")
+			help="Specify only the colors for histogram bars.")
 
 
 	def prepare_args(self, parser, plotData):
