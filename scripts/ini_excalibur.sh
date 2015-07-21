@@ -5,7 +5,7 @@ export EXCALIBURPATH=$(dirname $(dirname $(readlink -mf ${BASH_SOURCE[0]})))
 export ARTUSPATH=$EXCALIBURPATH/../Artus
 
 # source Artus ini script
-source $EXCALIBURPATH/../Artus/Configuration/scripts/ini_ArtusAnalysis.sh
+source $ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh
 export PATH=$ARTUSPATH/Utility/scripts:$PATH
 
 # set the environment
