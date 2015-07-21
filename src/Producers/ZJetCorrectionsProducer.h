@@ -3,9 +3,9 @@
 
 #include "ZJetTypes.h"
 
-#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "JetMETObjects/interface/JetCorrectorParameters.h"
 
 #define USE_JEC
 #include "KappaTools/RootTools/JECTools.h"

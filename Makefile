@@ -17,7 +17,7 @@ GCCPLUSWARN    = -Wdouble-promotion -Wzero-as-null-pointer-constant
 PLUSWARNINGS   = -Wshadow -Wconversion -Wfloat-equal -Wno-unused-private-field
 # -Wpadded -Winline
 CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) \
- -Isrc/ -isystem ../ -isystem $(BOOSTPATH)/include/ \
+ -Isrc -I.. -isystem ../CondFormats -isystem $(BOOSTPATH)/include \
  $(GCCWARNINGS) $(GCCPLUSWARN)
 LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA \
  -L$(BOOSTPATH)/lib/ -lboost_regex\
