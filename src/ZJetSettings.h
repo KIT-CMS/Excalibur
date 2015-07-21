@@ -6,11 +6,11 @@ class ZJetSettings : public KappaSettings
 {
   public:
 	// ZProducer
-	IMPL_SETTING_DEFAULT(float, ZMass, 91.1876)
+	IMPL_SETTING_DEFAULT(float, ZMass, 91.1876f)
 	IMPL_SETTING(float, ZMassRange)
 
 	// TypeIMETProducer
-	IMPL_SETTING_DEFAULT(float, JetPtMin, 10.)
+	IMPL_SETTING_DEFAULT(float, JetPtMin, 10.0f)
 	IMPL_SETTING(bool, EnableMetPhiCorrection)
 	IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
 
@@ -44,7 +44,7 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING(float, CutZPtMin)
 	IMPL_SETTING(float, CutBackToBack)
 	IMPL_SETTING(float, CutAlphaMax)
-	IMPL_SETTING_DEFAULT(float, CutBetaMax, 1.0)
+	IMPL_SETTING_DEFAULT(float, CutBetaMax, 1.0f)
 
 	IMPL_SETTING(std::string, NPUFile);
 	IMPL_SETTING(double, Minbxsec);
