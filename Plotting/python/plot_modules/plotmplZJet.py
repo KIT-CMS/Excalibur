@@ -51,11 +51,12 @@ class PlotMplZJet(plotmpl.PlotMpl):
 
 		self.output_options.set_defaults(output_dir="plots/%s/" % datetime.date.today().strftime('%Y_%m_%d'))
 
-		self.formatting_options.add_argument('--layout', type=str,
+		#layout / rcParams option is deactivated for now
+		"""self.formatting_options.add_argument('--layout', type=str,
 			default='cmsstyle_JetMET',
 			help="layout for the plots. E.g. 'document': serif, LaTeX, pdf; " +
 				 "'slides': sans serif, big, png; 'generic': slides + pdf. " +
-				 "Default is %(default)s")
+				 "Default is %(default)s")"""
 		self.formatting_options.add_argument('--cutlabel', action='store_true', default=False,
 			help="Add a label with the cuts (ZpT. alpha, jet eta) for the used Artus-pipeline. [Defaut: %(default)s]")
 		self.formatting_options.add_argument("--marker-colors", type=str, nargs="+",
