@@ -76,6 +76,8 @@ Optional useful arguments are
 resource use. See `-h`
 - `-c` only create config and exit
 - `-f n` use only `n` input files
+Type `excalibur.py -h` for a list of all arguments.
+
 
 Examples
 - `excalibur.py data` to use the data.py config
@@ -106,6 +108,15 @@ merlin has the additional --zjetfolder, --algorithms and --corrections arguments
 From these arguments, the folder name is constructed, according to the ZJet folder
 naming convention "ZJetFolder_AlgorithmCorrection".
 
+'ZJetFolder' corresponds to different levels of event selection:
+- 'finalcuts' is the default, all cuts for Z+Jet calibration studies are applied
+- 'noetacuts' like finalcuts, but without the cut on the leading jet eta
+- 'noalphacuts' like finalcuts, but without the cut on alpha (= Jet2pT/ZpT)
+- 'noalphanoetacutscuts' like finalcuts, but without cuts on alpha or leading jet eta
+- 'zcuts' only cuts on Z boson and muons, no cuts on jets. Used for checking e.g. Z mass peak
+- 'nocuts' no cuts (only the basic event selection like json or hlt filter which
+is applied for all pipelines.)
+
 By default, MC histograms (from Artus root files) are scaled to the given
 luminosity (--lumi) if at least one Data file is used for plotting.
 
@@ -117,7 +128,7 @@ binnings for ZpT, jet eta, Npv. If you use e.g. `--x-bins zpt` (or dictionary ke
 the binning is replaced with the values from this dictionary.
 
 When plotting from a TTree/TNtuple, the 'weight' entry is automatically used as
-weight. Diable this with `--no-weight`.
+weight. Disable this with `--no-weight`.
 
 ##### PlotMplZJet
 The --cutlabel argument places a label with the used cuts (Z pT, abs(jet1eta),
