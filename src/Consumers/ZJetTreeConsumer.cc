@@ -24,6 +24,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return product.npumean_data;
 	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("hlt", [](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return (! product.m_selectedHltName.empty()); //check whether any HLT has fired
+	} );
 	
 	///////
 	// Z //

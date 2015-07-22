@@ -360,7 +360,9 @@ def mc_2011mm(cfg, **kwargs):
 
 
 def mc_2012ee(cfg, **kwargs):
-	pass
+	cfg['Processors'] += ['producer:HltProducer']
+	cfg['HltPaths'] = ['HLT_Ele17_Ele8_v%d' % v for v in range(1, 30)]
+	cfg['Pipelines']['default']['Quantities'] += ['hlt']
 
 
 def mc_2012mm(cfg, **kwargs):
