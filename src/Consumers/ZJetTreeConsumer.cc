@@ -596,7 +596,70 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
-
+	// gen electrons
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("ngenelectrons", [](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return product.m_genElectrons.size();
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genepluspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
+		{
+			if ((*genElectron)->charge() > 0) return (*genElectron)->p4.Pt();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("genepluseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
+		{
+			if ((*genElectron)->charge() > 0) return (*genElectron)->p4.Eta();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("geneplusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
+		{
+			if ((*genElectron)->charge() > 0) return (*genElectron)->p4.Phi();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("geneminuspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
+		{
+			if ((*genElectron)->charge() < 0) return (*genElectron)->p4.Pt();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("geneminuseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
+		{
+			if ((*genElectron)->charge() < 0) return (*genElectron)->p4.Phi();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("geneminusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float
+	{
+		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
+		{
+			if ((*genElectron)->charge() < 0) return (*genElectron)->p4.Eta();
+		}
+		return DefaultValues::UndefinedFloat;
+	} );
+	// Reco muon - gen muon matches
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenelectron1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		KGenParticle* genElectron = product.GetMatchedGenElectron(event, settings, 0);
+		return (genElectron != nullptr) ? genElectron->p4.Pt() : DefaultValues::UndefinedFloat;
+	} );
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("matchedgenelectron2pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		KGenParticle* genElectron = product.GetMatchedGenElectron(event, settings, 1);
+		return (genElectron != nullptr) ? genElectron->p4.Pt() : DefaultValues::UndefinedFloat;
+	} );
 
 	// Needs to be called at the end
 	KappaLambdaNtupleConsumer::Init(settings);

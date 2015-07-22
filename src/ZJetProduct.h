@@ -274,4 +274,12 @@ class ZJetProduct : public KappaProduct
 		else
 			return nullptr;
 	}
+	// Reco electron - gen electorn matching result
+	KGenParticle* GetMatchedGenElectron(ZJetEvent const& event, ZJetSettings const& settings, unsigned int index) const
+	{
+		if (m_validElectrons.size() > index)
+			return SafeMap::GetWithDefault(m_genParticleMatchedElectrons, m_validElectrons.at(index), (KGenParticle*)(nullptr));
+		else
+			return nullptr;
+	}
 };

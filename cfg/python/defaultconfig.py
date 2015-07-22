@@ -127,10 +127,6 @@ def mc(cfg, **kwargs):
 	# RecoJetGenJetMatchingProducer Settings
 	cfg['DeltaRMatchingRecoJetGenJet'] = 0.3
 
-	# RecoMuonGenParticleMatchingProducer Settings
-	cfg['RecoMuonMatchingGenParticleStatus'] = 1
-	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
-
 	# GenParticleProducer
 	cfg['GenParticleTypes'] = ['genParticle']
 	cfg['GenParticlePdgIds'] = [23] # Z
@@ -163,7 +159,7 @@ def _2015(cfg, **kwargs):
 
 
 def ee(cfg, **kwargs):
-	cfg['Electrons'] = 'electrons'
+	cfg['Electrons'] = 'correlectrons'
 	cfg['ElectronMetadata'] = 'electronMetadata'
 	cfg['Processors'] = [
 		'producer:ValidElectronsProducer',
@@ -307,7 +303,24 @@ def mc_2015(cfg, **kwargs):
 	cfg['Jec'] = configtools.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
 
 def mcee(cfg, **kwargs):
-	pass
+	cfg['Pipelines']['default']['Quantities'] += [
+		'ngenelectrons',
+		'matchedgenelectron1pt',
+		'matchedgenelectron2pt',
+		'ngenelectrons',
+		'genepluspt',
+		'genepluseta',
+		'geneplusphi',
+		'geneminuspt',
+		'geneminuseta',
+		'geneminusphi',
+	]
+	cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
+	cfg['RecoElectronMatchingGenParticleStatus'] = 1
+	cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
+
+	cfg['GenParticleTypes'] += ['genElectron']
+	cfg['GenElectronStatus'] = 1
 
 def mcmm(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
@@ -322,7 +335,9 @@ def mcmm(cfg, **kwargs):
 		'genmuminusphi',
 	]
 	cfg['Processors'] += ['producer:RecoMuonGenParticleMatchingProducer']
-	
+	cfg['RecoMuonMatchingGenParticleStatus'] = 1
+	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
+
 	cfg['GenParticleTypes'] += ['genMuon']
 	cfg['GenMuonStatus'] = 1
 
