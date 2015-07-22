@@ -361,7 +361,7 @@ def mc_2011mm(cfg, **kwargs):
 
 def mc_2012ee(cfg, **kwargs):
 	cfg['Processors'] += ['producer:HltProducer']
-	cfg['HltPaths'] = ['HLT_Ele17_Ele8_v%d' % v for v in range(1, 30)]
+	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 30)]
 	cfg['Pipelines']['default']['Quantities'] += ['hlt']
 
 
@@ -381,7 +381,7 @@ def data_2015mm(cfg, **kwargs):
 
 
 def data_2012ee(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Ele17_Ele8_v%d' % v for v in range(1, 30)]
+	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 30)]
 
 
 def data_2012em(cfg, **kwargs):
