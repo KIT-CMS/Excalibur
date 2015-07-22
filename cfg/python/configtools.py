@@ -16,7 +16,7 @@ import stat
 import getpass
 import json
 import sys
-import ZJetConfigFunctions
+import defaultconfig
 
 
 def getConfig(inputtype, year, channel, **kwargs):
@@ -31,7 +31,7 @@ def getConfig(inputtype, year, channel, **kwargs):
 	# python class/function names cant start with a number -> add '_' to year
 	l = [channel, inputtype, '_' + str(year)]
 	print "Getting cfg for", channel, inputtype, year
-	cfg = ZJetConfigFunctions.getBaseConfig(**kwargs)
+	cfg = defaultconfig.getBaseConfig(**kwargs)
 
 	# iterate over all combinations and call updateConfig(single-entry tuples first):
 	for i in l:
@@ -53,8 +53,8 @@ def getConfig(inputtype, year, channel, **kwargs):
 
 def updateConfig(conf, tupl, **kwargs):
 	string = "".join(tupl)
-	if string in dir(ZJetConfigFunctions):
-		getattr(ZJetConfigFunctions, string)(conf, **kwargs)
+	if string in dir(defaultconfig):
+		getattr(defaultconfig, string)(conf, **kwargs)
 
 
 def getPath(variable='EXCALIBURPATH', nofail=False):
