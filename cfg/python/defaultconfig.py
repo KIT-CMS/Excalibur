@@ -1,6 +1,6 @@
 import configtools
 
-def getBaseConfig(**kwargs):
+def getBaseConfig(tagged=True, **kwargs):
 	cfg = {
 		'SkipEvents': 0,
 		'EventCount': -1,
@@ -50,7 +50,7 @@ def getBaseConfig(**kwargs):
 					'jet1chf', 'jet1nhf', 'jet1ef',
 					'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
 					'jet1area',
-					'jet1btag', 'jet1qgtag',
+					
 					'jet1l1', 'jet1rc', 'jet1l2',
 					'jet1ptraw', 'jet1ptl1',
 					#'jet1unc',  # Leading jet uncertainty
@@ -69,6 +69,8 @@ def getBaseConfig(**kwargs):
 		'LumiMetadata' : 'lumiInfo',
 		'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
 	}
+	if tagged:
+		cfg['Pipelines']['default']['Quantities'] += ['jet1btag', 'jet1qgtag']
 	return cfg
 
 ##
@@ -92,7 +94,6 @@ def mc(cfg, **kwargs):
 	cfg['Processors'] += [
 		'producer:RecoJetGenPartonMatchingProducer',
 		'producer:RecoJetGenJetMatchingProducer',
-		'producer:RecoMuonGenParticleMatchingProducer',
 		'producer:GenParticleProducer',
 	]
 	cfg['GenParticles'] = 'genParticles'
@@ -117,15 +118,6 @@ def mc(cfg, **kwargs):
 		'genzy',
 		'genzmass',
 		'deltarzgenz',
-		'matchedgenmuon1pt',
-		'matchedgenmuon2pt',
-		'ngenmuons',
-		'genmupluspt',
-		'genmupluseta',
-		'genmuplusphi',
-		'genmuminuspt',
-		'genmuminuseta',
-		'genmuminusphi',
 	]
 
 	# RecoJetGenPartonMatchingProducer Settings
@@ -140,10 +132,10 @@ def mc(cfg, **kwargs):
 	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
 
 	# GenParticleProducer
-	cfg['GenParticleTypes'] = ['genParticle', 'genMuon']
+	cfg['GenParticleTypes'] = ['genParticle']
 	cfg['GenParticlePdgIds'] = [23] # Z
 	cfg['GenParticleStatus'] = 2
-	cfg['GenMuonStatus'] = 1
+
 
 ##
 ##
@@ -180,7 +172,7 @@ def ee(cfg, **kwargs):
 		'producer:ValidTaggedJetsProducer',
 		'filter:ValidJetsFilter',
 		'producer:ZJetCorrectionsProducer',
-		#'producer:TypeIMETProducer',
+		'producer:TypeIMETProducer',
 		'producer:JetSorter',
 		'producer:ZeeProducer',
 		'filter:ZFilter',
@@ -201,6 +193,7 @@ def ee(cfg, **kwargs):
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
 	cfg['CutAlphaMax'] = 0.2
+	cfg['ZMassRange'] = 10
 
 	cfg['Pipelines']['default']['Quantities'] += [
 		'epluspt', 'epluseta', 'eplusphi', 'eplusiso',
@@ -315,6 +308,23 @@ def mc_2015(cfg, **kwargs):
 
 def mcee(cfg, **kwargs):
 	pass
+
+def mcmm(cfg, **kwargs):
+	cfg['Pipelines']['default']['Quantities'] += [
+		'matchedgenmuon1pt',
+		'matchedgenmuon2pt',
+		'ngenmuons',
+		'genmupluspt',
+		'genmupluseta',
+		'genmuplusphi',
+		'genmuminuspt',
+		'genmuminuseta',
+		'genmuminusphi',
+	]
+	cfg['Processors'] += ['producer:RecoMuonGenParticleMatchingProducer']
+	
+	cfg['GenParticleTypes'] += ['genMuon']
+	cfg['GenMuonStatus'] = 1
 
 
 def _2011mm(cfg, **kwargs):
