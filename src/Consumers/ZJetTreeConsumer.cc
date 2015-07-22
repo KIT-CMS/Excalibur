@@ -26,7 +26,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	} );
 	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("hlt", [](ZJetEvent const& event, ZJetProduct const& product)
 	{
-		return (! product.m_selectedHltName.empty()); //check whether any HLT has fired
+		return (! product.m_selectedHltNames.empty()); //check whether any HLT has fired
 	} );
 	
 	///////
