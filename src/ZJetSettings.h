@@ -32,6 +32,11 @@ class ZJetSettings : public KappaSettings
 	// RadiationJetProducer
 	IMPL_SETTING_DEFAULT(double, DeltaRRadiationJet, 1.0)
 
+	// for ZJetNumberGeneratedEventsWeightProducer: sample reweighting
+	IMPL_SETTING_DEFAULT(bool, SampleReweighting, false)
+	IMPL_SETTING_DOUBLELIST(SampleReweightingCrossSections)
+	IMPL_SETTING_INTLIST(SampleReweightingNEvents)
+
 	// ZJetCutsFilter
 	IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMin, 2)
 	IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMax, 3)
