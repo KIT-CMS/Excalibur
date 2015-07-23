@@ -145,6 +145,7 @@ def mc(cfg, **kwargs):
 	]
 	cfg['EventWeight'] = 'weight'
 	cfg['CrossSection'] = -1
+	cfg['BaseWeight'] = 1000
 
 ##
 ##
