@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time import strftime
+import time
 
 import Excalibur.Plotting.harryinterface as harryinterface
 import Artus.Utility.logger as logger
@@ -25,7 +25,8 @@ def jec_combination(args=None, additional_dictionary=None):
 	eta_strings = ["eta_{0:0>2d}_{1:0>2d}".format(int(round(10*up)), int(round(10*low))) for up, low in zip(eta_borders[:-1], eta_borders[1:])]
 	eta_strings = ["eta_00_13"] + eta_strings
 
-	first = True	
+	now = time.localtime()
+	first = True
 	for method in ['mpf', 'ptbalance', 'rawmpf']:
 		for alphacut, alphastring in zip(alpha_cuts, alpha_strings):
 			for etacut, etastring in zip(eta_cuts, eta_strings):
@@ -40,7 +41,7 @@ def jec_combination(args=None, additional_dictionary=None):
 						'tree_draw_options' : 'prof',
 						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 						'corrections': [correction],
-						'filename': 'combination_ZJet_' + strftime("%Y-%m-%d"),
+						'filename': 'combination_ZJet_' + time.strftime("%Y-%m-%d", now),
 						'file_mode': ('RECREATE' if first else 'UPDATE'),
 						'weights': ['&&'.join([alphacut, etacut])]
 					}
