@@ -133,6 +133,19 @@ def mc(cfg, **kwargs):
 	cfg['GenParticleStatus'] = 2
 
 
+	# MC sample reweighting
+	cfg['Processors'] += [
+		'producer:CrossSectionWeightProducer',
+		'producer:ZJetNumberGeneratedEventsWeightProducer',
+		'producer:EventWeightProducer',
+	]
+	cfg['Pipelines']['default']['Quantities'] += [
+		'numberGeneratedEventsWeight',
+		'crossSectionPerEventWeight',
+	]
+	cfg['EventWeight'] = 'weight'
+	cfg['CrossSection'] = -1
+
 ##
 ##
 

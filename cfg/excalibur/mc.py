@@ -10,5 +10,7 @@ def config():
 		nafpath="/pnfs/desy.de/cms/tier2/store/user/dhaitz/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/*.root",
 	)
 	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
+	cfg['NumberGeneratedEvents'] = 30459503
+	cfg['CrossSection'] = 3503.71
 
 	return cfg

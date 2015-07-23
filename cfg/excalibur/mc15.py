@@ -17,5 +17,8 @@ def config():
 	cfg['RC'] = False # No RC JEC files available at the moment
 
 	cfg['CutAlphaMax'] = 0.3
+	
+	cfg['NumberGeneratedEvents'] = 299269
+	cfg['CrossSection'] = 6025.2  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat13TeV
 
 	return cfg
