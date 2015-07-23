@@ -6,13 +6,13 @@
 #include "ZJetTypes.h"
 
 /** Producer for reco jet gen parton matches
- * 
+ *
  *  Possible config tags:
  *  - DeltaRMatchingRecoJetGenParticle (default provided)
  *  - JetMatchingAlgorithm (default provided)
  */
 
- 
+
 class RecoJetGenPartonMatchingProducer: public RecoJetGenParticleMatchingProducer
 {
 

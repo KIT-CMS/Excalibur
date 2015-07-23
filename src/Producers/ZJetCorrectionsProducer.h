@@ -13,17 +13,17 @@
 
 /**
    \brief Producer for tagged jet corrections (mainly JEC)
-   
+
    Required config tags:
    - JEC (path and prefix of the correction files)
    Not yet implemented:
    (- JetEnergyCorrectionUncertaintyParameters (default: empty))
    (- JetEnergyCorrectionUncertaintySource (default ""))
    (- JetEnergyCorrectionUncertaintyShift (default 0.0))
-   
+
    Required packages (unfortunately, nobody knows a tag):
    git cms-addpkg CondFormats/JetMETObjects
-   
+
    Documentation:
    https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorFWLite
 
@@ -33,11 +33,11 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
 {
   public:
     virtual std::string GetProducerId() const override;
-    
+
 	ZJetCorrectionsProducer() : ZJetProducerBase()
 	{
 	}
-	
+
 	~ZJetCorrectionsProducer()
 	{
 		delete m_l1;
@@ -50,7 +50,7 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
 		delete m_l5c;
 		delete m_l2l3res;
 	}
-	
+
 	void Init(ZJetSettings const& settings);
 
 	void Produce(ZJetEvent const& event, ZJetProduct& product,
@@ -71,6 +71,6 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
 	FactorizedJetCorrector* m_l5b = nullptr;
 	FactorizedJetCorrector* m_l5c = nullptr;
 	FactorizedJetCorrector* m_l2l3res = nullptr;
-	
+
 	JetCorrectionUncertainty* correctionUncertainty = nullptr;
 };

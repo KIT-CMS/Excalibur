@@ -5,20 +5,20 @@ std::string TypeIMETProducer::GetProducerId() const { return "TypeIMETProducer";
 void TypeIMETProducer::Init(ZJetSettings const& settings)
 {
 	ZJetProducerBase::Init(settings);
-	
+
 	m_metPhiCorrectionParameters = settings.GetMetPhiCorrectionParameters();
 
 	// Use random cone?
 	m_l1Corr = settings.GetRC() ? "RC" : "L1";
 
 	m_corrLevels.emplace_back("L1L2L3");
-	
+
 	// Residual correctiuons if input is data
 	if (settings.GetInputIsData() && settings.GetProvideResidualCorrections())
 	{
 		m_corrLevels.emplace_back("L1L2L3Res");
 	}
-	
+
 	// Flavor based corrections
 	if (settings.GetFlavourCorrections())
 	{

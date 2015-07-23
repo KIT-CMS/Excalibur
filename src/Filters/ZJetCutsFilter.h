@@ -6,7 +6,7 @@
 
 /**
  * Filter class with cuts for ZJet analysis.
- * 
+ *
  * min nmuons
  * max nmuons
  * muon pt
@@ -234,7 +234,7 @@ class LeadingJetEtaCut : public ZJetFilterBase
 	virtual std::string GetFilterId() const override { return "LeadingJetEtaCut"; }
 
 	LeadingJetEtaCut() : ZJetFilterBase(){};
-	
+
 	virtual void Init(ZJetSettings const& settings) override
 	{
 		ZJetFilterBase::Init(settings);

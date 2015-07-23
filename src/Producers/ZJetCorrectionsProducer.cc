@@ -26,13 +26,13 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 
 	// JEC initialization
 	std::vector<JetCorrectorParameters> jecParameters;
-	
+
 	// L1 depending on config parameter
 	jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + settings.GetL1Correction() + "_" + algoName + ".txt"));
 	LOG(INFO) << "\t -- " << settings.GetJec() << "_" << settings.GetL1Correction() << "_" << algoName << ".txt";
 	m_l1 = new FactorizedJetCorrector(jecParameters);
 	jecParameters.clear();
-	
+
 	// RC
 	if (settings.GetRC())
 	{
@@ -41,19 +41,19 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 		m_rc = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 	}
-	
+
 	// L2Relative
 	jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L2Relative" + "_" + algoName + ".txt"));
 	LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L2Relative" << "_" << algoName << ".txt";
 	m_l2 = new FactorizedJetCorrector(jecParameters);
 	jecParameters.clear();
-	
+
 	// L3Absolute
 	jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L3Absolute" + "_" + algoName + ".txt"));
 	LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L3Absolute" << "_" << algoName << ".txt";
 	m_l3 = new FactorizedJetCorrector(jecParameters);
 	jecParameters.clear();
-	
+
 	// Flavor based corrections
 	if (settings.GetFlavourCorrections())
 	{
@@ -83,7 +83,7 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 		m_l2l3res = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 	}
-	
+
 	// JEU initialization
 	// Not yet implemented..
 }
@@ -94,7 +94,7 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event, ZJetProduct& produ
 	// TODO: Do we need more assertions?
 	assert(event.m_pileupDensity);
 	assert(event.m_vertexSummary);
-	
+
 	CorrectJetCollection("None", "L1", m_l1, event, product, settings);
 	if (settings.GetRC())
 	{

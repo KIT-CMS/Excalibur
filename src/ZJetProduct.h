@@ -8,8 +8,8 @@
 /**
    \brief Container class for everything that can be produced in pipeline.
 
-   Defines any outcome that could be produced by a KappaProducer during a common analysis chain in a 
-   given KappaPipeline. Via the PipelineRunner the KappaProduct all extra products in the analysis 
+   Defines any outcome that could be produced by a KappaProducer during a common analysis chain in a
+   given KappaPipeline. Via the PipelineRunner the KappaProduct all extra products in the analysis
    chain will be passed on to subsequent Producers, Filters and Consumers.
 */
 
@@ -21,14 +21,14 @@ class ZJetProduct : public KappaProduct
 	// Added by ZProducer
 	bool m_validZ = false;
 	KLV m_z;
-	
+
 	// Added by ZJetValidJetsProducer
 	//mutable std::map<std::string, std::vector<KJet*> > m_validZJets;
 	//mutable std::map<std::string, std::vector<KJet*> > m_invalidZJets;
-	
+
 	// Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the product after creation
 	std::map<std::string, std::vector<std::shared_ptr<KJet> > > m_correctedZJets;
-	
+
 	// Added by ZJetCorrectionsProducer, necessary to cross-check the applied JEC factors: pT of jets has to be saved BEFORE sorting
 	float jetpt_l1;
 	float jetpt_rc;
@@ -37,10 +37,10 @@ class ZJetProduct : public KappaProduct
 
 	// Added by TypeIMETProducer
 	std::map<std::string, KMET> m_corrMET;
-	
+
 	// Added by RecoJetGenPartonMatchingProducer
 	std::map<std::string, std::map<KJet*, KGenParticle*> > m_matchedGenPartons;
-	
+
 	// Added by RecoJetGenJetMatchingProducer
 	boost::ptr_map<std::string, std::vector<int> > m_matchedGenJets;
 
@@ -54,7 +54,7 @@ class ZJetProduct : public KappaProduct
 	/////////////////////////////
 	// Functions for Consumers //
 	/////////////////////////////
-	
+
 	// Access to valid/corrected jets
 	unsigned long GetValidJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
@@ -113,7 +113,7 @@ class ZJetProduct : public KappaProduct
 	{
 		return GetValidJet(settings, event, 0, settings.GetCorrectionLevel());
 	}
-	
+
 	// Access to radiation jets
 	unsigned long GetRadiationJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
@@ -127,20 +127,20 @@ class ZJetProduct : public KappaProduct
 			return SafeMap::Get(m_radiationJets, corrLevel).size();
 		}
 	}
-	
+
 	unsigned long GetRadiationJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event) const
 	{
 		return GetRadiationJetCount(settings, event, settings.GetCorrectionLevel());
 	}
-	
+
 	unsigned long GetRadiationJetIndex(ZJetSettings const& settings,
 					 ZJetEvent const& event,
 					 unsigned long index,
 					 std::string corrLevel) const
 	{
 		assert(GetRadiationJetCount(settings, event, corrLevel) > index);
-		
+
 		// Gen jets are always radiation jets
 		if (corrLevel == "Gen") {
 			return index;
@@ -149,21 +149,21 @@ class ZJetProduct : public KappaProduct
 			return SafeMap::Get(m_radiationJetsIndex, corrLevel)[index];
 		}
 	}
-	
+
 	unsigned long GetRadiationJetIndex(ZJetSettings const& settings,
 	                 ZJetEvent const& event,
 	                 unsigned long index) const
 	{
 		return GetRadiationJetIndex(settings, event, index, settings.GetCorrectionLevel());
 	}
-	
+
 	KLV* GetRadiationJet(ZJetSettings const& settings,
 					 ZJetEvent const& event,
 					 unsigned long index,
 					 std::string corrLevel) const
 	{
 		assert(GetRadiationJetCount(settings, event, corrLevel) > index);
-		
+
 		// Gen jets
 		if (corrLevel == "Gen") {
 			return &(event.m_genJets->at(index));
@@ -179,7 +179,7 @@ class ZJetProduct : public KappaProduct
 	{
 		return GetRadiationJet(settings, event, index, settings.GetCorrectionLevel());
 	}
-	
+
 
 	// Access to invalid jets
 	unsigned long GetInvalidJetCount(ZJetSettings const& settings,
@@ -201,7 +201,7 @@ class ZJetProduct : public KappaProduct
 	{
 		return GetInvalidJetCount(settings, event, settings.GetCorrectionLevel());
 	}
-	
+
 	// Access to (un)corrected MET
 	KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
 	{
@@ -258,7 +258,7 @@ class ZJetProduct : public KappaProduct
 		else
 			return nullptr;
 	}
-	
+
 	// Access to gen Z
 	KGenParticle* GetGenZ() const
 	{

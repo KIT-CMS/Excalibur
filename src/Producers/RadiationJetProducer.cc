@@ -13,7 +13,7 @@ void RadiationJetProducer::Produce(ZJetEvent const& event,
 {
 	// Get radiation jets for no corrections
 	GetRadiationJets("None", event, product, settings);
-	
+
 	// Iterate over all jet correction levels
 	for (std::map<std::string, std::vector<std::shared_ptr<KJet> > >::const_iterator
 	     itlevel = product.m_correctedZJets.begin();
@@ -21,7 +21,7 @@ void RadiationJetProducer::Produce(ZJetEvent const& event,
 	{
 		GetRadiationJets(itlevel->first, event, product, settings);
 	}
-	
+
 }
 
 void RadiationJetProducer::GetRadiationJets(std::string corrLevel, ZJetEvent const& event,
