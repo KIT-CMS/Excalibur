@@ -311,6 +311,10 @@ def mc_2012(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
 	cfg['Jec'] = configtools.getPath() + '/data/jec/Winter14_V8/Winter14_V8_MC'
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
+	# insert PU weight producer before EventWeightProducer:
+	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
+	cfg['PileupWeightFile'] = configtools.getPath() + '/data/pileup/weights_190456-208686_8TeV_22Jan2013ReReco_madgraphPU-RD.root'
+	cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 
 def mc_2015(cfg, **kwargs):
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
