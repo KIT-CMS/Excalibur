@@ -18,6 +18,7 @@ import socket
 def ZJet():
 	"""ZJet modifies and runs the configs"""
 	aborted = False
+	artus_returncode = 0
 	options = getoptions()
 	if not options.nologo:
 		print logo()
@@ -135,13 +136,13 @@ def ZJet():
 		try:
 			child = subprocess.Popen(["artus", options.json])
 			streamdata = child.communicate()[0]
-			returncode = child.returncode
+			artus_returncode = child.returncode
 		except KeyboardInterrupt:
 			aborted = True
 			print '\33[31m%s\033[0m' % "zjet run was aborted prematurely."
 
 	# show message and optionally open root file
-	if returncode != 0:
+	if artus_returncode != 0:
 		showMessage("Excalibur", "zjet run with config " + options.out + " FAILED!", fail=True)
 	elif aborted:
 		showMessage("Excalibur", "zjet run with config " + options.out + " aborted.")
