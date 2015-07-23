@@ -133,13 +133,17 @@ def ZJet():
 			except KeyboardInterrupt:
 				exit(0)
 		try:
-			subprocess.call(["artus", options.json])
+			child = subprocess.Popen(["artus", options.json])
+			streamdata = child.communicate()[0]
+			returncode = child.returncode
 		except KeyboardInterrupt:
 			aborted = True
 			print '\33[31m%s\033[0m' % "zjet run was aborted prematurely."
 
 	# show message and optionally open root file
-	if aborted:
+	if returncode != 0:
+		showMessage("Excalibur", "zjet run with config " + options.out + " FAILED!", fail=True)
+	elif aborted:
 		showMessage("Excalibur", "zjet run with config " + options.out + " aborted.")
 	else:
 		showMessage("Excalibur", "zjet run with config " + options.out + " done.")
@@ -327,9 +331,9 @@ def createRunfile(configjson, filename='test.sh', original=None, workpath=None):
 		f.write(text)
 
 
-def showMessage(title, message):
+def showMessage(title, message, fail=False):
 	userpc = "%s@%s" % (getEnv('USER'), getEnv('USERPC'))
-	iconpath = '/usr/users/dhaitz/excalibur/excal_small.jpg'
+	iconpath = '/usr/users/dhaitz/excalibur/excal_small{}.jpg'.format('_fail' if fail else '')
 	try:
 		if 'ekplx' in userpc:
 			subprocess.call(['ssh', userpc,
