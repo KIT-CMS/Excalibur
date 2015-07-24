@@ -208,8 +208,8 @@ def ee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
 		'epluspt', 'epluseta', 'eplusphi', 'eplusiso',
 		'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
-		'e1pt', 'e1eta', 'e1phi',
-		'e2pt', 'e2eta', 'e2phi',
+		'e1pt', 'e1eta', 'e1phi', 'e1looseid', 'e1mediumid', 'e1tightid', 'e1vetoid',
+		'e2pt', 'e2eta', 'e2phi', 'e2looseid', 'e2mediumid', 'e2tightid', 'e2vetoid',
 		'nelectrons',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
