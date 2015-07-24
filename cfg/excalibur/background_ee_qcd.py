@@ -7,8 +7,6 @@ def config():
 		ekppath="/storage/a/dhaitz/skims/2015-07-22_ee-backgrounds_Run2012/kappa_QCD*.root",
 		nafpath="/pnfs/desy.de/cms/tier2/store/user/dhaitz/2015-07-22_ee-backgrounds_Run2012/QCD*.root",
 	)
-	cfg['TaggedJets'] = 'ak5PFJetsCHS'
-
 	# dict of cross section for the samples and respective NEvents
 	qcd_samples = {
 		2.89424e+08:  35040695,
@@ -21,5 +19,4 @@ def config():
 	cfg['SampleReweighting'] = True
 	cfg['SampleReweightingCrossSections'] = qcd_samples.keys()
 	cfg['SampleReweightingNEvents'] = [qcd_samples[key] for key in cfg['SampleReweightingCrossSections']]
-
 	return cfg
