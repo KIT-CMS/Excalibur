@@ -87,12 +87,12 @@ def response_comparisons(args2=None, additional_dictionary=None):
 		['zpt', 'npv', 'abs(jet1eta)'],
 		['zpt', 'npv','abseta']
 	], known_args.no_quantities)):
-		for method in get_list_slice([['ptbalance', 'mpf']], known_args.no_methods)[0]:
+		for method in get_list_slice([['ptbalance', 'mpf', 'jet1pt/matchedgenjet1pt']], known_args.no_methods)[0]:
 			d = {
 				'y_expressions': [method],
 				'x_expressions': [quantity],
 				'x_bins': bins,
-				'y_lims': [0.5, 1.5],
+				'y_lims': [0.85, 1.1],
 				'x_errors': [1],
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
@@ -104,7 +104,7 @@ def response_comparisons(args2=None, additional_dictionary=None):
 
 				'filename': method + "_" + quantity.replace("(", "").replace(")", ""),
 				
-				'y_subplot_lims': [0.5, 1.5],
+				'y_subplot_lims': [0.8, 1.09],
 			}
 			if quantity == 'abs(jet1eta)':
 				d['zjetfolders'] = ["noetacuts"]
@@ -112,11 +112,52 @@ def response_comparisons(args2=None, additional_dictionary=None):
 			if quantity == 'zpt':
 				d['x_log'] = True
 				d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+			if method == 'jet1pt/matchedgenjet1pt':
+				d['filename'] = "true_response_" + quantity.replace("(", "").replace(")", "")
+				d['y_label'] = r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$'
 			if additional_dictionary != None:
 				d.update(additional_dictionary)
 			plots.append(d)
 	harryinterface.harry_interface(plots, args)
 
+def response_bins(args=None, additional_dictionary=None):
+	plots = []
+
+	for x_value, filename in zip(
+		['mpf', 'ptbalance', 'jet1pt/matchedgenjet1pt'],
+		['mpf', 'ptbalance', 'true']
+	):
+		for weight, filename_postfix in zip(
+			[
+				"npv>-0.5&&npv<4.5",
+				"npv>4.5&&npv<8.5",
+				"npv>8.5&&npv<15.5",
+				"npv>15.5&&npv<21.5",
+				"npv>21.5&&npv<45.5",
+			],
+			[
+				"npv_1",
+				"npv_2",
+				"npv_3",
+				"npv_4",
+				"npv_5",
+			]
+		):
+			d = {
+				'filename': 'response_bins_' + filename + '_' + filename_postfix,
+				'x_expressions': [x_value],
+				'x_bins': ["20,0,2"],
+				'weights': [weight],
+				'title': weight,
+				'analysis_modules': ['NormalizeToFirstHisto'],
+				'cutlabel': True,
+			}
+
+			if additional_dictionary != None:
+				d.update(additional_dictionary)
+			plots.append(d)
+
+	harryinterface.harry_interface(plots, args)
 
 def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
@@ -161,12 +202,17 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'x_expressions': [quantity],
 			'cutlabel': True,
 			'analysis_modules': ['Ratio'],
-			'y_subplot_lims': [0, 2],
+			'y_subplot_lims': [0, 1.99],
 		}
 		d["y_log"] = quantity in ['jet1pt', 'zpt']
 		if quantity in x_dict:
 			d["x_bins"] = [x_dict[quantity][0]]
 			d["legend"] = x_dict[quantity][1]
+		if quantity == 'zpt':
+			d['y_lims'] = [10, 1000000]
+		if quantity == 'njets':
+			d['x_lims'] = [0, 100]
+			d['x_bins'] = "100,0,100"
 
 		if additional_dictionary:
 			d.update(additional_dictionary)
@@ -375,9 +421,10 @@ def jet_resolution(args=None, additional_dictionary=None):
 	methoddict = {
 		'mpf': 'MPF',
 		'ptbalance': r'$\\mathit{p}_T$ balance',
+		'jet1pt/matchedgenjet1pt': r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$',
 	}
 	for quantity in ['zpt', 'npv', 'jet1abseta']:
-		for method in ['mpf', 'ptbalance']:
+		for method in ['mpf', 'ptbalance', 'jet1pt/matchedgenjet1pt']:
 			d = {
 				'labels': ['data', 'mc'],
 				'cutlabel': True,
@@ -407,7 +454,10 @@ def jet_resolution(args=None, additional_dictionary=None):
 			elif quantity == 'npv':
 				d['x_lims'] = [0, 40]
 
-			if additional_dictionary != None:
+			if method == 'jet1pt/matchedgenjet1pt':
+				d['filename'] = 'jet_resolution_{0}_vs_{1}'.format('true', quantity)
+
+			if additional_dictionary is not None:
 				d.update(additional_dictionary)
 			plots.append(d)
 	harryinterface.harry_interface(plots, args)
@@ -439,19 +489,23 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	response_extrapolation(args, d)
 	jet_resolution(args, d)
 
-def comparsion_CHS_Puppi(args=None):
-	""" Do full comparison for E1 and E2 ntuples """
+def comparison_CHS_Puppi(args=None):
+	""" Do full comparison for CHS and Puppi Jets """
 	d = {
 		'files': [
-			'work/mc15.root',
 			'work/mc15Puppi.root',
+			'work/mc15.root',
 		],
-		"algorithms": ["ak4PFJetsCHS", "ak4PFJetsPuppi"],
+		"algorithms": [ "ak4PFJetsPuppi", "ak4PFJetsCHS"],
 		'corrections': [''],
-		'labels': ['CHS (MC)', 'Puppic (MC)'],
+		'labels': ['Puppi (MC)', 'CHS (MC)'],
 	}
-	full_comparison(args, d)
-	jet_resolution_vs_pt(args, additional_dictionary=d)
+	#full_comparison(args, d, False)
+	#response_comparisons(args, additional_dictionary=d)
+	#jet_resolution(args, additional_dictionary=d)
+	#response_bins(args, d)
+	d.update({'folders': ['finalcuts_ak4PFJetsPuppi', 'finalcuts_ak4PFJetsCHS']})
+	cutflow(args, d)
 
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """

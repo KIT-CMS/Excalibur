@@ -298,7 +298,7 @@ def data_2012(cfg, **kwargs):
 
 
 def data_2015(cfg, **kwargs):
-	cfg['Jec'] = configtools.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV2_MC/Summer15_50nsV2_MC'
 	#json file from /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
 	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-251252_13TeV_PromptReco_Collisions15_JSON.txt']
 	cfg['Lumi'] = 0.00559
@@ -318,7 +318,7 @@ def mc_2012(cfg, **kwargs):
 
 def mc_2015(cfg, **kwargs):
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
-	cfg['Jec'] = configtools.getPath() + '/data/jec/PY8_RunIISpring15DR74_bx50/PY8_RunIISpring15DR74_bx50_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV2_MC/Summer15_50nsV2_MC'
 
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
