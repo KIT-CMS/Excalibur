@@ -210,7 +210,9 @@ def ee(cfg, **kwargs):
 		'epluspt', 'epluseta', 'eplusphi', 'eplusiso',
 		'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
 		'e1pt', 'e1eta', 'e1phi', 'e1looseid', 'e1mediumid', 'e1tightid', 'e1vetoid',
+		'e1looseid95', 'e1mediumid95', 'e1tightid95', 'e1mvanontrig', 'e1mvatrig',
 		'e2pt', 'e2eta', 'e2phi', 'e2looseid', 'e2mediumid', 'e2tightid', 'e2vetoid',
+		'e2looseid95', 'e2mediumid95', 'e2tightid95', 'e2mvanontrig', 'e2mvatrig',
 		'nelectrons',
 		'njets30',
 	]
