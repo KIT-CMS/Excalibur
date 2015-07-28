@@ -27,6 +27,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'eminuspt': '$\mathit{p}_{T}^{e^{-}}$ / GeV',
 			'epluspt': '$\mathit{p}_{T}^{e^{+}}$ / GeV',
 			'ept': '$\mathit{p}_{T}^{Electron}$ / GeV',
+			'erecogen': 'Electron $\mathit{p}_T^{Reco}/\mathit{p}_T^{Gen}$',
 			'eventsperbin': 'Events per Bin',
 			'geneminuseta': '$\mathit{\eta}_{e^{-}, Gen}$',
 			'geneminuspt': '$\mathit{p}_{T}^{e^{-}, Gen}$ / GeV',
