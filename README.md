@@ -50,12 +50,12 @@ git clone https://github.com/artus-analysis/Excalibur.git
 
 In a next step you need to compile all those packages:
 ```
-make -C Kappa/DataFormats/test
-make -C KappaTools
-cd Artus ; cmake . ; make -j4 ; cd ..
+make -B -C Kappa/DataFormats/test
+make -j4 -B -C KappaTools
+cd Artus ; cmake . ; make -B -j4 ; cd ..
 cd Excalibur
 . scripts/ini_excalibur.sh
-make
+make -j4 -B
 ```
 (todo: a script should do that and the Makefile should fully handle all parts)
 
