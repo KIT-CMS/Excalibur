@@ -222,6 +222,9 @@ def ee(cfg, **kwargs):
 		'filter:ZPtCut',
 		'filter:BackToBackCut',
 	]
+	cfg['Pipelines']['default']['Consumers'] += [
+		'KappaElectronsConsumer',
+	]
 
 def em(cfg, **kwargs):
 	pass
@@ -334,12 +337,18 @@ def mcee(cfg, **kwargs):
 		'geneminuseta',
 		'geneminusphi',
 	]
+	# reco-gen matching
 	cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
 	cfg['RecoElectronMatchingGenParticleStatus'] = 1
 	cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
-
+	cfg["RecoElectronMatchingGenParticlePdgIds"] = 11
+	cfg["InvalidateNonGenParticleMatchingRecoElectrons"] = False
 	cfg['GenParticleTypes'] += ['genElectron']
 	cfg['GenElectronStatus'] = 1
+	cfg['BranchGenMatchedElectrons'] = True
+	# KappaCollectionsConsumer: dont add taus or taujets:
+	cfg['AddGenMatchedTaus'] = False
+	cfg['AddGenMatchedTauJets'] = False
 
 def mcmm(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
