@@ -211,6 +211,7 @@ def ee(cfg, **kwargs):
 		'e1pt', 'e1eta', 'e1phi', 'e1looseid', 'e1mediumid', 'e1tightid', 'e1vetoid',
 		'e2pt', 'e2eta', 'e2phi', 'e2looseid', 'e2mediumid', 'e2tightid', 'e2vetoid',
 		'nelectrons',
+		'njets30',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
 		'filter:ElectronPtCut',

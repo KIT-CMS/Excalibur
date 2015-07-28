@@ -228,7 +228,24 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		return product.GetInvalidJetCount(settings, event);
 	} );
-
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("njets30", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		// count number of jets with pT > 30 GeV
+		// TODO is there a better way to do this?
+		unsigned int count = 0;
+		for (unsigned int i = 0; i < product.GetValidJetCount(settings, event); i++)
+		{
+			if (product.GetValidJet(settings, event, i)->p4.Pt() > 30.0f)
+			{
+				count += 1;
+			}
+			else
+			{
+				return count; // pT doesn't increase again, stop counting
+			}
+		}
+		return count;
+	} );
 	// Radiation Jets
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("radiationjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product)
 	{
