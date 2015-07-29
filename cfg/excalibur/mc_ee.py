@@ -4,8 +4,8 @@ import configtools
 def config():
 	cfg = configtools.getConfig('mc', 2012, 'ee', tagged=False)
 	cfg["InputFiles"] = configtools.setInputFiles(
-		ekppath='/storage/a/dhaitz/skims/2015-07-22_ee-signals_Run2012/kappa_DYJ*.root',
-		nafpath='/pnfs/desy.de/cms/tier2/store/user/dhaitz/2015-07-22_ee-backgrounds_Run2012/kappa_DYToEE*.root'
+		ekppath='/storage/a/dhaitz/skims/2015-07-28_ee-mc_Run2012/kappa_DYJ*.root',
+		nafpath='/pnfs/desy.de/cms/tier2/store/user/dhaitz/2015-07-28_ee-mc_Run2012/kappa_DYJ*.root'
 	)
 	cfg = configtools.expand(cfg, ['nocuts', 'zcuts'], ['L1L2L3'])
 
