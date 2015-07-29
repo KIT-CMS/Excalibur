@@ -336,17 +336,18 @@ def mcee(cfg, **kwargs):
 		'geneminuspt',
 		'geneminuseta',
 		'geneminusphi',
+		'genParticleMatchDeltaR',
 	]
-	# reco-gen matching
+	# reco-gen electron matching producer
 	cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
-	cfg['RecoElectronMatchingGenParticleStatus'] = 1
-	cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
-	cfg["RecoElectronMatchingGenParticlePdgIds"] = 11
+	cfg['RecoElectronMatchingGenParticleStatus'] = 3
+	cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.3
+	cfg["RecoElectronMatchingGenParticlePdgIds"] = [11, -11]
 	cfg["InvalidateNonGenParticleMatchingRecoElectrons"] = False
 	cfg['GenParticleTypes'] += ['genElectron']
-	cfg['GenElectronStatus'] = 1
-	cfg['BranchGenMatchedElectrons'] = True
+	cfg['GenElectronStatus'] = 3
 	# KappaCollectionsConsumer: dont add taus or taujets:
+	cfg['BranchGenMatchedElectrons'] = True
 	cfg['AddGenMatchedTaus'] = False
 	cfg['AddGenMatchedTauJets'] = False
 
