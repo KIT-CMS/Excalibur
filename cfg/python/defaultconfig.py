@@ -2,8 +2,9 @@ import configtools
 
 def getBaseConfig(tagged=True, **kwargs):
 	cfg = {
-		'SkipEvents': 0,
-		'EventCount': -1,
+		# Artus General Settings
+		'ProcessNEvents': -1,
+		'FirstEvent': 0,
 		'Processors': [],
 		'InputFiles': [],  # Overwritten by (data/mc).py, excalibur.py, json_modifier.py (if run in batch mode)
 		'OutputPath': 'out', # Overwritten by excalibur.py

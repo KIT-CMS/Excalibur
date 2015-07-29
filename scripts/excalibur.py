@@ -44,8 +44,8 @@ def ZJet():
 		if conf["OutputPath"] == "out":
 			conf["OutputPath"] = options.out + '.root'
 		if options.skip:
-			conf['EventCount'] = options.skip[1]
-			conf['SkipEvents'] = options.skip[0]
+			conf['FirstEvent'] = options.skip[0]
+			conf['ProcessNEvents'] = options.skip[1]
 		if options.printconfig:
 			print "json config:"
 			print json.dumps(conf, sort_keys=True, indent=4)
