@@ -304,6 +304,12 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 			0: 80, # MC
 			1: 40, # DATA
 	}
+	if batch == 'ekpsg':
+		n_free_slots = get_n_free_slots_ekpsg()
+		if n_free_slots > 20:  # If enough slots available, use all of them. If not, its wiser to use the default number and queue them
+			print n_free_slots, "free slots on ekpsg -> submit as many jobs"
+			jobs = n_free_slots
+
 	n_jobs = (jobs if jobs is not None else jobdict.get(settings['InputIsData'], 70)) 
 	files_per_job = len(settings['InputFiles']) / float(n_jobs)
 	files_per_job = int(files_per_job + 1)
@@ -385,6 +391,16 @@ def prepareWork(work, out, clean=False):
 		print len(paths), "old output directories for this config. Clean-up recommended."
 	print "Output directory:", work
 	os.makedirs(work + "/work." + out)
+
+
+def get_n_free_slots_ekpsg():
+	"""Get number of free slots on sg machines."""
+	condor = subprocess.Popen(('condor_status'), stdout=subprocess.PIPE)
+	output = subprocess.Popen(('egrep', 'ekpsg.*Unclaimed'), stdin=condor.stdout, stdout=subprocess.PIPE)
+	condor.stdout.close()
+	n_lines = subprocess.check_output(('wc', '-l'), stdin=output.stdout)
+	output.stdout.close()
+	return int(n_lines)
 
 
 def logo():
