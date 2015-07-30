@@ -44,8 +44,9 @@ def ZJet():
 		if conf["OutputPath"] == "out":
 			conf["OutputPath"] = options.out + '.root'
 		if options.skip:
-			conf['FirstEvent'] = options.skip[0]
-			conf['ProcessNEvents'] = options.skip[1]
+			conf['FirstEvent'] = options.skip
+		if options.nevents:
+			conf['ProcessNEvents'] = options.nevents
 		if options.printconfig:
 			print "json config:"
 			print json.dumps(conf, sort_keys=True, indent=4)
@@ -191,8 +192,10 @@ def getoptions(configdir="", name='excalibur'):
 		help="specify custom output name (default: config name)")
 	parser.add_argument('-p', '--printconfig', action='store_true',
 		help="print json config (long output)")
-	parser.add_argument('-s', '--skip', type=int, nargs='+', default=None,
-		help="skip events. 5=events[5,5+1], 5 3=events[5,5+3].")
+	parser.add_argument('-s', '--skip', type=int, default=None,
+		help="skip the first n events.")
+	parser.add_argument('-n', '--nevents', type=int, default=None,
+		help="process only n events.")
 	parser.add_argument('-v', '--verbose', action='store_true',
 		help="verbosity")
 	parser.add_argument('-w', '--work', type=str, nargs=1, default=None,
@@ -233,8 +236,6 @@ def getoptions(configdir="", name='excalibur'):
 		opt.fast = [3]
 	if opt.fast and len(opt.fast) == 1:
 		opt.fast = [-opt.fast[0], None]
-	if opt.skip and len(opt.skip) == 1:
-		opt.skip.append(1)
 
 	# set paths for libraries and outputs
 	if not opt.out:
