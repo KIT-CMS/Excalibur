@@ -30,13 +30,13 @@ HEADERS = $(wildcard src/*.h src/*/*.h)
 $(EXECUTABLE): $(OBJECTS) $(HEADERS)
 	@echo `git branch | sed -n '/\* /s///p'` &> version.log
 	@echo "Linking" $(EXECUTABLE)":"
-	@echo $(CXX) LDFLAGS $(OBJECTS)
-	@$(CXX) $(LDFLAGS) $(OBJECTS) -o scripts/$@
+	@echo $(CXX) $(OBJECTS) $(LDFLAGS)
+	@$(CXX) -o scripts/$@ $(OBJECTS) $(LDFLAGS)
 	@echo $(EXECUTABLE) "built successfully."
 
 .cc.o: $(HEADERS)
-	@echo $(CXX) CFLAGS $<
-	@$(CXX) $(CFLAGS) $< -o $@
+	@echo $(CXX) $< CFLAGS
+	@$(CXX) $< -o $@ $(CFLAGS)
 
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
@@ -52,7 +52,7 @@ check:
 	@echo -e "checking BOOST...        \c" && ls $(BOOSTLIB) -d
 	@echo -e "checking KAPPA...        \c" && ls $(KAPPAPATH) -d
 	@echo -e "checking KAPPATOOLS...   \c" && ls $(KAPPATOOLSPATH) -d
-	@echo -e "checking OFFLINE JEC...  \c" && ls ../CondFormats -d
+	@echo -e "checking OFFLINE JEC...  \c" && ls ${ARTUSPATH/Artus/CondFormats} -d
 	@echo -e "checking ARTUS...        \c" && ls $(ARTUSPATH) -d
 	@echo -e "checking PYTHON...       \c" && python --version || echo "  Python is not needed for compiling"
 	@echo -e "checking GRID-CONTROL... \c" && which go.py 2> /dev/null || echo "not found, grid-control is not needed for compiling"
