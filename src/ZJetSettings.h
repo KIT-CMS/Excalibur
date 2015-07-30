@@ -37,6 +37,9 @@ class ZJetSettings : public KappaSettings
 	IMPL_SETTING_DOUBLELIST(SampleReweightingCrossSections)
 	IMPL_SETTING_INTLIST(SampleReweightingNEvents)
 
+	// ElectronSFProducer
+	IMPL_SETTING(std::string, ElectronSFRootfilePath)
+
 	// ZJetCutsFilter
 	IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMin, 2)
 	IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMax, 3)

@@ -354,6 +354,12 @@ def mcee(cfg, **kwargs):
 	cfg['AddGenMatchedTaus'] = False
 	cfg['AddGenMatchedTauJets'] = False
 
+	# electron data/mc scale factors
+	if cfg['ElectronID'] is not 'none':
+		cfg['Processors'] += ['producer:ElectronSFProducer']
+		cfg['ElectronSFRootfilePath'] = configtools.getPath() + "/data/electron_scalefactors/"
+		cfg['Pipelines']['default']['Quantities'] += ['electronSFWeight']
+
 def mcmm(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
 		'matchedgenmuon1pt',

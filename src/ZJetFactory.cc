@@ -10,6 +10,7 @@
 #include "Producers/RadiationJetProducer.h"
 #include "Producers/NPUProducer.h"
 #include "Producers/ZJetNumberGeneratedEventsWeightProducer.h"
+#include "Producers/ElectronSFProducer.h"
 
 // filters
 #include "Filters/ZFilter.h"
@@ -42,6 +43,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 		return new NPUProducer();
 	else if (id == ZJetNumberGeneratedEventsWeightProducer().GetProducerId())
 		return new ZJetNumberGeneratedEventsWeightProducer();
+	else if (id == ElectronSFProducer().GetProducerId())
+		return new ElectronSFProducer();
 	else
 		return KappaFactory::createProducer(id);
 }
