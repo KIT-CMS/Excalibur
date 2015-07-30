@@ -23,6 +23,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'deltaphieminuseplus': '$\Delta\phi(\mathrm{e^{-}},\mathrm{e^{+}})$',
 			'deltaphizmuminus': '$\Delta\phi(\mathrm{Z},\mathrm{\mu^{-}})$',
 			'deltaphizmuplus': '$\Delta\phi(\mathrm{Z},\mathrm{\mu^{+}})$',
+			'e1pt': '$\mathit{p}_{T}^{Leading\ Electron}$ / GeV',
+			'e1abseta': '|$\mathit{\eta}_{Leading\ Electron}$|',
 			'eabseta': '|$\mathit{\eta}_{Electron}$|',
 			'eminuspt': '$\mathit{p}_{T}^{e^{-}}$ / GeV',
 			'epluspt': '$\mathit{p}_{T}^{e^{+}}$ / GeV',
