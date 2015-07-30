@@ -189,7 +189,7 @@ def ee(cfg, **kwargs):
 		'filter:ZFilter',
 		'producer:RadiationJetProducer',
 	]
-	cfg['ElectronID'] = 'none'
+	cfg['ElectronID'] = 'mvanontrig'
 	cfg['ElectronIsoType'] = 'none'
 	cfg['ElectronIso'] = 'none'
 	cfg['ElectronReco'] = 'none'
