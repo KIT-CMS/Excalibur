@@ -190,8 +190,9 @@ def ee(cfg, **kwargs):
 		'producer:RadiationJetProducer',
 	]
 	cfg['ElectronID'] = 'mvanontrig'
-	cfg['ElectronIsoType'] = 'none'
-	cfg['ElectronIso'] = 'none'
+	cfg['ElectronIsoType'] = 'pf'
+	cfg['ElectronIso'] = 'mvanontrig'
+	cfg['DirectIso'] = True
 	cfg['ElectronReco'] = 'none'
 	
 	cfg['MinNElectrons'] = 2
