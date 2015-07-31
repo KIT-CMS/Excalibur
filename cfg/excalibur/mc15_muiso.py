@@ -4,9 +4,6 @@ import mc15
 
 def config():
 	cfg = mc15.config()
-	cfg["InputFiles"] = configtools.setInputFiles(
-		ekppath="/storage/a/mfischer/skims/MF_AnyMu_2015_746/2015-07-24/DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV/*.root",
-	)
 	# invalid muon isolation quantities
 	configtools.add_quantities(
 		cfg,
