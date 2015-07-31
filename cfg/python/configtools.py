@@ -148,6 +148,11 @@ def pipelinediff2(p1=None, p2=None):
 def remove_quantities(cfg, quantities):
 	for pipeline in cfg['Pipelines']:
 		for quantity in quantities:
-			if quantity in cfg['Pipelines'][pipeline]['Quantities']:
+			try:
 				cfg['Pipelines'][pipeline]['Quantities'].remove(quantity)
+			except IndexError:
+				pass
 
+def add_quantities(cfg, quantities):
+	for pipeline in cfg['Pipelines']:
+		cfg['Pipelines'][pipeline]['Quantities'].extend(quantities)
