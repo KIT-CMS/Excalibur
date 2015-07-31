@@ -258,6 +258,9 @@ def mm(cfg, **kwargs):
 		'filter:ZPtCut',
 		'filter:BackToBackCut',
 	]
+	cfg['Pipelines']['default']['Consumers'] += [
+		'KappaMuonsConsumer',
+	]
 	
 	# ValidMuonsProducer
 	cfg['MuonID'] = 'tight'
@@ -379,6 +382,10 @@ def mcmm(cfg, **kwargs):
 	cfg['GenParticleTypes'] += ['genMuon']
 	cfg['GenMuonStatus'] = 1
 
+	# for KappaMuonsConsumer
+	cfg['BranchGenMatchedMuons'] = True
+	cfg['AddGenMatchedTaus'] = False
+	cfg['AddGenMatchedTauJets'] = False
 
 def _2011mm(cfg, **kwargs):
 	pass
