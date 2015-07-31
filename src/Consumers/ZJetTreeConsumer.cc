@@ -462,6 +462,21 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("mu2eta", [](event_type const& event, product_type const& product) {
 		return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->p4.Eta() : DefaultValues::UndefinedFloat;
 	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("mu2iso", [](event_type const& event, product_type const& product) {
+		return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->pfIso() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("mu2sumchpt", [](event_type const& event, product_type const& product) {
+		return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->sumChargedHadronPt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("mu2sumnhet", [](event_type const& event, product_type const& product) {
+		return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->sumNeutralHadronEt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("mu2sumpet", [](event_type const& event, product_type const& product) {
+		return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->sumPhotonEt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("mu2sumpupt", [](event_type const& event, product_type const& product) {
+		return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->sumPUPt : DefaultValues::UndefinedFloat;
+	});
 
 	// Gen muons
 	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("ngenmuons", [](ZJetEvent const& event, ZJetProduct const& product)
@@ -528,6 +543,46 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		KGenParticle* genMuon = product.GetMatchedGenMuon(event, settings, 1);
 		return (genMuon != nullptr) ? genMuon->p4.Pt() : DefaultValues::UndefinedFloat;
 	} );
+
+	// Invalid muons - isolation
+	// invalid muon 1
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv1pt", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->p4.Pt() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv1iso", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->pfIso() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv1sumchpt", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->sumChargedHadronPt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv1sumnhet", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->sumNeutralHadronEt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv1sumpet", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->sumPhotonEt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv1sumpupt", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->sumPUPt : DefaultValues::UndefinedFloat;
+	});
+	// invalid muon 2
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv2pt", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->p4.Pt() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv2iso", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->pfIso() : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv2sumchpt", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->sumChargedHadronPt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv2sumnhet", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->sumNeutralHadronEt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv2sumpet", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->sumPhotonEt : DefaultValues::UndefinedFloat;
+	});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv2sumpupt", [](event_type const& event, product_type const& product) {
+		return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->sumPUPt : DefaultValues::UndefinedFloat;
+	});
 
 	///////////////
 	// ELECTRONS //
