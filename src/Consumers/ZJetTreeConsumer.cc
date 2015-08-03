@@ -519,7 +519,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() < 0) return (*genMuon)->p4.Phi();
+			if ((*genMuon)->charge() < 0) return (*genMuon)->p4.Eta();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
@@ -527,7 +527,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin(); genMuon != product.m_genMuons.end(); genMuon++)
 		{
-			if ((*genMuon)->charge() < 0) return (*genMuon)->p4.Eta();
+			if ((*genMuon)->charge() < 0) return (*genMuon)->p4.Phi();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
@@ -776,7 +776,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
 		{
-			if ((*genElectron)->charge() < 0) return (*genElectron)->p4.Phi();
+			if ((*genElectron)->charge() < 0) return (*genElectron)->p4.Eta();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
@@ -784,7 +784,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	{
 		for (std::vector<KGenParticle*>::const_iterator genElectron = product.m_genElectrons.begin(); genElectron != product.m_genElectrons.end(); genElectron++)
 		{
-			if ((*genElectron)->charge() < 0) return (*genElectron)->p4.Eta();
+			if ((*genElectron)->charge() < 0) return (*genElectron)->p4.Phi();
 		}
 		return DefaultValues::UndefinedFloat;
 	} );
