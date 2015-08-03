@@ -334,7 +334,6 @@ def mcee(cfg, **kwargs):
 		'ngenelectrons',
 		'matchedgenelectron1pt',
 		'matchedgenelectron2pt',
-		'ngenelectrons',
 		'genepluspt',
 		'genepluseta',
 		'geneplusphi',
