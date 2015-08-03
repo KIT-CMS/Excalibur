@@ -192,7 +192,6 @@ def ee(cfg, **kwargs):
 	cfg['ElectronID'] = 'mvanontrig'
 	cfg['ElectronIsoType'] = 'pf'
 	cfg['ElectronIso'] = 'mvanontrig'
-	cfg['DirectIso'] = True
 	cfg['ElectronReco'] = 'none'
 	
 	cfg['MinNElectrons'] = 2
@@ -267,7 +266,6 @@ def mm(cfg, **kwargs):
 	cfg['MuonID'] = 'tight'
 	cfg['MuonIso'] = 'tight'
 	cfg['MuonIsoType'] = 'pf'
-	cfg['DirectIso'] = True
 
 	cfg['Pipelines']['default']['Quantities'] += [
 		'mupluspt', 'mupluseta', 'muplusphi', 'muplusiso',
