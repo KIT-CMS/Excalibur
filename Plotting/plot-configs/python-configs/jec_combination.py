@@ -19,15 +19,14 @@ def jec_combination(args=None, additional_dictionary=None):
 	alpha_cuts = ['(alpha<{})'.format(limit) for limit in alpha_limits]
 	alpha_strings = ['a'+str(int(100*limit)) for limit in alpha_limits]
 
-	eta_borders = [0, 0.783, 1.305, 1.93, 2.5, 2.964, 3.139, 5.191]
+	eta_borders = [0, 0.783, 1.305, 1.93, 2.5, 2.964, 3.2, 5.191]
 	eta_cuts = ["({0}<=abs(jet1eta)&&abs(jet1eta)<{1})".format(*b) for b in zip(eta_borders[:-1], eta_borders[1:])]
 	eta_cuts = ["(0<=abs(jet1eta)&&abs(jet1eta)<1.3)"] + eta_cuts # also include standard barrel jet selection
 	eta_strings = ["eta_{0:0>2d}_{1:0>2d}".format(int(round(10*up)), int(round(10*low))) for up, low in zip(eta_borders[:-1], eta_borders[1:])]
 	eta_strings = ["eta_00_13"] + eta_strings
 	try:
-		npv_weights = additional_dictionary["_npv_weights"]
-		additional_dictionary.pop("_npv_weights")
-	except (TypeError, KeyError):
+		npv_weights = additional_dictionary.pop("_npv_weights")
+	except (AttributeError, KeyError):
 		npv_weights = ["1"]
 
 	now = time.localtime()
