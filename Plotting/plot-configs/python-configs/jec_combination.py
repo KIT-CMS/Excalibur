@@ -26,6 +26,7 @@ def jec_combination(args=None, additional_dictionary=None):
 	eta_strings = ["eta_00_13"] + eta_strings
 	try:
 		npv_weights = additional_dictionary["_npv_weights"]
+		additional_dictionary.pop("_npv_weights")
 	except (TypeError, KeyError):
 		npv_weights = ["1"]
 
@@ -38,17 +39,21 @@ def jec_combination(args=None, additional_dictionary=None):
 					labelsuffix = '_'.join([methoddict[method], 'CHS', alphastring, etastring, correction])
 					eta_alpha_cut = '&&'.join((alphacut, etacut))
 					d = {
+						# input
 						'x_expressions': ['zpt'],
 						'y_expressions': [method],
 						'x_bins': 'zpt',
-						'analysis_modules': ['Ratio', 'ConvertToTGraphErrors'],
-						'plot_modules': ['ExportRoot'],
-						'tree_draw_options' : 'prof',
-						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 						'corrections': [correction],
+						'zjetfolders': ['noalphanoetacuts'],
+						'weights': ["(%s)*(%s)" % (eta_alpha_cut, npv_weight) for npv_weight in npv_weights],
+						'tree_draw_options' : 'prof',
+						# ratio, labels
+						'analysis_modules': ['Ratio', 'ConvertToTGraphErrors'],
+						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
+						# output
+						'plot_modules': ['ExportRoot'],
 						'filename': 'combination_ZJet_' + time.strftime("%Y-%m-%d", now),
 						'file_mode': ('RECREATE' if first else 'UPDATE'),
-						'weights': ["(%s)*(%s)" % (eta_alpha_cut, npv_weight) for npv_weight in npv_weights]
 					}
 					first = False
 					if additional_dictionary is not None:
