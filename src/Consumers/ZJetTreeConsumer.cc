@@ -544,7 +544,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 		return (genMuon != nullptr) ? genMuon->p4.Pt() : DefaultValues::UndefinedFloat;
 	} );
 
-	// Invalid muons - isolation
+	// Invalid muons
+	LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity("nmuonsinv", [settings](ZJetEvent const& event, ZJetProduct const& product)
+	{
+		return product.m_invalidMuons.size();
+	} );
 	// invalid muon 1
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity("muinv1pt", [](event_type const& event, product_type const& product) {
 		return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->p4.Pt() : DefaultValues::UndefinedFloat;
