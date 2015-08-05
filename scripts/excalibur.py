@@ -94,7 +94,7 @@ def ZJet():
 				shutil.copy(getEnv('ARTUSPATH') + lib, options.work + 'lib/')
 			shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_regex.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
 			shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_program_options.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
-			outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch, jobs=options.jobs)
+			outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch, jobs=options.jobs, files_per_job=options.files_per_job)
 
 		outpath = options.work + "out/*.root"
 
@@ -302,24 +302,25 @@ def copyFile(source, target, replace={}):
 	return text
 
 
-def createGridControlConfig(settings, filename, original=None, timestamp='', batch="", jobs=None):
+def createGridControlConfig(settings, filename, original=None, timestamp='', batch="", jobs=None, files_per_job=None):
 	if original is None:
 		original = getEnv() + '/cfg/gc/gc_{}.conf'.format(batch)
-	jobdict = {
-			0: 80, # MC
-			1: 40, # DATA
-	}
-	if batch == 'ekpsg':
-		n_free_slots = get_n_free_slots_ekpsg()
-		if n_free_slots > 20:  # If enough slots available, use all of them. If not, its wiser to use the default number and queue them
-			print n_free_slots, "free slots on ekpsg -> submit as many jobs"
-			jobs = n_free_slots
+	# guess best job number
+	if files_per_job is None:
+		# avoid small jobs unless specifically requested
+		min_files_per_job = 1 if jobs is not None else 8
+		# guess for condor
+		if jobs is None and batch == 'ekpsg':
+			n_free_slots = get_n_free_slots_ekpsg()
+			if n_free_slots >= 32:  # If enough slots available, use all of them. If not, its wiser to use the default number and queue them
+				jobs = ( n_free_slots / 8) * 8  # use multiples-of-X for stable job counts (caching)
+				print "%d free slots on ekpsg -> submit %d jobs" % (n_free_slots, jobs)
 
-	n_jobs = (jobs if jobs is not None else jobdict.get(settings['InputIsData'], 70)) 
-	files_per_job = len(settings['InputFiles']) / float(n_jobs)
-	files_per_job = int(files_per_job + 1)
+		jobdict = {False: 80, True: 40} # is_data => files per job
+		n_jobs = (jobs if jobs is not None else jobdict.get(settings['InputIsData'], 70))
+		files_per_job = max((len(settings['InputFiles']) / n_jobs) + 1, min_files_per_job)
 	d = {
-		'files per job = 100': 'files per job = ' + str(files_per_job),
+		'files per job = 100': 'files per job = %d' % files_per_job,
 		'@NICK@': settings["OutputPath"][:-5],
 		'@TIMESTAMP@': timestamp,
 		'$EXCALIBURPATH': getEnv(),
@@ -402,10 +403,7 @@ def get_n_free_slots_ekpsg():
 	"""Get number of free slots on sg machines."""
 	condor = subprocess.Popen(('condor_status'), stdout=subprocess.PIPE)
 	output = subprocess.Popen(('egrep', 'ekpsg.*Unclaimed'), stdin=condor.stdout, stdout=subprocess.PIPE)
-	condor.stdout.close()
-	n_lines = subprocess.check_output(('wc', '-l'), stdin=output.stdout)
-	output.stdout.close()
-	return int(n_lines)
+	return int(subprocess.check_output(('wc', '-l'), stdin=output.stdout))
 
 
 def logo():
