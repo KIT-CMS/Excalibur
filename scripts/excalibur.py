@@ -174,16 +174,10 @@ def getoptions(configdir="", name='excalibur'):
 			 " - path: %s and .py can be omitted. No config implies mc -f" % configdir)
 
 	# options
-	parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
-		const=('naf' if 'naf' in socket.gethostname() else 'ekpsg'),
-		help="run with grid-control. Optional argument specifies the resources to run:"
-			 "at EKP: 'ekpcluster', 'ekpsg' or 'ekpcloud'   at NAF: 'naf'   at both: 'local' [Default: %(const)s]")
 	parser.add_argument('-c', '--config', action='store_true',
 		help="produce json config only")
 	parser.add_argument('-C', '--clean', action='store_true',
 		help="delete old outputs but one with the same name")
-	parser.add_argument('-d', '--delete', action='store_true',
-		help="delete the latest output and jobs still running")
 	parser.add_argument('-f', '--fast', type=int, nargs='*', default=None,
 		help="limit number of input files. 3=files[-3:], 5 6=files[5:6].")
 	parser.add_argument('-l', '--nologo', action='store_true',
@@ -198,14 +192,24 @@ def getoptions(configdir="", name='excalibur'):
 		help="process only n events.")
 	parser.add_argument('-v', '--verbose', action='store_true',
 		help="verbosity")
-	parser.add_argument('-w', '--work', type=str, nargs=1, default=None,
-		help="specify custom work path (default from $EXCALIBUR_WORK variable")
 	parser.add_argument('-r', '--root', action='store_true',
 		help="open output file in ROOT TBrowser after completion")
-	parser.add_argument('-R', '--resume', action='store_true',
+
+	batch_parser = parser.add_argument_group("batch processing arguments", "Deploy analysis to a cluster using grid-control.")
+	batch_parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
+		const=('naf' if 'naf' in socket.gethostname() else 'ekpsg'),
+		help="use batch mode with optional base config "
+			 "'ekpcluster', 'ekpsg', 'ekpcloud', 'naf' or 'local' [Default: %(const)s]")
+	batch_parser.add_argument('-R', '--resume', action='store_true',
 		help="resume the grid-control run and hadd after interrupting it.")
-	parser.add_argument('-j', '--jobs', type=int, default=None,
-		help="set the number of jobs (for batch mode)")
+	parser.add_argument('-d', '--delete', action='store_true',
+		help="delete the latest output and jobs still running")
+	batch_parser.add_argument('-w', '--work', type=str, nargs=1, default=None,
+		help="specify custom work path (default from $EXCALIBUR_WORK variable")
+	batch_parser.add_argument('-j', '--jobs', type=int, default=None,
+		help="set the number of jobs to use")
+	batch_parser.add_argument('--files-per-job', type=int, default=None,
+		help="set the number of files per job (overwrites -j|--jobs)")
 
 	opt = parser.parse_args()
 
