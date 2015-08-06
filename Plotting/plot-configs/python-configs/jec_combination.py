@@ -50,15 +50,19 @@ def jec_combination(args=None, additional_dictionary=None):
 						'analysis_modules': ['Ratio', 'ConvertToTGraphErrors'],
 						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 						# output
+						'filename': labelsuffix,
+					}
+					if additional_dictionary is not None:
+						d.update(additional_dictionary)
+					d_root = d.copy()
+					d_root.update({
 						'plot_modules': ['ExportRoot'],
 						'filename': 'combination_ZJet_' + time.strftime("%Y-%m-%d", now),
 						'file_mode': ('RECREATE' if first else 'UPDATE'),
-					}
+					})
 					first = False
-					if additional_dictionary is not None:
-						d.update(additional_dictionary)
 					plots.append(d)
-
+					plots.append(d_root)
 	harryinterface.harry_interface(plots, args + ['--max-processes', '1'])
 
 
