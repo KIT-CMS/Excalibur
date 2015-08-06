@@ -7,7 +7,8 @@ import Artus.Utility.logger as logger
 
 def jec_combination(args=None, additional_dictionary=None):
 	"""function to create the root combination file for the jec group."""
-	plots = []
+	mpl_plots = []
+	root_plots = []
 
 	methoddict = {
 		'ptbalance': 'PtBal',
@@ -61,9 +62,10 @@ def jec_combination(args=None, additional_dictionary=None):
 						'file_mode': ('RECREATE' if first else 'UPDATE'),
 					})
 					first = False
-					plots.append(d)
-					plots.append(d_root)
-	harryinterface.harry_interface(plots, args + ['--max-processes', '1'])
+					mpl_plots.append(d)
+					root_plots.append(d_root)
+	harryinterface.harry_interface(mpl_plots, args)
+	harryinterface.harry_interface(root_plots, args + ['--max-processes', '1'])
 
 
 def jec_combination_20150722(args=None):
