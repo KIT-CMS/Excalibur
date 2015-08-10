@@ -176,6 +176,7 @@ def _2015(cfg, **kwargs):
 def ee(cfg, **kwargs):
 	cfg['Electrons'] = 'correlectrons'
 	cfg['ElectronMetadata'] = 'electronMetadata'
+	# The order of these producers is important!
 	cfg['Processors'] = [
 		'producer:ValidElectronsProducer',
 		'filter:MinElectronsCountFilter',
@@ -230,7 +231,73 @@ def ee(cfg, **kwargs):
 	]
 
 def em(cfg, **kwargs):
-	pass
+	cfg['Electrons'] = 'correlectrons'
+	cfg['Muons'] = 'muons'
+	cfg['ElectronMetadata'] = 'electronMetadata'
+	# The order of these producers is important!
+	cfg['Processors'] = [
+		'producer:ValidMuonsProducer',
+		'filter:MinNMuonsCut',
+		'producer:ValidElectronsProducer',
+		'filter:MinElectronsCountFilter',
+		'producer:ValidTaggedJetsProducer',
+		'filter:ValidJetsFilter',
+		'producer:ZJetCorrectionsProducer',
+		'producer:TypeIMETProducer',
+		'producer:JetSorter',
+		'producer:ZemProducer',
+		'filter:ZFilter',
+	]
+	cfg['ElectronID'] = 'mvanontrig'
+	cfg['ElectronIsoType'] = 'pf'
+	cfg['ElectronIso'] = 'mvanontrig'
+	cfg['ElectronReco'] = 'none'
+
+	# ValidMuonsProducer
+	cfg['MuonID'] = 'tight'
+	cfg['MuonIso'] = 'tight'
+	cfg['MuonIsoType'] = 'pf'
+
+	cfg['MinNElectrons'] = 1
+	cfg['CutNMuonsMin'] = 1
+
+	cfg['CutElectronPtMin'] = 25.0
+	cfg['CutElectronEtaMax'] = 2.4
+	cfg['CutMuonPtMin'] = 20.0
+	cfg['CutMuonEtaMax'] = 2.3
+	cfg['CutLeadingJetPtMin'] = 12.0
+	cfg['CutLeadingJetEtaMax'] = 1.3
+	cfg['CutZPtMin'] = 30.0
+	cfg['CutBackToBack'] = 0.34
+	cfg['CutAlphaMax'] = 0.2
+	cfg['ZMassRange'] = 10
+
+	cfg['Pipelines']['default']['Quantities'] += [
+		'e1pt', 'e1eta', 'e1phi', 'e1looseid', 'e1mediumid', 'e1tightid', 'e1vetoid',
+		'e1looseid95', 'e1mediumid95', 'e1tightid95', 'e1mvanontrig', 'e1mvatrig',
+		'nelectrons',
+		'njets30',
+		'mu1pt', 'mu1eta', 'mu1phi',
+		'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
+		'nmuons',
+	]
+
+	cfg['Pipelines']['default']['Processors'] = [
+		'filter:MuonPtCut',
+		'filter:MuonEtaCut',
+		'filter:ElectronPtCut',
+		'filter:ElectronEtaCut',
+		'filter:LeadingJetPtCut',
+		'filter:LeadingJetEtaCut',
+		'filter:AlphaCut',
+		'filter:ZPtCut',
+		'filter:BackToBackCut',
+	]
+	cfg['Pipelines']['default']['Consumers'] += [
+		'KappaElectronsConsumer',
+		'KappaMuonsConsumer',
+	]
+
 
 def mm(cfg, **kwargs):
 	cfg['Muons'] = 'muons'
@@ -419,6 +486,7 @@ def data_2011mm(cfg, **kwargs):
 def data_2012mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Mu8_v%d' % v for v in range(1, 30)]
 
+
 def data_2015mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v%d' % v for v in range(1, 100)]
 
@@ -428,4 +496,5 @@ def data_2012ee(cfg, **kwargs):
 
 
 def data_2012em(cfg, **kwargs):
-	pass
+	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 100)]
+	cfg['HltPaths'] += ['HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 100)]
