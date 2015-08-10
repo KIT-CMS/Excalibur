@@ -25,7 +25,9 @@ class PlotMplZJet(plotmpl.PlotMpl):
 				'brown',
 				'violet',
 				'grey',
-				'red'
+				'red',
+				'teal',
+				'salmon',
 			]
 		]
 		self.cutlabeldict = {
