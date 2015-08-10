@@ -19,4 +19,6 @@ def config():
 	cfg['SampleReweighting'] = True
 	cfg['SampleReweightingCrossSections'] = qcd_samples.keys()
 	cfg['SampleReweightingNEvents'] = [qcd_samples[key] for key in cfg['SampleReweightingCrossSections']]
+	del cfg['NumberGeneratedEvents']
+	cfg['CrossSection'] = -1.
 	return cfg
