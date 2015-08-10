@@ -100,10 +100,10 @@ def ZJet():
 
 		print "go.py %s/%s.conf" % (options.work, options.out)
 		try:
-			subprocess.call(['go.py', options.work + "/" + options.out + ".conf"])
+			subprocess.check_call(['go.py', options.work + "/" + options.out + ".conf"])
 		except KeyboardInterrupt:
 			exit(0)
-		except:
+		except subprocess.CalledProcessError:
 			print "grid-control run failed"
 			exit(1)
 
