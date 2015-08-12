@@ -65,6 +65,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			help="Specify only the colors for markers.")
 		self.formatting_options.add_argument("--bar-colors", type=str, nargs="+",
 			help="Specify only the colors for histogram bars.")
+		self.formatting_options.add_argument('--no-energy-label', action='store_true', default=False,
+			help="Dont add an energy (sqrt(s)=X TeV) label.")
 
 
 	def prepare_args(self, parser, plotData):
@@ -96,6 +98,8 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			energies = [d['Energy'] for d in plotData.input_json_dicts]
 			if len(set(energies)) == 1:
 				plotData.plotdict['energies'] = [energies[0]]
+		if plotData.plotdict['no_energy_label']:
+			plotData.plotdict['energies'] = []
 
 		super(PlotMplZJet, self).prepare_args(parser, plotData)
 		if 'ratio' in plotData.plotdict['nicks']:
