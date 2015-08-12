@@ -39,16 +39,19 @@ def runtime(args=None, additional_dictionary=None):
 			# analysis
 			'analysis_modules': ['NormalizeToUnity'],
 			# formatting
+			'plot_modules': ['PlotMplZJet', 'PlotMplMean'],
 			'markers': ['.'],
 			'legend': None,
 			'line_styles': ['-'],
 			'labels': processors,
-			'x_label': r'Processor Runtime / $\\mu$s',
-			'y_label': 'arb.u.',
+			'x_label': 'runtime',
+			'y_label': 'au',
 			'y_lims': [0, 1],
 			'energies': None,
 			'title': label,
 			'no_energy_label': True,
+			'texts': ["Vertical lines indicate\naverage processor runtime"],
+			'texts_x': [0.4],
 			# output
 			'filename':  label.lower() + '_runtime',
 			'save_legend': label.lower() + '_legend',
