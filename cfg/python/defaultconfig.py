@@ -471,7 +471,7 @@ def mc_2011mm(cfg, **kwargs):
 
 def mc_2012ee(cfg, **kwargs):
 	cfg['Processors'] += ['producer:HltProducer']
-	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 30)]
+	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v']
 	cfg['Pipelines']['default']['Quantities'] += ['hlt']
 
 
@@ -484,17 +484,17 @@ def data_2011mm(cfg, **kwargs):
 
 
 def data_2012mm(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Mu17_Mu8_v%d' % v for v in range(1, 30)]
+	cfg['HltPaths'] = ['HLT_Mu17_Mu8_v']
 
 
 def data_2015mm(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v%d' % v for v in range(1, 100)]
+	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v']
 
 
 def data_2012ee(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 30)]
+	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v']
 
 
 def data_2012em(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 100)]
-	cfg['HltPaths'] += ['HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v%d' % v for v in range(1, 100)]
+	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v']
+	cfg['HltPaths'] += ['HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v']
