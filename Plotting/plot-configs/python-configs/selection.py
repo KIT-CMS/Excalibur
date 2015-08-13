@@ -71,8 +71,7 @@ def muon_isolation(args=None, additional_dictionary=None):
 					'x_expressions': ['%s%s/%spt' % (muon_id, obs, muon_id)],
 					'analysis_modules': ['NormalizeToFirstHisto', 'Ratio'],
 					"filename": "cuts_iso_%s_%s" % (muon_id, obs),
-					'x_lims':[0,2],
-					'x_bins': "50,0,2",
+					'x_bins': "25,0,1",
 					'weights':['%spt>0'%muon_id],
 				}
 				if additional_dictionary is not None:
@@ -85,8 +84,8 @@ def muon_isolation(args=None, additional_dictionary=None):
 					d = {
 						'x_expressions': ['%siso/%spt' % (muon_id, muon_id)],
 						'y_expressions': ['%s%s/%spt' % (muon_id, obs, muon_id)],
-						'x_bins': "50,0,5",
-						'y_bins': "50,0,5",
+						'x_bins': "25,0,1",
+						'y_bins': "25,0,1",
 						'z_log': True,
 						"filename": "cuts_iso_%s_%s_%s" % (muon_id, obs, os.path.basename(in_file).split(".",1)[0]),
 						'weights':['%spt>0'%muon_id],
