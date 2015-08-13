@@ -16,7 +16,7 @@ def config():
 	cfg['Processors'].remove('filter:ZFilter')
 	cfg['Pipelines']['default']['Processors'] = ['filter:MinNMuonsCut', 'filter:MaxNMuonsCut', 'filter:ZFilter'] + cfg['Pipelines']['default']['Processors']
 	# expand regularly
-	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
+	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2L3Res'])
 	# create additional mode without any filters
 	for pipeline in cfg['Pipelines'].keys():
 		if pipeline.startswith('nocuts'):
