@@ -34,6 +34,8 @@ def print_jsons_and_functions(json_path, python_path):
 		if len(functions) > 0:
 			prefix = "\t\t\t"
 			for func in functions:
+				if func[0].startswith("_"):
+					continue
 				log.info("\t\t" + tools.get_colored_string(func[0], "green"))
 				if inspect.getdoc(func[1]) != None:  # has docstring
 					log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
