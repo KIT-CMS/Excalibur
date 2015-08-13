@@ -395,6 +395,9 @@ def mc_2012(cfg, **kwargs):
 def mc_2015(cfg, **kwargs):
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
 	cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV3_MC/Summer15_50nsV3_MC'
+	# insert Generator producer before EventWeightProducer:
+	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
+	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
 
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
