@@ -73,9 +73,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		#matplotlib.rcParams.update(matplotlib_rc.getstyle(plotData.plotdict['layout']))
 		#matplotlib.rc('text.latex', preamble=r'\usepackage{helvet},\usepackage{sfmath}')
 
-		if 'ekplx' in tools.get_environment_variable('USERPC'):
-			plotData.plotdict['userpc'] = True
-
 		if plotData.plotdict['y_label'] in [None, ""] and not all([i==None for i in plotData.plotdict['y_expressions']]):
 			plotData.plotdict['y_label'] = plotData.plotdict['y_expressions'][0]
 
@@ -83,7 +80,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['formats'] = ['png']
 			plotData.plotdict['live'] = None
 		elif plotData.plotdict['live'] is not None:
-			plotData.plotdict['formats'] = ['pdf']
 			plotData.plotdict['output_dir'] = 'plots/live/'
 			plotData.plotdict['filename'] = 'plot'
 
