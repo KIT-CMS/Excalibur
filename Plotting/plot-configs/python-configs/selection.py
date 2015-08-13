@@ -59,6 +59,8 @@ def cuts_2015(args=None, additional_dictionary=None):
 	# create plots
 	for args in all_plots:
 		_hi(all_plots[args], args)
+	# reset harrinterface for future function calls
+	harryinterface.harry_interface = _hi
 
 
 def muon_isolation(args=None, additional_dictionary=None):
