@@ -743,17 +743,17 @@ def comparison_run2(args=None):
 	"""Comparison for run2 samples."""
 	d = {
 		'files': [
-			'data15.root',
+			'work/data15.root',
 			'work/mc15.root',
 		],
 		'labels': ['Data','MC'],
 		'y_subplot_label' : "Data/MC",
 		'algorithms': ['ak4PFJetsCHS'],
-		'corrections': ['L1L2L3'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
 	}
 	full_comparison(args, d, only_normalized=True)
 
-	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3']})
+	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	cutflow(args, d)
 
 	jec_factors.jec_factors(args, {
