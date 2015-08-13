@@ -6,6 +6,9 @@ import Excalibur.Plotting.harryinterface as harryinterface
 
 # helper functions
 def _get_input_files(args):
+	"""
+	Extract the list of input files from given CLI arguments
+	"""
 	args_nofiles = []
 	input_files = []
 	input_file_args = False
@@ -36,6 +39,9 @@ def _expand_to_files(raw_list, file_count, add_number=False):
 	return out_list
 
 def cuts_2015(args=None, additional_dictionary=None):
+	"""
+	Plot cuts for 2015 analysis - cut_n_muons, cut_muon_kinematics and cut_jet_kinematics
+	"""
 	d = {
 		"algorithms": ["ak4PFJetsCHS",],
 		"corrections": ["L1L2L3"],
@@ -47,7 +53,6 @@ def cuts_2015(args=None, additional_dictionary=None):
 	_hi = harryinterface.harry_interface
 	harryinterface.harry_interface = lambda plots, args: all_plots.setdefault(tuple(args), []).extend(plots)
 	# collect plots
-	muon_isolation(args=args, additional_dictionary=d)
 	cut_n_muons(args=args, additional_dictionary=d)
 	cut_muon_kinematics(args=args, additional_dictionary=d)
 	cut_jet_kinematics(args=args, additional_dictionary=d)
