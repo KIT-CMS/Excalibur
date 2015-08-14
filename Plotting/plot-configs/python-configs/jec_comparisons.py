@@ -746,7 +746,7 @@ def comparison_run2(args=None):
 			'work/data15.root',
 			'work/mc15.root',
 		],
-		'labels': ['Data','MC'],
+		'labels': ['Data L1L2L3Res','MC L1L2L3'],
 		'y_subplot_label' : "Data/MC",
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
