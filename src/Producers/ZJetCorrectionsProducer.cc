@@ -36,8 +36,17 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
 	// RC
 	if (settings.GetRC())
 	{
-		LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "RC" << "_" << algoName << ".txt";
-		jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "RC" + "_" + algoName + ".txt"));
+		// run2 naming convention
+		if (settings.GetYear() >= 2015)
+		{
+			LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "L1RC" << "_" << algoName << ".txt";
+			jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L1RC" + "_" + algoName + ".txt"));
+		}
+		// run1 naming convention
+		else {
+			LOG(INFO) << "\t -- " << settings.GetJec() << "_" << "RC" << "_" << algoName << ".txt";
+			jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "RC" + "_" + algoName + ".txt"));
+		}
 		m_rc = new FactorizedJetCorrector(jecParameters);
 		jecParameters.clear();
 	}
