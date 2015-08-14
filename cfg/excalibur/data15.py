@@ -11,8 +11,6 @@ def config():
 
 	configtools.remove_quantities(cfg, ['jet1btag','jet1qgtag', 'jet1ptl1l2l3', 'jet1res', 'jet1rc'])
 
-	cfg['RC'] = False
-
 	cfg['CutAlphaMax'] = 0.3
 
 	return cfg
