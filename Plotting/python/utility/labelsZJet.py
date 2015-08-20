@@ -109,6 +109,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'(jet1pt/zpt)': r'$\mathit{p}_T$ balance',
 			'mpf': '$MPF$ Response',
 			'ptbalance': r'$\mathit{p}_T$ Balance',
+			'trueresponse': r'$p_T^\mathrm{reco}$/$p_T^\mathrm{ptcl}$',
 			'recogen': 'Jet Response $\mathit{p}_T^{RecoJet}/\mathit{p}_T^{GenJet}$',
 			'sys': 'Relative Uncertainty [$\%$]',
 			'sortedflavour': 'Leading Jet Flavour',
