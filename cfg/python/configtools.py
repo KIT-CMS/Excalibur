@@ -94,13 +94,14 @@ def expand(config, cutModes, corrLevels, default="default"):
 	# define cut variations and copy default pipeline for different cut variations
 	# ATTENTION: the modes dictionary contains the cuts which are REMOVED for a certain pipeline
 	modes = {
-		'nocuts': ['MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha'],
-		'leptoncuts': ['ZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
-		'zcuts': ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
-		'noalphanoetacuts': ['LeadingJetEta', 'Alpha'],
-		'noalphacuts': ['Alpha'],
-		'noetacuts': ['LeadingJetEta'],
-		'finalcuts': [],
+		'nocuts': ['MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha', 'Beta'],
+		'leptoncuts': ['ZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'Beta'],
+		'zcuts': ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'Beta'],
+		'noalphanoetacuts': ['LeadingJetEta', 'Alpha', 'Beta'],
+		'noalphacuts': ['Alpha', 'Beta'],
+		'noetacuts': ['LeadingJetEta', 'Beta'],
+		'finalcuts': ['Beta'],
+		'betacuts': ['Alpha']
 	}
 	for cutMode in cutModes:
 		if cutMode not in modes:
