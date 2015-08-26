@@ -102,8 +102,61 @@ Examples
 Links to 'official' output files (which can be used by all users for plotting etc.)
 are stored in the ntuples/ folder.
 
+##### NTuple Quantities
+###### Z boson and decay leptons
+- *z(mass|phi|pt|y|eta)*: Mass, phi, pT (transverse momentum), rapidity and pseudorapidity of the reconstructed Z boson.
+- *(mu|e)(1|2|plus|minus|)(pt|eta|phi)*: pT (transverse momentum), pseudorapidity, phi for leading/second/positive/negative muon/electron
+- *mu(sumchpt|sumpet|sumnhet|sumpupt)*: Muon isolation quantities: sum of charged
+hadron pT / photon Et / neutral hadron Et / pile-up pT in a (delta-R) cone around the muon.
+- *nmuons*: Number of valid muons in the event
+
+###### Jets
+- *jet(1|2|3)(pt|eta|phi)*: pT, pseudorapidity, phi for leading/second/third jet
+- *njets*: Number of valid jets
+- *njetsinv*: Number of invalid jets
+- *jet1(chf|nhf|pf|ef|mf|hfhf|hfem|)*: Particle-Flow energy fraction of the leading jet:
+charged hadron / neutral hadron / photon / electron / muon / hadron-forward / em-forward
+- *jet1area*: Area of the leading jet in eta-phi-space
+- *jet1(ptl1l2l3|ptl1|ptraw)*: pT of the leading jet for various levels of jet
+corrections applied. By default we use fully corrected jets (L1+L2L3(+Res)), but
+the pT for the intermediate correction levels is sometimes also needed.
+- *jet1(l1|l2|rc|res)*: Jet energy correction factors for the different levels
+- *jet1(btag|qgtag)*: Multivariate discriminators for identification of jets from
+gluon resp. b-quarks
+- *radiation(\*)*: Jet radiated from the leading jet (Used in event-selection
+improvement studies)
+
+###### Data 
+- *run*: Run for this event
+- *event*: Lumi section for this event
+- *lumi*: Event number for this event
+- *npumeandata*: Expected pile-up in data, calculated from instantaneous luminosity
+
+###### MC
+- *npu*: Number of pile-up vertices
+- *npumean*: Expected pile-up
+- *genjet*: Quantities for generator jet
+- *genmuons*: Quantities of the generator muons
+- *deltarzgenz*: Distance in R (eta-phi-space) between reconstructed and generated Z
+- *matchedgenjet(\*)*: Quantities of the generator jet matched to a reconstructed jet
+- *matchedgenmuon(\*)*: Quantities of the generator muon matched to a reconstructed muon
+- *matchedgenparton(\*)*: Quantities of the parton matched to a reconstructed jet
+- *puWeight*: Weight from pile-up-reweighting
+- *numberGeneratedEventsWeight*: 1/number\_of\_events\_in\_dataset 
+- *crossSectionPerEventWeight*: cross-section
+
+###### Event Quantities 
+- *npv*: Number of reconstructed primary vertices
+- *rho*: Rho, the energy density per event
+- *met, metphi*: Size and phi-direction of the missing transverse energy (MET)
+- *sumet*: Sum of the transverse energy of all Partice-Flow objects
+- *mpf*: Jet response calculated with the MPF method
+- *rawmpf*: MPF response calculated from uncorrected MET
+- *weight*: Event weight. Usually 1.0 for Data. For MC, various weights
+(crosssection/eventnumber, pile-up reweighting, ...) are usually applied
+
 ### Plotting (merlin): python part
-This part derives some classes from HarryPlotter to implement ZJet-specific stuff.
+This part derives most classes from HarryPlotter to implement ZJet-specific stuff.
 See 
 - Plotting/python/, which contains the derived classes
 - scripts/, which contains an ini script and the 'merlin' plotting executable
@@ -227,9 +280,10 @@ or how many events per second are processed.
 - Have a look at the used configuration file in `cfg/excalibur/data.py`. From these
 few lines of code, the full json config is created according to
 `cfg/python/defaultconfig.py`. Have a look at the `defaultconfig.py` and the
-relevant sections in there (data, data_mm, ...)
-- Have a look at the json file `cfg/excalibur/data.py.json`, the general
-settings and a list of pipelines.
+relevant sections in there (data, data_mm, ...). Where is e.g. the setting for
+the MuonID defined?
+- Have a look at the json file `cfg/excalibur/data.py.json`. This configuration
+contains general settings and a list of pipelines.
 - Use 'grep' or the search on github to find out at which positions a certain
 config setting is used (This can be in the Artus or Excalibur repositories!).
 Where e.g. is 'MuonID' used?
@@ -243,7 +297,9 @@ difference between the pipelines/folders?
 
 ### (2) Plotting with HarryPlotter/Merlin
 After the data processing with Artus, you need to use `merlin.py` to create plots
-from the output ROOT files.
+from the output ROOT files. Have a look at the documentation for [HarryPlotter](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme")
+and merlin (above) for basic installation and usage help and also if you have
+questions during the tutorial.
 
 - The basic parameters you need are a root file, the path to an ntuple and a quantity name.
 Type `merlin.py -i data.root -x zmass` to plot the Z boson mass.
@@ -262,7 +318,6 @@ create the 2D plots only with events with zpt>100 and jet1pt>80.
 - Create a profile plot by using `--tree-draw-options prof`.
 - The --live and --www arguments are handy to directly open plots or upload them
 to your webspace.
-
 - Have a look at the full list of command line arguments: `merlin.py -h`
 
-
+Congratulations! You have completed the Excalibur tutorial! :+1:
