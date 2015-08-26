@@ -101,6 +101,9 @@ def ZJet():
 		print "go.py %s/%s.conf" % (options.work, options.out)
 		try:
 			subprocess.check_call(['go.py', options.work + "/" + options.out + ".conf"])
+		except OSError:
+			print "Could not start grid-control! Do you have the grid-control directory in you PATH?"
+			exit(1)
 		except KeyboardInterrupt:
 			exit(0)
 		except subprocess.CalledProcessError:
