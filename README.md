@@ -169,6 +169,41 @@ the available functions can be displayed with --list-functions. The docstring of
 the functions should contain a description.
 - Plotting/plot-configs/python-configs/ contains some python plotting scripts
 
+###### New Python plot config style
+There is a new python plot config style which allows to create new configs based
+on existing ones and override properties in the plot dictionary.
+
+Example:
+`
+from Excalibur.Plotting.utility.toolsZJet import PlottingJob
+
+def existing_config(args):
+    plots = []
+    for x_value in ['zpt', 'npv']:
+        d = {
+            'x_expression': x_value,
+            'y_expression': 'jet1pt/matchedgenjet1pt',
+            'y_lims': [0.8, 1.2],
+            'tree_draw_options': 'prof'
+        }
+        plots.append(d)
+    return [PlottingJob(plots=[d], args=args)]
+    
+def new_config(args):
+    plotting_jobs = []
+    
+    existing_jobs = existing_config(args)
+    for plot in existing_jobs[0].plots:
+        plot['y_lims'] = [0.9, 1.4]
+    plotting_jobs.append(existing_jobs)
+        
+    return plotting_jobs
+`
+
+There's no need to call `harryinterface.harry_interface` because it is automatically
+called if a list with `PlottingJob` is returned by the config function.
+
+
 ## Tutorial
 This tutorial (as well as the Artus, HarryPlotter and Excalibur documentation in
 general) is incomplete. Please add any information that you think is missing or

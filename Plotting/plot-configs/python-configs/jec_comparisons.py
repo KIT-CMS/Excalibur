@@ -3,6 +3,7 @@
 
 import Excalibur.Plotting.harryinterface as harryinterface
 import Excalibur.Plotting.utility.colors as colors
+from Excalibur.Plotting.utility.toolsZJet import PlottingJob
 
 import argparse
 import copy
@@ -74,7 +75,7 @@ def response_extrapolation(args=None, additional_dictionary=None):
 
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
-	harryinterface.harry_interface([d], args)
+	return [PlottingJob(plots=[d], args=args)]
 
 def response_comparisons(args2=None, additional_dictionary=None, data_quantities=True):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
@@ -118,7 +119,7 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 			if additional_dictionary != None:
 				d.update(additional_dictionary)
 			plots.append(d)
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 
 def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False):
@@ -186,8 +187,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		if additional_dictionary:
 			d2.update(additional_dictionary)
 		plots.append(d2)
-
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 def basic_profile_comparisons(args=None, additional_dictionary=None):
 	""" Plots Z mass as a function of pT """
@@ -224,7 +224,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			d.update(additional_dictionary)
 		plots.append(d)
 
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 def pf_comparisons(args=None, additional_dictionary=None):
 	"""Absolute contribution of PF fractions vs Z pT."""
@@ -245,7 +245,7 @@ def pf_comparisons(args=None, additional_dictionary=None):
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
 		plots.append(d)
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 
 def pf_fractions(args=None, additional_dictionary=None):
@@ -369,7 +369,7 @@ def pf_fractions(args=None, additional_dictionary=None):
 			if additional_dictionary != None:
 				d.update(additional_dictionary)
 			plots.append(d)
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 def jet_resolution(args=None, additional_dictionary=None):
 	"""Plot the jet resolution vs pt, abs(eta) and npv."""
@@ -416,7 +416,7 @@ def jet_resolution(args=None, additional_dictionary=None):
 			if additional_dictionary != None:
 				d.update(additional_dictionary)
 			plots.append(d)
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 def cutflow(args=None, additional_dictionary=None):
 	"""cutflow plots, relative and absolute """
@@ -433,20 +433,23 @@ def cutflow(args=None, additional_dictionary=None):
 		plots.append(d)
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 
 def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False):
 	""" Do all comparison plots"""
-	response_comparisons(args, d, data_quantities)
-	basic_comparisons(args, d, data_quantities, only_normalized)
-	basic_profile_comparisons(args, d)
-	pf_fractions(args, d)
-	response_extrapolation(args, d)
-	jet_resolution(args, additional_dictionary=d)
+	plotting_jobs = []
+	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized)
+	plotting_jobs += basic_profile_comparisons(args, d)
+	plotting_jobs += pf_fractions(args, d)
+	plotting_jobs += response_comparisons(args, d, data_quantities)
+	plotting_jobs += response_extrapolation(args, d)
+	plotting_jobs += jet_resolution(args, additional_dictionary=d)
+	return plotting_jobs
 
 def comparsion_CHS_Puppi(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
+	plotting_jobs = []
 	for zjetfolder in ['finalcuts', 'noalphacuts', 'betacuts']:
 		d = {
 			'files': [
@@ -460,15 +463,26 @@ def comparsion_CHS_Puppi(args=None):
 			'www': 'comparsion_CHS_Puppi_' + zjetfolder
 		}
 
-		full_comparison(args, d, data_quantities=False, only_normalized=True)
+		plotting_jobs += basic_comparisons(args, d, data_quantities=False)
+		plotting_jobs += basic_profile_comparisons(args, d)
+		plotting_jobs += pf_fractions(args, d)
+		plotting_jobs += response_comparisons(args, d, data_quantities=False)
+		response_extrapolation_jobs = response_extrapolation(args, d)
+		response_extrapolation_jobs[0].plots[0]['legend'] = 'upper left'
+		response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.8, 1.3]
+		response_extrapolation_jobs[0].plots[0]['y_subplot_lims'] = [0.9, 1.2]
+		plotting_jobs += response_extrapolation_jobs
+		plotting_jobs += jet_resolution(args, additional_dictionary=d)
 		d['folders'] = [
 			'finalcuts_ak4PFJetsPuppiL1L2L3',
 			'finalcuts_ak4PFJetsCHSL1L2L3'
 		]
-		cutflow(args, d)
+		plotting_jobs += cutflow(args, d)
+		return plotting_jobs
 
 def comparsion_Puppi(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
+	plotting_jobs = []
 	d = {
 		'files': [
 			'work/mc15Puppi.root',
@@ -477,11 +491,12 @@ def comparsion_Puppi(args=None):
 		'corrections': ['L1L2L3', ""],
 		'labels': ['Puppi (L1L2L3)', 'Puppi (None)'],
 	}
-	full_comparison(args, d, data_quantities=False, only_normalized=True)
-
+	plotting_jobs += full_comparison(args, d, data_quantities=False, only_normalized=True)
+	return plotting_jobs
 
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
+	plotting_jobs = []
 	d = {
 		'files': [
 			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-21.root',
@@ -499,12 +514,14 @@ def comparison_E1E2(args=None):
 		'y_subplot_label' : "Ex2/Ex1",
 		'y_errors' : [True, True, False],
 	}
-	response_comparisons(args, additional_dictionary=d)
-	basic_comparisons(args, additional_dictionary=d)
-	basic_profile_comparisons(args, additional_dictionary=d)
+	plotting_jobs += response_comparisons(args, additional_dictionary=d)
+	plotting_jobs += basic_comparisons(args, additional_dictionary=d)
+	plotting_jobs += basic_profile_comparisons(args, additional_dictionary=d)
+	return plotting_jobs
 
 
 def comparison_5374(args=None):
+	plotting_jobs = []
 	d = {
 		'files': [
 			'ntuples/Data_8TeV_74X_E2_50ns_noHlt_2015-04-23.root',
@@ -520,21 +537,25 @@ def comparison_5374(args=None):
 		'y_subplot_label' : "74/53",
 		'lumi': 0.309
 	}
-	full_comparison(args, d)
+	plotting_jobs += full_comparison(args, d)
+	return plotting_jobs
 
 
 def comparison_datamc(args=None):
 	"""full data mc comparisons for work/data.root and work/mc.root"""
+	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/mc.root'],
 		'labels': ['data', 'mc'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 	}
-	pf_fractions(args, additional_dictionary=d)
+	plotting_jobs += pf_fractions(args, additional_dictionary=d)
+	plotting_jobs
 
 
 def comparison_1215(args=None):
 	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'ntuples/MC_13TeV_72X_E2_50ns_algo_2015-06-16.root',
@@ -544,11 +565,13 @@ def comparison_1215(args=None):
 		'corrections': ['L1L2L3'],
 		'y_subplot_label' : "13/8",
 	}
-	full_comparison(args, d, data_quantities=False)
+	plotting_jobs += full_comparison(args, d, data_quantities=False)
+	return plotting_jobs
 
 
 def comparison_121515(args=None):
 	"""comparison between 2012 (8TeV) and 2015 (13TeV) MC"""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'ntuples/MC_13TeV_72X_E2_50ns_algo_ak5fake_2015-06-19.root',
@@ -570,16 +593,18 @@ def comparison_121515(args=None):
 		"x_errors": False,
 		"colors": ['red','black', colors.histo_colors['blue'], 'red', 'black'],
 	}
-	basic_comparisons(args, d, data_quantities=False)
-	basic_profile_comparisons(args, d)
+	plotting_jobs += basic_comparisons(args, d, data_quantities=False)
+	plotting_jobs += basic_profile_comparisons(args, d)
 	d['markers'] = ['o', 'd', '^']
-	response_comparisons(args, d)
+	plotting_jobs += response_comparisons(args, d)
 	del d['colors']
 	del d['markers']
-	pf_fractions(args, d)
+	plotting_jobs += pf_fractions(args, d)
+	return plotting_jobs
 
 def comparison_53742(args=None):
 	"""Comparison between 2012 rereco (22Jan) and 2015 742 rereco of 8TeV DoubleMu."""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
@@ -590,11 +615,13 @@ def comparison_53742(args=None):
 		'y_subplot_label' : "742/53",
 		'lumis': [0.309],
 	}
-	full_comparison(args, d)
+	plotting_jobs += full_comparison(args, d)
+	return plotting_jobs
 
 
 def comparison_53742_event_matched(args=None):
 	"""Comparison between 2012 rereco (22Jan) and 2015 742 rereco of 8TeV DoubleMu."""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'output.root',
@@ -613,11 +640,13 @@ def comparison_53742_event_matched(args=None):
 		'x_errors': False,
 		'ratio_result_nicks': ['742vs53'],
 	}
-	full_comparison(args, d)
+	plotting_jobs += full_comparison(args, d)
+	return plotting_jobs
 
 
 def comparison_740742(args=None):
 	"""Comparison between 740 and 2015 742 rereco of 8TeV DoubleMu."""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'ntuples/Data_8TeV_742_E2_50ns_noHlt_2015-05-21.root',
@@ -628,11 +657,13 @@ def comparison_740742(args=None):
 		'y_subplot_label' : "742/740",
 		'lumis': [0.309],
 	}
-	full_comparison(args, d)
+	plotting_jobs += full_comparison(args, d)
+	return plotting_jobs
 
 
 def comparison_740742_event_matched(args=None):
 	"""Comparison between event matched 740 and 2015 742 rereco of 8TeV DoubleMu. Takes output.root from eventmatching.py as input."""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'output.root',
@@ -647,11 +678,14 @@ def comparison_740742_event_matched(args=None):
 		'y_subplot_label' : "742/740",
 		'lumis': [0.309],
 	}
-	full_comparison(args, d)
+	plotting_jobs += full_comparison(args, d)
+
+	return plotting_jobs
 
 
 def comparison_53740742(args=None):
 	"""Comparison between 53X, 740 and 742 rereco of 8TeV data."""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'output.root',
@@ -676,10 +710,11 @@ def comparison_53740742(args=None):
 		"colors": ['black','red', colors.histo_colors['blue'], 'red', 'black'],
 		'y_subplot_label' : "74X/53",
 	}
-	basic_comparisons(args, d, True)
+	plotting_jobs += basic_comparisons(args, d, True)
 	d['markers'] = ['o', 'o', 'd']
-	response_comparisons(args, d)
-	basic_profile_comparisons(args, d)
+	plotting_jobs += response_comparisons(args, d)
+	plotting_jobs += basic_profile_comparisons(args, d)
+	return plotting_jobs
 
 
 def rootfile_53742(args=None):
@@ -768,6 +803,7 @@ def rootfile_53742(args=None):
 
 def comparison_run2(args=None):
 	"""Comparison for run2 samples."""
+	plotting_jobs = []
 	d = {
 		'files': [
 			'work/data15.root',
@@ -778,16 +814,18 @@ def comparison_run2(args=None):
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 	}
-	full_comparison(args, d, only_normalized=True)
+	plotting_jobs += full_comparison(args, d, only_normalized=True)
 
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
-	cutflow(args, d)
+	plotting_jobs += cutflow(args, d)
 
 	jec_factors.jec_factors(args, {
 		'files': ['work/mc15.root'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
 	}, rc=False, res=False)
+
+	return plotting_jobs
 
 def comparison_run2_jec(args=None):
 	""" evaluate the latest JEC files for RUn2"""

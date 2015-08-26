@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from collections import namedtuple
 import Artus.Utility.logger as logger
+
 log = logging.getLogger(__name__)
 
 import os
@@ -16,6 +18,8 @@ import ROOT
 import Artus.Utility.jsonTools as jsonTools
 import Artus.HarryPlotter.utility.roottools as roottools
 import Artus.Utility.tools as tools
+
+PlottingJob = namedtuple('PlottingJob', 'plots args')
 
 def print_jsons_and_functions(json_path, python_path):
 	""" print the comments / docstrings of the json/python plot configs"""
@@ -51,7 +55,15 @@ def call_python_function(function_name, python_path, unknown_args=None):
 		for func in functions:
 			if func[0] == function_name:
 				log.info("Executing function {} in module {}".format(func[0], module.__name__))
-				func[1](unknown_args)
+				plotting_jobs = func[1](unknown_args)
+				if plotting_jobs is not None and isinstance(plotting_jobs, list):
+					import Excalibur.Plotting.harryinterface as harryinterface
+					# Aggregating plots with same arguments for parallel plotting
+					all_plots = {}
+					for plotting_job in plotting_jobs:
+						all_plots.setdefault(tuple(plotting_job.args), []).extend(plotting_job.plots)
+					for args in all_plots:
+						harryinterface.harry_interface(all_plots[args], args)
 				return
 	log.warning("Could not execute function {}".format(function_name))
 
