@@ -28,17 +28,15 @@ function _artuscomplete_()
 }
 complete -F _artuscomplete_ excalibur.py
 
+if [ -d "/storage/a/$USER/zjet" ]; then
+    export EXCALIBUR_WORK=/storage/a/$USER/zjet
+fi
 # Set some user specific variables
 if [ $USER = "dhaitz" ]; then
-    if [[ $HOSTNAME == *"ekp"* ]]; then
-        export EXCALIBUR_WORK=/storage/a/dhaitz/zjet
-    elif [[ $HOSTNAME == *"naf"* ]]; then
+    if [[ $HOSTNAME == *"naf"* ]]; then
         export EXCALIBUR_WORK=/afs/desy.de/user/d/dhaitz/nfs/zjet
     fi
-elif [ $USER = "gfleig" ]; then
-    export EXCALIBUR_WORK=/storage/a/gfleig/zjet
 elif [ $USER = "berger" ]; then
-    export EXCALIBUR_WORK=/storage/a/berger/zjet
     export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
     alias merlin='merlin.py'
     alias excalibur='excalibur.py'
