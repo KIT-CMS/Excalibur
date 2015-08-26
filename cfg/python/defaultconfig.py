@@ -202,7 +202,7 @@ def ee(cfg, **kwargs):
 	cfg['CutElectronEtaMax'] = 2.4
 	cfg['CutLeadingJetPtMin'] = 12.0
 	cfg['CutLeadingJetEtaMax'] = 1.3
-	cfg['CutZPtMin'] = 30.0
+	cfg['CutZPtMin'] = 20.0
 	cfg['CutBackToBack'] = 0.34
 	cfg['CutAlphaMax'] = 0.2
 	cfg['ZMassRange'] = 10
