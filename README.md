@@ -168,3 +168,66 @@ as easily as json files. Execution of these functions with --python, a list of
 the available functions can be displayed with --list-functions. The docstring of
 the functions should contain a description.
 - Plotting/plot-configs/python-configs/ contains some python plotting scripts
+
+## Tutorial
+This tutorial (as well as the Artus, HarryPlotter and Excalibur documentation in
+general) is incomplete. Please add any information that you think is missing or
+talk to the main developers.
+
+This tutorial will show you how to use Excalibur for (1) data analysis and (2) plotting.
+Please make sure you have successfully installed and compiled Artus and sourced the
+ini script according to the instructions above.
+Have a look at this Readme and the documentation for [Artus](https://github.com/artus-analysis/Artus/blob/master/README.md "Artus Readme")
+and [HarryPlotter](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme")
+in case of questions.
+
+
+### (1) Data Analysis with Artus
+The `excalibur.py` script, located in the scripts/ folder, takes care of creating
+a .json config file and running `artus` with it.
+
+- Execute `excalibur.py data -f 3` to run over three input files with data config.
+The terminal output will tell you some general information, e.g. which files are used
+or how many events per second are processed.
+- Have a look at the used configuration file in `cfg/excalibur/data.py`. From these
+few lines of code, the full json config is created according to
+`cfg/python/defaultconfig.py`. Have a look at the `defaultconfig.py` and the
+relevant sections in there (data, data_mm, ...)
+- Have a look at the json file `cfg/excalibur/data.py.json`, the general
+settings and a list of pipelines.
+- Use 'grep' or the search on github to find out at which positions a certain
+config setting is used (This can be in the Artus or Excalibur repositories!).
+Where e.g. is 'MuonID' used?
+- Open the 'data.root' output file with a ROOT TBrowser. Have a look at the contents
+of the different folders which correspond to the different Pipelines. What is the
+difference between the pipelines/folders?
+- Open the ntuple in one of the folders and examine the different variables.
+- Type `excalibur.py -h` and read the full list of command line arguments.
+- Execute excalibur with the data config in batch mode: `excalibur.py data -b`.
+(You will need grid-control and have the go.py executable in your $PATH)
+
+### (2) Plotting with HarryPlotter/Merlin
+After the data processing with Artus, you need to use `merlin.py` to create plots
+from the output ROOT files.
+
+- The basic parameters you need are a root file, the path to an ntuple and a quantity name.
+Type `merlin.py -i data.root -x zmass` to plot the Z boson mass.
+- Read the merlin documentation above to understand how the folder name is put
+together from the  --zjetfolder, --algorithms and --corrections arguments. Repeat
+the plotting command for a different zjetfolder, e.g. 'nocuts'.
+- Use the `--x-bins` argument to plot the zmass with a different equidistant (e.g.
+`--x-bins "10,71,111"`) or custom (e.g. `--x-bins "71 81 86 91 96 101 111"`) binning.
+Type `merlin.py -h` to get a list of the command line options to get further
+information on how to use `--x-bins`.
+- Create a 2D plot of the Z boson pT versus the leading jet pT by specifying zpt
+and jet1pt for the -x and -y arguments.
+- The `--weights/-w` argument can be used for weighting of events and thereby for
+cutting out certain events, e.g. `-w "zmass>50&&zpt>50"`. Use this argument to
+create the 2D plots only with events with zpt>100 and jet1pt>80.
+- Create a profile plot by using `--tree-draw-options prof`.
+- The --live and --www arguments are handy to directly open plots or upload them
+to your webspace.
+
+- Have a look at the full list of command line arguments: `merlin.py -h`
+
+
