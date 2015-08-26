@@ -114,6 +114,25 @@ class ZJetProduct : public KappaProduct
 		return GetValidJet(settings, event, 0, settings.GetCorrectionLevel());
 	}
 
+	// we cant use the KappaProduct function here since our jet collections are different
+	unsigned int CountValidJetsAbovePt(ZJetSettings const& settings, ZJetEvent const& event,
+														float ptthreshold) const
+	{
+		unsigned int count = 0;
+		for (unsigned int i = 0; i < GetValidJetCount(settings, event); i++)
+		{
+			if (GetValidJet(settings, event, i)->p4.Pt() > ptthreshold)
+			{
+				count += 1;
+			}
+			else
+			{
+				return count; // pT doesn't increase again, stop counting
+			}
+		}
+		return count;
+	}
+
 	// Access to radiation jets
 	unsigned long GetRadiationJetCount(ZJetSettings const& settings,
 								  ZJetEvent const& event,
