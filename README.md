@@ -174,7 +174,7 @@ There is a new python plot config style which allows to create new configs based
 on existing ones and override properties in the plot dictionary.
 
 Example:
-`
+```
 from Excalibur.Plotting.utility.toolsZJet import PlottingJob
 
 def existing_config(args):
@@ -198,7 +198,7 @@ def new_config(args):
     plotting_jobs.append(existing_jobs)
         
     return plotting_jobs
-`
+```
 
 There's no need to call `harryinterface.harry_interface` because it is automatically
 called if a list with `PlottingJob` is returned by the config function.
