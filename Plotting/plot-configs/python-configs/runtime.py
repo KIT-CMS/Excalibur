@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+
 from Artus.HarryPlotter.utility.tfilecontextmanager import TFileContextManager
 import Excalibur.Plotting.harryinterface as harryinterface
 
@@ -25,10 +27,13 @@ def runtime(args=None, additional_dictionary=None):
 		# get list of processors
 		with TFileContextManager(filename, "READ") as rootfile:
 			ntuple = rootfile.Get(folder)
-			for leaf in ntuple.GetListOfLeaves():
-				if (only_producers and 'Producer' in leaf.GetName()) or not only_producers:
-					processors.append(leaf.GetName())
-
+			try:
+				for leaf in ntuple.GetListOfLeaves():
+					if (only_producers and 'Producer' in leaf.GetName()) or not only_producers:
+						processors.append(leaf.GetName())
+			except AttributeError:
+				print "Could not find {}! Did you let the RunTimeConsumer run?".format(folder)
+				sys.exit(1)
 		d = {
 			# input
 			'files': [filename],
