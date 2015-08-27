@@ -19,10 +19,10 @@ This framework needs:
 All that is most easily provided by installing CMSSW alongside and taking the offline jet corrections from there (in CondFormats):
 ```
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/
-export SCRAM_ARCH=slc6_amd64_gcc481
+export SCRAM_ARCH=slc6_amd64_gcc491
 source $VO_CMS_SW_DIR/cmsset_default.sh
-cmsrel CMSSW_7_2_0
-cd CMSSW_7_2_0/src
+cmsrel CMSSW_7_4_5_ROOT5
+cd CMSSW_7_4_5_ROOT5/src
 cmsenv
 #git cms-addpkg CondFormats/JetMETObjects
 cd ../..
