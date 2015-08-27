@@ -36,8 +36,8 @@ def get_special_parser(args):
 
 def response_extrapolation(args=None, additional_dictionary=None):
 	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters."""
-	additional_dictionary = additional_dictionary.copy()
 	if additional_dictionary is not None:
+		additional_dictionary = additional_dictionary.copy()
 		if 'files' in additional_dictionary and len(additional_dictionary['files']) == 2:
 			files = [
 				additional_dictionary['files'][0],
@@ -161,11 +161,8 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 				'legend': 'best',
 				'cutlabel': True,
 				'lines': [1.0],
-
 				'analysis_modules': ['Ratio'],
-
 				'filename': method + "_" + quantity.replace("(", "").replace(")", ""),
-				
 				'y_subplot_lims': [0.5, 1.5],
 			}
 			if quantity == 'abs(jet1eta)':
@@ -235,6 +232,9 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 
 		if additional_dictionary:
 			d.update(additional_dictionary)
+		if quantity == 'alpha' and not 'zjetfolders' in additional_dictionary:
+			d['zjetfolders'] = ['noalphacuts']
+
 		if not only_normalized:
 			plots.append(d)
 
@@ -315,6 +315,7 @@ def pf_fractions(args=None, additional_dictionary=None):
 
 	# for 'incoming' labels, add them to the PFfraction-labels
 	if additional_dictionary is not None:
+		additional_dictionary = additional_dictionary.copy()
 		if 'labels' in additional_dictionary:
 			labels = additional_dictionary['labels']
 			additional_dictionary.pop('labels')
@@ -444,7 +445,6 @@ def jet_resolution(args=None, additional_dictionary=None):
 	for quantity in ['zpt', 'npv', 'jet1abseta']:
 		for method in ['mpf', 'ptbalance', 'trueresponse']:
 			d = {
-				'labels': ['data', 'mc'],
 				'cutlabel': True,
 				'corrections': ['L1L2L3Res', 'L1L2L3'],
 				'x_expressions': quantity,
@@ -529,9 +529,9 @@ def comparsion_CHS_Puppi(args=None):
 		plotting_jobs += basic_comparisons(args, d, data_quantities=False)
 		plotting_jobs += basic_profile_comparisons(args, d)
 		plotting_jobs += pf_fractions(args, d)
-		plotting_jobs += response_comparisons(args, d, data_quantities=False)
+		plotting_jobs += response_comparisons(args, additional_dictionary=d, data_quantities=False)
 		plotting_jobs += jet_resolution(args, additional_dictionary=d)
-		response_extrapolation_jobs = response_extrapolation(args, d)
+		response_extrapolation_jobs = response_extrapolation(args, additional_dictionary=d)
 		response_extrapolation_jobs[0].plots[0]['legend'] = 'upper left'
 		response_extrapolation_jobs[0].plots[0]['legend_cols'] = 2
 		response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.79, 1.2]
