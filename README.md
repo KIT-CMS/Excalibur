@@ -286,7 +286,7 @@ relevant sections in there (data, data_mm, ...). Where is e.g. the setting for
 the MuonID defined?
 - Have a look at the json file `cfg/excalibur/data.py.json`. This configuration
 contains general settings and a list of pipelines. What is the difference between
-the pipelines?
+the pipelines (look at the list of Quantities and Processors for each pipeline)?
 - Use 'grep' or the search on github to find out at which positions a certain
 config setting is used (This can be in the Artus or Excalibur repositories!).
 Where e.g. is 'MuonID' used?
@@ -319,7 +319,7 @@ information on how to use `--x-bins`.
 - Create a 2D plot of the Z boson pT versus the leading jet pT by specifying zpt
 and jet1pt for the -x and -y arguments.
 - The `--weights/-w` argument can be used for weighting of events and thereby for
-cutting out certain events, e.g. `-w "zmass>50&&zpt>50"`. Use this argument to
+cutting out certain events, e.g. `-w "jet1pt>80&&zpt>100"`. Use this argument to
 create the 2D plots only with events with zpt>100 and jet1pt>80.
 - Create a profile plot by using `--tree-draw-options prof`.
 - The --live or --www arguments are handy to directly open plots or upload them
