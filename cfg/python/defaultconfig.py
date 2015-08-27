@@ -190,10 +190,10 @@ def ee(cfg, **kwargs):
 		'filter:ZFilter',
 		'producer:RadiationJetProducer',
 	]
-	cfg['ElectronID'] = 'mvanontrig'
+	cfg['ElectronID'] = 'vbft95_loose'
 	cfg['ElectronIsoType'] = 'pf'
-	cfg['ElectronIso'] = 'mvanontrig'
-	cfg['ElectronReco'] = 'none'
+	cfg['ElectronIso'] = 'mvatrig'
+	cfg['ElectronReco'] = 'mvanontrig'
 	
 	cfg['MinNElectrons'] = 2
 	cfg['MaxNElectrons'] = 3
@@ -428,12 +428,6 @@ def mcee(cfg, **kwargs):
 	cfg['AddGenMatchedTaus'] = False
 	cfg['AddGenMatchedTauJets'] = False
 
-	# electron data/mc scale factors
-	if cfg['ElectronID'] is not 'none':
-		cfg['Processors'] += ['producer:ElectronSFProducer']
-		cfg['ElectronSFRootfilePath'] = configtools.getPath() + "/data/electron_scalefactors/"
-		cfg['Pipelines']['default']['Quantities'] += ['electronSFWeight']
-
 def mcmm(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
 		'matchedgenmuon1pt',
@@ -463,6 +457,16 @@ def _2011mm(cfg, **kwargs):
 
 def _2012mm(cfg, **kwargs):
 	pass
+
+def _2012ee(cfg, **kwargs):
+	if cfg['ElectronID'] is not 'none':
+		if 'producer:EventWeightProducer' in cfg['Processors']:
+			cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:ElectronSFProducer')
+		else:
+			cfg['Processors'] += ['producer:ElectronSFProducer', 'producer:EventWeightProducer']
+			cfg['EventWeight'] = 'weight'
+		cfg['ElectronSFRootfilePath'] = configtools.getPath() + "/data/electron_scalefactors/"
+		cfg['Pipelines']['default']['Quantities'] += ['electronSFWeight']
 
 def _2015mm(cfg, **kwargs):
 	cfg['MuonID'] = 'tight'
