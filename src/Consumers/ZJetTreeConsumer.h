@@ -4,11 +4,10 @@
 
 #include "ZJetTypes.h"
 
+class ZJetTreeConsumer : public KappaLambdaNtupleConsumer<ZJetTypes>
+{
+  public:
+    virtual std::string GetConsumerId() const override;
 
-class ZJetTreeConsumer: public KappaLambdaNtupleConsumer<ZJetTypes> {
-public:
-
-	virtual std::string GetConsumerId() const override;
-
-	virtual void Init(ZJetSettings const& settings) override;
+    virtual void Init(ZJetSettings const& settings) override;
 };

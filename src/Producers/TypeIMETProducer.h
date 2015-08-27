@@ -10,17 +10,16 @@
 class TypeIMETProducer : public ZJetProducerBase
 {
   public:
-	std::string GetProducerId() const;
+    std::string GetProducerId() const;
 
-	TypeIMETProducer() : ZJetProducerBase() {};
+    TypeIMETProducer() : ZJetProducerBase(){};
 
-	void Init(ZJetSettings const& settings);
+    void Init(ZJetSettings const& settings);
 
-	void Produce(ZJetEvent const& event, ZJetProduct& product,
-						 ZJetSettings const& settings) const;
+    void Produce(ZJetEvent const& event, ZJetProduct& product, ZJetSettings const& settings) const;
 
   private:
-	std::string m_l1Corr;
-	std::vector<std::string> m_corrLevels;
-	std::vector<double> m_metPhiCorrectionParameters;
+    std::string m_l1Corr;
+    std::vector<std::string> m_corrLevels;
+    std::vector<double> m_metPhiCorrectionParameters;
 };

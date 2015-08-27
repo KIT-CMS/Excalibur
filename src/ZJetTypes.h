@@ -15,11 +15,10 @@
 #include "ZJetProduct.h"
 
 // all data types which are used for this analysis
-struct ZJetTypes
-{
-	typedef ZJetEvent event_type;
-	typedef ZJetProduct product_type;
-	typedef ZJetSettings setting_type;
+struct ZJetTypes {
+    typedef ZJetEvent event_type;
+    typedef ZJetProduct product_type;
+    typedef ZJetSettings setting_type;
 };
 
 // Pass the template parameters for the Producers

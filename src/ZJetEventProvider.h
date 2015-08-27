@@ -15,9 +15,9 @@
 class ZJetEventProvider : public KappaEventProvider<ZJetTypes>
 {
   public:
-	typedef typename ZJetTypes::setting_type setting_type;
+    typedef typename ZJetTypes::setting_type setting_type;
 
-	ZJetEventProvider(FileInterface2& fi, InputTypeEnum inpType);
+    ZJetEventProvider(FileInterface2& fi, InputTypeEnum inpType);
 
-	virtual void WireEvent(setting_type const& settings) override;
+    virtual void WireEvent(setting_type const& settings) override;
 };

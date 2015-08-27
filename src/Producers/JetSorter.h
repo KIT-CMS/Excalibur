@@ -10,10 +10,11 @@
 class JetSorter : public ZJetProducerBase
 {
   public:
-	virtual std::string GetProducerId() const override;
+    virtual std::string GetProducerId() const override;
 
-	JetSorter() : ZJetProducerBase(){};
+    JetSorter() : ZJetProducerBase(){};
 
-	virtual void Produce(ZJetEvent const& event, ZJetProduct& product,
-	                     ZJetSettings const& settings) const override;
+    virtual void Produce(ZJetEvent const& event,
+                         ZJetProduct& product,
+                         ZJetSettings const& settings) const override;
 };
