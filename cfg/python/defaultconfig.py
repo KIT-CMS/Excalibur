@@ -178,7 +178,7 @@ def ee(cfg, **kwargs):
 	cfg['ElectronMetadata'] = 'electronMetadata'
 	# The order of these producers is important!
 	cfg['Processors'] = [
-		'producer:ValidElectronsProducer',
+		'producer:ZJetValidElectronsProducer',
 		'filter:MinElectronsCountFilter',
 		'filter:MaxElectronsCountFilter',
 		'producer:ValidTaggedJetsProducer',
