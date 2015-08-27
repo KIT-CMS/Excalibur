@@ -36,11 +36,67 @@ def get_special_parser(args):
 
 def response_extrapolation(args=None, additional_dictionary=None):
 	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters."""
+	additional_dictionary = additional_dictionary.copy()
+	if additional_dictionary is not None:
+		if 'files' in additional_dictionary and len(additional_dictionary['files']) == 2:
+			files = [
+				additional_dictionary['files'][0],
+				additional_dictionary['files'][1],
+				additional_dictionary['files'][0],
+				additional_dictionary['files'][1],
+				additional_dictionary['files'][1],
+			]
+			additional_dictionary.pop('files')
+		else:
+			files = None
+		if 'corrections' in additional_dictionary and len(additional_dictionary['corrections']) == 2:
+			corrections = [
+				additional_dictionary['corrections'][0],
+				additional_dictionary['corrections'][1],
+				additional_dictionary['corrections'][0],
+				additional_dictionary['corrections'][1],
+				additional_dictionary['corrections'][1],
+			]
+			additional_dictionary.pop('corrections')
+		else:
+			corrections = ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']
+		if 'algorithms' in additional_dictionary and len(additional_dictionary['algorithms']) == 2:
+			algorithms = [
+				additional_dictionary['algorithms'][0],
+				additional_dictionary['algorithms'][1],
+				additional_dictionary['algorithms'][0],
+				additional_dictionary['algorithms'][1],
+				additional_dictionary['algorithms'][1],
+			]
+			additional_dictionary.pop('algorithms')
+		else:
+			algorithms = ['AK5PFJetsCHS']
+		if 'labels' in additional_dictionary:
+			labels = additional_dictionary['labels']
+			additional_dictionary.pop('labels')
+		elif 'nicks' in additional_dictionary:
+			labels = additional_dictionary['nicks']
+			additional_dictionary.pop('nicks')
+		else:
+			labels = ['', '']
+	else:
+		labels = ['', '']
+	if labels != ['', '']:
+		labels = ["({0})".format(l) for l in labels]
+
 	d = {
 		'filename': 'extrapolation',
-		'labels': [r'$\\mathit{p}_{T}$ balance (Data)', r'$\\mathit{p}_{T}$ balance (MC)', 'MPF (Data)', 'MPF (MC)', r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$', r'$\\mathit{p}_{T}$ balance', 'MPF', '', '', '', '', '', '', '', '', ''],
-		'algorithms': ["AK5PFJetsCHS",],
-		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'labels': [
+			r"$\\mathit{p}_{T}$ balance" + " {0}".format(labels[0]),
+			r"$\\mathit{p}_{T}$ balance" + " {0}".format(labels[1]),
+			'MPF {0}'.format(labels[0]),
+			'MPF {0}'.format(labels[1]),
+			r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$',
+			r'$\\mathit{p}_{T}$ balance',
+			'MPF',
+			'', '', '', '', '', '', '', '', ''],
+		'algorithms': algorithms,
+		'corrections': corrections,
 		'zjetfolders': ['noalphacuts'],
 		'lines': [1.0],
 		'legend': 'lower left',
@@ -59,6 +115,8 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'tree_draw_options': 'prof',
 		'analysis_modules': ['Ratio', 'FunctionPlot'],
 		'plot_modules': ['PlotMplZJet', 'PlotExtrapolationText'],
+		'extrapolation_text_nicks': ['ptbalance_ratio_fit', 'mpf_ratio_fit'],
+		'extrapolation_text_colors': ['darkred', 'darkblue'],
 		'functions': ['[0]+[1]*x'],
 		'function_fit': ['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc', 'reco_gen_jet', 'ptbalance_ratio', 'mpf_ratio'],
 		'function_parameters': ['1,1'],
@@ -72,6 +130,9 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'subplot_fraction': 40,
 		'subplot_legend': 'lower left',
 	}
+
+	if files is not None:
+		d['files'] = files
 
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
@@ -458,21 +519,26 @@ def comparsion_CHS_Puppi(args=None):
 			],
 			"algorithms": ["ak4PFJetsPuppi", "ak4PFJetsCHS"],
 			'corrections': ['L1L2L3'],
-			'labels': ['Puppi (MC)', 'CHS (MC)'],
-			'zjetfolders': zjetfolder,
+			'labels': ['MC Puppi', 'MC CHS'],
 			'www': 'comparsion_CHS_Puppi_' + zjetfolder
 		}
+
+		if zjetfolder != "finalcuts":
+			d['zjetfolders'] = zjetfolder
 
 		plotting_jobs += basic_comparisons(args, d, data_quantities=False)
 		plotting_jobs += basic_profile_comparisons(args, d)
 		plotting_jobs += pf_fractions(args, d)
 		plotting_jobs += response_comparisons(args, d, data_quantities=False)
+		plotting_jobs += jet_resolution(args, additional_dictionary=d)
 		response_extrapolation_jobs = response_extrapolation(args, d)
 		response_extrapolation_jobs[0].plots[0]['legend'] = 'upper left'
-		response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.8, 1.3]
-		response_extrapolation_jobs[0].plots[0]['y_subplot_lims'] = [0.9, 1.2]
+		response_extrapolation_jobs[0].plots[0]['legend_cols'] = 2
+		response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.79, 1.2]
+		response_extrapolation_jobs[0].plots[0]['y_subplot_lims'] = [0.82, 1.07]
+		response_extrapolation_jobs[0].plots[0]['subplot_legend'] = 'lower left'
+		response_extrapolation_jobs[0].plots[0]['extrapolation_text_position'] = [0.18, 0.9]
 		plotting_jobs += response_extrapolation_jobs
-		plotting_jobs += jet_resolution(args, additional_dictionary=d)
 		d['folders'] = [
 			'finalcuts_ak4PFJetsPuppiL1L2L3',
 			'finalcuts_ak4PFJetsCHSL1L2L3'
@@ -550,7 +616,6 @@ def comparison_datamc(args=None):
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 	}
 	plotting_jobs += pf_fractions(args, additional_dictionary=d)
-	plotting_jobs
 
 
 def comparison_1215(args=None):
