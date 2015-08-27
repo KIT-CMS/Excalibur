@@ -47,6 +47,17 @@ void ElectronSFProducer::Init(ZJetSettings const& settings)
         m_reversed_axes = false;
         m_absoluteeta = true;
         m_sffile = m_sffile += "CutBasedID";
+    } else if ((m_id == "vbft95_loose") || (m_id == "vbft95_medium") || (m_id == "vbft95_tight") ||
+               (m_id == "vbft95_veto")) {
+        histoname = (m_id);
+        m_etabins = &m_ybins;
+        m_ptbins = &m_xbins;
+        m_reversed_axes = true;
+        m_absoluteeta = true;
+        if (settings.GetInputIsData())
+            m_sffile = m_sffile += "Data";
+        else
+            m_sffile = m_sffile += "MC";
     } else {
         LOG(FATAL) << "No scale factors for ID " << m_id << " available!";
     }
