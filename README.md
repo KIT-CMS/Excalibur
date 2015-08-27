@@ -272,7 +272,9 @@ in case of questions.
 
 ### (1) Data Analysis with Artus
 The `excalibur.py` script, located in the scripts/ folder, takes care of creating
-a .json config file and running `artus` with it.
+a .json config file and running `artus` with it. `artus` will read in some skim
+files and process the events: Several processors filter undesired events or
+calculate additional quantities. The result is written into a ROOT output file.
 
 - Execute `excalibur.py data -f 3` to run over three input files with data config.
 The terminal output will tell you some general information, e.g. which files are used
@@ -283,17 +285,21 @@ few lines of code, the full json config is created according to
 relevant sections in there (data, data_mm, ...). Where is e.g. the setting for
 the MuonID defined?
 - Have a look at the json file `cfg/excalibur/data.py.json`. This configuration
-contains general settings and a list of pipelines.
+contains general settings and a list of pipelines. What is the difference between
+the pipelines?
 - Use 'grep' or the search on github to find out at which positions a certain
 config setting is used (This can be in the Artus or Excalibur repositories!).
 Where e.g. is 'MuonID' used?
 - Open the 'data.root' output file with a ROOT TBrowser. Have a look at the contents
 of the different folders which correspond to the different Pipelines. What is the
 difference between the pipelines/folders?
-- Open the ntuple in one of the folders and examine the different variables.
+- Open the ntuple in one of the folders and examine the different variables. An
+explanation of the quantities is given above. What does e.g. 'mupluspt' mean?
 - Type `excalibur.py -h` and read the full list of command line arguments.
 - Execute excalibur with the data config in batch mode: `excalibur.py data -b`.
-(You will need grid-control and have the go.py executable in your $PATH)
+(You will need [grid-control](http://www-ekp.physik.uni-karlsruhe.de/~berger/gc/install.html "grid-control installation instructions")
+and have the go.py executable in your $PATH)
+
 
 ### (2) Plotting with HarryPlotter/Merlin
 After the data processing with Artus, you need to use `merlin.py` to create plots
@@ -316,8 +322,8 @@ and jet1pt for the -x and -y arguments.
 cutting out certain events, e.g. `-w "zmass>50&&zpt>50"`. Use this argument to
 create the 2D plots only with events with zpt>100 and jet1pt>80.
 - Create a profile plot by using `--tree-draw-options prof`.
-- The --live and --www arguments are handy to directly open plots or upload them
+- The --live or --www arguments are handy to directly open plots or upload them
 to your webspace.
 - Have a look at the full list of command line arguments: `merlin.py -h`
 
-Congratulations! You have completed the Excalibur tutorial! :+1:
+Congratulations! You have completed the Excalibur tutorial! :clap: :+1:
