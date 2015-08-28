@@ -27,6 +27,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'e1pt': '$\mathit{p}_{T}^{Leading\ Electron}$ / GeV',
 			'e1abseta': '|$\mathit{\eta}_{Leading\ Electron}$|',
 			'eabseta': '|$\mathit{\eta}_{Electron}$|',
+			'eminuseta': '$\mathit{\eta}_{e^{-}}$',
 			'eminuspt': '$\mathit{p}_{T}^{e^{-}}$ / GeV',
 			'epluspt': '$\mathit{p}_{T}^{e^{+}}$ / GeV',
 			'ept': '$\mathit{p}_{T}^{Electron}$ / GeV',
