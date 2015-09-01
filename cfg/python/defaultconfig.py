@@ -459,6 +459,7 @@ def _2012mm(cfg, **kwargs):
 	pass
 
 def _2012ee(cfg, **kwargs):
+	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
 	if cfg['ElectronID'] is not 'none':
 		if 'producer:EventWeightProducer' in cfg['Processors']:
 			cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:ElectronSFProducer')
@@ -481,7 +482,6 @@ def mc_2011mm(cfg, **kwargs):
 
 def mc_2012ee(cfg, **kwargs):
 	cfg['Processors'] += ['producer:HltProducer']
-	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
 	cfg['Pipelines']['default']['Quantities'] += ['hlt']
 
 
@@ -499,10 +499,6 @@ def data_2012mm(cfg, **kwargs):
 
 def data_2015mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
-
-
-def data_2012ee(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
 
 
 def data_2012em(cfg, **kwargs):
