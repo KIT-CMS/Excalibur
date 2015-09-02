@@ -138,7 +138,7 @@ def ZJet():
 			except KeyboardInterrupt:
 				exit(0)
 		try:
-			child = subprocess.Popen(["artus", options.json])
+			child = subprocess.Popen(["artus", options.json] + (["--log-level", options.log_level] if options.log_level is not None else []))
 			streamdata = child.communicate()[0]
 			artus_returncode = child.returncode
 		except KeyboardInterrupt:
@@ -197,6 +197,8 @@ def getoptions(configdir="", name='excalibur'):
 		help="verbosity")
 	parser.add_argument('-r', '--root', action='store_true',
 		help="open output file in ROOT TBrowser after completion")
+	parser.add_argument('--log-level', choices=['debug', 'info', 'warning', 'error', 'critical'],
+		help="Verbosity of Artus logging.")
 
 	batch_parser = parser.add_argument_group("batch processing arguments", "Deploy analysis to a cluster using grid-control.")
 	batch_parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
@@ -205,7 +207,7 @@ def getoptions(configdir="", name='excalibur'):
 			 "'ekpcluster', 'ekpsg', 'ekpcloud', 'naf' or 'local' [Default: %(const)s]")
 	batch_parser.add_argument('-R', '--resume', action='store_true',
 		help="resume the grid-control run and hadd after interrupting it.")
-	parser.add_argument('-d', '--delete', action='store_true',
+	batch_parser.add_argument('-d', '--delete', action='store_true',
 		help="delete the latest output and jobs still running")
 	batch_parser.add_argument('-w', '--work', type=str, nargs=1, default=None,
 		help="specify custom work path (default from $EXCALIBUR_WORK variable")
