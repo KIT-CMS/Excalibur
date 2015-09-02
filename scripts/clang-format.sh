@@ -12,7 +12,8 @@ VERSION=$(clang-format -version)
 
 if [ "$VERSION" != "clang-format version 3.6.0 " ]; then
   echo "This is not version 3.6: $VERSION"
-  echo "Please use clang-format 3.6 from CMSSW_7_4_5_ROOT5!"
+  echo "Please use clang-format 3.6 from CMSSW_7_4_0_pre9 (slc6_amd64_gcc481)"
+  echo "Or set your PATH such that clang-format 3.6 is found!"
   exit 1
 fi
 
