@@ -9,10 +9,11 @@ source $ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh
 export PATH=$ARTUSPATH/Utility/scripts:$PATH
 
 # set the environment
-export BOOSTPATH=$(ls ${VO_CMS_SW_DIR}/${SCRAM_ARCH}/external/boost/* -d | tail -n 1)
-BOOSTVER=${BOOSTPATH%-*}
-export BOOSTLIB=${BOOSTPATH}/lib/libboost_regex.so.${BOOSTVER/*\//}
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ARTUSPATH:$BOOSTPATH/lib
+export BOOSTLIB=$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/LIBDIR=//p')
+export BOOSTINC=$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/INCLUDE=//p')
+export BOOSTVER=$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/Version : //p')
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ARTUSPATH:$BOOSTLIB
 export PATH=$PATH:$EXCALIBURPATH/scripts
 export PYTHONPATH=$PYTHONPATH:$EXCALIBURPATH/cfg/python:$EXCALIBURPATH/cfg/excalibur
 export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`

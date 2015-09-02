@@ -92,8 +92,8 @@ def ZJet():
 				"/../KappaTools/lib/libKToolbox.so"
 			]:
 				shutil.copy(getEnv('ARTUSPATH') + lib, options.work + 'lib/')
-			shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_regex.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
-			shutil.copy(getEnv('BOOSTPATH') + "/lib/libboost_program_options.so." + getEnv('BOOSTPATH').split('/')[-1].split('-')[0], options.work + 'lib/')
+			shutil.copy(getEnv('BOOSTLIB') + "/libboost_regex.so." + getEnv('BOOSTVER').split('-')[0], options.work + 'lib/')
+			shutil.copy(getEnv('BOOSTLIB') + "/libboost_program_options.so." + getEnv('BOOSTVER').split('-')[0], options.work + 'lib/')
 			outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch, jobs=options.jobs, files_per_job=options.files_per_job)
 
 		outpath = options.work + "out/*.root"

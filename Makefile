@@ -16,10 +16,10 @@ GCCWARNINGS    = -lprofiler -ltcmalloc -Wvector-operation-performance -Wnormaliz
 GCCPLUSWARN    = -Wdouble-promotion -Wzero-as-null-pointer-constant 
 PLUSWARNINGS   = -Wconversion -Wfloat-equal #-Wshadow -Wpadded -Winline
 CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) \
- -Isrc -I.. -isystem ../CondFormats -isystem $(BOOSTPATH)/include \
+ -Isrc -I.. -isystem ../CondFormats -isystem $(BOOSTINC) \
  $(GCCWARNINGS) $(GCCPLUSWARN)
 LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA \
- -L$(BOOSTPATH)/lib -lboost_regex \
+ -L$(BOOSTLIB) -lboost_regex \
  -L$(ARTUSPATH) -lartus_configuration -lartus_consumer -lartus_core -lartus_filter -lartus_provider -lartus_utility -lartus_kappaanalysis -lartus_externalcorr \
  -L$(KAPPAPATH)/lib -L$(KAPPATOOLSPATH)/lib -lKappa -lKRootTools -lKToolbox
 
@@ -49,7 +49,7 @@ purge: clean
 check:
 	@echo -e "checking COMPILER...     \c" && which $(CXX)
 	@echo -e "checking ROOT...         \c" && root-config --version
-	@echo -e "checking BOOST...        \c" && ls $(BOOSTPATH) -d
+	@echo -e "checking BOOST...        \c" && ls $(BOOSTLIB) -d
 	@echo -e "checking KAPPA...        \c" && ls $(KAPPAPATH) -d
 	@echo -e "checking KAPPATOOLS...   \c" && ls $(KAPPATOOLSPATH) -d
 	@echo -e "checking OFFLINE JEC...  \c" && ls ../CondFormats -d
