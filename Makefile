@@ -79,3 +79,15 @@ help:
 	@echo "make clean          clean up object files and executable"
 	@echo "make purge          clean up .pyc and .py.json files additionally"
 	@echo "make help           show this help message"
+
+all:
+	make -C $(KAPPAPATH)/DataFormats/test
+	make -C $(KAPPATOOLSPATH) -j12
+	cd $(ARTUSPATH); cmake .; make -j12; cd -
+	make -j12
+
+allclean:
+	make clean -C $(KAPPAPATH)/DataFormats/test
+	make clean -C $(KAPPATOOLSPATH)
+	cd $(ARTUSPATH) && make clean && cd -
+	make clean

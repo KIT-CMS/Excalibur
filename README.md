@@ -50,6 +50,13 @@ git clone https://github.com/artus-analysis/Excalibur.git
 
 In a next step you need to compile all those packages:
 ```
+cd Excalibur
+. scripts/ini_excalibur.sh
+make all
+```
+As an alternative to this command, you can also compile all four
+repositories by hand:
+```
 make -B -C Kappa/DataFormats/test
 make -j4 -B -C KappaTools
 cd Artus ; cmake . ; make -B -j4 ; cd ..
@@ -57,10 +64,6 @@ cd Excalibur
 . scripts/ini_excalibur.sh
 make -j4 -B
 ```
-(todo: a script should do that and the Makefile should fully handle all parts)
-
-after having done so, it can also be compile with `make` in the parent directory
-or with `make project` in Excalibur.
 
 The preceeding implementation can be found at: https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur -
 many ideas were and can still be taken from there.
