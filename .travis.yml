@@ -25,4 +25,4 @@ install:
   - make check
   - make
 script: make
-#  - ./scripts/test_excalibur.sh
+# - ./scripts/test_excalibur.sh
