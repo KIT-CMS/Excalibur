@@ -25,7 +25,8 @@ install:
   - make check
   - make
 script:
-  - wget http://www-ekp.physik.uni-karlsruhe.de/~berger/files/excalibur-testfile.root
-  - ls
-  - sed -i 's:/storage/.*root:excalibur-testfile.root:' test/mc.py.json
+  - wget http://www-ekp.physik.uni-karlsruhe.de/~berger/files/excalibur-data.root
+  - ls -l
+  - sed -i 's:/storage/.*root:excalibur-data.root:' test/data.py.json
+  - source scripts/ini_merlin.sh
   - ./scripts/test_excalibur.sh
