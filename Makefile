@@ -16,12 +16,13 @@ GCCWARNINGS    = -lprofiler -ltcmalloc -Wvector-operation-performance -Wnormaliz
 GCCPLUSWARN    = -Wdouble-promotion -Wzero-as-null-pointer-constant 
 PLUSWARNINGS   = -Wconversion -Wfloat-equal #-Wshadow -Wpadded -Winline
 CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) \
- -Isrc -I.. -isystem ../CondFormats -isystem $(BOOSTINC) \
+ -Isrc -I.. -isystem ../CondFormats $(BOOSTINC) \
  $(GCCWARNINGS) $(GCCPLUSWARN)
-LDFLAGS        = $(ROOTLDFLAGS) -lGenVector -lTMVA \
- -L$(BOOSTLIB) -lboost_regex \
+LDFLAGS        = -Wl,--no-as-needed \
  -L$(ARTUSPATH) -lartus_configuration -lartus_consumer -lartus_core -lartus_filter -lartus_provider -lartus_utility -lartus_kappaanalysis -lartus_externalcorr \
- -L$(KAPPAPATH)/lib -L$(KAPPATOOLSPATH)/lib -lKappa -lKRootTools -lKToolbox
+ -L$(KAPPATOOLSPATH)/lib -L$(KAPPAPATH)/lib -lKRootTools -lKToolbox -lKappa \
+ $(BOOSTLIB) -lboost_regex \
+ $(ROOTLDFLAGS) -lGenVector -lTMVA
 
 OBJECTS = $(patsubst %.cc,%.o,$(wildcard src/*.cc src/*/*.cc))
 
