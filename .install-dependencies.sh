@@ -26,5 +26,5 @@ tar xzf CondFormats.tar.gz || exit 1
 git clone https://github.com/artus-analysis/Artus.git
 cd Artus
 cmake .
-make
+#make
 cd $BASE
