@@ -138,6 +138,76 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 	return [PlottingJob(plots=[d], args=args)]
 
+def response_bin_comparsions(args=None, additional_dictionary=None, data_quantities=True):
+	plots = []
+
+	if additional_dictionary is not None:
+		additional_dictionary = additional_dictionary.copy()
+		if 'title' in additional_dictionary:
+			additional_dictionary.pop('title')
+		if 'labels' in additional_dictionary:
+			labels = additional_dictionary['labels']
+			additional_dictionary.pop('labels')
+		elif 'nicks' in additional_dictionary:
+			labels = additional_dictionary['nicks']
+			additional_dictionary.pop('nicks')
+		else:
+			labels = ['', '']
+	else:
+		labels = ['', '']
+	if labels != ['', '']:
+		labels = ["{0}".format(l) for l in labels]
+
+	for quantity, title_quantity, bins in zip(
+		[
+			'zpt',
+			#'npv',
+			#'abs(jet1eta)'
+		],
+		[
+			r"$\\mathit{p}_{T}^{Z}$",
+			#'$\\mathit{n}_{PV}$',
+			#'|$\\mathit{\eta}_{Leading \ Jet}$|'
+		],
+		[
+			"30 40 50 60 75 95 125 180 300 1000",
+			#"-0.5 4.5 8.5 15.5 21.5 45.5",
+			#"0 0.783 1.305 1.93 2.5 2.964 3.139 5.191"
+		]
+	):
+		for method in ['ptbalance']:
+			bin_edges = bins.split(" ")
+			for i in xrange(len(bin_edges)-1):
+				filename_postfix = "{0}-{1}".format(bin_edges[i], bin_edges[i+1])
+
+				d = {
+					'x_expressions': [method],
+					'x_lims': [0, 2],
+					'x_bins': "20,0,2",
+					'weights': ["{0}>{1}&&{0}<{2}".format(quantity, bin_edges[i], bin_edges[i+1])],
+					'title': "{1} < {0} < {2}".format(title_quantity, bin_edges[i], bin_edges[i+1]),
+					'cutlabel': True,
+					#'analysis_modules': ['Ratio'],
+					'filename': method + "_" + quantity.replace("(", "").replace(")", "") + "_" + filename_postfix,
+					#'y_subplot_lims': [0.5, 1.5],
+					"nicks": ['nick1', 'nick2'],
+					"markers": ['*', '.', None, None],
+					"line_styles": [None, None, '-', '-'],
+					"colors": ["red", "blue"],
+					"labels": [labels[0], labels[1], labels[0] + " Fit", labels[1] + " Fit"],
+					"analysis_modules": ["NormalizeToFirstHisto","FunctionPlot"],
+					"function_fit": ["nick1", "nick2"],
+					"function_nicknames": ["nick1_fit", "nick2_fit"],
+					"function_parameters": ["1,1,1"],
+					"function_ranges": ["0,2"],
+					"functions": ["[0]*exp(-0.5*((x-[1])/[2])**2)"],
+				}
+
+				if additional_dictionary != None:
+					d.update(additional_dictionary)
+				plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
+
 def response_comparisons(args2=None, additional_dictionary=None, data_quantities=True):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
 
@@ -508,45 +578,141 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	plotting_jobs += jet_resolution(args, additional_dictionary=d)
 	return plotting_jobs
 
-def comparsion_CHS_Puppi(args=None):
+
+def comparsion_CHS_Puppi_test(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
 	plotting_jobs = []
-	for zjetfolder in ['finalcuts', 'noalphacuts', 'betacuts']:
-		d = {
-			'files': [
-				'work/mc15Puppi.root',
-				'work/mc15.root',
-			],
-			"algorithms": ["ak4PFJetsPuppi", "ak4PFJetsCHS"],
-			'corrections': ['L1L2L3'],
-			'labels': ['MC Puppi', 'MC CHS'],
-			'www': 'comparsion_CHS_Puppi_' + zjetfolder
-		}
+	for corrections in ['L1L2L3']:
+		for zjetfolder in ['finalcuts']:
+			d = {
+				'files': [
+					'work/mc15Puppi.root',
+					'work/mc15.root',
+				],
+				"algorithms": ["ak4PFJetsPuppi", "ak4PFJetsCHS"],
+				'corrections': [corrections],
+				'labels': ['Puppi', 'CHS']
+			}
 
-		if zjetfolder != "finalcuts":
-			d['zjetfolders'] = zjetfolder
+			if corrections == '':
+				d['title'] = 'No corrections'
+				d['www'] = 'comparsion_CHS_Puppi_' + zjetfolder + '_None'
+			else:
+				d['title'] = corrections
+				d['www'] = 'comparsion_CHS_Puppi_' + zjetfolder + '_' + corrections
 
-		plotting_jobs += basic_comparisons(args, d, data_quantities=False)
-		plotting_jobs += basic_profile_comparisons(args, d)
-		plotting_jobs += pf_fractions(args, d)
-		plotting_jobs += response_comparisons(args, additional_dictionary=d, data_quantities=False)
-		plotting_jobs += jet_resolution(args, additional_dictionary=d)
-		response_extrapolation_jobs = response_extrapolation(args, additional_dictionary=d)
-		response_extrapolation_jobs[0].plots[0]['legend'] = 'upper left'
-		response_extrapolation_jobs[0].plots[0]['legend_cols'] = 2
-		response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.79, 1.2]
-		response_extrapolation_jobs[0].plots[0]['y_subplot_lims'] = [0.82, 1.07]
-		response_extrapolation_jobs[0].plots[0]['subplot_legend'] = 'lower left'
-		response_extrapolation_jobs[0].plots[0]['extrapolation_text_position'] = [0.18, 0.9]
-		plotting_jobs += response_extrapolation_jobs
-		d['folders'] = [
+			if zjetfolder != "finalcuts":
+				d['zjetfolders'] = zjetfolder
+
+			plotting_jobs += response_bin_comparsions(args, d, data_quantities=False)
+
+	return plotting_jobs
+
+def comparison_CHS_Puppi(args=None, additional_dictionary={}):
+	""" Do full comparison for CHS and Puppi ntuples """
+	plotting_jobs = []
+
+	#plotting_jobs += response_bin_comparsions(args, d, data_quantities=False)
+	basic_comparison_jobs = basic_comparisons(args, additional_dictionary, data_quantities=False)
+	for plotdict in basic_comparison_jobs[0].plots:
+		if plotdict['x_expressions'][0] == 'njets':
+			plotdict['x_lims'] = [0, 100]
+			plotdict['x_bins'] = "100,0,100"
+			del plotdict['analysis_modules']
+		if plotdict['x_expressions'][0] == 'zpt':
+			plotdict['y_lims'] = [5000000, 70000000000]
+		if plotdict['x_expressions'][0] == 'alpha':
+			plotdict['plot_modules'] =['PlotMplZJet', 'PlotMplRectangle']
+			plotdict['rectangle_x'] = [0.3,1.0]
+			plotdict['rectangle_alpha'] = [0.2]
+			plotdict['rectangle_color'] = ["red"]
+	plotting_jobs += basic_comparison_jobs
+	plotting_jobs += basic_profile_comparisons(args, additional_dictionary)
+	plotting_jobs += pf_fractions(args, additional_dictionary)
+	response_comparisons_jobs = response_comparisons(args, additional_dictionary=additional_dictionary, data_quantities=False)
+	for plotdict in response_comparisons_jobs[0].plots:
+		if plotdict['y_expressions'][0] == 'trueresponse':
+			plotdict['y_lims'] = [0.839, 1.10]
+			plotdict['y_subplot_lims'] = [0.65, 1.25]
+		if plotdict['y_expressions'][0] == 'ptbalance':
+			plotdict['y_lims'] = [0.69, 1.15]
+			plotdict['y_subplot_lims'] = [0.76, 1.14]
+	plotting_jobs += response_comparisons_jobs
+	plotting_jobs += jet_resolution(args, additional_dictionary=additional_dictionary)
+	response_extrapolation_jobs = response_extrapolation(args, additional_dictionary=additional_dictionary)
+	response_extrapolation_jobs[0].plots[0]['legend'] = 'upper left'
+	response_extrapolation_jobs[0].plots[0]['legend_cols'] = 2
+	response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.79, 1.2]
+	response_extrapolation_jobs[0].plots[0]['y_subplot_lims'] = [0.82, 1.07]
+	response_extrapolation_jobs[0].plots[0]['y_subplot_label'] = 'Puppi / CHS'
+	response_extrapolation_jobs[0].plots[0]['subplot_legend'] = 'lower left'
+	response_extrapolation_jobs[0].plots[0]['extrapolation_text_position'] = [0.18, 0.9]
+	response_extrapolation_jobs[0].plots[0]['line_styles'].pop(11)
+	for property in [
+		'y_expressions', 'nicks', 'labels', 'colors', 'markers', 'marker_fill_styles',
+		'line_styles', 'function_fit', 'function_nicknames'
+	]:
+		response_extrapolation_jobs[0].plots[0][property].pop(4)
+
+	plotting_jobs += response_extrapolation_jobs
+	cutflow_jobs = cutflow(args, additional_dictionary)
+	for plotdict in cutflow_jobs[0].plots:
+		plotdict['folders'] = [
 			'finalcuts_ak4PFJetsPuppiL1L2L3',
 			'finalcuts_ak4PFJetsCHSL1L2L3'
 		]
-		plotting_jobs += cutflow(args, d)
-		return plotting_jobs
+	cutflow_jobs[0].plots[1]['y_log'] = True
+	cutflow_jobs[0].plots[1]['y_lims'] = [0.001, 1.00]
+	plotting_jobs += cutflow_jobs
+	return plotting_jobs
 
-def comparsion_Puppi(args=None):
+def comparison_CHS_Puppi_all(args=None):
+	""" Do full comparison for CHS and Puppi ntuples for finalcuts, noalphacuts and betacuts """
+	plotting_jobs = []
+	for corrections in ['', 'L1', 'L1L2L3']:
+		for zjetfolder in ['finalcuts', 'noalphacuts', 'betacuts']:
+			d = {
+				'files': [
+					'work/mc15Puppi.root',
+					'work/mc15.root',
+				],
+				"algorithms": ["ak4PFJetsPuppi", "ak4PFJetsCHS"],
+				'corrections': [corrections],
+				'labels': ['Puppi', 'CHS']
+			}
+
+			if corrections == '':
+				d['title'] = 'No corrections'
+				d['www'] = 'comparison_CHS_Puppi_' + zjetfolder + '_None'
+			else:
+				d['title'] = corrections
+				d['www'] = 'comparison_CHS_Puppi_' + zjetfolder + '_' + corrections
+
+			if zjetfolder != "finalcuts":
+				d['zjetfolders'] = zjetfolder
+
+			plotting_jobs += comparison_CHS_Puppi(args, d)
+
+			if corrections == '':
+				d['www'] = 'comparison_CHS_Puppi_bins_' + zjetfolder + '_None'
+			else:
+				d['www'] = 'comparison_CHS_Puppi_bins_' + zjetfolder + '_' + corrections
+
+			plotting_jobs += response_bin_comparsions(args, d, data_quantities=False)
+	return plotting_jobs
+
+def comparison_CHS_Puppi_matched(args=None):
+	"""Comparsion between CHS and Puppi in a eventmatcher output file"""
+	d = {
+		'files': ['eventmatching.root'],
+		'folders': ['common2', 'common1'],
+		'labels': ['Puppi', 'CHS'],
+		'www': 'comparison_CHS_Puppi_matched',
+	}
+
+	return comparison_CHS_Puppi(args, d)
+
+def comparison_Puppi(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
 	plotting_jobs = []
 	d = {
@@ -555,10 +721,9 @@ def comparsion_Puppi(args=None):
 		],
 		"algorithms": ["ak4PFJetsPuppi"],
 		'corrections': ['L1L2L3', ""],
-		'labels': ['Puppi (L1L2L3)', 'Puppi (None)'],
+		'labels': ['L1L2L3', 'No corrections'],
 	}
-	plotting_jobs += full_comparison(args, d, data_quantities=False, only_normalized=True)
-	return plotting_jobs
+	return comparison_CHS_Puppi(args, d)
 
 def comparison_E1E2(args=None):
 	""" Do response and basic comparison for E1 and E2 ntuples """
