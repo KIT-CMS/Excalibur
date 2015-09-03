@@ -283,6 +283,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "njetsinv", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.GetInvalidJetCount(settings, event);
         });
+    
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "njets10", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.CountValidJetsAbovePt(settings, event, 10.0);
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "njets30", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.CountValidJetsAbovePt(settings, event, 30.0);
@@ -353,6 +358,15 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (event.m_genJets != nullptr && event.m_genJets->size() > 1)
                        ? event.m_genJets->at(1).p4.Phi()
                        : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "ngenjets", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetValidJetCount(settings, event, "Gen");
+        });
+    
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "ngenjets10", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.CountValidJetsAbovePt(settings, event, 10.0, "Gen");
         });
 
     // Reco jet - gen parton matches

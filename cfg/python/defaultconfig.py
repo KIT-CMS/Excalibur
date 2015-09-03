@@ -99,14 +99,20 @@ def mc(cfg, **kwargs):
 	]
 	cfg['GenParticles'] = 'genParticles'
 	cfg['Pipelines']['default']['Quantities'] += [
+		'run',
+		'event',
+		'lumi',
 		'npu',
 		'npumean',
+		'njets10',
 		'genjet1pt',
 		'genjet1eta',
 		'genjet1phi',
 		'genjet2pt',
 		'genjet2eta',
 		'genjet2phi',
+		'ngenjets',
+		'ngenjets10',
 		'matchedgenparton1pt',
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',
