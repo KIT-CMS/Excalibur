@@ -24,5 +24,8 @@ install:
   - source scripts/ini_excalibur.sh
   - make check
   - make
-script: make
-# - ./scripts/test_excalibur.sh
+script:
+  - wget http://www-ekp.physik.uni-karlsruhe.de/~berger/files/excalibur-testfile.root
+  - ls
+  - sed -i 's:/storage/.*root:excalibur-testfile.root:' test/mc.py.json
+  - ./scripts/test_excalibur.sh
