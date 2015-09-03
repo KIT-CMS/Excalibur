@@ -9,10 +9,10 @@ ROOTLDFLAGS    = $(shell root-config --ldflags --libs)
 
 PROJECT        = Excalibur
 EXECUTABLE     = artus
-CXX            = g++-4.8
-STANDARDFLAGS  = -O2 -Wall -Wextra -pedantic -Wfatal-errors -c -std=c++11 -g -fPIC
+CXX           ?= g++
+STANDARDFLAGS  = -O2 -Wall -Wextra -Wpedantic -Wfatal-errors -c -std=c++11 -g -fPIC
 MOREWARNINGS   = -Wswitch-default -Wswitch-enum -Wpacked -Wwrite-strings -Wstrict-overflow=3 -Wredundant-decls -Wdisabled-optimization -Wmissing-declarations -Wstack-protector -Wmissing-include-dirs -Wmissing-format-attribute -Wundef -Wcast-qual -Wcast-align -Wno-unused-parameter -Wreturn-type
-GCCWARNINGS    = -lprofiler -ltcmalloc -Wnormalized=nfkc -Wlogical-op -Wuseless-cast -Wsync-nand -Wunused-local-typedefs -Wtrampolines -Wno-aggressive-loop-optimizations #-Wunsafe-loop-optimizations -Wvector-operation-performance
+GCCWARNINGS    = -lprofiler -ltcmalloc -Wvector-operation-performance -Wnormalized=nfkc -Wlogical-op -Wuseless-cast -Wsync-nand -Wunused-local-typedefs -Wtrampolines -Wno-aggressive-loop-optimizations #-Wunsafe-loop-optimizations
 GCCPLUSWARN    = -Wdouble-promotion -Wzero-as-null-pointer-constant 
 PLUSWARNINGS   = -Wconversion -Wfloat-equal #-Wshadow
 CFLAGS         = $(STANDARDFLAGS) $(ROOTCFLAGS) $(MOREWARNINGS) $(PLUSWARNINGS) \
