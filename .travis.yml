@@ -19,7 +19,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:boost-latest/ppa
   - sudo apt-get -qq update
   - sudo apt-get install libboost1.54-all-dev
-  - ./.install_dependencies.sh
+  - ./.install-dependencies.sh
 install:
   - source scripts/ini_excalibur.sh
   - make check
