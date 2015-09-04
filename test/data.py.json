@@ -44,16 +44,16 @@
         "HLT_Mu17_Mu8_v29"
     ], 
     "InputFiles": [
-        "/storage/a/dhaitz/skims/2015-05-18_DoubleMu_Run2012_22Jan2013_8TeV/kappa_DoubleMuParked_Run2012C_22Jan2013_8TeV_2396.root"
+        "excalibur-data.root"
     ], 
     "InputIsData": true, 
-    "Jec": "/portal/ekpcms6/home/dhaitz/artus/Excalibur/data/jec/Winter14_V8/Winter14_V8_DATA", 
+    "Jec": "data/jec/Winter14_V8/Winter14_V8_DATA", 
     "JetID": "loose", 
     "JetIDVersion": 2014, 
     "JetMetadata": "jetMetadata", 
     "JetPtMin": 10.0, 
     "JsonFiles": [
-        "/portal/ekpcms6/home/dhaitz/artus/Excalibur/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt"
+        "data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt"
     ], 
     "L1Correction": "L1FastJet", 
     "Lumi": 19.712, 
@@ -70,7 +70,7 @@
     "MuonIso": "tight", 
     "MuonIsoType": "pf", 
     "Muons": "muons", 
-    "NPUFile": "/portal/ekpcms6/home/dhaitz/artus/Excalibur/data/pileup/pumean_pixelcorr_data2012.txt", 
+    "NPUFile": "data/pileup/pumean_pixelcorr_data2012.txt", 
     "OutputPath": "data.root", 
     "PileupDensity": "KT6Area", 
     "Pipelines": {
