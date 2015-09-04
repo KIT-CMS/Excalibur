@@ -14,11 +14,8 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - clang
-    - libboost1.54-all-dev
-    - root-system-common
-    - libroot-bindings-python5.34
-    - libroot-bindings-python-dev
 before_install:
+  - sudo apt-get install libboost1.54-all-dev root-system-common libroot-bindings-python5.34 libroot-bindings-python-dev
   - ./.install-dependencies.sh
 install:
   - source scripts/ini_excalibur.sh
