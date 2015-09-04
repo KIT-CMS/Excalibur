@@ -15,7 +15,12 @@ addons:
     packages:
     - clang
 before_install:
-  - sudo apt-get install libboost1.54-all-dev root-system-common libroot-bindings-python5.34 libroot-bindings-python-dev
+  - sudo apt-get install libboost1.54-all-dev root-system libroot-bindings-python5.34 libroot-bindings-python-dev
+  - ls /usr/include/root
+  - ls -d /usr/lib/*/root5.34/
+  - ls /usr/lib/*/root5.34/
+  - root-config --cflags
+  - root-config --ldflags
   - ./.install-dependencies.sh
 install:
   - source scripts/ini_excalibur.sh
