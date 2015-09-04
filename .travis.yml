@@ -6,6 +6,12 @@ notifications:
     on_success: never # default: change
     on_failure: never # default: always
 compiler: gcc
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - clang
 before_install:
   - sudo apt-get install libboost1.54-all-dev root-system libroot-bindings-python5.34
   - ls /usr/include/root /usr/lib/*/root5.34
