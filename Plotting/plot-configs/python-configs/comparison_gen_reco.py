@@ -65,6 +65,12 @@ def reco_gen_comparison(args=None, additional_dictionary=None):
 			}
 			plots.append(d_1)
 
+	for d in plots:
+		d.update({
+			# web gallery options
+			'www_title': 'Reco-gen-comparisons',
+			'www_text': 'Comparison of reco- and gen-level pT,eta,y,phi of muons, jets and Z bosons.',
+		})
 
 	harryinterface.harry_interface(plots, args)
 
