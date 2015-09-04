@@ -1,5 +1,7 @@
 sudo: required
 language: cpp
+services:
+- docker
 notifications:
   email:
     on_success: never # default: change
@@ -11,14 +13,12 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.8
-    - g++-4.8
     - clang
+    - libboost1.54-all-dev
+    - root-system-common
+    - libroot-bindings-python5.34
+    - libroot-bindings-python-dev
 before_install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  - sudo add-apt-repository --yes ppa:boost-latest/ppa
-  - sudo apt-get -qq update
-  - sudo apt-get install libboost1.54-all-dev
   - ./.install-dependencies.sh
 install:
   - source scripts/ini_excalibur.sh
@@ -29,4 +29,5 @@ script:
   - ls -l
   - sed -i 's:/storage/.*root:excalibur-data.root:' test/data.py.json
   - source scripts/ini_merlin.sh
+  - export PYTHONPATH=$PYTHONPATH:/usr/lib/x86_64-linux-gnu/root5.34
   - ./scripts/test_excalibur.sh
