@@ -1,26 +1,15 @@
 sudo: required
 language: cpp
-services:
-- docker
+services: docker
 notifications:
   email:
     on_success: never # default: change
     on_failure: never # default: always
-compiler:
-  - gcc
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - clang
+compiler: gcc
 before_install:
-  - sudo apt-get install libboost1.54-all-dev root-system libroot-bindings-python5.34 libroot-bindings-python-dev
-  - ls /usr/include/root
-  - ls -d /usr/lib/*/root5.34/
-  - ls /usr/lib/*/root5.34/
-  - root-config --cflags
-  - root-config --ldflags
+  - sudo apt-get install libboost1.54-all-dev root-system libroot-bindings-python5.34
+  - ls /usr/include/root /usr/lib/*/root5.34
+  - root-config --cflags --ldflags
   - ./.install-dependencies.sh
 install:
   - source scripts/ini_excalibur.sh
@@ -32,5 +21,6 @@ script:
   - sed -i 's:/storage/.*root:excalibur-data.root:' test/data.py.json
   - source scripts/ini_merlin.sh
   - standalone_merlin
+  - echo $PYTHONPATH
   - export PYTHONPATH=$PYTHONPATH:/usr/lib/x86_64-linux-gnu/root5.34
-  - ./scripts/test_excalibur.sh
+  - test_excalibur.sh
