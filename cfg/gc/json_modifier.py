@@ -20,7 +20,7 @@ def ModifyJSON(jsonConfig, newPath):
 	conf["InputFiles"] = os.environ['FILE_NAMES'].split()
 
 	with open(newPath + '/' + os.path.basename(jsonConfig), 'w') as newJSON:
-		json.dump(conf, newJSON, sort_keys=True, indent=4)
+		json.dump(conf, newJSON, sort_keys=True, indent=4, separators=(',', ': '))
 
 
 if __name__ == "__main__":

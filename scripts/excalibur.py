@@ -49,7 +49,7 @@ def ZJet():
 			conf['ProcessNEvents'] = options.nevents
 		if options.printconfig:
 			print "json config:"
-			print json.dumps(conf, sort_keys=True, indent=4)
+			print json.dumps(conf, sort_keys=True, indent=4, separators=(',', ': '))
 		if not options.resume:
 			writeJson(conf, options.json)
 			print len(conf["Pipelines"]),
@@ -283,7 +283,7 @@ def getEnv(variable='EXCALIBURPATH', nofail=False):
 
 def writeJson(settings, filename):
 	with open(filename, 'w') as f:
-		json.dump(settings, f, sort_keys=True, indent=4)
+		json.dump(settings, f, sort_keys=True, indent=4, separators=(',', ': '))
 
 
 def writeDBS(settings, nickname, filename):
