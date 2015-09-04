@@ -16,11 +16,18 @@ before_install:
   - sudo apt-get install libboost1.54-all-dev root-system libroot-bindings-python5.34
   - ls /usr/include/root /usr/lib/*/root5.34
   - root-config --cflags --ldflags
-  - ./.install-dependencies.sh
+  - cd ..
+  - wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz
+  - tar xzf CondFormats.tar.gz
+  - git clone --depth=10 https://github.com/KappaAnalysis/Kappa.git
+  - git clone --depth=10 https://github.com/KappaAnalysis/KappaTools.git
+  - git clone --depth=10 https://github.com/artus-analysis/Artus.git
+  - cd Excalibur
 install:
+  - sed -i 's: -j[0-9]*::' Makefile
   - source scripts/ini_excalibur.sh
   - make check
-  - make
+  - make all
 script:
   - wget http://www-ekp.physik.uni-karlsruhe.de/~berger/files/excalibur-data.root
   - ls -l
