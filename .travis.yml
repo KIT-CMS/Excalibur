@@ -31,5 +31,6 @@ script:
   - ls -l
   - sed -i 's:/storage/.*root:excalibur-data.root:' test/data.py.json
   - source scripts/ini_merlin.sh
+  - standalone_merlin
   - export PYTHONPATH=$PYTHONPATH:/usr/lib/x86_64-linux-gnu/root5.34
   - ./scripts/test_excalibur.sh
