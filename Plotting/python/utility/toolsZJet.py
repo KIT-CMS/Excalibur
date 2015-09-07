@@ -21,26 +21,21 @@ import Artus.Utility.tools as tools
 
 PlottingJob = namedtuple('PlottingJob', 'plots args')
 
-def print_jsons_and_functions(json_path, python_path):
-	""" print the comments / docstrings of the json/python plot configs"""
+def print_plotting_functions(plotting_path):
+	""" print the comments / docstrings of the plotting configs"""
 
-	# get jsons infos
-	jsonTools.print_comments_from_json_files(json_path, "_comment")
-	for subdir in [x[0] for x in os.walk(json_path)][1:]:
-		jsonTools.print_comments_from_json_files(subdir, "_comment")
-
-	log.info(tools.get_colored_string("\npython scripts: ({})".format(python_path), 'cyan'))
-	# get docstrings from python functions
-	module_list = get_module_list(python_path)
+	log.info(tools.get_colored_string("plotting scripts: ({})".format(plotting_path), 'cyan'))
+	# get docstrings
+	module_list = get_module_list(plotting_path)
 	for module in module_list:
-		log.info("\t"+ tools.get_colored_string(module.__name__ + ".py", "yellow"))
+		log.info(tools.get_colored_string(module.__name__ + ".py", "yellow"))
 		functions = inspect.getmembers(module, inspect.isfunction)
 		if len(functions) > 0:
-			prefix = "\t\t\t"
+			prefix = "\t\t"
 			for func in functions:
 				if func[0].startswith("_"):
 					continue
-				log.info("\t\t" + tools.get_colored_string(func[0], "green"))
+				log.info("\t" + tools.get_colored_string(func[0], "green"))
 				if inspect.getdoc(func[1]) != None:  # has docstring
 					log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
 	sys.exit(0)

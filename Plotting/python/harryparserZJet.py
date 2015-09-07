@@ -22,9 +22,6 @@ class HarryParserZJet(harryparser.HarryParser):
 		known_args, unknown_args = super(HarryParserZJet, self).parse_known_args(args=args, namespace=namespace)
 
 		if known_args.list_functions:
-			toolsZJet.print_jsons_and_functions(
-				json_path = tools.get_environment_variable("JSONCONFIGS"),
-				python_path = tools.get_environment_variable("PYTHONCONFIGS"),
-			)
+			toolsZJet.print_plotting_functions(tools.get_environment_variable("PLOTCONFIGS"))
 
 		return known_args, unknown_args

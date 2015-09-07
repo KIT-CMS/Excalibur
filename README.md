@@ -90,7 +90,11 @@ There are two parts in this repository (listed with the corresponding top level 
 
 
 ### ZJetAnalysis: C++ part
-excalibur.py is the wrapper to run this Z+jet calibration tool. The first argument is the name of a config file located in `cfg/excalibur/` (the filename extension is optional). This config file takes parts from `ZJetConfigFunctions.py` as the base config which is then modified by `ZJetConfigBase.py`. The final json output will be used for the z+jet calibration tool.
+excalibur.py is the wrapper to run this Z+jet calibration tool. The first argument
+is the name of a config file located in `cfg/excalibur/` (the filename extension
+is optional). This config file takes parts from `ZJetConfigFunctions.py` as the
+base config which is then modified by `ZJetConfigBase.py`. The final json output
+will be used for the z+jet calibration tool.
 
 Optional useful arguments are
 - `-b` batch mode. This parameters takes an optional argument for the computing
@@ -165,7 +169,7 @@ This part derives most classes from HarryPlotter to implement ZJet-specific stuf
 See 
 - Plotting/python/, which contains the derived classes
 - scripts/, which contains an ini script and the 'merlin' plotting executable
-- Plotting/plot-configs/, which contains json and python plot config files
+- Plotting/configs/, which contains plot configuration files
 
 Please also have a look at the [HarryPlotter documentation](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
 
@@ -174,8 +178,8 @@ the shell function  `standalone_merlin` if you're using merlin outside a SCRAM
 environment for the first time.(and re-source the ini file).
 Type `merlin.py --help` to get a list of the plotting options.
 
-Plot configs are stored as json or python files. Type `merlin.py --list-functions` to
-get a list of the available plot configs.
+Plot configs can be stored as json or python files. Type `merlin.py --list-functions` to
+get a list of the available python plot configs.
 
 ##### InputRootZJet
 merlin has the additional --zjetfolder, --algorithms and --corrections arguments.
@@ -211,21 +215,12 @@ The plot axes can be automatically labelled via the entries of the LabelsDict in
 Plotting/python/utility/labelsZJet.py (simple strings like 'zpt' are replaced with
 nicer Latex labels).
 
-
-##### Json plot configs
-- Json configs can be directly saved from the command line with HarryPlotter's
---export-json functionality. These configs can later be read in again with -j, changed
-and saved again. The "_comment" key has to be added manually and should contain
-a short description of the plot.
-- Plotting/plot-configs/json-configs/ contains some json files for plots
-
-
 ##### Python plot configs
 - Python functions allow to construct loops of plots, but cannot be saved or read
 as easily as json files. Execution of these functions with --python, a list of
 the available functions can be displayed with --list-functions. The docstring of
 the functions should contain a description.
-- Plotting/plot-configs/python-configs/ contains some python plotting scripts
+- Plotting/plot-configs/configs/ contains some python plotting scripts
 
 ###### New Python plot config style
 There is a new python plot config style which allows to create new configs based
