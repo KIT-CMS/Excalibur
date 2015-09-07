@@ -17,7 +17,7 @@ def jec_files(args=None, additional_dictionary=None):
 	parser.add_argument('--jec-dir', type=str, default="data/jec/Winter14_V6",
 		help="path to jec directory, e.g. data/jec/Winter14_V8")
 	parser.add_argument('--jec-algo', type=str, default="AK5PFchs", help="algo")
-	
+
 	if args is None:
 		known_args, args = parser.parse_known_args()
 	else:

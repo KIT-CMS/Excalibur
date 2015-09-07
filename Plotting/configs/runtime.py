@@ -9,7 +9,7 @@ import Excalibur.Plotting.harryinterface as harryinterface
 
 def runtime(args=None, additional_dictionary=None):
 	"""Make performance plots (processor runtime).
-	
+
 	To create the 'runTime'-ntuple in the excalibur output, add 'RunTimeConsumer'
 	to the list of consumers in the config.
 	"""

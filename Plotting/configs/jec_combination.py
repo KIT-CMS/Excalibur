@@ -35,7 +35,7 @@ def jec_combination(args=None, additional_dictionary=None):
 	for method in ['mpf', 'ptbalance', 'rawmpf']:
 		for alphacut, alphastring in zip(alpha_cuts, alpha_strings):
 			for etacut, etastring in zip(eta_cuts, eta_strings):
-				for correction in ['L1L2L3']: # no L1L2L3Res available atm 
+				for correction in ['L1L2L3']: # no L1L2L3Res available atm
 					labelsuffix = '_'.join([methoddict[method], 'CHS', alphastring, etastring, correction])
 					eta_alpha_cut = '&&'.join((alphacut, etacut))
 					d = {

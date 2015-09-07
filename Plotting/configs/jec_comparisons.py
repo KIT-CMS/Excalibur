@@ -252,7 +252,7 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 
 def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
-	
+
 	plots = []
 	# TODO move this to more general location
 	x_dict = {
@@ -731,7 +731,7 @@ def comparison_E1E2(args=None):
 	d = {
 		'files': [
 			'ntuples/Data_8TeV_53X_E2_50ns_2015-04-21.root',
-			'ntuples/Data_8TeV_53X_E1_50ns_2015-04-22.root', 
+			'ntuples/Data_8TeV_53X_E1_50ns_2015-04-22.root',
 		],
 		"folders": [
 				"finalcuts_AK5PFTaggedJetsCHSL1L2L3/ntuple",

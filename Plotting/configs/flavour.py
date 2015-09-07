@@ -574,7 +574,7 @@ def flavour(args=None):
 		"algorithms": ["AK5PFJetsCHS",],
 		"corrections": ["L1L2L3",]
 	}
-	
+
 	flavours(args, d)
 	flavour_fractions(args, d)
 	flavour_jet1btag_vs_jet1qgtag(args, d)
