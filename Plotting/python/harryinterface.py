@@ -14,10 +14,19 @@ def harry_interface(dicts, unknown_args=None):
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--max-processes', type=int, default=8)
 	parser.add_argument('--fast', type=int, default=None, help="Only do the n first plots.")
+	parser.add_argument('--test', type=int, default=None, help="Only do plot number n (for multi-plotting).")
 	known_args, unknown_args = parser.parse_known_args((unknown_args if unknown_args is not None else []))
 
+	# cut plot list via 'fast' or 'test' options
+	if known_args.test:
+		config_dicts = [dicts[known_args.test]]
+	elif known_args.fast:
+		config_dicts = dicts[:known_args.fast]
+	else:
+		config_dicts = dicts
+
 	harry_instance = harryZJet.HarryPlotterZJet(
-		list_of_config_dicts=(dicts if known_args.fast is None else dicts[:known_args.fast]),
+		list_of_config_dicts=config_dicts,
 		list_of_args_strings=" ".join(unknown_args),
 		n_processes=min(known_args.max_processes, len(dicts))
 	)
