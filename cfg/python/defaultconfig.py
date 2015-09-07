@@ -113,6 +113,7 @@ def mc(cfg, **kwargs):
 		'genjet2phi',
 		'ngenjets',
 		'ngenjets10',
+		'ngenjets30',
 		'matchedgenparton1pt',
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',

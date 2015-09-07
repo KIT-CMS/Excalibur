@@ -363,10 +363,13 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "ngenjets", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.GetValidJetCount(settings, event, "Gen");
         });
-    
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "ngenjets10", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.CountValidJetsAbovePt(settings, event, 10.0, "Gen");
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "ngenjets30", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.CountValidJetsAbovePt(settings, event, 30.0, "Gen");
         });
 
     // Reco jet - gen parton matches
