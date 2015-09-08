@@ -31,7 +31,7 @@ def main():
 		if known_args.python != [None]:
 			logger.initLogger()
 			for function in known_args.python:
-				toolsZJet.call_python_function(function, tools.get_environment_variable("PYTHONCONFIGS"), unknown_args)
+				toolsZJet.call_python_function(function, tools.get_environment_variable("PLOTCONFIGS"), unknown_args)
 		else:
 			harryZJet.HarryPlotterZJet(list_of_args_strings=" ".join(unknown_args))
 
