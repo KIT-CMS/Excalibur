@@ -240,7 +240,7 @@ def existing_config(args):
             'tree_draw_options': 'prof'
         }
         plots.append(d)
-    return [PlottingJob(plots=[d], args=args)]
+    return [PlottingJob(plots=plots, args=args)]
     
 def new_config(args):
     plotting_jobs = []
