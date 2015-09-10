@@ -13,15 +13,12 @@ def jec_files(args=None, additional_dictionary=None):
 	Usage: merlin.py --py jec_files --jec-dir data/jec/Winter14_V8"""
 	plots = []
 
+	# additional arguments for this function
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--jec-dir', type=str, default="data/jec/Winter14_V6",
 		help="path to jec directory, e.g. data/jec/Winter14_V8")
 	parser.add_argument('--jec-algo', type=str, default="AK5PFchs", help="algo")
-
-	if args is None:
-		known_args, args = parser.parse_known_args()
-	else:
-		known_args, args = parser.parse_known_args(args)
+	known_args, args = parser.parse_known_args(**({'args':args} if args is not None else {}))
 
 	# get the list of files from the path
 	files = glob.glob(known_args.jec_dir+"/*.txt")

@@ -77,7 +77,6 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			plotData.plotdict['y_label'] = plotData.plotdict['y_expressions'][0]
 
 		if plotData.plotdict['www'] is not None:
-			plotData.plotdict['formats'] = ['png']
 			plotData.plotdict['live'] = None
 		elif plotData.plotdict['live'] is not None:
 			plotData.plotdict['output_dir'] = 'plots/live/'
@@ -151,6 +150,5 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		if self.mpl_version >= 121:
 			matplotlib.rcParams['ytick.minor.width'] = 0.5
 
-		if self.mpl_version >= 121:
-			matplotlib.rcParams['legend.frameon'] = False
+		matplotlib.rcParams['legend.frameon'] = False
 

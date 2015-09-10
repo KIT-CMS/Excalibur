@@ -730,10 +730,12 @@ def comparison_datamc(args=None):
 	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/mc.root'],
-		'labels': ['data', 'mc'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'legend': None,
 	}
-	plotting_jobs += pf_fractions(args, additional_dictionary=d)
+	plotting_jobs += full_comparison(args, d)
+	return plotting_jobs
 
 
 def comparison_run2(args=None):
