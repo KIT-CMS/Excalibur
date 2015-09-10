@@ -248,7 +248,7 @@ def new_config(args):
     existing_jobs = existing_config(args)
     for plot in existing_jobs[0].plots:
         plot['y_lims'] = [0.9, 1.4]
-    plotting_jobs.append(existing_jobs)
+    plotting_jobs.append += existing_jobs
         
     return plotting_jobs
 ```
