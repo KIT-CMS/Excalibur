@@ -24,7 +24,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
 		'JetID' : 'loose',
-		'JetIDVersion' : "73X",
+		'JetIDVersion' : 2015,
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak5PFJetsCHS',
 		# PU
