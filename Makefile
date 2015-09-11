@@ -50,10 +50,10 @@ purge: clean
 check:
 	@echo -e "checking COMPILER...     \c" && which $(CXX)
 	@echo -e "checking ROOT...         \c" && root-config --version
-	@echo -e "checking BOOST...        \c" && ls $(BOOSTLIB) -d
+	@echo -e "checking BOOST...        \c" && echo $(BOOSTVER)
 	@echo -e "checking KAPPA...        \c" && ls $(KAPPAPATH) -d
 	@echo -e "checking KAPPATOOLS...   \c" && ls $(KAPPATOOLSPATH) -d
-	@echo -e "checking OFFLINE JEC...  \c" && ls ${ARTUSPATH/Artus/CondFormats} -d
+	@echo -e "checking OFFLINE JEC...  \c" && readlink -e $(ARTUSPATH)/../CondFormats
 	@echo -e "checking ARTUS...        \c" && ls $(ARTUSPATH) -d
 	@echo -e "checking PYTHON...       \c" && python --version || echo "  Python is not needed for compiling"
 	@echo -e "checking GRID-CONTROL... \c" && which go.py 2> /dev/null || echo "not found, grid-control is not needed for compiling"
