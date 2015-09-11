@@ -4,7 +4,6 @@ import configtools
 def config():
 	cfg = configtools.getConfig('mc', 2012, 'mm')
 	configtools.changeNamingScheme(cfg)
-	cfg['JetMatchingAlgorithm'] = 'algorithmic'
 	cfg["InputFiles"] = configtools.setInputFiles(
 		ekppath="/storage/a/dhaitz/skims/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/*.root",
 		nafpath="/pnfs/desy.de/cms/tier2/store/user/dhaitz/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/*.root",
