@@ -578,6 +578,28 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	return plotting_jobs
 
 
+def muon_2d(args=None, additional_dictionary=None):
+	"""2D plot of muon eta-phi-distribution. works for one file."""
+	d = {
+		# input
+		'folders': ['nocuts_AK5PFJetsCHSL1L2L3/muons'],
+		'y_expressions': ['object.p4.Phi()'],
+		'x_expressions': ['object.p4.Eta()'],
+		'no_weight': True,
+		'x_bins': '200,-2.3,2.3',
+		'y_bins': '200,-3.14159,3,14159',
+		# formatting
+		'y_lims': [-3.14159, 3,14159],
+		'x_label': 'mueta',
+		'y_label': 'muphi',
+		# output
+		'filename': 'muon_eta_phi',
+	}
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	return [PlottingJob(plots=[d], args=args)]
+
+
 def comparison_CHS_Puppi_test(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
 	plotting_jobs = []
