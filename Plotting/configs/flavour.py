@@ -95,7 +95,7 @@ def flavour_fractions(args=None, additional_dictionary=None):
 		d = {
 			"filename": "flavourFractions_vs_" + x_quantity,
 			"legend": "lower left",
-			"labels": ["undef", "g", "anti-quark", "quark"],
+			"labels": ["undef", "gluon", "anti-quark", "quark"],
 			"colors": [colors['undef'], colors['g'], histo_colors['yellow'], histo_colors['blue']],
 			"markers": ["fill" ],
 			"stacks": ["a", "a", "a", "a"],
@@ -129,7 +129,7 @@ def flavour_composition_zones(args=None, additional_dictionary=None):
 	"""Flavour composition for the different tagging zones"""
 
 	# The plot is put together according to these two lists:
-	flavour_labels = [ 'undef', 'g', 'b', 'c', 'uds']
+	flavour_labels = [ 'undef', 'gluon', 'b', 'c', 'u/d/s']
 	zone_labels = ['uds', 'c', 'b', 'g']
 
 	d = {
@@ -165,10 +165,10 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 					None,
 					'(abs(matchedgenparton1flavour)==4)',
 					'(abs(matchedgenparton1flavour)==5)',
-					'(abs(matchedgenparton1flavour)>0 && abs(matchedgenparton1flavour)<4)',
+					'((abs(matchedgenparton1flavour)>0)&&(abs(matchedgenparton1flavour)<4))',
 					'(abs(matchedgenparton1flavour)==21)'
 				],
-				['flavorTaggingZones', 'flavorTaggingZones_c', 'flavorTaggingZones_b', 'flavorTaggingZones_uds', 'flavorTaggingZones_g'],
+				['flavourTaggingZones', 'flavourTaggingZones_c', 'flavourTaggingZones_b', 'flavourTaggingZones_uds', 'flavourTaggingZones_g'],
 				[
 					'Tagger distribution',
 					'c quark jets',
@@ -216,16 +216,17 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 				d['y_bins'] = "20,0,1"
 				d['z_log'] = False
 
-			d.update(additional_dictionary)
+			if additional_dictionary is not None:
+				d.update(additional_dictionary)
 			plots.append(d)
 
 	return [PlottingJob(plots=plots, args=args)]
 
 
 def flavour_jet_response(args=None, additional_dictionary=None):
-	"""Flavor response for simulated jets """
+	"""Flavour response for simulated jets """
 	d = {
-		"filename": "flavorJetResponse",
+		"filename": "flavourJetResponse",
 		"legend": "lower left",
 		"x_expressions": ["sortedabsflavour"],
 		"x_label": "Leading Jet Flavour",
@@ -234,7 +235,7 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"x_lims": [0.5,7.5],
 		"x_tick_labels": ['d','u','s','c','b','g', 'undef.'],
 		"y_expressions": ["ptbalance", "mpf", "genjet1pt/zpt", "jet1pt/genjet1pt"],
-		"labels": ["$p_T$ balance", "MPF", "$p_T$ GenJet/Z", "$p_T$ RecoJet/GenJet"],
+		"labels": ["$\mathit{p}_T$ balance", "MPF", "$\mathit{p}_T^{GenJet}$ / $\mathit{p}_T^Z", "$\mathit{p}_T^{RecoJet}$ / $\mathit{p}_T^{GenJet}"],
 		"y_lims": [0.8, 1.1],
 		'tree_draw_options': 'prof',
 		'markers': ['.', '*', 'o', 'd'],
@@ -277,9 +278,9 @@ def flavour_comparison(args=None, additional_dictionary=None):
 	plots = []
 	for x_quantity in ['jet1btag', 'jet1qgtag']:
 		d = {
-			"filename": "flavorComparison_vs_" + x_quantity,
+			"filename": "flavourComparison_vs_" + x_quantity,
 			"legend": "upper center",
-			"labels": ["uds", "c", "b", "g"],
+			"labels": ["u/d/s-jets", "c-jets", "b-jets", "gluon-jets"],
 			"colors": [colors['uds'],colors['c'],colors['b'],colors['g']],
 			"markers": ["fill" ],
 			"stacks": ["a", "a", "a", "a"],
@@ -431,10 +432,10 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 	for weight_param, filename, title in zip(
 		[zone_selections[zone] for zone in zones],
 		[
-			'flavorMpfResponse_light_quark_zone',
-			'flavorMpfResponse_gluon_zone',
-			'flavorMpfResponse_c_quark_zone',
-			'flavorMpfResponse_b_quark_zone',
+			'flavourMpfResponse_light_quark_zone',
+			'flavourMpfResponse_gluon_zone',
+			'flavourMpfResponse_c_quark_zone',
+			'flavourMpfResponse_b_quark_zone',
 		], [
 			'Light Quark Zone',
 			'Gluon Zone',
@@ -470,7 +471,7 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	"""Jet composition of the leading jet for different flavours"""
 	d = {
-		"filename": "pf_fractions_vs_flavor",
+		"filename": "pf_fractions_vs_flavour",
 		"x_expressions": ["sortedabsflavour"],
 		"x_label": "Leading Jet Flavour",
 		"x_ticks": [1,2,3,4,5,6,7],
