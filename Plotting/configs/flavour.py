@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Excalibur.Plotting.harryinterface as harryinterface
+from Excalibur.Plotting.utility.toolsZJet import PlottingJob
 from Excalibur.Plotting.utility.colors import histo_colors
 import Artus.Utility.logger as logger
 import pprint
@@ -54,15 +54,15 @@ def response_zones(args=None, additional_dictionary=None):
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
-	harryinterface.harry_interface([d], args)
+	return [PlottingJob(plots=[d], args=args)]
 
 
 def flavour_response_zones(args=None, additional_dictionary=None):
 	""" MPF response in the tagging zones."""
+	plots = []
 	for flavour_selection in ['uds', 'c', 'b', 'g']:
 		zone_labels = ['uds', 'c', 'b', 'g']
 		weights = [flavour_selections[flavour_selection] + "*" +  zone_selections[zone] for zone in zone_labels]
-		print weights
 		d = {
 			'x_expressions': [str(i) for i in range(1, len(zone_labels)+1)],
 			'y_expressions': 'mpf',
@@ -83,7 +83,9 @@ def flavour_response_zones(args=None, additional_dictionary=None):
 		}
 		if additional_dictionary != None:
 			d.update(additional_dictionary)
-		harryinterface.harry_interface([d], args)
+		plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
+
 
 def flavour_fractions(args=None, additional_dictionary=None):
 	""" Plots flavour fraction (q,qbar,g,undef) vs zpt, abs(jet1eta)"""
@@ -120,7 +122,7 @@ def flavour_fractions(args=None, additional_dictionary=None):
 			d.update(additional_dictionary)
 		plots.append(d)
 
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 
 def flavour_composition_zones(args=None, additional_dictionary=None):
@@ -151,7 +153,7 @@ def flavour_composition_zones(args=None, additional_dictionary=None):
 
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
-	harryinterface.harry_interface([d], args)
+	return [PlottingJob(plots=[d], args=args)]
 
 
 def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
@@ -217,7 +219,7 @@ def flavour_jet1btag_vs_jet1qgtag(args=None, additional_dictionary=None):
 			d.update(additional_dictionary)
 			plots.append(d)
 
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 
 def flavour_jet_response(args=None, additional_dictionary=None):
@@ -241,7 +243,7 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
-	harryinterface.harry_interface([d], args)
+	return [PlottingJob(plots=[d], args=args)]
 
 
 def flavours(args=None, additional_dictionary=None):
@@ -267,7 +269,7 @@ def flavours(args=None, additional_dictionary=None):
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
-	harryinterface.harry_interface([d], args)
+	return [PlottingJob(plots=[d], args=args)]
 
 
 def flavour_comparison(args=None, additional_dictionary=None):
@@ -297,7 +299,8 @@ def flavour_comparison(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 		plots.append(d)
 
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
+
 
 def flavour_mpf_individual(args=None, additional_dictionary=None):
 	plots = []
@@ -416,7 +419,7 @@ def flavour_mpf_individual(args=None, additional_dictionary=None):
 	d['corrections'] = corrections
 	plots.append(d)
 
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 
 def flavour_mpf_response(args=None, additional_dictionary=None):
@@ -460,7 +463,8 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 		plots.append(d)
 
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
+
 
 
 def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
@@ -496,7 +500,8 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	}
 	if additional_dictionary is not None:
 		d.update(additional_dictionary)
-	harryinterface.harry_interface([d], args)
+	return [PlottingJob(plots=[d], args=args)]
+
 
 def zones_export(mc = True, args=None, additional_dictionary=None):
 	plots = []
@@ -539,7 +544,7 @@ def zones_export(mc = True, args=None, additional_dictionary=None):
 	if additional_dictionary is not None:
 		d.update(additional_dictionary)
 	plots.append(d)
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
 
 
 def zones_export_mc(args=None):
@@ -567,25 +572,29 @@ def zones_export_data(args=None):
 
 def flavour(args=None):
 	"""Plots all flavour plots"""
+
+	plotting_jobs = []
 	d = {
 		"files": [
-			"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-05-20.root",
+			"ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root",
 		],
 		"algorithms": ["AK5PFJetsCHS",],
 		"corrections": ["L1L2L3",]
 	}
 
-	flavours(args, d)
-	flavour_fractions(args, d)
-	flavour_jet1btag_vs_jet1qgtag(args, d)
-	flavour_jet_response(args, d)
-	flavour_comparison(args, d)
-	flavour_mpf_response(args, d)
-	pf_fractions_vs_flavour(args, d)
-	flavour_composition_zones(args, d)
-	flavour_response_zones(args, d)
+	plotting_jobs += flavours(args, d)
+	plotting_jobs += flavour_fractions(args, d)
+	plotting_jobs += flavour_jet1btag_vs_jet1qgtag(args, d)
+	plotting_jobs += flavour_jet_response(args, d)
+	plotting_jobs += flavour_comparison(args, d)
+	plotting_jobs += flavour_mpf_response(args, d)
+	plotting_jobs += pf_fractions_vs_flavour(args, d)
+	plotting_jobs += flavour_composition_zones(args, d)
+	plotting_jobs += flavour_response_zones(args, d)
 
-	d['files'].append("ntuples/Data_8TeV_53X_E2_50ns_2015-05-20.root")
+	d['files'].append("ntuples/Data_8TeV_53X_E2_50ns_2015-07-23.root")
 	d['corrections'].append("L1L2L3Res")
-	response_zones(args, d)
-	flavour_mpf_individual(args, d)
+	plotting_jobs += response_zones(args, d)
+	plotting_jobs += flavour_mpf_individual(args, d)
+
+	return plotting_jobs
