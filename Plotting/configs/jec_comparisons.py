@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Excalibur.Plotting.harryinterface as harryinterface
 import Excalibur.Plotting.utility.colors as colors
 from Excalibur.Plotting.utility.toolsZJet import PlottingJob
 

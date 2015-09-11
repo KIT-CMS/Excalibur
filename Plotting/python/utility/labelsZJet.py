@@ -65,6 +65,8 @@ class LabelsDictZJet(labels.LabelsDict):
 			'meteta': '$\mathit{\eta}^{MET}$',
 			'metphi': r'$\mathit{\phi}^{MET}$',
 			'met': '$\mathit{E}_{T}^{Miss}$ / GeV',
+			'muphi': '$\mathit{\phi}^{\mu}$',
+			'mueta': '$\mathit{\eta}^{\mu}$',
 			'mu1pt': '$\mathit{p}_{T}^{\mu1}$ / GeV',
 			'mu1eta': '$\mathit{\eta}^{\mu1}$',
 			'mu1phi': '$\mathit{\phi}^{\mu1}$',

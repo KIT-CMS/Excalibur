@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Excalibur.Plotting.harryinterface as harryinterface
+from Excalibur.Plotting.utility.toolsZJet import PlottingJob
 import Artus.Utility.logger as logger
 import argparse
 import glob
@@ -34,7 +34,7 @@ def jec_files(args=None, additional_dictionary=None):
 		"x_expressions": ["jeteta"],
 		"y_bins": ["100,0,100"],
 		"y_expressions": ["jetpt"],
-		"z_label": "JEC Correction Factor",
+		"z_label": "Jet Energy Correction Factor",
 		"colormap": "seismic",
 		"z_lims": [0.0, 2.0]
 	}
@@ -54,4 +54,4 @@ def jec_files(args=None, additional_dictionary=None):
 			else:
 				print typ, level, "NOT FOUND:", len(matching_files)
 
-	harryinterface.harry_interface(plots, args)
+	return [PlottingJob(plots=plots, args=args)]
