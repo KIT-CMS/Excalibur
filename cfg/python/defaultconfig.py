@@ -43,7 +43,7 @@ def getBaseConfig(tagged=True, **kwargs):
 				'Quantities': [
 					# General quantities
 					'npv', 'rho', 'weight', #'nputruth',
-					'njets', 'njetsinv',  # number of valid and invalid jets
+					'njets', 'njetsinv', 'njets30', # number of valid and invalid jets
 					# Z quantities
 					'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
 					# Leading jet
@@ -222,7 +222,6 @@ def ee(cfg, **kwargs):
 		'e2pt', 'e2eta', 'e2phi', 'e2looseid', 'e2mediumid', 'e2tightid', 'e2vetoid',
 		'e2looseid95', 'e2mediumid95', 'e2tightid95', 'e2mvanontrig', 'e2mvatrig',
 		'nelectrons',
-		'njets30',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
 		'filter:ElectronPtCut',
