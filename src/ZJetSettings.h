@@ -16,6 +16,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(float, JetPtMin, 10.0f)
     IMPL_SETTING(bool, EnableMetPhiCorrection)
     IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
+    IMPL_SETTING_DEFAULT(bool, MetAddMuons, false)
 
     // ZJetValidJetsProducer
     // IMPL_SETTING_DEFAULT(std::string, JetAlgorithm, "")

@@ -53,6 +53,13 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
         KMET corrMET = *event.m_met;
         corrMET.p4 += correction.p4;
 
+        if (settings.GetMetAddMuons()) {
+            for (KMuons::iterator muon = event.m_muons->begin(); muon != event.m_muons->end();
+                 ++muon) {
+                corrMET.p4 -= (*muon).p4;
+            }
+        }
+
         // Eta of MET is always zero
         corrMET.p4.SetEta(0.0f);
         corrMET.sumEt = event.m_met->sumEt + sumEtCorrection;
