@@ -35,7 +35,7 @@ class ZJetNumberGeneratedEventsWeightProducer : public NumberGeneratedEventsWeig
             // iterate over xsecs, find matching and get NEvents
             for (unsigned int i = 0; i < specSettings.GetSampleReweightingCrossSections().size();
                  i++) {
-                if (std::abs(1. - (event.m_genLumiMetadata->xSectionInt /
+                if (std::abs(1. - (event.m_genLumiInfo->xSectionInt /
                                    specSettings.GetSampleReweightingCrossSections().at(i))) <
                     m_tolerance) {
                     product.m_weights["numberGeneratedEventsWeight"] =
@@ -44,7 +44,7 @@ class ZJetNumberGeneratedEventsWeightProducer : public NumberGeneratedEventsWeig
                 }
             }
             LOG(FATAL) << "No reweighting possible for internal cross-section "
-                       << event.m_genLumiMetadata->xSectionInt;
+                       << event.m_genLumiInfo->xSectionInt;
         } else {
             NumberGeneratedEventsWeightProducer::Produce(event, product, settings);
         }
