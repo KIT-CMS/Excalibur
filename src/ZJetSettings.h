@@ -40,6 +40,12 @@ class ZJetSettings : public KappaSettings
     // ElectronSFProducer
     IMPL_SETTING(std::string, ElectronSFRootfilePath)
 
+    // MuonCorrector
+    IMPL_SETTING(std::string, MuonCorrectionParameters)
+    IMPL_SETTING_DEFAULT(std::string, MuonCorrectionParametersRunD, "None")
+    IMPL_SETTING(bool, MuonRadiationCorrection)
+    IMPL_SETTING(bool, MuonSmearing)
+
     // ZJetCutsFilter
     IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMin, 2)
     IMPL_SETTING_DEFAULT(unsigned long, CutNMuonsMax, 3)

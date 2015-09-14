@@ -12,6 +12,7 @@
 #include "Producers/ZJetNumberGeneratedEventsWeightProducer.h"
 #include "Producers/ElectronSFProducer.h"
 #include "Producers/ZJetValidElectronsProducer.h"
+#include "Producers/MuonCorrector.h"
 
 // filters
 #include "Filters/ZFilter.h"
@@ -48,6 +49,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new ElectronSFProducer();
     else if (id == ZJetValidElectronsProducer().GetProducerId())
         return new ZJetValidElectronsProducer();
+    else if (id == MuonCorrector().GetProducerId())
+        return new MuonCorrector();
     else
         return KappaFactory::createProducer(id);
 }

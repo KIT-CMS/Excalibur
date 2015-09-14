@@ -493,6 +493,11 @@ def mc_2012ee(cfg, **kwargs):
 
 def mc_2012mm(cfg, **kwargs):
 	pass
+	# muon corrections - not active at the moment
+	#cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:MuonCorrector')
+	#cfg["MuonSmearing"] = True
+	#cfg["MuonRadiationCorrection"] = False
+	#cfg["MuonCorrectionParameters"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012_MC_53X_smearReReco.txt"
 
 
 def data_2011mm(cfg, **kwargs):
@@ -501,6 +506,13 @@ def data_2011mm(cfg, **kwargs):
 
 def data_2012mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Mu8']
+	# muon corrections - not active at the moment
+	#cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:MuonCorrector')
+	#cfg["MuonRadiationCorrection"] = False
+	#cfg["MuonSmearing"] = False
+	#cfg["MuonCorrectionParameters"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012ABC_DATA_ReReco_53X.txt"
+	#cfg["MuonCorrectionParametersRunD"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012D_DATA_ReReco_53X.txt"
+
 
 
 def data_2015mm(cfg, **kwargs):
