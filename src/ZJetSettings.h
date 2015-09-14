@@ -55,5 +55,5 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(float, CutBetaMax, 1.0f)
 
     IMPL_SETTING(std::string, NPUFile);
-    IMPL_SETTING(double, Minbxsec);
+    IMPL_SETTING(float, Minbxsec);
 };

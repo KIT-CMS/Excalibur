@@ -15,12 +15,13 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return event.m_genEventInfo->nPU;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "npumean", [](ZJetEvent const& event, ZJetProduct const& product) {
-            return event.m_genEventInfo->nPUMean;
+        "npumean", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            if (settings.GetInputIsData()) {
+                return product.npumean_data;
+            } else {
+                return event.m_genEventInfo->nPUMean;
+            }
         });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "npumeandata",
-        [](ZJetEvent const& event, ZJetProduct const& product) { return product.npumean_data; });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "hlt", [](ZJetEvent const& event, ZJetProduct const& product) {
             return (!product.m_selectedHltNames.empty());  // check whether any HLT has fired
@@ -283,7 +284,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "njetsinv", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.GetInvalidJetCount(settings, event);
         });
-    
+
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "njets10", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.CountValidJetsAbovePt(settings, event, 10.0);

@@ -5,8 +5,8 @@ std::string NPUProducer::GetProducerId() const { return "NPUProducer"; }
 void NPUProducer::Init(ZJetSettings const& settings)
 {
     std::string file = settings.GetNPUFile();
-    double minbxsec = settings.GetMinbxsec();
-    double lum(0), xsavg(0), xsrms(0);
+    float minbxsec = settings.GetMinbxsec();
+    float lum(0), xsavg(0), xsrms(0);
     unsigned long run(0), ls(0);
     ZJetProducerBase::Init(settings);
 
@@ -17,12 +17,12 @@ void NPUProducer::Init(ZJetSettings const& settings)
 
     while (f >> run >> ls >> lum >> xsrms >> xsavg) {
         LOG(DEBUG) << run << " " << ls << " " << lum << " " << xsavg << " " << xsrms << ": "
-                   << (xsavg * minbxsec * 1000) << " +/- " << (xsrms * minbxsec * 1000.0);
+                   << (xsavg * minbxsec * 1000.0f) << " +/- " << (xsrms * minbxsec * 1000.0f);
 
         if (xsrms < 0)
             LOG(FATAL) << "Error in PileupTruthProducer: RMS = " << xsrms << " < 0";
 
-        m_pumean[run][ls] = xsavg * minbxsec * 1000.0;
+        m_pumean[run][ls] = xsavg * minbxsec * 1000.0f;
     }
 }
 
@@ -32,7 +32,7 @@ void NPUProducer::Produce(ZJetEvent const& event,
 {
     const unsigned long run = event.m_eventInfo->nRun;
     const unsigned long ls = event.m_eventInfo->nLumi;
-    double npu = 0;
+    float npu = 0;
 
     try {
         npu = m_pumean.at(run).at(ls);

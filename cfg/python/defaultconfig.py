@@ -379,7 +379,7 @@ def data_2012(cfg, **kwargs):
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['Minbxsec'] = 68.5
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_pixelcorr_data2012.txt'
-	cfg['Pipelines']['default']['Quantities'] += ['npumeandata']
+	cfg['Pipelines']['default']['Quantities'] += ['npumean']
 
 
 def data_2015(cfg, **kwargs):

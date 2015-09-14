@@ -19,7 +19,7 @@ class NPUProducer : public ZJetProducerBase
     void Produce(ZJetEvent const& event, ZJetProduct& product, ZJetSettings const& settings) const;
 
   private:
-    std::map<unsigned long, std::map<unsigned long, double>> m_pumean;
+    std::map<unsigned long, std::map<unsigned long, float>> m_pumean;
     mutable unsigned long lastrun;
     mutable unsigned long lastls;
 };

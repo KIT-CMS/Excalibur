@@ -164,7 +164,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "finalcuts_AK5PFJetsCHSL1L2L3Res": {
@@ -257,7 +257,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "noalphacuts_AK5PFJetsCHSL1L2L3": {
@@ -349,7 +349,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "noalphacuts_AK5PFJetsCHSL1L2L3Res": {
@@ -441,7 +441,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "noalphanoetacuts_AK5PFJetsCHSL1L2L3": {
@@ -532,7 +532,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "noalphanoetacuts_AK5PFJetsCHSL1L2L3Res": {
@@ -623,7 +623,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "nocuts_AK5PFJetsCHSL1L2L3": {
@@ -708,7 +708,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "nocuts_AK5PFJetsCHSL1L2L3Res": {
@@ -793,7 +793,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "noetacuts_AK5PFJetsCHSL1L2L3": {
@@ -885,7 +885,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "noetacuts_AK5PFJetsCHSL1L2L3Res": {
@@ -977,7 +977,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "zcuts_AK5PFJetsCHSL1L2L3": {
@@ -1066,7 +1066,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }, 
         "zcuts_AK5PFJetsCHSL1L2L3Res": {
@@ -1155,7 +1155,7 @@
                 "lumi", 
                 "jet1ptl1l2l3", 
                 "jet1res", 
-                "npumeandata"
+                "npumean"
             ]
         }
     }, 
