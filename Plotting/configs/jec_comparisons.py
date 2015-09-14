@@ -356,6 +356,42 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			plot.update(additional_dictionary)
 	return [PlottingJob(plots=plots, args=args)]
 
+
+def vertex_reco_efficiency(args=None, additional_dictionary=None):
+	""" """
+	lims = [-0.5, 40.5]
+	binning = ",".join([str(i) for i in [(lims[1]-lims[0])]+lims])
+	d = {
+		# input
+		'zjetfolders': ['nocuts'],
+		'x_expressions': 'npu+1',
+		'y_expressions': 'npv',
+		'x_bins': binning,
+		'tree_draw_options': 'prof',
+		'x_lims': lims,
+		'y_lims': lims,
+		# fit
+		'analysis_modules': ['FunctionPlot'],
+		'functions': ['[0]+[1]*x'],
+		'function_fit': ['nick0'],
+		'function_parameters': ['1,1'],
+		'function_ranges': ['-0.5,40.5'],
+		'function_nicknames': [' '],
+		'function_display_result': True,
+		# formatting
+		'line_styles': [None, '-'],
+		'labels': ["None"],
+		'x_label': '$n_{PV}^{Gen}$',
+		'y_label': '$n_{PV}^{Reco}$',
+		# output
+		'filename': 'npv_reco_gen',
+	}
+	if additional_dictionary:
+		d.update(additional_dictionary)
+	return [PlottingJob(plots=[d], args=args)]
+
+
+
 def pf_comparisons(args=None, additional_dictionary=None):
 	"""Absolute contribution of PF fractions vs Z pT."""
 	plots = []
