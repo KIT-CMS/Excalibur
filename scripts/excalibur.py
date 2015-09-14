@@ -19,6 +19,7 @@ def ZJet():
 	"""ZJet modifies and runs the configs"""
 	aborted = False
 	artus_returncode = 0
+	gctime = 0
 	options = getoptions()
 	if not options.nologo:
 		print logo()
@@ -99,6 +100,7 @@ def ZJet():
 		outpath = options.work + "out/*.root"
 
 		print "go.py %s/%s.conf" % (options.work, options.out)
+		gctime = time.time()
 		try:
 			subprocess.check_call(['go.py', options.work + "/" + options.out + ".conf"])
 		except OSError:
@@ -109,6 +111,7 @@ def ZJet():
 		except subprocess.CalledProcessError:
 			print "grid-control run failed"
 			exit(1)
+		gctime = time.time() - gctime
 
 		if glob.glob(outpath):
 			subprocess.call(['hadd', options.work + 'out.root'] + glob.glob(outpath))
@@ -159,6 +162,7 @@ def ZJet():
 				"%s/%s.root" % (options.base, options.out)])
 		except:
 			pass
+	return gctime
 
 
 def getoptions(configdir="", name='excalibur'):
@@ -410,6 +414,14 @@ def get_n_free_slots_ekpsg():
 	output = subprocess.Popen(('egrep', 'ekpsg.*Unclaimed'), stdin=condor.stdout, stdout=subprocess.PIPE)
 	return int(subprocess.check_output(('wc', '-l'), stdin=output.stdout))
 
+def format_time(seconds):
+	# TODO is there already a built-in python function for this sort of thing?
+	if seconds < 180.:
+		return "{0:.0f} seconds".format(seconds)
+	elif (seconds/60.) < 120.:
+		return "{0:.0f} minutes".format(seconds/60.)
+	else:
+		return "{0:.0f} hours {1:.0f} minutes".format(int(seconds/3600.), (seconds/60. % 60))
 
 def logo():
 	return """\
@@ -432,4 +444,8 @@ def logo():
 """
 
 if __name__ == "__main__":
-	ZJet()
+	start_time = time.time()
+	gctime = ZJet()
+	print "---   Excalibur took {} ---".format(format_time(time.time() - start_time))
+	if gctime > 0:
+		print "--- GridControl took {} ---".format(format_time(gctime))
