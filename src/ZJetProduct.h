@@ -22,10 +22,6 @@ class ZJetProduct : public KappaProduct
     bool m_validZ = false;
     KLV m_z;
 
-    // Added by ZJetValidJetsProducer
-    // mutable std::map<std::string, std::vector<KJet*> > m_validZJets;
-    // mutable std::map<std::string, std::vector<KJet*> > m_invalidZJets;
-
     // Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the
     // product after creation
     std::map<std::string, std::vector<std::shared_ptr<KJet>>> m_correctedZJets;
