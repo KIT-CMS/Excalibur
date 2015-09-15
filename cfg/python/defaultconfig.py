@@ -197,11 +197,11 @@ def ee(cfg, **kwargs):
 		'filter:ZFilter',
 		'producer:RadiationJetProducer',
 	]
-	cfg['ElectronID'] = 'vbft95_loose'
-	cfg['ElectronIsoType'] = 'pf'
-	cfg['ElectronIso'] = 'mvatrig'
-	cfg['ElectronReco'] = 'mvanontrig'
-	
+	cfg['ElectronID'] = 'vbft95_tight'
+	cfg['ElectronIsoType'] = 'none'
+	cfg['ElectronIso'] = 'none'
+	cfg['ElectronReco'] = 'none'
+
 	cfg['MinNElectrons'] = 2
 	cfg['MaxNElectrons'] = 3
 
