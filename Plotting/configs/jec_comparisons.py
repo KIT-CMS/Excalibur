@@ -600,6 +600,29 @@ def muon_2d(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=[d], args=args)]
 
 
+def z_response(args=None, additional_dictionary=None):
+	"""Z resolution (pT reco/gen) as function of gen pT"""
+	d = {
+		# input
+		'x_expressions': ['genzpt'],
+		'y_expressions': ['zpt/genzpt'],
+		'x_bins': 'zpt',
+		'tree_draw_options': 'prof',
+		# formatting
+		'lines': [1.00],
+		'y_lims': [0.99, 1.01],
+		'x_log': True,
+		'x_lims': [30, 1000],
+		'x_errors': [True],
+		'x_ticks':  [30, 50, 70, 100, 200, 400, 1000],
+		# output
+		'filename': 'z_response',
+	}
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	return [PlottingJob(plots=[d], args=args)]
+
+
 def comparison_CHS_Puppi_test(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
 	plotting_jobs = []
