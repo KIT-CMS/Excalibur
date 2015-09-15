@@ -2,6 +2,7 @@
 
 # get path of Excalibur relative to location of this script
 export EXCALIBURPATH=$(dirname $(dirname $(readlink -mf ${BASH_SOURCE[0]})))
+export EXCALIBURCONFIGS=$EXCALIBURPATH/cfg/excalibur
 export ARTUSPATH=$EXCALIBURPATH/../Artus
 
 # source Artus ini script

@@ -14,6 +14,8 @@ import sys
 import time
 import socket
 
+import Artus.Utility.tools as tools
+
 
 def ZJet():
 	"""ZJet modifies and runs the configs"""
@@ -168,7 +170,7 @@ def ZJet():
 def getoptions(configdir="", name='excalibur'):
 	"""Set standard options and read command line arguments. """
 	if configdir == "":
-		configdir = getEnv('EXCALIBURPATH')+'/cfg/excalibur/'
+		configdir = tools.get_environment_variable("EXCALIBURCONFIGS")
 
 
 	parser = argparse.ArgumentParser(
@@ -228,10 +230,11 @@ def getoptions(configdir="", name='excalibur'):
 		if not opt.fast and not opt.batch and not opt.config:
 			opt.fast = [3]
 	if '/' not in opt.cfg:
-		opt.cfg = configdir + opt.cfg
-	if '.py' not in opt.cfg:
-		opt.cfg += '.py'
-	if not os.path.exists(opt.cfg):
+		for cdir in configdir.split(":"):
+			cfile = os.path.join(cdir, opt.cfg + '.py')
+			if os.path.isfile(cfile):
+				opt.cfg = cfile
+	if not os.path.isfile(opt.cfg):
 		print "Config file", opt.cfg, "does not exist."
 		exit(1)
 
