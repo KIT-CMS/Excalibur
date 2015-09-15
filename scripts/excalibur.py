@@ -191,7 +191,7 @@ def getoptions(configdir="", name='excalibur'):
 		help="limit number of input files. 3=files[-3:], 5 6=files[5:6].")
 	parser.add_argument('-l', '--nologo', action='store_true',
 		help="do not print the logo")
-	parser.add_argument('-o', '--out', type=str, nargs=1, default=None,
+	parser.add_argument('-o', '--out', type=str, default=None,
 		help="specify custom output name (default: config name)")
 	parser.add_argument('-p', '--printconfig', action='store_true',
 		help="print json config (long output)")
