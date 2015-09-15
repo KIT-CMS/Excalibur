@@ -251,13 +251,12 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 
 def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
-
 	plots = []
 	# TODO move this to more general location
 	x_dict = {
 		'npv': ["31,-0.5,30.5"],
 		'npu': ["31,-0.5,30.5"],
-		'npumean': ["31,-0.5,30.5"],
+		'npumean': ["40,0,40"],
 		'mu1pt': ["20,0,150"],
 		'mupluspt': ["20,0,150"],
 		'muminuspt': ["20,0,150"],
@@ -282,11 +281,11 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			x_dict[q] += ['best']
 
 	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
-			 'npv', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
+			 'npv', 'npumean', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
 			 'mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi',
 			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',
 			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt'] \
-			 + (['run', 'lumi', 'event'] if data_quantities else ['npu', 'npumean']):
+			 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
@@ -320,7 +319,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	return [PlottingJob(plots=plots, args=args)]
 
 def basic_profile_comparisons(args=None, additional_dictionary=None):
-	""" Plots Z mass as a function of pT """
+	""" Some basic profile plots. """
 	plots = []
 	for xquantity, yquantity in zip(['zpt'], ['zmass']):
 		d = {
@@ -335,25 +334,26 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'x_bins': "zpt",
 			'markers': ['o', 'd'],
 		}
-		if additional_dictionary != None:
-			d.update(additional_dictionary)
 		plots.append(d)
 
-		d = {
-			'x_expressions': ['npv'],
-			'y_expressions': ['rho'],
-			'analysis_modules': ['Ratio'],
-			'tree_draw_options': 'prof',
-			'cutlabel': True,
-			'markers': ['o', 'd'],
-			'y_subplot_lims': [0.5, 1.5],
-			'x_bins': "25,0.5,25.5",
-			'legend': 'upper left',
-		}
-		if additional_dictionary != None:
-			d.update(additional_dictionary)
-		plots.append(d)
+		for x_expression in ['npv', 'npumean']:
+			for y_expression in ['rho', 'npv']:
+				d = {
+					'x_expressions': [x_expression],
+					'y_expressions': [y_expression],
+					'analysis_modules': ['Ratio'],
+					'tree_draw_options': 'prof',
+					'cutlabel': True,
+					'markers': ['o', 'd'],
+					'y_subplot_lims': [0.5, 1.5],
+					'x_bins': "25,0.5,25.5",
+					'legend': 'lower right',
+				}
+				plots.append(d)
 
+	if additional_dictionary != None:
+		for plot in plots:
+			plot.update(additional_dictionary)
 	return [PlottingJob(plots=plots, args=args)]
 
 def pf_comparisons(args=None, additional_dictionary=None):

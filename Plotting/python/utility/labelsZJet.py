@@ -106,6 +106,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'zmass': '$\mathit{m}_{Z}$ / GeV',
 			'zphi': r'$\mathit{\phi}^{Z}$',
 			'zpt': '$\mathit{p}_{T}^{Z}$ / GeV',
+			'zpt/genzpt': '$\mathit{p}_{T}^{Z, Reco}$ / $\mathit{p}_{T}^{Z, Gen}$',
 			'zy': '$\mathit{y}_Z$',
 
 			# ZJet specific

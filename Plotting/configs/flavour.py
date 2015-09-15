@@ -129,12 +129,13 @@ def flavour_composition_zones(args=None, additional_dictionary=None):
 	"""Flavour composition for the different tagging zones"""
 
 	# The plot is put together according to these two lists:
-	flavour_labels = [ 'undef', 'gluon', 'b', 'c', 'u/d/s']
+	flavours = ['undef', 'g', 'b', 'c', 'uds']
+	flavour_labels = ['undef', 'gluon', 'b', 'c', 'u/d/s']
 	zone_labels = ['uds', 'c', 'b', 'g']
 
 	d = {
-		'y_expressions': [flavour_selections[x] for x in flavour_labels]*len(zone_labels),
-		'colors': [colors[i] for i in flavour_labels]*len(zone_labels),
+		'y_expressions': [flavour_selections[x] for x in flavours]*len(zone_labels),
+		'colors': [colors[i] for i in flavours]*len(zone_labels),
 		'weights': 	[zone_selections[x] for x in zone_labels for i in range(len(flavour_labels))],
 		'stacks': [str(x) for x in range(1,len(zone_labels)+1) for i in range(len(flavour_labels))],
 		'x_expressions': [str(x) for x in range(1,len(zone_labels)+1) for i in range(len(flavour_labels))],
@@ -234,9 +235,19 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"x_ticks": [1,2,3,4,5,6, 7],
 		"x_lims": [0.5,7.5],
 		"x_tick_labels": ['d','u','s','c','b','g', 'undef.'],
-		"y_expressions": ["ptbalance", "mpf", "genjet1pt/zpt", "jet1pt/genjet1pt"],
-		"labels": ["$\mathit{p}_T$ balance", "MPF", "$\mathit{p}_T^{GenJet}$ / $\mathit{p}_T^Z", "$\mathit{p}_T^{RecoJet}$ / $\mathit{p}_T^{GenJet}"],
-		"y_lims": [0.8, 1.1],
+		"y_expressions": [
+			"ptbalance",
+			"mpf",
+			"genjet1pt/zpt",
+			"jet1pt/genjet1pt"
+		],
+		"labels": [
+			r"$\\mathit{p}_T$ balance",
+			"MPF",
+			r"$\\mathit{p}_T^{GenJet} \/ \\mathit{p}_T^Z$",
+			r"$\\mathit{p}_T^{RecoJet} \/ \\mathit{p}_T^{GenJet}$"
+		],
+		"y_lims": [0.85, 1.1],
 		'tree_draw_options': 'prof',
 		'markers': ['.', '*', 'o', 'd'],
 		"cutlabel": True,

@@ -45,8 +45,6 @@ class PlotExtrapolationText(plotbase.PlotBase):
 				xlim = ax.get_xlim()
 				ylim = ax.get_ylim()
 				pos = [xlim[0] + 0.03 * (xlim[1] - xlim[0]), ylim[1] - 0.15 * (ylim[1] - ylim[0])]
-				print ylim
-				print pos
 			else:
 				pos = plotData.plotdict["extrapolation_text_position"]
 
