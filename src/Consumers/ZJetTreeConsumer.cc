@@ -435,6 +435,16 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "rawmpf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.GetMPF(product.GetMet(settings, event, "None"));
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mettype1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return std::abs(product.GetMet(settings, event)->p4.Pt() -
+                            product.GetMet(settings, event, "None")->p4.Pt());
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mettype1vecpt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return std::abs((product.GetMet(settings, event)->p4 -
+                             product.GetMet(settings, event, "None")->p4).Pt());
+        });
 
     ///////////
     // MUONS //

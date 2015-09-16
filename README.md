@@ -158,6 +158,8 @@ improvement studies)
 - *npv*: Number of reconstructed primary vertices
 - *rho*: Rho, the energy density per event
 - *met, metphi*: Size and phi-direction of the missing transverse energy (MET)
+- *mettype1vecpt*: pT of the vector-difference between raw and type-I MET
+- *mettype1pt*: difference of pT of raw and type-I MET
 - *sumet*: Sum of the transverse energy of all Partice-Flow objects
 - *mpf*: Jet response calculated with the MPF method
 - *rawmpf*: MPF response calculated from uncorrected MET

@@ -61,6 +61,7 @@ def getBaseConfig(tagged=True, **kwargs):
 					'jet3pt', 'jet3eta', 'jet3phi',
 					# MET and related
 					'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet',
+					'mettype1vecpt', 'mettype1pt',
 				],
 			},
 		},
