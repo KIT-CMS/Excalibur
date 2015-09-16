@@ -95,7 +95,7 @@ def flavour_fractions(args=None, additional_dictionary=None):
 		d = {
 			"filename": "flavourFractions_vs_" + x_quantity,
 			"legend": "lower left",
-			"labels": ["undef", "gluon", "anti-quark", "quark"],
+			"labels": ["undef.", "gluon", "anti-quark", "quark"],
 			"colors": [colors['undef'], colors['g'], histo_colors['yellow'], histo_colors['blue']],
 			"markers": ["fill" ],
 			"stacks": ["a", "a", "a", "a"],
@@ -130,8 +130,9 @@ def flavour_composition_zones(args=None, additional_dictionary=None):
 
 	# The plot is put together according to these two lists:
 	flavours = ['undef', 'g', 'b', 'c', 'uds']
-	flavour_labels = ['undef', 'gluon', 'b', 'c', 'u/d/s']
+	flavour_labels = ['undef.', 'gluon', 'b', 'c', 'u/d/s']
 	zone_labels = ['uds', 'c', 'b', 'g']
+	tick_labels = ['u/d/s', 'c', 'b', 'gluon']
 
 	d = {
 		'y_expressions': [flavour_selections[x] for x in flavours]*len(zone_labels),
@@ -141,7 +142,7 @@ def flavour_composition_zones(args=None, additional_dictionary=None):
 		'x_expressions': [str(x) for x in range(1,len(zone_labels)+1) for i in range(len(flavour_labels))],
 		'labels': flavour_labels +[None]*len(flavour_labels)*(len(zone_labels)-1),
 		'x_ticks': range(1,1+len(zone_labels)),
-		'x_tick_labels': zone_labels,
+		'x_tick_labels': tick_labels,
 		'x_bins':[" ".join(["0.4"] + ["{0}.6 {1}.4".format(i, i+1) for i in range(len(zone_labels))] + [str(len(zone_labels)+2.2)])],
 		'x_label': 'Tagging Zone',
 		'y_label': 'Flavour Fraction',
@@ -230,7 +231,7 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"filename": "flavourJetResponse",
 		"legend": "lower left",
 		"x_expressions": ["sortedabsflavour"],
-		"x_label": "Leading Jet Flavour",
+		"x_label": "Jet Flavour",
 		"y_label": "Jet Response",
 		"x_ticks": [1,2,3,4,5,6, 7],
 		"x_lims": [0.5,7.5],
@@ -263,7 +264,7 @@ def flavours(args=None, additional_dictionary=None):
 	d = {
 		'filename': 'flavours',
 		'cutlabel': True,
-		'x_label': 'Leading Jet Flavour',
+		'x_label': 'Jet Flavour',
 		'x_lims': [0.8, 7.2],
 		'x_expressions': [
 		  'matchedgenparton1flavour * (matchedgenparton1flavour > 0 && matchedgenparton1flavour < 20)',
@@ -273,7 +274,7 @@ def flavours(args=None, additional_dictionary=None):
 		],
 		'x_bins': [' '.join(['{0} {0}.4 {0}.8 '.format(i) for i in range(1, 6)]) + '6 6.4 6.6 7 7.2'],
 		'x_ticks': [i+1.4 for i in range(0, 5)] + [6.2, 6.8],
-		'x_tick_labels': ['d', 'u', 's', 'c', 'b', 'g', 'undef'],
+		'x_tick_labels': ['d', 'u', 's', 'c', 'b', 'g', 'undef.'],
 		'markers': ['fill'],
 		'labels': ['quark', 'anti-quark', None, None],
 		'colors': [histo_colors['blue'], histo_colors['yellow'], histo_colors['green'], histo_colors['grey']],
@@ -459,7 +460,7 @@ def flavour_mpf_response(args=None, additional_dictionary=None):
 			"x_expressions": ["mpf"],
 			"x_lims": [0.0,2.0],
 			"x_bins": ["24,0,2"],
-			"labels": ["g","b","c","uds"],
+			"labels": ["gluon","b","c","u/d/s"],
 			"nicks": ["g", "b", "c", "uds"],
 			"colors": [colors['g'],colors['b'],colors['c'],colors['uds']],
 			"markers": ["fill" ],
@@ -484,7 +485,7 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	d = {
 		"filename": "pf_fractions_vs_flavour",
 		"x_expressions": ["sortedabsflavour"],
-		"x_label": "Leading Jet Flavour",
+		"x_label": "Jet Flavour",
 		"x_ticks": [1,2,3,4,5,6,7],
 		'x_bins':[" ".join(["0.4"] + ["{0}.6 {1}.4".format(i, i+1) for i in range(7)] + [str(7+3.4)])],
 		"x_tick_labels": ['d','u','s','c','b','g', 'undef.'],
@@ -492,8 +493,8 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 			r"$\\mu$",
 			r"$e$",
 			r"$\\gamma$",
-			"CHad",
-			"NHad",
+			"\nCharged\nHadrons",
+			"\nNeutral\nHadrons",
 		],
 		"markers": ["fill" ],
 		"stacks": ["a", "a", "a", "a", "a"],
@@ -505,7 +506,7 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 			"jet1nhf",
 		],
 		"colors": [histo_colors[c] for c in ['violet', 'brown', 'green', 'yellow', 'blue']],
-		"y_label": "Leading Jet PF Energy Fraction",
+		"y_label": "Jet PF Energy Fraction",
 		"y_lims": [0.0, 1.0],
 		"tree_draw_options": ["prof"],
 		"legend": "center right",

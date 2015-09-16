@@ -594,6 +594,7 @@ def cutflow(args=None, additional_dictionary=None):
 			'rel_cuts': rel,
 			'y_lims': [0, 1],
 			'y_errors': [False],
+			'markers': ['o', 'fill'],
 			'filename': 'cutflow' + ('_relative' if rel else ''),
 		}
 		plots.append(d)
