@@ -431,6 +431,7 @@ def pf_fractions(args=None, additional_dictionary=None):
 			labels = ['', '']
 	else:
 		labels = ['', '']
+	pflabels = labels
 	if labels != ['', '']:
 		labels = ["({0})".format(l) for l in labels]
 
@@ -438,31 +439,31 @@ def pf_fractions(args=None, additional_dictionary=None):
 		for x_quantity, x_binning in zip(['zpt', 'abs(jet1eta)', 'npv'],
 			['zpt', 'abseta', 'npv'],
 		):
+			# put together the list for quantities, labels, nicks
+			pftypes = ["CHad", r"$\\gamma$", "NHad", r"$e$", r"$\\mu$"]
+			quantities = ["jet1chf", "jet1pf", "jet1nhf", "jet1ef", "jet1mf"]
+			if x_quantity == 'abs(jet1eta)':
+				pftypes += ["HFhad", "HFem"]
+				quantities += ["jet1hfhf", "jet1hfemf"]
+			plotlabels = []
+			nicks = []
+			for pftype in pftypes:
+				for label in labels:
+					plotlabels += [pftype + " " + label]
+					nicks +=  [pftype + label]
 			d = {
-				"labels": [
-					"CH {0}".format(labels[0]),
-					"CH {0}".format(labels[1]),
-					r"$\\gamma$ {0}".format(labels[0]),
-					r"$\\gamma$ {0}".format(labels[1]),
-					"NH {0}".format(labels[0]),
-					"NH {0}".format(labels[1]),
-					r"$e$ {0}".format(labels[0]),
-					r"$e$ {0}".format(labels[1]),
-					r"$\\mu$ {0}".format(labels[0]),
-					r"$\\mu$ {0}".format(labels[1]),
-				],
-				"nicks": [
-					"CHad1",
-					"CHad2",
-					"g1",
-					"g2",
-					"NHad1",
-					"NHad2",
-					"e1",
-					"e2",
-					"m1",
-					"m2",
-				],
+				# input
+				"nicks": nicks,
+				"stacks": ["a", "b"]*len(pftypes),
+				"tree_draw_options": ["prof"],
+				"x_expressions": [x_quantity],
+				"x_bins": [x_binning],
+				"y_expressions": [i for i in quantities for _ in (0,1)],
+				# analysis modules
+				"analysis_modules": ["Ratio"],
+				"ratio_numerator_nicks": nicks[::2],
+				"ratio_denominator_nicks": nicks[1::2],
+				# formatting
 				"colors":[
 					'blue',
 					colors.histo_colors['blue'],
@@ -480,53 +481,28 @@ def pf_fractions(args=None, additional_dictionary=None):
 					'brown',
 					'purple',
 				],
-				"markers": ["o", "fill"]*5 + ["o"]*5,
-				"stacks": ["a", "b"]*5,
-				"tree_draw_options": ["prof"],
-				"legend_cols": 2,
-				"x_expressions": [x_quantity],
-				"x_bins": [x_binning],
-				"y_expressions": [i for i in ["jet1chf", "jet1pf", "jet1nhf", "jet1ef", "jet1mf"] for _ in (0,1)],
+				"labels": plotlabels,
+				"markers": ["o", "fill"]*len(pftypes) + ["o"]*len(pftypes),
 				"y_label": "Leading Jet PF Energy Fraction",
 				"y_lims": [0.0, 1.0],
-				"analysis_modules": ["Ratio"],
-				"ratio_numerator_nicks": [
-					"CHad1",
-					"g1",
-					"NHad1",
-					"e1",
-					"m1",
-				],
-				"ratio_denominator_nicks": [
-					"CHad2",
-					"g2",
-					"NHad2",
-					"e2",
-					"m2",
-				],
 				'y_subplot_lims' : [0, 2],
-				'filename': "PFfractions_{}".format(x_quantity),
 				'legend': "None",
+				"legend_cols": 2,
+				# output
+				'filename': "PFfractions_{}".format(x_quantity),
 			}
 			if x_quantity == 'zpt':
 				d["x_log"] = True
 				d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 			elif x_quantity == 'abs(jet1eta)':
 				d["zjetfolders"] = ["noetacuts"]
-				d["save_legend"] = "PF_legend"
-				# add HF fractions
-				d["labels"] += [
-					r"HFhad {0}".format(labels[0]),
-					r"HFhad {0}".format(labels[1]),
-					r"HFem {0}".format(labels[0]),
-					r"HFem {0}".format(labels[1])]
-				d["ratio_numerator_nicks"] += ["HFhad1", "HFem1"]
-				d["ratio_denominator_nicks"] += ["HFhad2", "HFem2"]
-				d["y_expressions"] += ["jet1hfhf", "jet1hfhf", "jet1hfemf", "jet1hfemf"]
-				d["nicks"] += ["HFhad1","HFhad2", "HFem1", "HFem2"]
 				d["colors"] = d["colors"][:10]+['black', 'grey', 'red', '#D35658']+d["colors"][10:]+['grey', 'red']
-				d["markers"] = ["o", "fill"]*7 + ["o"]*7,
-				d["stacks"] = ["a", "b"]*7,
+				# legend table options
+				d['plot_modules'] = ['PlotMplZJet', 'PlotMplLegendTable']
+				d["legend_table_column_headers"] = pflabels
+				d["legend_table_row_headers"] = pftypes
+				d["legend_table_invert"] = True
+				d["legend_table_filename"] = "PF_legend"
 			if absolute_contribution:
 				d["y_expressions"] = ["{0}*jet1pt".format(i) for i in d["y_expressions"]]
 				d.pop("y_lims")
