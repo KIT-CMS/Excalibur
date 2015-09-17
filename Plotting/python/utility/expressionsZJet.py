@@ -26,6 +26,7 @@ class ExpressionsDictZJet(ExpressionsDict):
 			'deltaphijet1jet2' : '(abs(abs(abs(jet1phi-jet2phi)-TMath::Pi())-TMath::Pi()))',
 			'deltaetajet1jet2' : '(abs(jet1eta-jet2eta))',
 			'deltarjet1jet2': 'sqrt((abs(abs(abs(jet1phi-jet2phi)-TMath::Pi())-TMath::Pi()))*(abs(abs(abs(jet1phi-jet2phi)-TMath::Pi())-TMath::Pi()))+(abs(jet1eta-jet2eta)**2))',
+			'deltarjet1mu1': 'sqrt((abs(abs(abs(jet1phi-mu1phi)-TMath::Pi())-TMath::Pi())**2)+(abs(jet1eta-mu1eta)**2))',
 			'deltaphizmet' : '(abs(abs(abs(zphi-metphi)-TMath::Pi())-TMath::Pi()))',
 			'jet1abseta' : 'abs(jet1eta)',
 			'sortedflavour' : (
@@ -40,3 +41,8 @@ class ExpressionsDictZJet(ExpressionsDict):
 			),
 			'deltarjet1radiationjet1': 'sqrt((abs(abs(abs(jet1phi-radiationjet1phi)-TMath::Pi())-TMath::Pi()))*(abs(abs(abs(jet1phi-radiationjet1phi)-TMath::Pi())-TMath::Pi()))+(abs(jet1eta-radiationjet1eta)**2))',
 		})
+		self.expressions_regex += [
+			(r"delta_phi\((\w+),(\w+)\)",r"abs(abs(abs(\1phi-\2phi)-TMath::Pi())-TMath::Pi())"),
+			(r"delta_eta\((\w+),(\w+)\)",r"abs(\1eta-\2eta)"),
+			(r"delta_r\((\w+),(\w+)\)",r"sqrt((delta_phi(\1,\2)**2)+(delta_eta(\1,\2)**2))"),
+		]
