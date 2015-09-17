@@ -636,6 +636,34 @@ def z_response(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=[d], args=args)]
 
 
+def response_rms(args=None, additional_dictionary=None):
+	"""2D response-RMS plots vs ZpT and nPV. Same as Fig19 in the 2016 JEC paper."""
+	plots = []
+	for method, label in zip(['ptbalance', 'mpf'], ['balance', 'MPF']):
+		d = {
+			# input
+			"tree_draw_options": ["prof"],
+			"x_bins": ["30,30,330"],
+			"x_expressions": ["zpt"],
+			"y_bins": ["40,5,45"],
+			"y_expressions": ["npumean"],
+			"y_lims": [5.0, 55.0],
+			"z_expressions": ["(((trueresponse-{})/trueresponse)**2)".format(method)],
+			# analysis
+			"analysis_modules": ["ConvertToHistogram","SquareRootBinContent"],
+			"convert_nicks": ["nick0"],
+			"square_root_nicks": ["nick0"],
+			# formatting and output
+			"z_label": r"$RMS((R_{Sim} - R_{"+label+r"}) \/ R_{Sim})$",
+			"z_lims": [0.0, 0.25],
+			"y_lims": [5, 45],
+			"filename": "rms_" + method,
+		}
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
+
 def comparison_CHS_Puppi_test(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
 	plotting_jobs = []
