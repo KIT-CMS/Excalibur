@@ -24,8 +24,6 @@ def getBaseConfig(tagged=True, **kwargs):
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
 		'JetID' : 'loose',
-		'JetIDVersion' : "2015",
-		'JetLeptonLowerDeltaRCut' : 0.3, # JetID 2015 does not veto muon contribution - invalidate any jets that are mostly muons; requires ValidLeptonsProducer to work
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak5PFJetsCHS',
 		# PU
@@ -176,6 +174,9 @@ def _2015(cfg, **kwargs):
 	cfg['Energy'] = 13
 	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
+	cfg['JetIDVersion'] = 2015
+	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are mostly muons; requires ValidLeptonsProducer to work
+
 
 
 ##
