@@ -42,7 +42,7 @@ class ExpressionsDictZJet(ExpressionsDict):
 			'deltarjet1radiationjet1': 'sqrt((abs(abs(abs(jet1phi-radiationjet1phi)-TMath::Pi())-TMath::Pi()))*(abs(abs(abs(jet1phi-radiationjet1phi)-TMath::Pi())-TMath::Pi()))+(abs(jet1eta-radiationjet1eta)**2))',
 		})
 		self.expressions_regex += [
-			(r"delta_phi\((\w+),(\w+)\)",r"abs(abs(abs(\1phi-\2phi)-TMath::Pi())-TMath::Pi())"),
-			(r"delta_eta\((\w+),(\w+)\)",r"abs(\1eta-\2eta)"),
-			(r"delta_r\((\w+),(\w+)\)",r"sqrt((delta_phi(\1,\2)**2)+(delta_eta(\1,\2)**2))"),
+			(r"delta_phi\(([-\w]+),([-\w]+)\)", lambda matchobj: r"abs(abs(abs(" + (matchobj.group(1)[1:]+"phi-TMath::Pi()" if matchobj.group(1)[0] == "-" else matchobj.group(1)+"phi" ) + "-" + (matchobj.group(2)[1:]+"phi+TMath::Pi()" if matchobj.group(2)[0] == "-" else matchobj.group(2)+"phi" ) + ")-TMath::Pi())-TMath::Pi())"),
+			(r"delta_eta\(([-\w]+),([-\w]+)\)",r"abs(\1eta-\2eta)"),
+			(r"delta_r\(([-\w]+),([-\w]+)\)",r"sqrt((delta_phi(\1,\2)**2)+(delta_eta(\1,\2)**2))"),
 		]
