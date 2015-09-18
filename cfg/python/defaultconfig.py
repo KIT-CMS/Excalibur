@@ -24,7 +24,8 @@ def getBaseConfig(tagged=True, **kwargs):
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
 		'JetID' : 'loose',
-		'JetIDVersion' : 2015,
+		'JetIDVersion' : "2015",
+		'JetLeptonLowerDeltaRCut' : 0.3, # JetID 2015 does not veto muon contribution - invalidate any jets that are mostly muons; requires ValidLeptonsProducer to work
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak5PFJetsCHS',
 		# PU
@@ -316,6 +317,7 @@ def mm(cfg, **kwargs):
 		'filter:MinNMuonsCut',
 		'filter:MaxNMuonsCut',
 		#'producer:MuonCorrectionsProducer', # Is not doing anything yet
+		'producer:ValidLeptonsProducer', # need Leptons if checking jet-lepton deltaR
 		'producer:ValidTaggedJetsProducer',
 		'filter:ValidJetsFilter',
 		'producer:ZJetCorrectionsProducer',
