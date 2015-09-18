@@ -239,18 +239,19 @@ def flavour_jet_response(args=None, additional_dictionary=None):
 		"y_expressions": [
 			"ptbalance",
 			"mpf",
-			"genjet1pt/zpt",
+			#"genjet1pt/zpt",
 			"jet1pt/genjet1pt"
 		],
 		"labels": [
 			r"$\\mathit{p}_T$ balance",
 			"MPF",
-			r"$\\mathit{p}_T^{GenJet} \/ \\mathit{p}_T^Z$",
+			#r"$\\mathit{p}_T^{GenJet} \/ \\mathit{p}_T^Z$",
 			r"$\\mathit{p}_T^{RecoJet} \/ \\mathit{p}_T^{GenJet}$"
 		],
-		"y_lims": [0.85, 1.1],
+		"y_lims": [0.85, 1.07],
 		'tree_draw_options': 'prof',
-		'markers': ['.', '*', 'o', 'd'],
+		'markers': ['.', '*', 'd'],
+		'marker_colors': ['black', 'red', 'green'],
 		"cutlabel": True,
 		"lines": [1.],
 	}
