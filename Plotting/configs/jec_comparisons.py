@@ -300,7 +300,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 
 		if additional_dictionary:
 			d.update(additional_dictionary)
-		if quantity == 'alpha' and not 'zjetfolders' in additional_dictionary:
+		if quantity == 'alpha' and (additional_dictionary is None or 'zjetfolders' not in additional_dictionary):
 			d['zjetfolders'] = ['noalphacuts']
 
 		if not only_normalized:
