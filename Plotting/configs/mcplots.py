@@ -75,7 +75,6 @@ def response_rms(args=None, additional_dictionary=None):
 			"x_expressions": ["zpt"],
 			"y_bins": ["40,5,45"],
 			"y_expressions": ["npumean"],
-			"y_lims": [5.0, 55.0],
 			"z_expressions": ["(((trueresponse-{})/trueresponse)**2)".format(method)],
 			# analysis
 			"analysis_modules": ["ConvertToHistogram","SquareRootBinContent"],
@@ -84,7 +83,7 @@ def response_rms(args=None, additional_dictionary=None):
 			# formatting and output
 			"z_label": r"$RMS((R_{Sim} - R_{"+label+r"}) \/ R_{Sim})$",
 			"z_lims": [0.0, 0.25],
-			"y_lims": [5, 45],
+			"y_lims": [5, 40],
 			"filename": "rms_" + method,
 		}
 		if additional_dictionary != None:
