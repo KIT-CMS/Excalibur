@@ -90,3 +90,27 @@ def response_rms(args=None, additional_dictionary=None):
 			d.update(additional_dictionary)
 		plots.append(d)
 	return [PlottingJob(plots=plots, args=args)]
+
+
+def response_correlations(args=None, additional_dictionary=None):
+	"""2D plots for response method correlations (+ correlation factor)."""
+	plots = []
+	methods = [('ptbalance', 'trueresponse'), ('mpf', 'trueresponse'), ('ptbalance', 'mpf'),]
+	bins = '30,0.7,1.3'
+	lims = [float(f) for f in bins.split(',')[1:]]
+
+	for method1, method2 in methods:
+		d = {
+			'x_expressions': [method2],
+			'y_expressions': [method1],
+			'x_bins': [bins],
+			'y_bins': [bins],
+			'analysis_modules': ['GetCorrelationFactor'],
+			'x_lims': lims,
+			'y_lims': lims,
+			'filename': '_'.join(['correlation', method1, method2]),
+		}
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
