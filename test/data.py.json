@@ -6,7 +6,7 @@
     "CutMuonEtaMax": 2.3, 
     "CutMuonPtMin": 20.0, 
     "CutNMuonsMin": 2, 
-    "CutNMuonsMin": 3, 
+    "CutNMuonsMax": 3, 
     "CutZPtMin": 30.0, 
     "DirectIso": true, 
     "EnableMetPhiCorrection": false, 
