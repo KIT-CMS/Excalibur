@@ -38,8 +38,8 @@ void MuonCorrector::Produce(ZJetEvent const& event,
                             ZJetSettings const& settings) const
 {
     bool isRunD = (settings.GetInputIsData() && event.m_eventInfo->nRun > m_startRunD);
-    double corrPt = 0;
-    double smearedPt = 0;
+    float corrPt = 0;
+    float smearedPt = 0;
     if (isRunD) {
         if (m_parameterfileRunD == "None")
             LOG(FATAL) << "Tried to correct muons in Run D, but no parameters given!";

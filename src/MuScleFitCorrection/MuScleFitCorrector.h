@@ -39,13 +39,13 @@ class MuScleFitCorrector
 
     // Method to get correct pt
     // double getCorrectPt(const RMFLV& lorentzVector, const int& chg) const;
-    double getCorrectPt(const RMFLV& lorentzVector, const int& chg) const;
+    float getCorrectPt(const RMFLV& lorentzVector, const int& chg) const;
 
     // Return the squared difference of relative pT resolutions data-MC
     double getSigmaPtDiffSquared(const double& pt, const double& eta) const;
 
     // Method to get correct pt (baseline)
-    double getSmearedPt(const RMFLV& lorentzVector, const int& chg, bool fake = false) const;
+    float getSmearedPt(const RMFLV& lorentzVector, const int& chg, bool fake = false) const;
 
     // Method to apply correction to a TLorentzVector
     void applyPtCorrection(RMFLV& lorentzVector, const int& chg) const;

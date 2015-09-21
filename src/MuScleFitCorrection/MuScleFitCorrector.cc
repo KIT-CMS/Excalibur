@@ -43,13 +43,12 @@ resolutionFunctionBase<double*>* MuScleFitCorrector::getResolFunction()
 
 // Method to get correct pt
 // double MuScleFitCorrector::getCorrectPt(const RMFLV& lorentzVector, const int& chg) const
-double MuScleFitCorrector::getCorrectPt(const RMFLV& lorentzVector, const int& chg) const
+float MuScleFitCorrector::getCorrectPt(const RMFLV& lorentzVector, const int& chg) const
 {
     // Loop on all the functions and apply them iteratively on the pt corrected by the previous
     // function.
-    double pt = lorentzVector.Pt();
-    pt = (scaleFunction_->scale(pt, lorentzVector.Eta(), lorentzVector.Phi(), chg, scaleParArray_));
-    return pt;
+    return static_cast<float>(scaleFunction_->scale(lorentzVector.Pt(), lorentzVector.Eta(),
+                                                    lorentzVector.Phi(), chg, scaleParArray_));
 }
 
 // Return the squared difference of relative pT resolutions data-MC
@@ -61,13 +60,14 @@ double MuScleFitCorrector::getSigmaPtDiffSquared(const double& pt, const double&
 }
 
 // Method to get correct pt (baseline)
-double MuScleFitCorrector::getSmearedPt(const RMFLV& lorentzVector, const int& chg, bool fake) const
+float MuScleFitCorrector::getSmearedPt(const RMFLV& lorentzVector, const int& chg, bool fake) const
 {
     double pt = lorentzVector.Pt();
     double eta = lorentzVector.Eta();
     double squaredDiff = getSigmaPtDiffSquared(pt, eta);
+    double charge = static_cast<double>(chg);
     if (squaredDiff < 0)
-        return pt;
+        return lorentzVector.Pt();
     double Cfact = 0.;
     if (fileName_.Contains("smearPrompt"))  // smear Summer12 against 2012 Prompt data
         Cfact = 0.85;
@@ -80,26 +80,26 @@ double MuScleFitCorrector::getSmearedPt(const RMFLV& lorentzVector, const int& c
         exit(1);
     }
     double sPar = Cfact * sqrt(squaredDiff);
-    double curv = ((double)chg / pt);
+    double curv = charge / pt;
     double normSmearFact = gRandom_->Gaus(0, sPar);
     if (fake)
         normSmearFact = sPar;
-    double smearedCurv = curv + fabs(curv) * normSmearFact;
+    double smearedCurv = curv + std::abs(curv) * normSmearFact;
 
-    return 1. / ((double)chg * smearedCurv);
+    return static_cast<float>(1.0 / charge * smearedCurv);
 }
 
 // Method to apply correction to a RMFLV&
 void MuScleFitCorrector::applyPtCorrection(RMFLV& lorentzVector, const int& chg) const
 {
-    double corrPt = getCorrectPt(lorentzVector, chg);
+    float corrPt = getCorrectPt(lorentzVector, chg);
     lorentzVector.SetPt(corrPt);
 }
 
 // Method to apply smearing to a RMFLV&
 void MuScleFitCorrector::applyPtSmearing(RMFLV& lorentzVector, const int& chg, bool fake) const
 {
-    double smearedPt = getSmearedPt(lorentzVector, chg, fake);
+    float smearedPt = getSmearedPt(lorentzVector, chg, fake);
     lorentzVector.SetPt(smearedPt);
 }
 
@@ -109,12 +109,12 @@ std::vector<double> MuScleFitCorrector::getResolMCParVec() { return resolMCParVe
 // The first pointer is replaced, thus it is taken by reference.
 void MuScleFitCorrector::convertToArrays()
 {
-    int resolParNum = resolutionFunction_->parNum();
-    int scaleParNum = scaleFunction_->parNum();
+    unsigned long resolParNum = resolutionFunction_->parNum();
+    unsigned long scaleParNum = scaleFunction_->parNum();
 
-    int resolDataParVecSize = resolDataParVec_.size();
-    int resolMCParVecSize = resolMCParVec_.size();
-    int scaleParVecSize = scaleParVec_.size();
+    unsigned long resolDataParVecSize = resolDataParVec_.size();
+    unsigned long resolMCParVecSize = resolMCParVec_.size();
+    unsigned long scaleParVecSize = scaleParVec_.size();
 
     useResol_ = false;
     if (resolDataParVecSize != 0 && resolMCParVecSize != 0)
@@ -149,20 +149,20 @@ void MuScleFitCorrector::convertToArrays()
     resolDataParArray_ = new double[resolParNum];
     resolMCParArray_ = new double[resolParNum];
 
-    for (int iPar = 0; iPar < scaleParNum; ++iPar) {
+    for (unsigned long iPar = 0; iPar < scaleParNum; ++iPar) {
         double parameter = *scaleParIt;
         scaleParArray_[iPar] = parameter;
         ++scaleParIt;
     }
 
     if (useResol_) {
-        for (int iPar = 0; iPar < resolParNum; ++iPar) {
+        for (unsigned long iPar = 0; iPar < resolParNum; ++iPar) {
             double parameter = *resolDataParIt;
             resolDataParArray_[iPar] = parameter;
             ++resolDataParIt;
         }
 
-        for (int iPar = 0; iPar < resolParNum; ++iPar) {
+        for (unsigned long iPar = 0; iPar < resolParNum; ++iPar) {
             double parameter = *resolMCParIt;
             resolMCParArray_[iPar] = parameter;
             ++resolMCParIt;
@@ -220,12 +220,6 @@ void MuScleFitCorrector::readParameters(const TString& fileName)
             scaleFunction_ = scaleFunctionService(scaleFunctionNum);
             resolutionFunctionId_ = resolutionFunctionNum;
             resolutionFunction_ = resolutionFunctionService(resolutionFunctionNum);
-
-            /*			 std::cout<<"Function IDs: "<<std::endl; */
-            /*			 std::cout<<"		 scale function number "<<scaleFunctionId_<<std::endl;
-             */
-            /*			 std::cout<<"		 resolution function number
-             * "<<resolutionFunctionId_<<std::endl; */
         }
 
         int nScalePar = scaleFunction_->parNum();
@@ -249,10 +243,4 @@ void MuScleFitCorrector::readParameters(const TString& fileName)
         }
     }
     convertToArrays();
-
-    /*	 std::cout<<"Scale function n. "<<scaleFunctionId_<<" has
-     * "<<scaleFunction_->parNum()<<"parameters:"<<std::endl; */
-    /*	 for (int ii=0; ii<scaleFunction_->parNum(); ++ii){ */
-    /*		 std::cout<<"par["<<ii<<"] = "<<scaleParArray_[ii]<<std::endl; */
-    /*	 } */
 }
