@@ -29,11 +29,11 @@ def runtime(args=None, additional_dictionary=None):
 			ntuple = rootfile.Get(folder)
 			try:
 				for leaf in ntuple.GetListOfLeaves():
-					if (only_producers and 'Producer' in leaf.GetName()) or not only_producers:
+					if ('Producer' in leaf.GetName()) or not only_producers:
 						processors.append(leaf.GetName())
 			except AttributeError:
 				print "Could not find {}! Did you let the RunTimeConsumer run?".format(folder)
-				sys.exit(1)
+				exit(1)
 		d = {
 			# input
 			'files': [filename],
