@@ -357,6 +357,8 @@ def mm(cfg, **kwargs):
 		'radiationjet1pt', 'radiationjet1phi', 'radiationjet1eta',
 		'radiationjet1index', 'nradiationjets'
 	]
+	cfg['CutNMuonsMin'] = 2
+	cfg['CutNMuonsMax'] = 3
 
 	cfg['CutMuonPtMin'] = 20.0
 	cfg['CutMuonEtaMax'] = 2.3

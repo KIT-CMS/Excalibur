@@ -5,6 +5,8 @@
     "CutLeadingJetPtMin": 12.0, 
     "CutMuonEtaMax": 2.3, 
     "CutMuonPtMin": 20.0, 
+    "CutNMuonsMin": 2, 
+    "CutNMuonsMin": 3, 
     "CutZPtMin": 30.0, 
     "DeltaRMatchingRecoJetGenJet": 0.3, 
     "DeltaRMatchingRecoJetGenParticle": 0.3, 
