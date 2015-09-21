@@ -8,7 +8,7 @@ from Excalibur.Plotting.utility.toolsZJet import PlottingJob
 
 
 def vertex_reco_efficiency(args=None, additional_dictionary=None):
-	""" """
+	"""Vertex reconstruction efficiency: Number of reconstructed vertices (npv) as a function of true vertices"""
 	lims = [-0.5, 40.5]
 	binning = ",".join([str(i) for i in [(lims[1]-lims[0])]+lims])
 	d = {
