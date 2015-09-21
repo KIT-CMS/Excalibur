@@ -11,7 +11,6 @@ import Excalibur.Plotting.utility.binningsZJet as binningsZJet
 def response_time_dependence(args=None, additional_dictionary=None):
 	""" Plot the response vs time (run-number) for different eta regions"""
 	plots= []
-	#bindict =
 	etabins = binningsZJet.BinningsDictZJet().binnings_dict["abseta"].split(" ")
 	weights = ["{}<abs(jet1eta)&&{}>abs(jet1eta)".format(lower, upper) for lower, upper in zip(etabins, etabins[1:])]
 	labels = [r"{:.1f}<|$\\eta_{{jet}}$|<{:.1f}".format(float(lower), float(upper)) for lower, upper in zip(etabins, etabins[1:])]
@@ -31,8 +30,8 @@ def response_time_dependence(args=None, additional_dictionary=None):
 			'function_nicknames': ['fnick{}'.format(i) for i in range(len(weights))],
 			# formatting
 			'y_lims': [0.8, 1.1],
-			'line_styles': ['-'],
-			'colors': ['black', 'red', 'blue', 'green', 'purple', 'orange', 'cyan']*2,
+			'colors': ['black', 'red', 'blue', 'green', 'purple', 'orange', 'cyan'][:len(weights)]*2,  # TODO take color names directly from plotmpl.py
+			# TODO improve x-axis ticks and ticklabels
 			'labels': labels + [None]*len(labels),
 			'legend_cols': 2,
 			# output
@@ -47,9 +46,13 @@ def response_time_dependence(args=None, additional_dictionary=None):
 
 
 def response_time_dependence_2012(args=None, additional_dictionary=None):
-	"""Time dependence plot for 2012"""
+	"""Time dependence plot for 2012
+
+		binning determined with
+		../Artus/HarryPlotter/scripts/get_binning_with_equal_entries.py work/data.root  noetacuts_AK5PFJetsCHSL1L2L3Res/ntuple run --n-bins 10
+	"""
 	d = {
 		'plot_modules': ['PlotMplZJet', 'PlotMplRunRanges'],
-		'x_bins': '5,190450,208535'
+		'x_bins': '190645 194480 195647 198230 199752 200992 202088 204564 206210 207231 208686'
 	}
 	return response_time_dependence(args, d)
