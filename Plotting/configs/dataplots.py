@@ -13,7 +13,7 @@ def response_time_dependence(args=None, additional_dictionary=None):
 	plots= []
 	etabins = binningsZJet.BinningsDictZJet().binnings_dict["abseta"].split(" ")
 	weights = ["{}<abs(jet1eta)&&{}>abs(jet1eta)".format(lower, upper) for lower, upper in zip(etabins, etabins[1:])]
-	labels = [r"{:.1f}<|$\\eta_{{jet}}$|<{:.1f}".format(float(lower), float(upper)) for lower, upper in zip(etabins, etabins[1:])]
+	labels = [r"{:.2f}<|$\\eta_{{jet}}$|<{:.2f}".format(float(lower), float(upper)) for lower, upper in zip(etabins, etabins[1:])]
 	for response in ['mpf', 'ptbalance']:
 		d = {
 			# input
@@ -53,6 +53,9 @@ def response_time_dependence_2012(args=None, additional_dictionary=None):
 	"""
 	d = {
 		'plot_modules': ['PlotMplZJet', 'PlotMplRunRanges'],
-		'x_bins': '190645 194480 195647 198230 199752 200992 202088 204564 206210 207231 208686'
+		'x_bins': '190645 194480 195647 198230 199752 200992 202088 204564 206210 207231 208686',
+		'x_lims': [190456, 208686],
 	}
+	if additional_dictionary:
+		d.update(additional_dictionary)
 	return response_time_dependence(args, d)
