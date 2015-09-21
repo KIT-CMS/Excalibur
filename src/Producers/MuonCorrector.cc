@@ -64,7 +64,7 @@ void MuonCorrector::Produce(ZJetEvent const& event,
         }
 
         if (m_radiationcorr) {
-            mu->p4.SetPt(1.004f * mu->p4.Pt());
+            mu->p4.SetPt(mu->p4.Pt());
         }
     }
 }
