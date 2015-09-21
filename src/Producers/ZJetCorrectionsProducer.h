@@ -48,9 +48,11 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
         delete m_l2l3res;
     }
 
-    void Init(ZJetSettings const& settings);
+    void Init(ZJetSettings const& settings) override;
 
-    void Produce(ZJetEvent const& event, ZJetProduct& product, ZJetSettings const& settings) const;
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override;
 
     void CorrectJetCollection(std::string inCorrLevel,
                               std::string outCorrLevel,
