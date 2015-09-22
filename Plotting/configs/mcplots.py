@@ -28,6 +28,7 @@ def vertex_reco_efficiency(args=None, additional_dictionary=None):
 		'function_ranges': ['-0.5,40.5'],
 		'function_nicknames': [' '],
 		'function_display_result': True,
+		'function_fit_parameter_names': [r'y-intercept', r'Slope'+r'\\ '*11],
 		# formatting
 		'line_styles': [None, '-'],
 		'labels': ["None"],
