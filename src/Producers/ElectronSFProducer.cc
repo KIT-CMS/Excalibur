@@ -91,6 +91,6 @@ void ElectronSFProducer::Produce(ZJetEvent const& event,
                                  ZJetProduct& product,
                                  ZJetSettings const& settings) const
 {
-    product.m_weights["electronSFWeight"] = GetScaleFactor(*product.m_validElectrons.at(0)) *
-                                            GetScaleFactor(*product.m_validElectrons.at(1));
+    product.m_weights["electronSFWeight"] =
+        GetScaleFactor(*product.m_zLeptons.first) * GetScaleFactor(*product.m_zLeptons.second);
 }

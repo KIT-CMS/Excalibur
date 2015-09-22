@@ -546,6 +546,8 @@ def flavour_response_extrapolation(args=None, additional_dictionary=None):
 		# output
 		'filename': 'flavour_response_extrapolation',
 	}
+	if additional_dictionary is not None:
+		d.update(additional_dictionary)
 	return [PlottingJob(plots=[d], args=args)]
 
 def zones_export(mc = True, args=None, additional_dictionary=None):
