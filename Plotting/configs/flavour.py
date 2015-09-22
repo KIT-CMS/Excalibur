@@ -517,6 +517,37 @@ def pf_fractions_vs_flavour(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=[d], args=args)]
 
 
+def flavour_response_extrapolation(args=None, additional_dictionary=None):
+	""" pT balance extrapolation for different flavours."""
+	flavours = ['uds', 'c', 'b', 'g']
+	flavourlabels = ['u/d/s', 'c', 'b', 'gluon']
+	weights = ["((ngenneutrinos<1)&&{})".format(flavour_selections[f]) for f in flavours]
+	d = {
+		# input
+		"zjetfolders": ['noalphacuts'],
+		"y_expressions": ["ptbalance"],
+		"x_expressions": ["alpha"],
+		"weights": weights,
+		"tree_draw_options": "prof",
+		"x_bins": ["6,0,0.3"],
+		"nicks": flavours,
+		# fit
+		'analysis_modules': ['FunctionPlot'],
+		'functions': ['[0]+[1]*x'],
+		'function_fit': flavours,
+		'function_parameters': ['1,1'],
+		'function_ranges': ['0,0.3'],
+		'function_nicknames': [f+"_func" for f in flavours],
+		#formatting
+		"labels": flavourlabels + [None]*4,
+		'colors': ['black', 'red', 'blue', 'green']*2,
+		'y_lims': [0.83, 1.06],
+		'lines': [1.],
+		# output
+		'filename': 'flavour_response_extrapolation',
+	}
+	return [PlottingJob(plots=[d], args=args)]
+
 def zones_export(mc = True, args=None, additional_dictionary=None):
 	plots = []
 
