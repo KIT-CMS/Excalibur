@@ -27,6 +27,7 @@ class ZProducerBase : public ZJetProducerBase
         // Note: If we have more than 3 muons in an event, this may produce double
         // counting
         std::vector<KLV> z_cand;
+        std::vector<std::pair<KLepton*, KLepton*>> z_leptons;
         for (unsigned int i = 0; i < (product.*m_validLeptonsMember1).size(); ++i) {
             for (unsigned int j = i + 1; j < (product.*m_validLeptonsMember2).size(); ++j) {
                 KLepton* const m1 = (product.*m_validLeptonsMember1).at(i);
@@ -37,6 +38,7 @@ class ZProducerBase : public ZJetProducerBase
                     if (z.p4.mass() > settings.GetZMass() - settings.GetZMassRange() &&
                         z.p4.mass() < settings.GetZMass() + settings.GetZMassRange()) {
                         z_cand.emplace_back(z);
+                        z_leptons.emplace_back(m1, m2);
                     }
                 }
             }
@@ -53,6 +55,7 @@ class ZProducerBase : public ZJetProducerBase
                 }
             }
             product.m_z = z_cand[best_z_cand];
+            product.m_zLeptons = z_leptons.at(best_z_cand);
             product.m_validZ = true;
         } else {
             product.m_validZ = false;
