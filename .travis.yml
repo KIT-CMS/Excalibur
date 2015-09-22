@@ -26,14 +26,13 @@ before_install:
 install:
   - sed -i 's/\ -j[0-9]*/\ -j2/' Makefile
   - source scripts/ini_excalibur.sh
+  - standalone_merlin
   - make check
   - make all
 script:
   - wget http://www-ekp.physik.uni-karlsruhe.de/~berger/files/excalibur-data.root
   - ls -l
   - sed -i 's:/storage/.*root:excalibur-data.root:' test/data.py.json
-  - source scripts/ini_merlin.sh
-  - standalone_merlin
   - echo $PYTHONPATH
   - export PYTHONPATH=$PYTHONPATH:/usr/lib/x86_64-linux-gnu/root5.34
   - test_excalibur.sh
