@@ -47,8 +47,8 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(bool, MuonSmearing)
 
     // ZJetCutsFilter
-    IMPL_SETTING(long, CutNMuonsMin)
-    IMPL_SETTING(long, CutNMuonsMax)
+    IMPL_SETTING(unsigned, CutNMuonsMin)
+    IMPL_SETTING(unsigned, CutNMuonsMax)
     IMPL_SETTING(float, CutMuonPtMin)
     IMPL_SETTING(float, CutMuonEtaMax)
     IMPL_SETTING(float, CutElectronPtMin)
