@@ -119,13 +119,13 @@ class ZJetProduct : public KappaProduct
                                        ZJetEvent const& event,
                                        float ptthreshold) const
     {
-			return CountValidJetsAbovePt(settings, event, ptthreshold, settings.GetCorrectionLevel());
-	}
-	
+        return CountValidJetsAbovePt(settings, event, ptthreshold, settings.GetCorrectionLevel());
+    }
+
     unsigned int CountValidJetsAbovePt(ZJetSettings const& settings,
                                        ZJetEvent const& event,
                                        float ptthreshold,
-									   std::string corrLevel) const
+                                       std::string corrLevel) const
     {
         unsigned int count = 0;
         for (unsigned int i = 0; i < GetValidJetCount(settings, event, corrLevel); i++) {
