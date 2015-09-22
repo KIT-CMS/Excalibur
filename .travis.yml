@@ -31,8 +31,11 @@ install:
   - make all
 script:
   - wget http://www-ekp.physik.uni-karlsruhe.de/~berger/files/excalibur-data.root
+  - wget http://www-ekp.physik.uni-karlsruhe.de/~berger/files/excalibur-data15.root
   - ls -l
   - sed -i 's:/storage/.*root:excalibur-data.root:' test/data.py.json
+  - sed -i 's:/storage/.*root:excalibur-data15.root:' test/data15.py.json
   - echo $PYTHONPATH
   - export PYTHONPATH=$PYTHONPATH:/usr/lib/x86_64-linux-gnu/root5.34
-  - test_excalibur.sh
+  - test_excalibur.sh data
+  - test_excalibur.sh data15
