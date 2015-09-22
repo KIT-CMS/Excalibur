@@ -39,7 +39,7 @@
         "/storage/a/mfischer/skims/MF_AnyMu_2015_746/2015-07-24//DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV/kappa_noPfIso_DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV_685.root"
     ],
     "InputIsData": false,
-    "Jec": "/portal/ekpcms6/home/berger/excalibur/Excalibur/data/jec/Summer15_50nsV4_MC/Summer15_50nsV4_MC",
+    "Jec": "data/jec/Summer15_50nsV4_MC/Summer15_50nsV4_MC",
     "JetID": "loose",
     "JetIDVersion": 2015,
     "JetLeptonLowerDeltaRCut": 0.3,
