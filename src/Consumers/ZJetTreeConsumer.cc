@@ -1047,6 +1047,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (genElectron != nullptr) ? genElectron->p4.Pt() : DefaultValues::UndefinedFloat;
         });
 
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "ngenneutrinos", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.n_neutrinos;
+        });
+
     // Needs to be called at the end
     KappaLambdaNtupleConsumer::Init(settings);
 }

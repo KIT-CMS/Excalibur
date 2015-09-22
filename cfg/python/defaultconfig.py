@@ -96,6 +96,7 @@ def mc(cfg, **kwargs):
 		'producer:RecoJetGenPartonMatchingProducer',
 		'producer:RecoJetGenJetMatchingProducer',
 		'producer:GenParticleProducer',
+		'producer:NeutrinoCounter',
 	]
 	cfg['GenParticles'] = 'genParticles'
 	cfg['Pipelines']['default']['Quantities'] += [
@@ -126,6 +127,7 @@ def mc(cfg, **kwargs):
 		'genzy',
 		'genzmass',
 		'deltarzgenz',
+		'ngenneutrinos',
 	]
 
 	# RecoJetGenPartonMatchingProducer Settings

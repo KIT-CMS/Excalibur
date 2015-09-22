@@ -50,6 +50,9 @@ class ZJetProduct : public KappaProduct
     // Added by NPUProducer
     float npumean_data;
 
+    // Added by NeutrinoCounter
+    long n_neutrinos;
+
     /////////////////////////////
     // Functions for Consumers //
     /////////////////////////////
