@@ -187,7 +187,7 @@ void MuScleFitCorrector::readParameters(const TString& fileName)
     }
 
     std::string line;
-    int nReadPar = 0;
+    unsigned long nReadPar = 0;
     std::string iteration("Iteration ");
     // Loop on the file lines
     while (parametersFile) {
@@ -222,8 +222,8 @@ void MuScleFitCorrector::readParameters(const TString& fileName)
             resolutionFunction_ = resolutionFunctionService(resolutionFunctionNum);
         }
 
-        int nScalePar = scaleFunction_->parNum();
-        int nResolPar = resolutionFunction_->parNum();
+        unsigned long nScalePar = scaleFunction_->parNum();
+        unsigned long nResolPar = resolutionFunction_->parNum();
 
         if (lineInt != std::string::npos) {
             size_t subStr1 = line.find("value");
@@ -234,9 +234,9 @@ void MuScleFitCorrector::readParameters(const TString& fileName)
             // Fill the last vector of parameters, which corresponds to this iteration.
             if (nReadPar < nScalePar) {
                 scaleParVec_.push_back(param);
-            } else if (nReadPar < (nScalePar + nResolPar)) {
+            } else if (nReadPar < nScalePar + nResolPar) {
                 resolDataParVec_.push_back(param);
-            } else if (nReadPar < (nScalePar + 2 * nResolPar)) {
+            } else if (nReadPar < nScalePar + 2 * nResolPar) {
                 resolMCParVec_.push_back(param);
             }
             ++nReadPar;

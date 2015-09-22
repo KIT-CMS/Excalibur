@@ -44,12 +44,12 @@ void scaleFunctionBase<T>::setPar(double* Start,
                                   const std::vector<int>& parResolOrder,
                                   const std::vector<ParSet>& parSet)
 {
-    if (int(parSet.size()) != this->parNum_) {
+    if (parSet.size() != this->parNum_) {
         std::cout << "Error: wrong number of parameter initializations = " << parSet.size()
                   << ". Number of parameters is " << this->parNum_ << std::endl;
         exit(1);
     }
-    for (int iPar = 0; iPar < this->parNum_; ++iPar) {
+    for (unsigned long iPar = 0; iPar < this->parNum_; ++iPar) {
         Start[iPar] = parResol[iPar];
         Step[iPar] = parSet[iPar].step;
         Mini[iPar] = parSet[iPar].mini;

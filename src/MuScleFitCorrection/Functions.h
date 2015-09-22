@@ -41,10 +41,10 @@ class scaleFunctionBase
                          const int chg,
                          const T& parScale) const = 0;
     virtual ~scaleFunctionBase() = 0;
-    virtual int parNum() const { return parNum_; };
+    virtual unsigned long parNum() const { return parNum_; };
 
   protected:
-    int parNum_;
+    unsigned long parNum_;
     virtual void setPar(double* Start,
                         double* Step,
                         double* Mini,
@@ -88,10 +88,10 @@ class resolutionFunctionBase
 
     resolutionFunctionBase() {}
     virtual ~resolutionFunctionBase() = 0;
-    virtual int parNum() const { return parNum_; }
+    virtual unsigned long parNum() const { return parNum_; }
 
   protected:
-    int parNum_;
+    unsigned long parNum_;
 };
 
 template <class T>
