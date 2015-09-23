@@ -455,6 +455,39 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return product.m_validMuons.size();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "zmu1pt", [](event_type const& event, product_type const& product) {
+            KLepton* zl1, *zl2;
+            std::tie(zl1, zl2) = product.m_zLeptons;
+            if (zl1 != nullptr)
+                return zl1->p4.Pt();
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "zmu1phi", [](event_type const& event, product_type const& product) {
+            KLepton* zl1, *zl2;
+            std::tie(zl1, zl2) = product.m_zLeptons;
+            if (zl1 != nullptr)
+                return zl1->p4.Phi();
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "zmu1eta", [](event_type const& event, product_type const& product) {
+            KLepton* zl1, *zl2;
+            std::tie(zl1, zl2) = product.m_zLeptons;
+            if (zl1 != nullptr)
+                return zl1->p4.Eta();
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "zmupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
+            KLepton* zl1, *zl2;
+            std::tie(zl1, zl2) = product.m_zLeptons;
+            if (zl1 != nullptr) {
+                return zl1->charge() > 0 ? zl1->p4.Pt() : zl2->p4.Pt();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
                  muon != product.m_validMuons.end(); muon++) {
