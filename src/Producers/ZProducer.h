@@ -38,7 +38,10 @@ class ZProducerBase : public ZJetProducerBase
                     if (z.p4.mass() > settings.GetZMass() - settings.GetZMassRange() &&
                         z.p4.mass() < settings.GetZMass() + settings.GetZMassRange()) {
                         z_cand.emplace_back(z);
-                        z_leptons.emplace_back(m1, m2);
+                        if (m1->p4.Pt() > m2->p4.Pt())
+                            z_leptons.emplace_back(m1, m2);
+                        else
+                            z_leptons.emplace_back(m2, m1);
                     }
                 }
             }
