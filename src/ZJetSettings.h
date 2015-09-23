@@ -9,6 +9,9 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(float, ZMass, 91.1876f)
     IMPL_SETTING(float, ZMassRange)
 
+    // ValidZllJetsProducer
+    IMPL_SETTING(float, MinZllJetDeltaRVeto)
+
     // TypeIMETProducer
     IMPL_SETTING_DEFAULT(float, JetPtMin, 10.0f)
     IMPL_SETTING(bool, EnableMetPhiCorrection)
