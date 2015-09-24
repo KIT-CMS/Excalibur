@@ -456,36 +456,42 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zmu1pt", [](event_type const& event, product_type const& product) {
-            KLepton* zl1, *zl2;
-            std::tie(zl1, zl2) = product.m_zLeptons;
-            if (zl1 != nullptr)
-                return zl1->p4.Pt();
-            return DefaultValues::UndefinedFloat;
+            if (!product.m_validZ)
+                return DefaultValues::UndefinedFloat;
+            return product.m_zLeptons.first->p4.Pt();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zmu1phi", [](event_type const& event, product_type const& product) {
-            KLepton* zl1, *zl2;
-            std::tie(zl1, zl2) = product.m_zLeptons;
-            if (zl1 != nullptr)
-                return zl1->p4.Phi();
-            return DefaultValues::UndefinedFloat;
+            if (!product.m_validZ)
+                return DefaultValues::UndefinedFloat;
+            return product.m_zLeptons.first->p4.Phi();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zmu1eta", [](event_type const& event, product_type const& product) {
-            KLepton* zl1, *zl2;
-            std::tie(zl1, zl2) = product.m_zLeptons;
-            if (zl1 != nullptr)
-                return zl1->p4.Eta();
-            return DefaultValues::UndefinedFloat;
+            if (!product.m_validZ)
+                return DefaultValues::UndefinedFloat;
+            return product.m_zLeptons.first->p4.Eta();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zmupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KLepton* zl1, *zl2;
-            std::tie(zl1, zl2) = product.m_zLeptons;
-            if (zl1 != nullptr) {
-                return zl1->charge() > 0 ? zl1->p4.Pt() : zl2->p4.Pt();
-            }
-            return DefaultValues::UndefinedFloat;
+            if (!product.m_validZ)
+                return DefaultValues::UndefinedFloat;
+            return product.m_zLeptons.first->charge() > 0 ? product.m_zLeptons.first->p4.Pt()
+                                                          : product.m_zLeptons.second->p4.Pt();
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "zmuplusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
+            if (!product.m_validZ)
+                return DefaultValues::UndefinedFloat;
+            return product.m_zLeptons.first->charge() > 0 ? product.m_zLeptons.first->p4.Phi()
+                                                          : product.m_zLeptons.second->p4.Phi();
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "zmupluseta", [](ZJetEvent const& event, ZJetProduct const& product) {
+            if (!product.m_validZ)
+                return DefaultValues::UndefinedFloat;
+            return product.m_zLeptons.first->charge() > 0 ? product.m_zLeptons.first->p4.Eta()
+                                                          : product.m_zLeptons.second->p4.Eta();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
