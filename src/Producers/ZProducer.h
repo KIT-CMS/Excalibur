@@ -73,8 +73,6 @@ class ZProducerBase : public ZJetProducerBase
         }
     }
 
-    ;
-
   private:
     std::vector<TLepton1*> ZJetProduct::*m_validLeptonsMember1;
     std::vector<TLepton2*> ZJetProduct::*m_validLeptonsMember2;
