@@ -496,7 +496,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() > 0)
                     return (*muon)->p4.Pt();
             }
@@ -505,7 +505,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mupluseta", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() > 0)
                     return (*muon)->p4.Eta();
             }
@@ -514,7 +514,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muplusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() > 0)
                     return (*muon)->p4.Phi();
             }
@@ -523,7 +523,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muplusiso", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() > 0)
                     return (*muon)->pfIso();
             }
@@ -532,7 +532,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muminuspt", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() < 0)
                     return (*muon)->p4.Pt();
             }
@@ -541,7 +541,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muminuseta", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() < 0)
                     return (*muon)->p4.Eta();
             }
@@ -550,7 +550,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muminusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() < 0)
                     return (*muon)->p4.Phi();
             }
@@ -559,7 +559,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muminusiso", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
-                 muon != product.m_validMuons.end(); muon++) {
+                 muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() < 0)
                     return (*muon)->pfIso();
             }
@@ -654,7 +654,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genmupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin();
-                 genMuon != product.m_genMuons.end(); genMuon++) {
+                 genMuon != product.m_genMuons.end(); ++genMuon) {
                 if ((*genMuon)->charge() > 0)
                     return (*genMuon)->p4.Pt();
             }
@@ -663,7 +663,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genmupluseta", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin();
-                 genMuon != product.m_genMuons.end(); genMuon++) {
+                 genMuon != product.m_genMuons.end(); ++genMuon) {
                 if ((*genMuon)->charge() > 0)
                     return (*genMuon)->p4.Eta();
             }
@@ -672,7 +672,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genmuplusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin();
-                 genMuon != product.m_genMuons.end(); genMuon++) {
+                 genMuon != product.m_genMuons.end(); ++genMuon) {
                 if ((*genMuon)->charge() > 0)
                     return (*genMuon)->p4.Phi();
             }
@@ -681,7 +681,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genmuminuspt", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin();
-                 genMuon != product.m_genMuons.end(); genMuon++) {
+                 genMuon != product.m_genMuons.end(); ++genMuon) {
                 if ((*genMuon)->charge() < 0)
                     return (*genMuon)->p4.Pt();
             }
@@ -690,7 +690,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genmuminuseta", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin();
-                 genMuon != product.m_genMuons.end(); genMuon++) {
+                 genMuon != product.m_genMuons.end(); ++genMuon) {
                 if ((*genMuon)->charge() < 0)
                     return (*genMuon)->p4.Eta();
             }
@@ -699,7 +699,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genmuminusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
             for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_genMuons.begin();
-                 genMuon != product.m_genMuons.end(); genMuon++) {
+                 genMuon != product.m_genMuons.end(); ++genMuon) {
                 if ((*genMuon)->charge() < 0)
                     return (*genMuon)->p4.Phi();
             }
@@ -933,7 +933,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "epluspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() > 0)
                     return (*electron)->p4.Pt();
             }
@@ -943,7 +943,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "epluseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() > 0)
                     return (*electron)->p4.Eta();
             }
@@ -953,7 +953,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "eplusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() > 0)
                     return (*electron)->p4.Phi();
             }
@@ -963,7 +963,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "eplusiso", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() > 0)
                     return (*electron)->pfIso();
             }
@@ -973,7 +973,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "eminuspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() < 0)
                     return (*electron)->p4.Pt();
             }
@@ -983,7 +983,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "eminuseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() < 0)
                     return (*electron)->p4.Eta();
             }
@@ -993,7 +993,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "eminusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() < 0)
                     return (*electron)->p4.Phi();
             }
@@ -1003,7 +1003,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "eminusiso", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KElectron*>::const_iterator electron =
                      product.m_validElectrons.begin();
-                 electron != product.m_validElectrons.end(); electron++) {
+                 electron != product.m_validElectrons.end(); ++electron) {
                 if ((*electron)->charge() < 0)
                     return (*electron)->pfIso();
             }
@@ -1018,7 +1018,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "genepluspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KGenParticle*>::const_iterator genElectron =
                      product.m_genElectrons.begin();
-                 genElectron != product.m_genElectrons.end(); genElectron++) {
+                 genElectron != product.m_genElectrons.end(); ++genElectron) {
                 if ((*genElectron)->charge() > 0)
                     return (*genElectron)->p4.Pt();
             }
@@ -1028,7 +1028,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "genepluseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KGenParticle*>::const_iterator genElectron =
                      product.m_genElectrons.begin();
-                 genElectron != product.m_genElectrons.end(); genElectron++) {
+                 genElectron != product.m_genElectrons.end(); ++genElectron) {
                 if ((*genElectron)->charge() > 0)
                     return (*genElectron)->p4.Eta();
             }
@@ -1038,7 +1038,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "geneplusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KGenParticle*>::const_iterator genElectron =
                      product.m_genElectrons.begin();
-                 genElectron != product.m_genElectrons.end(); genElectron++) {
+                 genElectron != product.m_genElectrons.end(); ++genElectron) {
                 if ((*genElectron)->charge() > 0)
                     return (*genElectron)->p4.Phi();
             }
@@ -1048,7 +1048,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "geneminuspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KGenParticle*>::const_iterator genElectron =
                      product.m_genElectrons.begin();
-                 genElectron != product.m_genElectrons.end(); genElectron++) {
+                 genElectron != product.m_genElectrons.end(); ++genElectron) {
                 if ((*genElectron)->charge() < 0)
                     return (*genElectron)->p4.Pt();
             }
@@ -1058,7 +1058,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "geneminuseta", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KGenParticle*>::const_iterator genElectron =
                      product.m_genElectrons.begin();
-                 genElectron != product.m_genElectrons.end(); genElectron++) {
+                 genElectron != product.m_genElectrons.end(); ++genElectron) {
                 if ((*genElectron)->charge() < 0)
                     return (*genElectron)->p4.Eta();
             }
@@ -1068,7 +1068,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "geneminusphi", [](ZJetEvent const& event, ZJetProduct const& product) -> float {
             for (std::vector<KGenParticle*>::const_iterator genElectron =
                      product.m_genElectrons.begin();
-                 genElectron != product.m_genElectrons.end(); genElectron++) {
+                 genElectron != product.m_genElectrons.end(); ++genElectron) {
                 if ((*genElectron)->charge() < 0)
                     return (*genElectron)->p4.Phi();
             }

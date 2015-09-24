@@ -70,16 +70,16 @@ void ElectronSFProducer::Init(ZJetSettings const& settings)
     TH2F* sfhisto = (TH2F*)file.Get(histoname.c_str());
 
     // Get the pT and eta bin borders
-    for (int iy = 0; iy <= sfhisto->GetNbinsY(); iy++)
+    for (int iy = 0; iy <= sfhisto->GetNbinsY(); ++iy)
         m_ybins.emplace_back(2 * sfhisto->GetYaxis()->GetBinCenter(iy) -
                              sfhisto->GetYaxis()->GetBinLowEdge(iy));
-    for (int ix = 0; ix <= sfhisto->GetNbinsX(); ix++)
+    for (int ix = 0; ix <= sfhisto->GetNbinsX(); ++ix)
         m_xbins.emplace_back(2 * sfhisto->GetXaxis()->GetBinCenter(ix) -
                              sfhisto->GetXaxis()->GetBinLowEdge(ix));
 
     // Fill the m_sf array with the values from the root histo
-    for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
-        for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
+    for (int iy = 1; iy <= sfhisto->GetNbinsY(); ++iy) {
+        for (int ix = 1; ix <= sfhisto->GetNbinsX(); ++ix) {
             m_sf[ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinContent(ix, iy));
         }
     }

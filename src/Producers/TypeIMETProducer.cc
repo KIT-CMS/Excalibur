@@ -32,7 +32,7 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
                                ZJetSettings const& settings) const
 {
     // Iterate over the jet collection
-    for (unsigned int corrLevelIndex = 0; corrLevelIndex < m_corrLevels.size(); corrLevelIndex++) {
+    for (unsigned int corrLevelIndex = 0; corrLevelIndex < m_corrLevels.size(); ++corrLevelIndex) {
         KLV correction;
         double sumEtCorrection = 0;
 

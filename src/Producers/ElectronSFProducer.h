@@ -28,10 +28,10 @@ class ElectronSFProducer : public ZJetProducerBase
 
     virtual float GetScaleFactor(KLV const& electron) const
     {
-        for (unsigned int index_eta = 0; index_eta < m_etabins->size() - 1; index_eta++) {
+        for (unsigned int index_eta = 0; index_eta < m_etabins->size() - 1; ++index_eta) {
             if (GetEta(electron) >= m_etabins->at(index_eta) &&
                 GetEta(electron) < m_etabins->at(index_eta + 1)) {
-                for (unsigned int index_pt = 0; index_pt < m_ptbins->size() - 1; index_pt++) {
+                for (unsigned int index_pt = 0; index_pt < m_ptbins->size() - 1; ++index_pt) {
                     if ((electron.p4.Pt()) >= m_ptbins->at(index_pt) &&
                         (electron.p4.Pt()) < m_ptbins->at(index_pt + 1)) {
                         if (m_reversed_axes) {

@@ -34,7 +34,7 @@ class ZJetNumberGeneratedEventsWeightProducer : public NumberGeneratedEventsWeig
 
             // iterate over xsecs, find matching and get NEvents
             for (unsigned int i = 0; i < specSettings.GetSampleReweightingCrossSections().size();
-                 i++) {
+                 ++i) {
                 if (std::abs(1. - (event.m_genLumiInfo->xSectionInt /
                                    specSettings.GetSampleReweightingCrossSections().at(i))) <
                     m_tolerance) {

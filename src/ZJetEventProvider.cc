@@ -19,7 +19,7 @@ void ZJetEventProvider::WireEvent(setting_type const& settings)
     // Gen jets (KLV) and untagged jets (KBasicJet) will be casted to KJet so they can be handled
     uniformly
     // TODO: Is this okay? Now gen jets could also be stored in m_jets if needed
-    for (unsigned int i = 0; i < settings.GetGlobalAlgorithms().size(); i++)
+    for (unsigned int i = 0; i < settings.GetGlobalAlgorithms().size(); ++i)
     {
     //LOG(WARNING) << settings.GetGlobalAlgorithms()[i];
     if (settings.GetGlobalAlgorithms()[i].find("Gen") == std::string::npos)
