@@ -6,8 +6,5 @@ bool ZFilter::DoesEventPass(ZJetEvent const& event,
                             ZJetProduct const& product,
                             ZJetSettings const& settings) const
 {
-    if (product.m_validZ == false) {
-        return false;
-    }
-    return true;
+    return product.m_validZ;
 }
