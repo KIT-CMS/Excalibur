@@ -30,18 +30,16 @@ class ZJetNumberGeneratedEventsWeightProducer : public NumberGeneratedEventsWeig
                  KappaSettings const& settings) const override
     {
         ZJetSettings const& specSettings = static_cast<ZJetSettings const&>(settings);
+
         if (specSettings.GetSampleReweighting()) {
-            assert(specSettings.GetSampleReweightingCrossSections().size() ==
-                   specSettings.GetSampleReweightingNEvents().size());
+            std::vector<double> const& xsections = specSettings.GetSampleReweightingCrossSections();
+            std::vector<int> const& nevents = specSettings.GetSampleReweightingNEvents();
+            assert(xsections.size() == nevents.size());
 
             // iterate over xsecs, find matching and get NEvents
-            for (unsigned int i = 0; i < specSettings.GetSampleReweightingCrossSections().size();
-                 ++i) {
-                if (std::abs(1. - (event.m_genLumiInfo->xSectionInt /
-                                   specSettings.GetSampleReweightingCrossSections().at(i))) <
-                    m_tolerance) {
-                    product.m_weights["numberGeneratedEventsWeight"] =
-                        (1.0 / specSettings.GetSampleReweightingNEvents().at(i));
+            for (unsigned int i = 0; i < xsections.size(); ++i) {
+                if (std::abs(1.0 - event.m_genLumiInfo->xSectionInt / xsections[i]) < m_tolerance) {
+                    product.m_weights["numberGeneratedEventsWeight"] = 1.0 / nevents.at(i);
                     return;
                 }
             }
