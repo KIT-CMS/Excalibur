@@ -22,8 +22,8 @@ std::string ElectronSFProducer::GetProducerId() const { return "ElectronSFProduc
 
 void ElectronSFProducer::Init(ZJetSettings const& settings)
 {
-    m_sffile = settings.GetElectronSFRootfilePath() +
-               "/Electron-";  // this is only the path, add filename according to ID
+    // this is only the path, add filename according to ID
+    m_sffile = settings.GetElectronSFRootfilePath() + "/Electron-";
     m_id = settings.GetElectronID();
 
     std::string histoname;  // histoname depending on id

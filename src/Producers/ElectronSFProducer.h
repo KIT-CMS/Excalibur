@@ -41,10 +41,10 @@ class ElectronSFProducer : public ZJetProducerBase
                         }
                     }
                 }
-                return 1.;  // not in pt bins
+                return 1.0f;  // not in pt bins
             }
         }
-        return 1.;
+        return 1.0f;
     }
 
     virtual float GetEta(KLV const& e) const

@@ -10,7 +10,6 @@ void TypeIMETProducer::Init(ZJetSettings const& settings)
 
     // Use random cone?
     m_l1Corr = settings.GetRC() ? "RC" : "L1";
-
     m_corrLevels.emplace_back("L1L2L3");
 
     // Residual correctiuons if input is data
@@ -43,11 +42,11 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
             KLV* corrJet = (SafeMap::Get(product.m_correctedZJets, m_corrLevels[corrLevelIndex])
                                 .at(jetIndex)).get();
 
-            // Only consider jets with Pt above 10 GeV
+            // Only consider jets with Pt above JetPtMin (10 GeV)
             if (corrJet->p4.Pt() > settings.GetJetPtMin()) {
                 KLV* l1Jet = (SafeMap::Get(product.m_correctedZJets, m_l1Corr).at(jetIndex)).get();
                 correction.p4 += l1Jet->p4 - corrJet->p4;
-                sumEtCorrection += double(correction.p4.Pt());
+                sumEtCorrection += static_cast<double>(correction.p4.Pt());
             }
         }
         KMET corrMET = *event.m_met;
@@ -69,10 +68,10 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
             double px = corrMET.p4.Px();
             double py = corrMET.p4.Py();
 
-            px = px - (m_metPhiCorrectionParameters.at(0) +
-                       m_metPhiCorrectionParameters.at(1) * event.m_vertexSummary->nVertices);
-            py = py - (m_metPhiCorrectionParameters.at(2) +
-                       m_metPhiCorrectionParameters.at(3) * event.m_vertexSummary->nVertices);
+            px -= m_metPhiCorrectionParameters.at(0) +
+                  m_metPhiCorrectionParameters.at(1) * event.m_vertexSummary->nVertices;
+            py -= m_metPhiCorrectionParameters.at(2) +
+                  m_metPhiCorrectionParameters.at(3) * event.m_vertexSummary->nVertices;
 
             corrMET.p4.SetPt(static_cast<float>(sqrt(px * px + py * py)));
             corrMET.p4.SetPhi(static_cast<float>(atan2(py, px)));
