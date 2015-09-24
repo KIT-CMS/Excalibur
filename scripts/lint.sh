@@ -1,11 +1,22 @@
 #!/bin/bash
 # a script that checks source code whether deprecated things happen
 if [[ "$@" == "-h" || -z "$@" ]]; then
-    echo -e "Usage: ${0/*\/} [grep options] file\nwith typical grep options: -r -n -o -c"
+    echo -e "Usage: ${0/*\/} google or ${0/*\/} [grep options] file\nwith typical grep options: -r -n -o -c"
     exit 0
 fi
 GREPOPT="-I --include *.h --include *.cc --include *.cpp --include *.hxx --exclude=easylogging++.h $@"
 
+# use the Google linter without these filters:
+# - header_guard: we use pragma once
+# - include_what_you_use: we have global includes for map, string, vector
+# - legal: we have no copyright notice
+# - braces/newline: we use a different brace style (Linux) than google (Attach)
+# - indent: we do not use a 2 spaces indent
+if [[ "$@" == "google" ]]; then
+    find src -name "*cc" -or -name "*h" | xargs python own/cpplint.py --linelength=100 \
+    --filter=-build/header_guard,-build/include_what_you_use,-legal,-readability/braces,-runtime/int,-whitespace/braces,-whitespace/indent,-whitespace/newline
+    exit 0
+fi
 
 # checks with a regex pattern and an advice
 # not every occurence is a real warning, just typical cases are listed
