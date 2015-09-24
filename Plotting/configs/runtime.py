@@ -21,7 +21,7 @@ def runtime(args=None, additional_dictionary=None):
 		['Data', 'MC'],
 		['Res', ''],
 	):
-		filename = 'work/{}.root'.format(label.lower())
+		filename = '{}_runtime.root'.format(label.lower())
 		folder = 'finalcuts_AK5PFJetsCHSL1L2L3{}/runTime'.format(corr)
 		processors = []
 		# get list of processors
@@ -39,27 +39,22 @@ def runtime(args=None, additional_dictionary=None):
 			'files': [filename],
 			'folders': [folder],
 			'x_expressions': processors,
+			'nicks': processors,
 			'x_bins': ['100,0,500'],
 			'no_weight': True,
 			# analysis
-			'analysis_modules': ['NormalizeToUnity'],
+			'analysis_modules': ['NormalizeToUnity', 'HistogramFromMeanValues'],
 			# formatting
-			'plot_modules': ['PlotMplZJet', 'PlotMplMean'],
-			'markers': ['.'],
+			'nicks_whitelist': ['mean'],
+			'markers': ['fill'],
 			'legend': None,
-			'line_styles': ['-'],
-			'labels': processors,
-			'x_label': 'runtime',
-			'y_label': 'au',
-			'y_lims': [0, 1],
+			'x_label': ' ',
+			'y_label': 'runtime',
 			'energies': None,
 			'title': label,
 			'no_energy_label': True,
-			'texts': ["Vertical lines indicate\naverage processor runtime"],
-			'texts_x': [0.4],
 			# output
 			'filename':  label.lower() + '_runtime',
-			'save_legend': label.lower() + '_legend',
 		}
 		plots.append(d)
 	harryinterface.harry_interface(plots, args)
