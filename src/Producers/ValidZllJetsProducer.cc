@@ -34,26 +34,29 @@ void ValidZllJetsProducer::Produce(ZJetEvent const& event,
     std::tie(zl1, zl2) = product.m_zLeptons;
     // nothing to do if there are no Zlls
     if (zl1 != nullptr) {
-        std::size_t zl1_idx = product.m_validJets.size() + 1,
-                    zl2_idx = product.m_validJets.size() + 1;
+        std::size_t zl1_idx = product.m_validJets.size();
+        std::size_t zl2_idx = product.m_validJets.size();
         for (std::size_t i = 0; i < product.m_validJets.size(); ++i) {
-            if (ROOT::Math::VectorUtil::DeltaR(product.m_validJets.at(i)->p4, zl1->p4) >
+            if (ROOT::Math::VectorUtil::DeltaR(product.m_validJets.at(i)->p4, zl1->p4) <
                 minZllJetDeltaRVeto) {
                 zl1_idx = i;
-                if (zl2_idx <= product.m_validJets.size())
+                if (zl2_idx < product.m_validJets.size()) {
                     break;
-            } else if (ROOT::Math::VectorUtil::DeltaR(product.m_validJets.at(i)->p4, zl2->p4) >
+                }
+            } else if (ROOT::Math::VectorUtil::DeltaR(product.m_validJets.at(i)->p4, zl2->p4) <
                        minZllJetDeltaRVeto) {
                 zl2_idx = i;
-                if (zl1_idx <= product.m_validJets.size())
+                if (zl1_idx < product.m_validJets.size()) {
                     break;
+                }
             }
         }
-        if (zl1_idx < zl2_idx)
+        // zl1 has higher pT, i.e. likely vetoes a higher pT jet that should be erased last
+        if (zl1_idx > zl2_idx)
             std::swap(zl1_idx, zl2_idx);
-        if (zl1_idx <= product.m_validJets.size())
-            product.m_validJets.erase(product.m_validJets.begin() + zl1_idx);
-        if (zl2_idx <= product.m_validJets.size())
+        if (zl2_idx < product.m_validJets.size())
             product.m_validJets.erase(product.m_validJets.begin() + zl2_idx);
+        if (zl1_idx < product.m_validJets.size())
+            product.m_validJets.erase(product.m_validJets.begin() + zl1_idx);
     }
 }
