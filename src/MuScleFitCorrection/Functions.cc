@@ -74,6 +74,7 @@ double scaleFunction50<T>::scale(const double& pt,
                                  const T& parScale) const
 {
     double ampl(0), phase(0), twist(0), ampl2(0), freq2(0), phase2(0);
+    double charge = static_cast<double>(chg);
 
     // very bwd bin
     if (eta < parScale[4]) {
@@ -111,9 +112,9 @@ double scaleFunction50<T>::scale(const double& pt,
     }
 
     // apply the correction
-    double curv = (1. + parScale[0]) * ((double)chg / pt - twist - ampl * sin(phi + phase) -
-                                        ampl2 * sin(freq2 * phi + phase2) - 0.5 * parScale[20]);
-    return 1. / ((double)chg * curv);
+    double curv = (1.0 + parScale[0]) * (charge / pt - twist - ampl * sin(phi + phase) -
+                                         ampl2 * sin(freq2 * phi + phase2) - 0.5 * parScale[20]);
+    return 1. / (charge * curv);
 }
 
 // ----------------------- //
