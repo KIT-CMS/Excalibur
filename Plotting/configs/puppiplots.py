@@ -32,7 +32,7 @@ def comparison_CHS_Puppi_test(args=None):
 
 	return plotting_jobs
 
-def comparison_CHS_Puppi(args=None, additional_dictionary={}):
+def comparison_CHS_Puppi(args=None, additional_dictionary={}, mpf_substract_muons=False):
 	""" Do full comparison for CHS and Puppi ntuples """
 	plotting_jobs = []
 
@@ -46,10 +46,14 @@ def comparison_CHS_Puppi(args=None, additional_dictionary={}):
 		if plotdict['x_expressions'][0] == 'zpt':
 			plotdict['y_lims'] = [5000000, 70000000000]
 		if plotdict['x_expressions'][0] == 'alpha':
+			plotdict['y_subplot_lims'] = [0, 9]
 			plotdict['plot_modules'] =['PlotMplZJet', 'PlotMplRectangle']
 			plotdict['rectangle_x'] = [0.3,1.0]
 			plotdict['rectangle_alpha'] = [0.2]
 			plotdict['rectangle_color'] = ["red"]
+		if plotdict['x_expressions'][0] == 'mpf' and mpf_substract_muons:
+			plotdict['x_expressions'] = ['(mpf-1)', 'mpf']
+			plotdict['x_label'] = 'MPF Response'
 	plotting_jobs += basic_comparison_jobs
 	plotting_jobs += jec_comparisons.basic_profile_comparisons(args, additional_dictionary)
 	plotting_jobs += jec_comparisons.pf_fractions(args, additional_dictionary)
@@ -61,9 +65,14 @@ def comparison_CHS_Puppi(args=None, additional_dictionary={}):
 		if plotdict['y_expressions'][0] == 'ptbalance':
 			plotdict['y_lims'] = [0.69, 1.15]
 			plotdict['y_subplot_lims'] = [0.76, 1.14]
+		if plotdict['y_expressions'][0] == 'mpf' and mpf_substract_muons:
+			plotdict['y_expressions'] = ['(mpf-1)', 'mpf']
+			plotdict['y_label'] = 'MPF Response'
 	plotting_jobs += response_comparisons_jobs
 	plotting_jobs += jec_comparisons.jet_resolution(args, additional_dictionary=additional_dictionary)
 	response_extrapolation_jobs = jec_comparisons.response_extrapolation(args, additional_dictionary=additional_dictionary)
+	if mpf_substract_muons:
+		response_extrapolation_jobs[0].plots[0]['y_expressions'][2] = '(mpf-1)'
 	response_extrapolation_jobs[0].plots[0]['legend'] = 'upper left'
 	response_extrapolation_jobs[0].plots[0]['legend_cols'] = 2
 	response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.79, 1.2]
@@ -93,36 +102,44 @@ def comparison_CHS_Puppi(args=None, additional_dictionary={}):
 def comparison_CHS_Puppi_all(args=None):
 	""" Do full comparison for CHS and Puppi ntuples for finalcuts, noalphacuts and betacuts """
 	plotting_jobs = []
-	for corrections in ['', 'L1', 'L1L2L3']:
-		for zjetfolder in ['finalcuts', 'noalphacuts', 'betacuts']:
-			d = {
-				'files': [
-					'work/mc15Puppi.root',
-					'work/mc15.root',
-				],
-				"algorithms": ["ak4PFJetsPuppi", "ak4PFJetsCHS"],
-				'corrections': [corrections],
-				'labels': ['Puppi', 'CHS']
-			}
+	for met in ['NoMuNoHF']:
+		for corrections in ['', 'L1L2L3']:
+			for zjetfolder in ['finalcuts', 'noalphacuts']:
+				d = {
+					'files': [
+						'work/mc15Puppi' + met + '.root',
+						'work/mc15.root',
+					],
+					"algorithms": ["ak4PFJetsPuppi", "ak4PFJetsCHS"],
+					'corrections': [corrections],
+					'labels': ['Puppi', 'CHS']
+				}
 
-			if corrections == '':
-				d['title'] = 'No corrections'
-				d['www'] = 'comparison_CHS_Puppi_' + zjetfolder + '_None'
-			else:
-				d['title'] = corrections
-				d['www'] = 'comparison_CHS_Puppi_' + zjetfolder + '_' + corrections
+				if corrections == '':
+					d['title'] = 'No corrections'
+					d['www'] = 'comparison_CHS_Puppi' + met + '_' + zjetfolder + '_None'
+				else:
+					d['title'] = corrections
+					d['www'] = 'comparison_CHS_Puppi' + met + '_' + zjetfolder + '_' + corrections
 
-			if zjetfolder != "finalcuts":
-				d['zjetfolders'] = zjetfolder
+				if zjetfolder != "finalcuts":
+					d['zjetfolders'] = zjetfolder
 
-			plotting_jobs += jec_comparisons.comparison_CHS_Puppi(args, d)
+				plotting_jobs += comparison_CHS_Puppi(args, d)
 
-			if corrections == '':
-				d['www'] = 'comparison_CHS_Puppi_bins_' + zjetfolder + '_None'
-			else:
-				d['www'] = 'comparison_CHS_Puppi_bins_' + zjetfolder + '_' + corrections
+				if met == 'NoMuNoHF':
+					if corrections == '':
+						d['www'] = 'comparison_CHS_Puppi' + met + '_mpf_corrected_' + zjetfolder + '_None'
+					else:
+						d['www'] = 'comparison_CHS_Puppi' + met + '_mpf_corrected_' + zjetfolder + '_' + corrections
+					plotting_jobs += comparison_CHS_Puppi(args, d, mpf_substract_muons=True)
 
-			plotting_jobs += jec_comparisons.response_bin_comparisons(args, d, data_quantities=False)
+				if corrections == '':
+					d['www'] = 'comparison_CHS_Puppi' + met + '_bins_' + zjetfolder + '_None'
+				else:
+					d['www'] = 'comparison_CHS_Puppi' + met + '_bins_' + zjetfolder + '_' + corrections
+
+				#plotting_jobs += jec_comparisons.response_bin_comparisons(args, d, data_quantities=False)
 	return plotting_jobs
 
 def comparison_CHS_Puppi_matched(args=None):
@@ -148,8 +165,3 @@ def comparison_Puppi(args=None):
 		'labels': ['L1L2L3', 'No corrections'],
 	}
 	return comparison_CHS_Puppi(args, d)
-
-
-
-if __name__ == '__main__':
-	comparison_CHS_Puppi_all()
