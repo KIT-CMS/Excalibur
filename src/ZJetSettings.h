@@ -18,10 +18,6 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
     IMPL_SETTING_DEFAULT(bool, MetAddMuons, false)
 
-    // ZJetValidJetsProducer
-    // IMPL_SETTING_DEFAULT(std::string, JetAlgorithm, "")
-    // IMPL_SETTING_STRINGLIST_DEFAULT(GlobalAlgorithms, {});
-
     // ZJetCorrectionsProducer
     IMPL_SETTING_DEFAULT(std::string, CorrectionLevel, "None")
     IMPL_SETTING(std::string, Jec)
@@ -36,10 +32,14 @@ class ZJetSettings : public KappaSettings
     // RadiationJetProducer
     IMPL_SETTING_DEFAULT(double, DeltaRRadiationJet, 1.0)
 
-    // for ZJetNumberGeneratedEventsWeightProducer: sample reweighting
+    // ZJetNumberGeneratedEventsWeightProducer (sample reweighting)
     IMPL_SETTING_DEFAULT(bool, SampleReweighting, false)
     IMPL_SETTING_DOUBLELIST(SampleReweightingCrossSections)
     IMPL_SETTING_INTLIST(SampleReweightingNEvents)
+
+    // NPUProducer (insert npu from external file)
+    IMPL_SETTING(std::string, NPUFile)
+    IMPL_SETTING(float, Minbxsec)
 
     // ElectronSFProducer
     IMPL_SETTING(std::string, ElectronSFRootfilePath)
@@ -63,7 +63,4 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, CutBackToBack)
     IMPL_SETTING(float, CutAlphaMax)
     IMPL_SETTING_DEFAULT(float, CutBetaMax, 1.0f)
-
-    IMPL_SETTING(std::string, NPUFile);
-    IMPL_SETTING(float, Minbxsec);
 };

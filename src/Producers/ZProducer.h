@@ -34,8 +34,8 @@ class ZProducerBase : public ZJetProducerBase
         int found_zs = 0;
         KLV z_cand;
         std::pair<KLepton*, KLepton*> z_leptons;
-        // do not double count when matching leptons from the same collection
 
+        // do not double count when matching leptons from the same collection
         for (unsigned int i = 0; i < (product.*m_validLeptonsMember1).size(); ++i) {
             for (unsigned int j = (m_same_ll_collection ? i + 1 : 0);
                  j < (product.*m_validLeptonsMember2).size(); ++j) {

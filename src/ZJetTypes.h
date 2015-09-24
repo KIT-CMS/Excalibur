@@ -33,7 +33,6 @@ typedef FilterBase<ZJetTypes> ZJetFilterBase;
 // Pass the template parameters for the Pipeline
 typedef Pipeline<ZJetTypes> ZJetPipeline;
 
-// Setup our custom pipeline runner
+// Setup our custom pipeline runner and initializer
 typedef PipelineRunner<ZJetPipeline, ZJetTypes> ZJetPipelineRunner;
-
 typedef KappaPipelineInitializer<ZJetTypes> ZJetPipelineInitializer;
