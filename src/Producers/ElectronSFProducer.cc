@@ -38,7 +38,7 @@ void ElectronSFProducer::Init(ZJetSettings const& settings)
         m_absoluteeta = false;
         m_sffile = m_sffile += "NontrigMVAId";
     } else if (m_id == "mvatrig") {
-        // TODO
+        // TODO(dhaitz)
         LOG(FATAL) << "No scale factors for ID " << m_id << " available!";
     } else if ((m_id == "loose") || (m_id == "medium") || (m_id == "tight") || (m_id == "veto")) {
         histoname = ("sf" + boost::to_upper_copy(m_id));

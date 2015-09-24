@@ -14,7 +14,7 @@ void RecoJetGenJetMatchingProducer::Produce(ZJetEvent const& event,
                                             ZJetProduct& product,
                                             ZJetSettings const& settings) const
 {
-    // TODO: raw jets should be added to m_correctedZJets if more hacks like this are needed
+    // TODO(gfleig): raw jets should be added to m_correctedZJets if more hacks like this are needed
 
     // Match raw jets
     MatchCollection(event, product, settings, "None", settings.GetDeltaRMatchingRecoJetGenJet());

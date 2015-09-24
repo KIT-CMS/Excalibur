@@ -15,7 +15,7 @@ class ZJetValidElectronsProducer : public ValidElectronsProducer<ZJetTypes>
                             product_type& product,
                             setting_type const& settings) const override
     {
-        // TODO make this configurable?
+        // TODO(dhaitz) make this configurable?
         return (std::abs(electron->p4.Eta()) < 1.4442f || std::abs(electron->p4.Eta()) > 1.566f);
     }
 };

@@ -126,7 +126,7 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
                                       ZJetProduct& product,
                                       ZJetSettings const& settings) const
 {
-    // TODO: Do we need more assertions?
+    // TODO(gfleig): Do we need more assertions?
     assert(event.m_pileupDensity);
     assert(event.m_vertexSummary);
 
