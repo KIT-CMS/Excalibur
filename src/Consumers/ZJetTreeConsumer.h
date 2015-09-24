@@ -7,7 +7,7 @@
 class ZJetTreeConsumer : public KappaLambdaNtupleConsumer<ZJetTypes>
 {
   public:
-    virtual std::string GetConsumerId() const override;
+    std::string GetConsumerId() const override;
 
-    virtual void Init(ZJetSettings const& settings) override;
+    void Init(ZJetSettings const& settings) override;
 };

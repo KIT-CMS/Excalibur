@@ -31,7 +31,7 @@
 class ZJetCorrectionsProducer : public ZJetProducerBase
 {
   public:
-    virtual std::string GetProducerId() const override;
+    std::string GetProducerId() const override;
 
     ZJetCorrectionsProducer() : ZJetProducerBase() {}
 

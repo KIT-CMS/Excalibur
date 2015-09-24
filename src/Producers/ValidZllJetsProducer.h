@@ -7,11 +7,11 @@ class ValidZllJetsProducer : public ZJetProducerBase
 
     void Init(ZJetSettings const& settings);
 
-    virtual std::string GetProducerId() const override;
+    std::string GetProducerId() const override;
 
-    virtual void Produce(ZJetEvent const& event,
-                         ZJetProduct& product,
-                         ZJetSettings const& settings) const override;
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override;
 
   private:
     float minZllJetDeltaRVeto;

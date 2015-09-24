@@ -22,9 +22,9 @@ class ZProducerBase : public ZJetProducerBase
     {
     }
 
-    virtual void Produce(ZJetEvent const& event,
-                         ZJetProduct& product,
-                         ZJetSettings const& settings) const override
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override
 
     {
         /*
@@ -82,7 +82,7 @@ class ZProducerBase : public ZJetProducerBase
 class ZmmProducer : public ZProducerBase<KMuon, KMuon>
 {
   public:
-    virtual std::string GetProducerId() const override { return "ZmmProducer"; };
+    std::string GetProducerId() const override { return "ZmmProducer"; };
     ZmmProducer()
         : ZProducerBase<KMuon, KMuon>(&ZJetProduct::m_validMuons, &ZJetProduct::m_validMuons, true)
     {
@@ -92,7 +92,7 @@ class ZmmProducer : public ZProducerBase<KMuon, KMuon>
 class ZeeProducer : public ZProducerBase<KElectron, KElectron>
 {
   public:
-    virtual std::string GetProducerId() const override { return "ZeeProducer"; };
+    std::string GetProducerId() const override { return "ZeeProducer"; };
     ZeeProducer()
         : ZProducerBase<KElectron, KElectron>(&ZJetProduct::m_validElectrons,
                                               &ZJetProduct::m_validElectrons,
@@ -104,7 +104,7 @@ class ZeeProducer : public ZProducerBase<KElectron, KElectron>
 class ZemProducer : public ZProducerBase<KElectron, KMuon>
 {
   public:
-    virtual std::string GetProducerId() const override { return "ZemProducer"; };
+    std::string GetProducerId() const override { return "ZemProducer"; };
     ZemProducer()
         : ZProducerBase<KElectron, KMuon>(&ZJetProduct::m_validElectrons,
                                           &ZJetProduct::m_validMuons,

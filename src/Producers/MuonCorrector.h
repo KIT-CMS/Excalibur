@@ -11,7 +11,7 @@ This producer corrects muon momenta
 class MuonCorrector : public ZJetProducerBase
 {
   public:
-    virtual std::string GetProducerId() const override;
+    std::string GetProducerId() const override;
 
     MuonCorrector() : ZJetProducerBase() {}
 
@@ -21,11 +21,11 @@ class MuonCorrector : public ZJetProducerBase
         delete m_correctorRunD;
     }
 
-    virtual void Init(ZJetSettings const& settings) override;
+    void Init(ZJetSettings const& settings) override;
 
-    virtual void Produce(ZJetEvent const& event,
-                         ZJetProduct& product,
-                         ZJetSettings const& settings) const override;
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override;
 
   private:
     long m_startRunD = 203770;

@@ -14,7 +14,7 @@ class ZJetFactory : public KappaFactory
     ZJetFactory() : KappaFactory() {}
     virtual ~ZJetFactory() {}
 
-    virtual ProducerBaseUntemplated* createProducer(std::string const& id) override;
-    virtual FilterBaseUntemplated* createFilter(std::string const& id) override;
-    virtual ConsumerBaseUntemplated* createConsumer(std::string const& id) override;
+    ProducerBaseUntemplated* createProducer(std::string const& id) override;
+    FilterBaseUntemplated* createFilter(std::string const& id) override;
+    ConsumerBaseUntemplated* createConsumer(std::string const& id) override;
 };

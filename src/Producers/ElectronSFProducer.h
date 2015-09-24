@@ -5,15 +5,15 @@
 class ElectronSFProducer : public ZJetProducerBase
 {
   public:
-    virtual std::string GetProducerId() const override;
+    std::string GetProducerId() const override;
 
     ElectronSFProducer() : ZJetProducerBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override;
+    void Init(ZJetSettings const& settings) override;
 
-    virtual void Produce(ZJetEvent const& event,
-                         ZJetProduct& product,
-                         ZJetSettings const& settings) const override;
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override;
 
   private:
     float m_sf[12][12];

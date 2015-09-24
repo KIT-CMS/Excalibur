@@ -26,19 +26,19 @@
 class MinNMuonsCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "MinNMuonsCut"; }
+    std::string GetFilterId() const override { return "MinNMuonsCut"; }
 
     MinNMuonsCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         nMuonsMin = settings.GetCutNMuonsMin();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         return (product.m_validMuons.size() >= nMuonsMin);
     }
@@ -53,19 +53,19 @@ class MinNMuonsCut : public ZJetFilterBase
 class MaxNMuonsCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "MaxNMuonsCut"; }
+    std::string GetFilterId() const override { return "MaxNMuonsCut"; }
 
     MaxNMuonsCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         nMuonsMax = settings.GetCutNMuonsMax();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         return (product.m_validMuons.size() <= nMuonsMax);
     }
@@ -80,19 +80,19 @@ class MaxNMuonsCut : public ZJetFilterBase
 class MuonPtCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "MuonPtCut"; }
+    std::string GetFilterId() const override { return "MuonPtCut"; }
 
     MuonPtCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         muonPtMin = settings.GetCutMuonPtMin();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         // Only the first two muons need to pass this cut
         bool allPassed = true;
@@ -113,19 +113,19 @@ class MuonPtCut : public ZJetFilterBase
 class MuonEtaCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "MuonEtaCut"; }
+    std::string GetFilterId() const override { return "MuonEtaCut"; }
 
     MuonEtaCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         muonEtaMax = settings.GetCutMuonEtaMax();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         // Only the first two muons need to pass this cut
         bool allPassed = true;
@@ -146,19 +146,19 @@ class MuonEtaCut : public ZJetFilterBase
 class ElectronPtCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "ElectronPtCut"; }
+    std::string GetFilterId() const override { return "ElectronPtCut"; }
 
     ElectronPtCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         electronPtMin = settings.GetCutElectronPtMin();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         // Only the first two Electrons need to pass this cut
         bool allPassed = true;
@@ -179,19 +179,19 @@ class ElectronPtCut : public ZJetFilterBase
 class ElectronEtaCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "ElectronEtaCut"; }
+    std::string GetFilterId() const override { return "ElectronEtaCut"; }
 
     ElectronEtaCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         electronEtaMax = settings.GetCutElectronEtaMax();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         // Only the first two electrons need to pass this cut
         bool allPassed = true;
@@ -213,19 +213,19 @@ class ElectronEtaCut : public ZJetFilterBase
 class LeadingJetPtCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "LeadingJetPtCut"; }
+    std::string GetFilterId() const override { return "LeadingJetPtCut"; }
 
     LeadingJetPtCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         leadingJetPtMin = settings.GetCutLeadingJetPtMin();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         return (product.GetValidPrimaryJet(settings, event)->p4.Pt() > leadingJetPtMin);
     }
@@ -240,19 +240,19 @@ class LeadingJetPtCut : public ZJetFilterBase
 class LeadingJetEtaCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "LeadingJetEtaCut"; }
+    std::string GetFilterId() const override { return "LeadingJetEtaCut"; }
 
     LeadingJetEtaCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         leadingJetEtaMax = settings.GetCutLeadingJetEtaMax();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         return (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Eta()) < leadingJetEtaMax);
     }
@@ -267,19 +267,19 @@ class LeadingJetEtaCut : public ZJetFilterBase
 class ZPtCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "ZPtCut"; }
+    std::string GetFilterId() const override { return "ZPtCut"; }
 
     ZPtCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         zPtMin = settings.GetCutZPtMin();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         return (product.m_z.p4.Pt() > zPtMin);
     }
@@ -294,19 +294,19 @@ class ZPtCut : public ZJetFilterBase
 class BackToBackCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "BackToBackCut"; }
+    std::string GetFilterId() const override { return "BackToBackCut"; }
 
     BackToBackCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         backToBack = settings.GetCutBackToBack();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         // ||Delta phi(Z, jet1)| - pi| < 0.34
         double deltaPhi = ROOT::Math::VectorUtil::DeltaPhi(
@@ -324,19 +324,19 @@ class BackToBackCut : public ZJetFilterBase
 class AlphaCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "AlphaCut"; }
+    std::string GetFilterId() const override { return "AlphaCut"; }
 
     AlphaCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         alphaMax = settings.GetCutAlphaMax();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         // Always true if there is only one jet in the event
         return (product.GetValidJetCount(settings, event) > 1)
@@ -355,19 +355,19 @@ class AlphaCut : public ZJetFilterBase
 class BetaCut : public ZJetFilterBase
 {
   public:
-    virtual std::string GetFilterId() const override { return "BetaCut"; }
+    std::string GetFilterId() const override { return "BetaCut"; }
 
     BetaCut() : ZJetFilterBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override
+    void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
         betaMax = settings.GetCutBetaMax();
     }
 
-    virtual bool DoesEventPass(ZJetEvent const& event,
-                               ZJetProduct const& product,
-                               ZJetSettings const& settings) const override
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
     {
         // Always true if there is no radiation jet in the event
         return (product.GetRadiationJetCount(settings, event) > 0)

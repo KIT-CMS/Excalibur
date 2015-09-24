@@ -5,15 +5,15 @@
 class RadiationJetProducer : public ZJetProducerBase
 {
   public:
-    virtual std::string GetProducerId() const override;
+    std::string GetProducerId() const override;
 
     RadiationJetProducer() : ZJetProducerBase() {}
 
-    virtual void Init(ZJetSettings const& settings) override;
+    void Init(ZJetSettings const& settings) override;
 
-    virtual void Produce(ZJetEvent const& event,
-                         ZJetProduct& product,
-                         ZJetSettings const& settings) const override;
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override;
 
   private:
     double m_deltaR;

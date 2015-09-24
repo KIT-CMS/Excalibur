@@ -7,12 +7,11 @@
 class NeutrinoCounter : public ZJetProducerBase
 {
   public:
-    virtual std::string GetProducerId() const override { return "NeutrinoCounter"; };
+    std::string GetProducerId() const override { return "NeutrinoCounter"; };
 
-    virtual void Produce(ZJetEvent const& event,
-                         ZJetProduct& product,
-                         ZJetSettings const& settings) const override
-
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override
     {
         product.n_neutrinos = 0;
 
