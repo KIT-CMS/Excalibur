@@ -14,7 +14,7 @@ class ZJetSettings : public KappaSettings
 
     // TypeIMETProducer
     IMPL_SETTING_DEFAULT(float, JetPtMin, 10.0f)
-    IMPL_SETTING(bool, EnableMetPhiCorrection)
+    IMPL_SETTING_DEFAULT(bool, EnableMetPhiCorrection, false)
     IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
     IMPL_SETTING_DEFAULT(bool, MetAddMuons, false)
 
@@ -47,8 +47,8 @@ class ZJetSettings : public KappaSettings
     // MuonCorrector
     IMPL_SETTING(std::string, MuonCorrectionParameters)
     IMPL_SETTING_DEFAULT(std::string, MuonCorrectionParametersRunD, "None")
-    IMPL_SETTING(bool, MuonRadiationCorrection)
-    IMPL_SETTING(bool, MuonSmearing)
+    IMPL_SETTING_DEFAULT(bool, MuonRadiationCorrection, false)
+    IMPL_SETTING_DEFAULT(bool, MuonSmearing, false)
 
     // ZJetCutsFilter
     IMPL_SETTING(unsigned, CutNMuonsMin)
