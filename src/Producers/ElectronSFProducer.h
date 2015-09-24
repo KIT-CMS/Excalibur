@@ -7,7 +7,7 @@ class ElectronSFProducer : public ZJetProducerBase
   public:
     virtual std::string GetProducerId() const override;
 
-    ElectronSFProducer() : ZJetProducerBase(){};
+    ElectronSFProducer() : ZJetProducerBase() {}
 
     virtual void Init(ZJetSettings const& settings) override;
 

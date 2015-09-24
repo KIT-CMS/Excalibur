@@ -16,7 +16,7 @@ class RecoJetGenJetMatchingProducer : public ZJetProducerBase
   public:
     virtual std::string GetProducerId() const override;
 
-    RecoJetGenJetMatchingProducer() : ZJetProducerBase(){};
+    RecoJetGenJetMatchingProducer() : ZJetProducerBase() {}
 
     void Init(ZJetSettings const& settings) override;
 

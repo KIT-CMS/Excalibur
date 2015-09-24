@@ -3,7 +3,7 @@
 class ValidZllJetsProducer : public ZJetProducerBase
 {
   public:
-    ValidZllJetsProducer() : ZJetProducerBase(), minZllJetDeltaRVeto(0){};
+    ValidZllJetsProducer() : ZJetProducerBase(), minZllJetDeltaRVeto(0) {}
 
     void Init(ZJetSettings const& settings);
 

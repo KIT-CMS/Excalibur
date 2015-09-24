@@ -13,7 +13,7 @@ class MuonCorrector : public ZJetProducerBase
   public:
     virtual std::string GetProducerId() const override;
 
-    MuonCorrector() : ZJetProducerBase(){};
+    MuonCorrector() : ZJetProducerBase() {}
 
     ~MuonCorrector()
     {

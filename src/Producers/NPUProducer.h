@@ -12,7 +12,7 @@ class NPUProducer : public ZJetProducerBase
   public:
     std::string GetProducerId() const;
 
-    NPUProducer() : ZJetProducerBase(), lastrun(0), lastls(0){};
+    NPUProducer() : ZJetProducerBase(), lastrun(0), lastls(0) {}
 
     void Init(ZJetSettings const& settings);
 

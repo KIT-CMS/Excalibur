@@ -5,5 +5,5 @@
 class ZJetEvent : public KappaEvent
 {
   public:
-    ZJetEvent() : KappaEvent(){};
+    ZJetEvent() : KappaEvent() {}
 };

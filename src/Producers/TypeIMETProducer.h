@@ -12,7 +12,7 @@ class TypeIMETProducer : public ZJetProducerBase
   public:
     std::string GetProducerId() const;
 
-    TypeIMETProducer() : ZJetProducerBase(){};
+    TypeIMETProducer() : ZJetProducerBase() {}
 
     void Init(ZJetSettings const& settings);
 

@@ -14,7 +14,7 @@ class ZFilter : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override;
 
-    ZFilter() : ZJetFilterBase(){};
+    ZFilter() : ZJetFilterBase() {}
 
     virtual bool DoesEventPass(ZJetEvent const& event,
                                ZJetProduct const& product,

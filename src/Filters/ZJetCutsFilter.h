@@ -28,7 +28,7 @@ class MinNMuonsCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "MinNMuonsCut"; }
 
-    MinNMuonsCut() : ZJetFilterBase(){};
+    MinNMuonsCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -55,7 +55,7 @@ class MaxNMuonsCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "MaxNMuonsCut"; }
 
-    MaxNMuonsCut() : ZJetFilterBase(){};
+    MaxNMuonsCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -82,7 +82,7 @@ class MuonPtCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "MuonPtCut"; }
 
-    MuonPtCut() : ZJetFilterBase(){};
+    MuonPtCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -115,7 +115,7 @@ class MuonEtaCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "MuonEtaCut"; }
 
-    MuonEtaCut() : ZJetFilterBase(){};
+    MuonEtaCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -148,7 +148,7 @@ class ElectronPtCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "ElectronPtCut"; }
 
-    ElectronPtCut() : ZJetFilterBase(){};
+    ElectronPtCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -181,7 +181,7 @@ class ElectronEtaCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "ElectronEtaCut"; }
 
-    ElectronEtaCut() : ZJetFilterBase(){};
+    ElectronEtaCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -215,7 +215,7 @@ class LeadingJetPtCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "LeadingJetPtCut"; }
 
-    LeadingJetPtCut() : ZJetFilterBase(){};
+    LeadingJetPtCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -242,7 +242,7 @@ class LeadingJetEtaCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "LeadingJetEtaCut"; }
 
-    LeadingJetEtaCut() : ZJetFilterBase(){};
+    LeadingJetEtaCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -269,7 +269,7 @@ class ZPtCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "ZPtCut"; }
 
-    ZPtCut() : ZJetFilterBase(){};
+    ZPtCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -296,7 +296,7 @@ class BackToBackCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "BackToBackCut"; }
 
-    BackToBackCut() : ZJetFilterBase(){};
+    BackToBackCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -326,7 +326,7 @@ class AlphaCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "AlphaCut"; }
 
-    AlphaCut() : ZJetFilterBase(){};
+    AlphaCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {
@@ -357,7 +357,7 @@ class BetaCut : public ZJetFilterBase
   public:
     virtual std::string GetFilterId() const override { return "BetaCut"; }
 
-    BetaCut() : ZJetFilterBase(){};
+    BetaCut() : ZJetFilterBase() {}
 
     virtual void Init(ZJetSettings const& settings) override
     {

@@ -18,7 +18,9 @@ class ZProducerBase : public ZJetProducerBase
         : ZJetProducerBase(),
           m_validLeptonsMember1(validLeptons1),
           m_validLeptonsMember2(validLeptons2),
-          m_same_ll_collection(same_ll_collection){};
+          m_same_ll_collection(same_ll_collection)
+    {
+    }
 
     virtual void Produce(ZJetEvent const& event,
                          ZJetProduct& product,

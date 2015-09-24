@@ -7,7 +7,7 @@ class RadiationJetProducer : public ZJetProducerBase
   public:
     virtual std::string GetProducerId() const override;
 
-    RadiationJetProducer() : ZJetProducerBase(){};
+    RadiationJetProducer() : ZJetProducerBase() {}
 
     virtual void Init(ZJetSettings const& settings) override;
 

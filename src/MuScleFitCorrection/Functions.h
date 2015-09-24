@@ -41,7 +41,7 @@ class scaleFunctionBase
                          const int chg,
                          const T& parScale) const = 0;
     virtual ~scaleFunctionBase() = 0;
-    virtual unsigned long parNum() const { return parNum_; };
+    virtual unsigned long parNum() const { return parNum_; }
 
   protected:
     unsigned long parNum_;

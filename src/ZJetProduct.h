@@ -16,7 +16,7 @@
 class ZJetProduct : public KappaProduct
 {
   public:
-    ZJetProduct() : KappaProduct(){};
+    ZJetProduct() : KappaProduct() {}
 
     // Added by ZProducer
     bool m_validZ = false;
