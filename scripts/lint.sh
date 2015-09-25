@@ -16,7 +16,7 @@ GREPOPT="-I --include *.h --include *.cc --include *.cpp --include *.hxx --exclu
 # - braces/newline: we use a different brace style (Linux) than google (Attach)
 # - indent: we do not use a 2 spaces indent
 if [[ "$@" == "google" ]]; then
-    find src -name "*cc" -or -name "*h" | xargs python own/cpplint.py --linelength=100 \
+    find src -name "*cc" -or -name "*h" | xargs cpplint.py --linelength=100 \
     --filter=-build/header_guard,-build/include_what_you_use,-legal,-readability/braces,-runtime/int,-whitespace/braces,-whitespace/indent,-whitespace/newline
     exit 0
 fi
