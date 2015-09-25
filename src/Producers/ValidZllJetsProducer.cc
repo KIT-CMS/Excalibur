@@ -32,8 +32,8 @@ void ValidZllJetsProducer::Produce(ZJetEvent const& event,
     */
     // nothing to do if there are no Zlls
     if (product.m_validZ) {
-        std::size_t zl1_idx = -1;
-        std::size_t zl2_idx = -1;
+        std::size_t zl1_idx = -1u;
+        std::size_t zl2_idx = -1u;
         for (std::size_t i = 0; i < product.m_validJets.size(); ++i) {
             if (ROOT::Math::VectorUtil::DeltaR(product.m_validJets.at(i)->p4,
                                                product.m_zLeptons.first->p4) <
