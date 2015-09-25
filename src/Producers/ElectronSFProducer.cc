@@ -67,7 +67,7 @@ void ElectronSFProducer::Init(ZJetSettings const& settings)
     LOG(INFO) << "Loading electron scale factors for ID " << m_id << ": File " << m_sffile
               << ", Histogram " << histoname;
     TFile file(m_sffile.c_str(), "READONLY");
-    TH2F* sfhisto = (TH2F*)file.Get(histoname.c_str());
+    TH2F* sfhisto = dynamic_cast<TH2F*>(file.Get(histoname.c_str()));
 
     // Get the pT and eta bin borders
     for (int iy = 0; iy <= sfhisto->GetNbinsY(); ++iy)
