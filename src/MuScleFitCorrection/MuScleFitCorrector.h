@@ -30,7 +30,7 @@ class MuScleFitCorrector
      * correction function and saves the corresponding pointer. It then fills the
      * vector of parameters.
      */
-    MuScleFitCorrector(const std::string& identifier);
+    explicit MuScleFitCorrector(const std::string& identifier);
     ~MuScleFitCorrector();
 
     // Returns a pointer to the selected function
