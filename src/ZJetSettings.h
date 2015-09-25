@@ -43,6 +43,7 @@ class ZJetSettings : public KappaSettings
 
     // ElectronSFProducer
     IMPL_SETTING(std::string, ElectronSFRootfilePath)
+    IMPL_SETTING_DEFAULT(std::string, ElectronSFVariation, "None")
 
     // MuonCorrector
     IMPL_SETTING(std::string, MuonCorrectionParameters)

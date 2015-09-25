@@ -10,6 +10,11 @@ This producer contains some un-intuitive programming constructs, which are
 necessary to account for the different formats of the ROOT files containing
 the scale factors (different axes, binning in absolute eta)
 
+needed tags:
+- ElectronSFRootfilePath   Path for the root files
+- ElectronSFVariation      Vary SF by error. Choices: up, down, None
+
+
 maybe also relevant:
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentification (SF files for MVA
 ID)
@@ -27,6 +32,15 @@ void ElectronSFProducer::Init(ZJetSettings const& settings)
     m_id = settings.GetElectronID();
 
     std::string histoname;  // histoname depending on id
+
+    double error_multiplier = 0.;
+    if (settings.GetElectronSFVariation() == "up") {
+        LOG(WARNING) << "ElectronSFProducer: varying scale factor UP one sigma";
+        error_multiplier = 1.;
+    } else if (settings.GetElectronSFVariation() == "down") {
+        LOG(WARNING) << "ElectronSFProducer: varying scale factor DOWN one sigma";
+        error_multiplier = -1.;
+    }
 
     // pt/eta axes are different for mva/cutbased
     // cutbased id has binning in absolute eta
@@ -78,9 +92,10 @@ void ElectronSFProducer::Init(ZJetSettings const& settings)
                              sfhisto->GetXaxis()->GetBinLowEdge(ix));
 
     // Fill the m_sf array with the values from the root histo
-    for (int iy = 1; iy <= sfhisto->GetNbinsY(); ++iy) {
-        for (int ix = 1; ix <= sfhisto->GetNbinsX(); ++ix) {
-            m_sf[ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinContent(ix, iy));
+    for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
+        for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
+            m_sf[ix - 1][iy - 1] = static_cast<float>(
+                sfhisto->GetBinContent(ix, iy) + error_multiplier * sfhisto->GetBinError(ix, iy));
         }
     }
     delete sfhisto;
