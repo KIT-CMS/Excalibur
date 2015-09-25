@@ -31,7 +31,7 @@ void RecoJetGenJetMatchingProducer::Produce(ZJetEvent const& event,
 void RecoJetGenJetMatchingProducer::MatchCollection(ZJetEvent const& event,
                                                     ZJetProduct& product,
                                                     ZJetSettings const& settings,
-                                                    std::string const corrLevel,
+                                                    std::string const& corrLevel,
                                                     double const deltaR) const
 {
     // Iterate over all corrected jets to copy them in local object since they are shared pointers

@@ -28,6 +28,6 @@ class RecoJetGenJetMatchingProducer : public ZJetProducerBase
     void MatchCollection(ZJetEvent const& event,
                          ZJetProduct& product,
                          ZJetSettings const& settings,
-                         std::string const corrLevel,
+                         std::string const& corrLevel,
                          double const deltaR) const;
 };
