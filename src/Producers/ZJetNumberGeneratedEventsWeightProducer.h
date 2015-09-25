@@ -19,6 +19,8 @@
 class ZJetNumberGeneratedEventsWeightProducer : public NumberGeneratedEventsWeightProducer
 {
   public:
+    ZJetNumberGeneratedEventsWeightProducer() {}
+
     std::string GetProducerId() const override { return "ZJetNumberGeneratedEventsWeightProducer"; }
 
     void Init(KappaSettings const& settings) override { m_tolerance = 0.1; }
