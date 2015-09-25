@@ -1,7 +1,10 @@
 #!/bin/bash
 # a script that checks source code whether deprecated things happen
 if [[ "$@" == "-h" || -z "$@" ]]; then
-    echo -e "Usage: ${0/*\/} google or ${0/*\/} [grep options] file\nwith typical grep options: -r -n -o -c"
+    echo "Usage:"
+    echo "  ${0/*\/} [grep options] file  # for excalibur lint with typical grep options: -r -n -o -c"
+    echo "  ${0/*\/} google               # to use the google cpplint"
+    echo "  ${0/*\/} cpp [all]            # to use the cppcheck tool, all checks included files, too"
     exit 0
 fi
 GREPOPT="-I --include *.h --include *.cc --include *.cpp --include *.hxx --exclude=easylogging++.h $@"
