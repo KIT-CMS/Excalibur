@@ -253,7 +253,8 @@ class ZJetProduct : public KappaProduct
             return SafeMap::GetWithDefault(
                 SafeMap::GetWithDefault(m_matchedGenPartons, settings.GetCorrectionLevel(),
                                         std::map<KJet*, KGenParticle*>()),
-                static_cast<KJet*>(GetValidJet(settings, event, index)), (KGenParticle*)(nullptr));
+                static_cast<KJet*>(GetValidJet(settings, event, index)),
+                static_cast<KGenParticle*>(nullptr));
         else
             return nullptr;
     }
@@ -293,7 +294,7 @@ class ZJetProduct : public KappaProduct
     {
         if (m_validMuons.size() > index)
             return SafeMap::GetWithDefault(m_genParticleMatchedMuons, m_validMuons.at(index),
-                                           (KGenParticle*)(nullptr));
+                                           static_cast<KGenParticle*>(nullptr));
         else
             return nullptr;
     }
@@ -304,7 +305,8 @@ class ZJetProduct : public KappaProduct
     {
         if (m_validElectrons.size() > index)
             return SafeMap::GetWithDefault(m_genParticleMatchedElectrons,
-                                           m_validElectrons.at(index), (KGenParticle*)(nullptr));
+                                           m_validElectrons.at(index),
+                                           static_cast<KGenParticle*>(nullptr));
         else
             return nullptr;
     }
