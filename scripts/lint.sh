@@ -33,8 +33,6 @@ if [[ "$1" == "cpp" ]]; then
 cppcheck --platform=unix64 --std=c++11 --language=c++ --enable=all \
 -I src $PLUSARTUS -I ../CondFormats \
 --suppress=missingIncludeSystem \
---suppress=unusedFunction \
---suppress=uninitMemberVar \
 --suppress=*:../Artus/Utility/interface/easylogging++.h \
 --template="+{line} {file} ({severity}) {id}: {message}" \
 -U_ELPP_AS_DLL \
