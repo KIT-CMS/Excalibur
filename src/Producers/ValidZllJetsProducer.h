@@ -7,7 +7,7 @@ class ValidZllJetsProducer : public ZJetProducerBase
   public:
     ValidZllJetsProducer() : ZJetProducerBase(), minZllJetDeltaRVeto(0) {}
 
-    void Init(ZJetSettings const& settings);
+    void Init(ZJetSettings const& settings) override;
 
     std::string GetProducerId() const override;
 
