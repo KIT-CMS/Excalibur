@@ -15,17 +15,16 @@ class NeutrinoCounter : public ZJetProducerBase
     {
         product.n_neutrinos = 0;
 
-        for (KGenParticles::iterator part = event.m_genParticles->begin();
+        for (KGenParticles::const_iterator part = event.m_genParticles->begin();
              part != event.m_genParticles->end(); ++part) {
-            for (auto id : m_ids) {
-                if ((std::abs(part->pdgId()) == id) && (part->status() == m_status)) {
-                    product.n_neutrinos = product.n_neutrinos + 1;
-                }
+            for (auto const& id : m_ids) {
+                if ((std::abs(part->pdgId()) == id) && (part->status() == m_status))
+                    product.n_neutrinos += 1;
             }
         }
     }
 
   private:
-    std::vector<int> m_ids{12, 14, 16};
-    int m_status = 1;
+    const std::vector<int> m_ids = {12, 14, 16};
+    static const int m_status = 1;
 };
