@@ -10,7 +10,7 @@
 
     Configuration settings:
 
-    MinZllJetDeltaRVeto (float) required distance between jets and leptons from Z decay
+    MinZllJetDeltaRVeto (type: float) required distance between jets and leptons from Z decay
 */
 
 std::string ValidZllJetsProducer::GetProducerId() const { return "ValidZllJetsProducer"; }
