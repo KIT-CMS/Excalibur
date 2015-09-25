@@ -91,7 +91,7 @@ class resolutionFunctionBase
     virtual unsigned long parNum() const { return parNum_; }
 
   protected:
-    unsigned long parNum_;
+    unsigned long parNum_ = 0;
 };
 
 template <class T>
