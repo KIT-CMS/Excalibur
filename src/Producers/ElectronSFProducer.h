@@ -16,15 +16,15 @@ class ElectronSFProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   private:
-    float m_sf[12][12];
-    std::vector<float> m_xbins;
-    std::vector<float> m_ybins;
-    std::vector<float>* m_etabins;
-    std::vector<float>* m_ptbins;
+    float m_sf[12][12] = {};
+    std::vector<float> m_xbins = {};
+    std::vector<float> m_ybins = {};
+    std::vector<float>* m_etabins = {};
+    std::vector<float>* m_ptbins = {};
     std::string m_sffile;
     std::string m_id;
-    bool m_reversed_axes;
-    bool m_absoluteeta;
+    bool m_reversed_axes = false;
+    bool m_absoluteeta = false;
 
     virtual float GetScaleFactor(KLV const& electron) const
     {

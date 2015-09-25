@@ -6,7 +6,6 @@ void MuonCorrector::Init(ZJetSettings const& settings)
 {
     LOG(INFO) << "muon corr init" << settings.GetMuonCorrectionParameters();
 
-    m_deterministic = false;  // TODO make this configurable?
     m_smearing = settings.GetMuonSmearing();
     m_radiationcorr = settings.GetMuonRadiationCorrection();
     m_parameterfile = settings.GetMuonCorrectionParameters();

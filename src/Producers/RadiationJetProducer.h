@@ -16,7 +16,7 @@ class RadiationJetProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   private:
-    double m_deltaR;
+    double m_deltaR = 0.0;
 
     void GetRadiationJets(std::string corrLevel,
                           ZJetEvent const& event,

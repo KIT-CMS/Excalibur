@@ -53,5 +53,5 @@ class ZJetNumberGeneratedEventsWeightProducer : public NumberGeneratedEventsWeig
     }
 
   private:
-    double m_tolerance;
+    double m_tolerance = 0;
 };

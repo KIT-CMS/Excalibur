@@ -44,7 +44,7 @@ class MinNMuonsCut : public ZJetFilterBase
     }
 
   private:
-    unsigned long nMuonsMin;
+    unsigned long nMuonsMin = 0;
 };
 
 ////////////////
@@ -71,7 +71,7 @@ class MaxNMuonsCut : public ZJetFilterBase
     }
 
   private:
-    unsigned long nMuonsMax;
+    unsigned long nMuonsMax = 0;
 };
 
 /////////////
@@ -104,7 +104,7 @@ class MuonPtCut : public ZJetFilterBase
     }
 
   private:
-    float muonPtMin;
+    float muonPtMin = 0;
 };
 
 //////////////
@@ -137,7 +137,7 @@ class MuonEtaCut : public ZJetFilterBase
     }
 
   private:
-    float muonEtaMax;
+    float muonEtaMax = 0;
 };
 
 /////////////
@@ -170,7 +170,7 @@ class ElectronPtCut : public ZJetFilterBase
     }
 
   private:
-    float electronPtMin;
+    float electronPtMin = 0;
 };
 
 //////////////
@@ -204,7 +204,7 @@ class ElectronEtaCut : public ZJetFilterBase
     }
 
   private:
-    float electronEtaMax;
+    float electronEtaMax = 0;
 };
 
 ////////////////////
@@ -231,7 +231,7 @@ class LeadingJetPtCut : public ZJetFilterBase
     }
 
   private:
-    float leadingJetPtMin;
+    float leadingJetPtMin = 0;
 };
 
 /////////////////////
@@ -258,7 +258,7 @@ class LeadingJetEtaCut : public ZJetFilterBase
     }
 
   private:
-    float leadingJetEtaMax;
+    float leadingJetEtaMax = 0;
 };
 
 //////////
@@ -285,7 +285,7 @@ class ZPtCut : public ZJetFilterBase
     }
 
   private:
-    float zPtMin;
+    float zPtMin = 0;
 };
 
 //////////////////
@@ -315,7 +315,7 @@ class BackToBackCut : public ZJetFilterBase
     }
 
   private:
-    double backToBack;
+    double backToBack = 0;
 };
 
 ///////////
@@ -346,7 +346,7 @@ class AlphaCut : public ZJetFilterBase
     }
 
   private:
-    float alphaMax;
+    float alphaMax = 0;
 };
 
 ///////////
@@ -377,5 +377,5 @@ class BetaCut : public ZJetFilterBase
     }
 
   private:
-    float betaMax;
+    float betaMax = 0;
 };

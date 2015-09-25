@@ -29,10 +29,10 @@ class ZJetProduct : public KappaProduct
 
     // Added by ZJetCorrectionsProducer, necessary to cross-check the applied JEC factors: pT of
     // jets has to be saved BEFORE sorting
-    float jetpt_l1;
-    float jetpt_rc;
-    float jetpt_l1l2l3;
-    float jetpt_l1l2l3res;
+    float jetpt_l1 = 0;
+    float jetpt_rc = 0;
+    float jetpt_l1l2l3 = 0;
+    float jetpt_l1l2l3res = 0;
 
     // Added by TypeIMETProducer
     std::map<std::string, KMET> m_corrMET;
@@ -48,10 +48,10 @@ class ZJetProduct : public KappaProduct
     std::map<std::string, std::vector<unsigned long>> m_radiationJetsIndex;
 
     // Added by NPUProducer
-    float npumean_data;
+    float npumean_data = -1.0;
 
     // Added by NeutrinoCounter
-    long n_neutrinos;
+    long n_neutrinos = 0;
 
     /////////////////////////////
     // Functions for Consumers //

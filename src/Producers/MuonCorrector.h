@@ -28,10 +28,10 @@ class MuonCorrector : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   private:
-    long m_startRunD = 203770;
-    bool m_smearing;
-    bool m_deterministic;
-    bool m_radiationcorr;
+    static const long m_startRunD = 203770;
+    bool m_smearing = false;
+    bool m_deterministic = false;
+    bool m_radiationcorr = false;
 
     std::string m_parameterfile;
     std::string m_parameterfileRunD;
