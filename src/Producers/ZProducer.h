@@ -13,10 +13,12 @@ class ZProducerBase : public ZJetProducerBase
 {
   public:
     ZProducerBase(std::vector<TLepton1*> ZJetProduct::*validLeptons1,
-                  std::vector<TLepton2*> ZJetProduct::*validLeptons2)
+                  std::vector<TLepton2*> ZJetProduct::*validLeptons2,
+                  bool same_ll_collection)
         : ZJetProducerBase(),
           m_validLeptonsMember1(validLeptons1),
-          m_validLeptonsMember2(validLeptons2){};
+          m_validLeptonsMember2(validLeptons2),
+          m_same_ll_collection(same_ll_collection){};
 
     virtual void Produce(ZJetEvent const& event,
                          ZJetProduct& product,
@@ -33,13 +35,10 @@ class ZProducerBase : public ZJetProducerBase
         KLV z_cand;
         std::pair<KLepton*, KLepton*> z_leptons;
         // do not double count when matching leptons from the same collection
-        // NOTE: this check could probably be done more elegantly...
-        bool same_ll_collection = ((static_cast<void*>(&(product.*m_validLeptonsMember1))) ==
-                                   (static_cast<void*>(&(product.*m_validLeptonsMember2))));
+
         for (unsigned int i = 0; i < (product.*m_validLeptonsMember1).size(); ++i) {
-            for (unsigned int j = (same_ll_collection ? i + 1 : 0);
-                 j < (product.*m_validLeptonsMember2).size();
-                 ++j) {
+            for (unsigned int j = (m_same_ll_collection ? i + 1 : 0);
+                 j < (product.*m_validLeptonsMember2).size(); ++j) {
                 KLepton* const m1 = (product.*m_validLeptonsMember1).at(i);
                 KLepton* const m2 = (product.*m_validLeptonsMember2).at(j);
                 // valid Z is neutral and close to Z mass
@@ -77,6 +76,7 @@ class ZProducerBase : public ZJetProducerBase
   private:
     std::vector<TLepton1*> ZJetProduct::*m_validLeptonsMember1;
     std::vector<TLepton2*> ZJetProduct::*m_validLeptonsMember2;
+    bool m_same_ll_collection;
 };
 
 class ZmmProducer : public ZProducerBase<KMuon, KMuon>
@@ -84,7 +84,7 @@ class ZmmProducer : public ZProducerBase<KMuon, KMuon>
   public:
     virtual std::string GetProducerId() const override { return "ZmmProducer"; };
     ZmmProducer()
-        : ZProducerBase<KMuon, KMuon>(&ZJetProduct::m_validMuons, &ZJetProduct::m_validMuons)
+        : ZProducerBase<KMuon, KMuon>(&ZJetProduct::m_validMuons, &ZJetProduct::m_validMuons, true)
     {
     }
 };
@@ -95,7 +95,8 @@ class ZeeProducer : public ZProducerBase<KElectron, KElectron>
     virtual std::string GetProducerId() const override { return "ZeeProducer"; };
     ZeeProducer()
         : ZProducerBase<KElectron, KElectron>(&ZJetProduct::m_validElectrons,
-                                              &ZJetProduct::m_validElectrons)
+                                              &ZJetProduct::m_validElectrons,
+                                              true)
     {
     }
 };
@@ -106,7 +107,8 @@ class ZemProducer : public ZProducerBase<KElectron, KMuon>
     virtual std::string GetProducerId() const override { return "ZemProducer"; };
     ZemProducer()
         : ZProducerBase<KElectron, KMuon>(&ZJetProduct::m_validElectrons,
-                                          &ZJetProduct::m_validMuons)
+                                          &ZJetProduct::m_validMuons,
+                                          false)
     {
     }
 };
