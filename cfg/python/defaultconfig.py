@@ -397,8 +397,8 @@ def data_2015(cfg, **kwargs):
 		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt']
 		cfg['Lumi'] = 0.04003
 	elif kwargs['bunchcrossing'] == "25ns":
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_25nsV2_MC/Summer15_25nsV2_MC'
-		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt']
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV3_DATA/Summer15_50nsV3_DATA'
+		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-256869_13TeV_PromptReco_Collisions15_25ns_JSON.txt']
 		cfg['Lumi'] = 0.0161
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
@@ -420,7 +420,7 @@ def mc_2015(cfg, **kwargs):
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV4_MC/Summer15_50nsV4_MC'
 	elif kwargs['bunchcrossing'] == "25ns":
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_25nsV2_MC/Summer15_25nsV2_MC'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV3_MC/Summer15_50nsV3_MC'
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
