@@ -16,6 +16,7 @@ class ExpressionsDictZJet(ExpressionsDict):
 		self.expressions_dict.update({
 			'alpha': '(jet2pt/zpt)',
 			'ptbalance': '(jet1pt/zpt)',
+			'backtoback' : '(abs(delta_phi(z,jet1)-TMath::Pi()))',
 			'trueresponse': '(jet1pt/matchedgenjet1pt)',
 			'deltaphizjet1' : '(abs(abs(abs(zphi-jet1phi)-TMath::Pi())-TMath::Pi()))',
 			'deltaphizeminus' : '(abs(abs(abs(zphi-eminusphi)-TMath::Pi())-TMath::Pi()))',
