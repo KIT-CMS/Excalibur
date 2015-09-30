@@ -391,10 +391,17 @@ def data_2012(cfg, **kwargs):
 
 
 def data_2015(cfg, **kwargs):
-	cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV4_DATA/Summer15_50nsV4_DATA'
-	#json file from /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
-	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt']
-	cfg['Lumi'] = 0.04003
+	# JSON & JEC for 50ns and 25ns - see /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
+	if kwargs.get('bunchcrossing', "50ns") == "50ns":
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV4_DATA/Summer15_50nsV4_DATA'
+		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt']
+		cfg['Lumi'] = 0.04003
+	elif kwargs['bunchcrossing'] == "25ns":
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_25nsV2_MC/Summer15_25nsV2_MC'
+		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-255031_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt']
+		cfg['Lumi'] = 0.0161
+	else:
+		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
 def mc_2011(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
