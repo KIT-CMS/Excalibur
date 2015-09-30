@@ -417,8 +417,13 @@ def mc_2012(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 
 def mc_2015(cfg, **kwargs):
+	if kwargs.get('bunchcrossing', "50ns") == "50ns":
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV4_MC/Summer15_50nsV4_MC'
+	elif kwargs['bunchcrossing'] == "25ns":
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_25nsV2_MC/Summer15_25nsV2_MC'
+	else:
+		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
-	cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV4_MC/Summer15_50nsV4_MC'
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
