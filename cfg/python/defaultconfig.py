@@ -177,7 +177,8 @@ def _2015(cfg, **kwargs):
 	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
 	cfg['JetIDVersion'] = 2015
-	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are mostly muons; requires ValidLeptonsProducer to work
+	cfg['MinZllJetDeltaRVeto'] = 0.3
+	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
 
 
 
@@ -319,15 +320,14 @@ def mm(cfg, **kwargs):
 		'producer:ValidMuonsProducer',
 		'filter:MinNMuonsCut',
 		'filter:MaxNMuonsCut',
-		#'producer:MuonCorrectionsProducer', # Is not doing anything yet
-		'producer:ValidLeptonsProducer', # need Leptons if checking jet-lepton deltaR
+		'producer:ZmmProducer',
+		'filter:ZFilter',
 		'producer:ValidTaggedJetsProducer',
+		'producer:ValidZllJetsProducer',
 		'filter:ValidJetsFilter',
 		'producer:ZJetCorrectionsProducer',
 		'producer:TypeIMETProducer',
 		'producer:JetSorter',
-		'producer:ZmmProducer',
-		'filter:ZFilter',
 		'producer:RadiationJetProducer',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
