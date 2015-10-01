@@ -38,7 +38,7 @@ def jec_combination(args=None, additional_dictionary=None):
 				for correction in ['L1L2L3']: # no L1L2L3Res available atm
 					labelsuffix = '_'.join([methoddict[method], 'CHS', alphastring, etastring, correction])
 					eta_alpha_cut = '&&'.join((alphacut, etacut))
-					d = {
+					d_mpl = {
 						# input
 						'x_expressions': ['zpt'],
 						'y_expressions': [method],
@@ -54,15 +54,18 @@ def jec_combination(args=None, additional_dictionary=None):
 						'filename': labelsuffix,
 					}
 					if additional_dictionary is not None:
-						d.update(additional_dictionary)
-					d_root = d.copy()
+						d_mpl.update(additional_dictionary)
+					d_root = d_mpl.copy()
 					d_root.update({
 						'plot_modules': ['ExportRoot'],
 						'filename': 'combination_ZJet_' + time.strftime("%Y-%m-%d", now),
 						'file_mode': ('RECREATE' if first else 'UPDATE'),
 					})
+					# make plots comparable to jec_comparison
+					d_mpl['x_log'] = True
+					d_mpl['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
 					first = False
-					mpl_plots.append(d)
+					mpl_plots.append(d_mpl)
 					root_plots.append(d_root)
 	harryinterface.harry_interface(mpl_plots, args)
 	harryinterface.harry_interface(root_plots, args + ['--max-processes', '1'])
@@ -101,5 +104,17 @@ def jec_combination_20150814(args=None):
 		"algorithms": ["ak4PFJetsCHS"],
 		# NPV hardcoded from Dominik's ``get_weights`` script output @ 20150814
 		"_npv_weights" : ["1", "(npv==1)*14.8846+(npv==2)*3.58332+(npv==3)*1.84285+(npv==4)*2.45195+(npv==5)*1.50428+(npv==6)*0.996686+(npv==7)*1.34553+(npv==8)*1.26528+(npv==9)*1.21698+(npv==10)*1.20916+(npv==11)*1.14444+(npv==12)*1.09916+(npv==13)*1.1722+(npv==14)*1.11612+(npv==15)*1.202+(npv==16)*1.12021+(npv==17)*1.00273+(npv==18)*1.00425+(npv==19)*0.768872+(npv==20)*0.785899+(npv==21)*0.649426+(npv==22)*0.714884+(npv==23)*0.534425+(npv==24)*0.278714+(npv==25)*0.333719+(npv==26)*0.28414+(npv==27)*0.0830113+(npv==28)*0.171738+(npv==29)*0.145598+(npv==30)*0.13861"],
+	}
+	jec_combination(args, d)
+
+def jec_combination_25ns_20151001(args=None):
+	d = {
+		'files': [
+			'ntuples/Data_13TeV_74X_E2_25ns_JECV3_2015D_2015-10-01.root',
+			'ntuples/MC_13TeV_74X_E2_25ns_JECV3_2015-10-01.root',
+		],
+		"algorithms": ["ak4PFJetsCHS"],
+		# NPV hardcoded from Dominik's ``get_weights`` script output @ 20151001
+		"_npv_weights" : ["(weight)", "(weight)*((npv==1)*6.9295+(npv==2)*4.58177+(npv==3)*3.68256+(npv==4)*3.39719+(npv==5)*3.06555+(npv==6)*2.74328+(npv==7)*2.418+(npv==8)*2.02356+(npv==9)*1.71068+(npv==10)*1.37638+(npv==11)*1.07853+(npv==12)*0.814396+(npv==13)*0.60545+(npv==14)*0.443644+(npv==15)*0.322044+(npv==16)*0.215438+(npv==17)*0.145175+(npv==18)*0.104847+(npv==19)*0.0769262+(npv==20)*0.0508476+(npv==21)*0.0331774+(npv==22)*0.0311605+(npv==23)*0.0153405+(npv==24)*0.0131355+(npv==25)*0.00283383+(npv==26)*0.0132552+(npv==27)*0+(npv==28)*0+(npv==29)*0+(npv==30)*0)"],
 	}
 	jec_combination(args, d)
