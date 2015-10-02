@@ -699,22 +699,7 @@ def comparison_fsp(args=None):
 	cutflow_jobs[0].plots[1]['y_log'] = True
 	cutflow_jobs[0].plots[1]['y_lims'] = [0.01, 1.00]
 	for plotdict in cutflow_jobs[0].plots:
-		#plotdict['cutflow_base_bin'] = 'MinNMuonsCut'
-		plotdict['cutflow_sequence'] = [
-			'MinNMuonsCut',
-			'MaxNMuonsCut',
-			'ValidJetsFilter',
-			'ZFilter',
-			'JsonFilter',
-			'HltFilter',
-			'MuonPtCut',
-			'MuonEtaCut',
-			'LeadingJetPtCut',
-			'LeadingJetEtaCut',
-			'AlphaCut',
-			'ZPtCut',
-			'BackToBackCut'
-		]
+		plotdict['cutflow_blacklist'] = ['without filters']
 	plotting_jobs += cutflow_jobs
 
 	#jec_factors.jec_factors(args, {
