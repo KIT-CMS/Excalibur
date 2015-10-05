@@ -393,7 +393,7 @@ def data_2012(cfg, **kwargs):
 def data_2015(cfg, **kwargs):
 	# JSON & JEC for 50ns and 25ns - see /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV4_DATA/Summer15_50nsV4_DATA'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
 		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt']
 		cfg['Lumi'] = 0.04003
 	elif kwargs['bunchcrossing'] == "25ns":
@@ -418,7 +418,7 @@ def mc_2012(cfg, **kwargs):
 
 def mc_2015(cfg, **kwargs):
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV4_MC/Summer15_50nsV4_MC'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
 	elif kwargs['bunchcrossing'] == "25ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_25nsV3_MC/Summer15_25nsV3_MC'
 	else:
