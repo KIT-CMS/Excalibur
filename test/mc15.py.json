@@ -36,7 +36,7 @@
     ],
     "GenParticles": "genParticles",
     "InputFiles": [
-        "/storage/a/mfischer/skims/MF_AnyMu_2015_746/2015-07-24//DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV/kappa_noPfIso_DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV_685.root"
+        "/storage/a/mfischer/skims/MF_AnyMu_2015_746/2015-07-24//DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV/kappa_noPfIso_DYJetsToLL_M_50_aMCatNLO_Asympt50ns_13TeV_626.root"
     ],
     "InputIsData": false,
     "Jec": "data/jec/Summer15_50nsV4_MC/Summer15_50nsV4_MC",

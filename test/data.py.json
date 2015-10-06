@@ -17,7 +17,7 @@
         "HLT_Mu17_Mu8"
     ],
     "InputFiles": [
-        "/storage/a/dhaitz/skims/2015-05-18_DoubleMu_Run2012_22Jan2013_8TeV/kappa_DoubleMuParked_Run2012C_22Jan2013_8TeV_2396.root"
+        "/storage/a/dhaitz/skims/2015-05-18_DoubleMu_Run2012_22Jan2013_8TeV/kappa_DoubleMuParked_Run2012C_22Jan2013_8TeV_2175.root"
     ],
     "InputIsData": true,
     "Jec": "data/jec/Winter14_V8/Winter14_V8_DATA",

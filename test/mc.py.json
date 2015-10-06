@@ -34,7 +34,7 @@
     ],
     "GenParticles": "genParticles",
     "InputFiles": [
-        "/storage/a/dhaitz/skims/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/kappa_DYJetsToLL_M_50_madgraph_8TeV_665.root"
+        "/storage/a/dhaitz/skims/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/kappa_DYJetsToLL_M_50_madgraph_8TeV_307.root"
     ],
     "InputIsData": false,
     "Jec": "data/jec/Winter14_V8/Winter14_V8_MC",
