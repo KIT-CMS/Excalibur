@@ -22,7 +22,7 @@ work.*
 !test/*.root
 logs/
 *.py.json
-
+cache
 *.log
 
 # plotting outputs

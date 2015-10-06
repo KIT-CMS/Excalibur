@@ -17,6 +17,14 @@ import getpass
 import json
 import sys
 import defaultconfig
+import hashlib
+import cPickle as pickle
+import time
+import base64
+import itertools
+import tarfile
+import urllib2
+import StringIO
 
 
 def getConfig(inputtype, year, channel, **kwargs):
@@ -56,16 +64,51 @@ def updateConfig(conf, tupl, **kwargs):
 	if string in dir(defaultconfig):
 		getattr(defaultconfig, string)(conf, **kwargs)
 
+# Environment
+_env_sentinel=object()
 
-def getPath(variable='EXCALIBURPATH', nofail=False):
+def get_excalibur_env(variable, nofail=False, default=_env_sentinel):
+	"""
+	Get an environment variable defined for Excalibur
+
+	:param variable: name of the variable
+	:type variable: str
+	:param nofail: do not exit the application if the variable is undefined and no
+	               default is given
+	:type nofail: bool
+	:param default: default to use if the variable is not defined
+	:type default: str
+	:returns: value variable
+	:rtype: str or None
+
+	:raises SystemExit: if the variable is undefined, default is unset and `nofail`
+	                    is not `True`
+	"""
 	try:
 		return os.environ[variable]
 	except:
+		if default is not _env_sentinel:
+			return default
 		print variable, "is not in shell variables:", os.environ.keys()
-		print "Please source scripts/ini_excalibur.sh and CMSSW!"
+		print "Please source ./scripts/ini_excalibur.sh and CMSSW!"
 		if nofail:
 			return None
-		exit(1)
+		sys.exit(1)
+
+
+def getPath(variable='EXCALIBURPATH', nofail=False, default=_env_sentinel):
+	"""Base path to the Excalibur repo/code"""
+	return get_excalibur_env(variable, nofail, default)
+
+
+def get_cachepath(variable='EXCALIBURCACHE', nofail=False, default=os.path.join(getPath(), "cache")):
+	"""Base path to locally cached files"""
+	return get_excalibur_env(variable, nofail, default)
+
+
+def get_bril_ssh(variable='EXCALIBURBRILSSH', nofail=False, default="lxplus.cern.ch"):
+	"""SSH address for connecting to a host providing brilcalc"""
+	return get_excalibur_env(variable, nofail, default)
 
 
 def setInputFiles(ekppath=None, nafpath=None):
@@ -158,3 +201,115 @@ def remove_quantities(cfg, quantities):
 def add_quantities(cfg, quantities):
 	for pipeline in cfg['Pipelines']:
 		cfg['Pipelines'][pipeline]['Quantities'].extend(quantities)
+
+# Queries to external data
+def get_jec(nickname):
+	"""
+	Get a specific JEC folder
+	"""
+	jec_cache_folder = os.path.join(get_cachepath(), "data", "jec", nickname)
+	return cached_query(func=get_jec_force, func_kwargs={"nickname": nickname, "jec_folder": jec_cache_folder}, dependency_folders=[jec_cache_folder])
+
+def get_jec_force(nickname, jec_folder=None):
+	if jec_folder is None:
+		jec_folder = os.path.join(getPath(), "data", "jec", nickname)
+	print >> sys.stderr, "Fetching tarball for JEC", nickname, "...",
+	jec_files = download_tarball("https://github.com/cms-jet/JECDatabase/blob/master/tarballs/Summer15_25nsV5_MC.tar.gz?raw=true", jec_folder)
+	print >> sys.stderr, "done (%d files)" % len(jec_files)
+	return os.path.join(jec_folder, nickname)
+
+
+def download_tarball(url, extract_to='.'):
+	"""
+	Download and extract an archive
+	"""
+	# access archive in-memory: content stream opened as file-like string
+	archive = tarfile.open(fileobj=StringIO.StringIO(urllib2.urlopen(url).read()))
+	archive.extractall(path=extract_to)
+	return archive.getnames()
+
+
+# local caching
+def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), dependency_folders=(), query_key=None):
+	"""
+	Get the response to a query, caching it if possible
+
+	:param func: a callable that performs the actual query
+	:type func: callable
+	:param func_args: `*args` passed to `func` for the query
+	:type func_args: tuple, list
+	:param func_kwargs: `**kwargs` passed to `func` for the query
+	:type func_kwargs: dict
+	:param dependency_files: files the response depends on
+	:type dependency_files: list[str]
+	:param dependency_folders: folders, including their content, the response depends on
+	:type dependency_folders: list[str]
+	:param query_key: overwrite the name of the cache data
+	:type query_key: str
+	:returns: response from the query, possibly from an earlier cached call
+
+	:warning: The automatic generation of the `query_key` does not work
+	          deterministically for lambda functions; `query_key` should be set
+	          manually for lambda functions.
+	"""
+	def stat_file(file_path):
+		"""Get a comparable representation of file validity"""
+		try:
+			file_stat = os.stat(file_path)
+			return file_stat.st_size, file_stat.st_mtime
+		except OSError:
+			return -1, -1
+	# key for finding/storing cached responses
+	if query_key is None:
+		mangle = lambda data: base64.b32encode(hashlib.sha1(str(data)).digest())
+		query_key = "_".join((
+			func.__name__,
+			mangle(func_args),
+			mangle(sorted(func_kwargs.iteritems())),
+			mangle(sorted(dependency_files))
+		))
+	cache_path = os.path.join(get_cachepath(), query_key + ".pkl")
+	try:
+		# check cache validity - use GeneratorExit to short-circuit
+		if not os.path.exists(cache_path):
+			raise GeneratorExit
+		with open(cache_path, "rb") as cache_file:
+			cache_data = pickle.load(cache_file)
+		cache_meta = cache_data["meta"]
+		if not set(cache_meta.get("dependency_files", {}).keys()) >= set(dependency_files):
+			raise GeneratorExit
+		cache_files = cache_meta.get("dependency_files", {})
+		cache_folders = cache_meta.get("dependency_folders", {})
+		for dep_file in dependency_files:
+			if cache_files.get(dep_file, (-1, -1)) != stat_file(dep_file):
+				raise GeneratorExit
+		for dep_folder in dependency_folders:
+			if cache_folders.get(dep_folder, (-1, -1)) != stat_file(dep_folder):
+				raise GeneratorExit
+			dep_files = os.listdir(dep_folder) + [dep_file for dep_file in cache_files if os.path.dirname(dep_file) == dep_folder]
+			for dep_file in dep_files:
+				if cache_files.get(dep_file, (-1, -1)) != stat_file(dep_file):
+					raise GeneratorExit
+		response = cache_data["response"]
+	except GeneratorExit:
+		# cache is dirty, regenerate it
+		response = func(*func_args, **func_kwargs)
+		if not os.path.isdir(os.path.dirname(cache_path)):
+			os.makedirs(os.path.dirname(cache_path))
+		with open(cache_path, "wb") as cache_file:
+			dep_files = set(dependency_files).union(itertools.chain(*(os.listdir(pth) for pth in dependency_folders if os.path.exists(pth))))
+			pickle.dump(
+				{
+					# response body
+					"response" : response,
+					# meta header
+					"meta" : {
+						"timestamp" : time.time(),
+						"dependency_files" : dict((dep_file, stat_file(dep_file)) for dep_file in dep_files),
+						"dependency_folders" : dict((dep_folder, stat_file(dep_folder)) for dep_folder in dependency_folders),
+					}
+				},
+				cache_file,
+				pickle.HIGHEST_PROTOCOL
+			)
+	return response
