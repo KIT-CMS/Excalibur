@@ -15,6 +15,7 @@
 #include "Producers/ZJetValidElectronsProducer.h"
 #include "Producers/MuonCorrector.h"
 #include "Producers/NeutrinoCounter.h"
+#include "Producers/ElectronPtVariator.h"
 
 // filters
 #include "Filters/ZFilter.h"
@@ -57,6 +58,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new MuonCorrector();
     else if (id == NeutrinoCounter().GetProducerId())
         return new NeutrinoCounter();
+    else if (id == ElectronPtVariator().GetProducerId())
+        return new ElectronPtVariator();
     else
         return KappaFactory::createProducer(id);
 }
