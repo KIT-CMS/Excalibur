@@ -170,6 +170,8 @@ def _2012(cfg, **kwargs):
 	cfg['Year'] = 2012
 	cfg['Energy'] = 8
 	cfg['JetIDVersion'] = 2014
+	cfg['MinZllJetDeltaRVeto'] = 0.0
+	cfg['JetLeptonLowerDeltaRCut'] = 0.0
 
 def _2015(cfg, **kwargs):
 	cfg['Year'] = 2015
