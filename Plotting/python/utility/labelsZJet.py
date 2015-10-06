@@ -14,6 +14,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			#more general stuff. maybe move to Artus?
 			'abs(jet1eta)': '|$\mathit{\eta}_{Leading \ Jet}$|',
 			'abs(genzy)': '|$\mathit{y}_{Z, Gen}$|',
+			'abs(eminuseta)': '|$\mathit{\eta}_{e^{-}}$|',
 			'abs(geneminuseta)': '|$\mathit{\eta}_{e^{-}, Gen}$|',
 			'abs(zy)': '|$\mathit{y}_Z$|',
 			'algoflavour': 'Flavour (Algorithmic Definition)',
@@ -103,6 +104,9 @@ class LabelsDictZJet(labels.LabelsDict):
 			'xsecm': 'd$\mathit{\sigma}$/d$\mathit{m}$ / pb $GeV^{-1}$',
 			'xsecphi': 'd$\mathit{\sigma}$/d$\mathit{\phi}$ / pb',
 			'xsecpt': 'd$\mathit{\sigma}$/d$\mathit{p_\mathrm{T}}$ / pb $GeV^{-1}$',
+			'xfx': '$\mathit{x} \cdot f(\mathit{x})$',
+			'xfxQ': '$\mathit{x} \cdot f(\mathit{x}, \mathit{Q})$',
+			'xfxQ2': '$\mathit{x} \cdot f(\mathit{x}, \mathit{Q}^2)$',
 			'zmass': '$\mathit{m}_{Z}$ / GeV',
 			'zphi': r'$\mathit{\phi}^{Z}$',
 			'zpt': '$\mathit{p}_{T}^{Z}$ / GeV',
@@ -128,5 +132,6 @@ class LabelsDictZJet(labels.LabelsDict):
 			'deltaphijet1jet2': '$\Delta\phi(\mathrm{Jet1},\mathrm{Jet2})$',
 			'deltarjet1jet2': '$\Delta R(\mathrm{Jet1},\mathrm{Jet2})$',
 		})
+		self.labels_dict['abszy'] = self.labels_dict['abs(zy)']
 		if additional_labels != None:
 			self.labels_dict.update(additional_labels)
