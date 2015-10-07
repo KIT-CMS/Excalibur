@@ -214,7 +214,7 @@ def get_jec_force(nickname, jec_folder=None):
 	if jec_folder is None:
 		jec_folder = os.path.join(getPath(), "data", "jec", nickname)
 	print >> sys.stderr, "Fetching tarball for JEC", nickname, "...",
-	jec_files = download_tarball("https://github.com/cms-jet/JECDatabase/blob/master/tarballs/Summer15_25nsV5_MC.tar.gz?raw=true", jec_folder)
+	jec_files = download_tarball("https://github.com/cms-jet/JECDatabase/blob/master/tarballs/%s.tar.gz?raw=true"%nickname, jec_folder)
 	print >> sys.stderr, "done (%d files)" % len(jec_files)
 	return os.path.join(jec_folder, nickname)
 
