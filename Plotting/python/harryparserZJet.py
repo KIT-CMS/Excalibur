@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
+	Extension to the default HarryParser
 """
+
+import sys
 
 import Artus.HarryPlotter.harryparser as harryparser
 import Artus.Utility.tools as tools
@@ -22,6 +25,8 @@ class HarryParserZJet(harryparser.HarryParser):
 		known_args, unknown_args = super(HarryParserZJet, self).parse_known_args(args=args, namespace=namespace)
 
 		if known_args.list_functions:
-			toolsZJet.print_plotting_functions(tools.get_environment_variable("PLOTCONFIGS"))
+			for plot_config_path in tools.get_environment_variable("PLOTCONFIGS").split(":"):
+				toolsZJet.print_plotting_functions(plot_config_path)
+			sys.exit(0)
 
 		return known_args, unknown_args

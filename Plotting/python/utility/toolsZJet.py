@@ -38,7 +38,7 @@ def print_plotting_functions(plotting_path):
 				log.info("\t" + tools.get_colored_string(func[0], "green"))
 				if inspect.getdoc(func[1]) != None:  # has docstring
 					log.info(tools.get_indented_text(prefix, inspect.getdoc(func[1])))
-	sys.exit(0)
+
 
 def call_python_function(function_name, python_path, unknown_args=None):
 	"""call a python if it is present in any module in the path."""
@@ -169,7 +169,7 @@ class JECfile(object):
 		except NameError as e:
 			log.critical("Could not evaluate formula: " + e.message)
 			log.critical("Is the formula correctly converted into python? (perhaps check the formula_replace_dict in the init method of the JECfile class)")
-			sys,exit()
+			sys.exit()
 
 	def _get_bin_centers(self, input_var_binning):
 		"""Get the bin centers for the input binning"""
