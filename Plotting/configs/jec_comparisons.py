@@ -80,6 +80,9 @@ def response_extrapolation(args=None, additional_dictionary=None):
 			labels = ['', '']
 	else:
 		labels = ['', '']
+		algorithms = ['AK5PFJetsCHS']
+		corrections = ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']
+		files = ["", ""]  # overwrite on command line
 	if labels != ['', '']:
 		labels = ["({0})".format(l) for l in labels]
 
@@ -95,6 +98,7 @@ def response_extrapolation(args=None, additional_dictionary=None):
 			'MPF',
 			'', '', '', '', '', '', '', '', ''],
 		'algorithms': algorithms,
+		'alphas': [0.3],
 		'corrections': corrections,
 		'zjetfolders': ['noalphacuts'],
 		'lines': [1.0],
