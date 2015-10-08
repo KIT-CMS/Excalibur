@@ -62,6 +62,32 @@ def call_python_function(function_name, python_path, unknown_args=None):
 				return
 	log.warning("Could not execute function {}".format(function_name))
 
+def get_input_files(args=None):
+	"""
+	Extract the list of input files from given CLI arguments
+
+	:param args: command line arguments
+	:type args: list[str]
+	:returns: input files and remaining CLI arguments
+	:rtype: list[str], list[str]
+	"""
+	if args is None:
+		return [], []
+	args_nofiles = []
+	input_files = []
+	input_file_args = False
+	for elem in args:
+		if not input_file_args and elem == "-i":
+			input_file_args = True
+			continue
+		if input_file_args:
+			if not elem.startswith("-"):
+				input_files.append(elem)
+				continue
+			else:
+				input_file_args = False
+		args_nofiles.append(elem)
+	return input_files, args_nofiles
 
 def get_module_list(path):
 	"""get a list with all python modules in the path."""
