@@ -14,6 +14,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			#more general stuff. maybe move to Artus?
 			'abs(jet1eta)': '|$\mathit{\eta}_{Leading \ Jet}$|',
 			'abs(genzy)': '|$\mathit{y}_{Z, Gen}$|',
+			'abs(eeta)': '|$\mathit{\eta}_{Electron}$|',
 			'abs(eminuseta)': '|$\mathit{\eta}_{e^{-}}$|',
 			'abs(geneminuseta)': '|$\mathit{\eta}_{e^{-}, Gen}$|',
 			'abs(zy)': '|$\mathit{y}_Z$|',
