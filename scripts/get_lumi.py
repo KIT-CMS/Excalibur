@@ -41,6 +41,11 @@ CLI_bril.add_argument(
 	default="/pb",
 	help="unit of lumi output, e.g. /fb, /pb or 1e39/cm2"
 )
+CLI_bril.add_argument(
+	"--normtag",
+	default=None,
+	help="lumi calibration/correction function or json"
+)
 
 
 def get_bril_env(brilconda_path, brilws_path):
@@ -69,7 +74,7 @@ def get_bril_env(brilconda_path, brilws_path):
 	return bril_env
 
 
-def get_lumi(run_str, bril_env, unit="/pb"):
+def get_lumi(run_str, bril_env, unit="/pb", normtag=None):
 	"""
 	Get the lumi for a specific run string from brilcalc
 	"""
@@ -80,7 +85,9 @@ def get_lumi(run_str, bril_env, unit="/pb"):
 			"lumi", "-i", run_str,
 			"--output-style", "csv",
 			"-u", unit,
-		],
+		] + [
+			"--normtag", normtag
+		] if normtag is not None else [],
 		env=bril_env,
 	)
 	bril_iter, header, values = iter(bril_out.splitlines()), None, None
@@ -112,6 +119,7 @@ def main():
 		run_str=opts.runs,
 		bril_env=bril_env,
 		unit=opts.lumi_unit,
+		normtag=opts.normtag,
 	)
 	print json.dumps(lumi_dict)
 
