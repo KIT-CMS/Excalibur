@@ -25,6 +25,7 @@ import itertools
 import tarfile
 import urllib2
 import StringIO
+import subprocess
 
 
 def getConfig(inputtype, year, channel, **kwargs):
@@ -110,6 +111,9 @@ def get_bril_ssh(variable='EXCALIBURBRILSSH', nofail=False, default="lxplus.cern
 	"""SSH address for connecting to a host providing brilcalc"""
 	return get_excalibur_env(variable, nofail, default)
 
+
+def get_scriptpath(script_name=""):
+	return os.path.join(getPath(), "scripts", script_name)
 
 def setInputFiles(ekppath=None, nafpath=None):
 	"""Return ekppath if you're at EKP, nafpath if at NAF. """
@@ -234,6 +238,66 @@ def get_jec_force(nickname, jec_folder=None):
 	jec_files = download_tarball("https://github.com/cms-jet/JECDatabase/blob/master/tarballs/%s.tar.gz?raw=true"%nickname, jec_folder)
 	print >> sys.stderr, "done (%d files)" % len(jec_files)
 	return os.path.join(jec_folder, nickname)
+
+
+def get_lumi(json_source, min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
+	return cached_query(
+		func=get_lumi_force,
+		func_kwargs={"json_source": json_source, "min_run": min_run, "max_run": max_run, "normtag": normtag},
+		dependency_files=[json_source] + [normtag] if normtag is not None else []
+	)
+
+
+def get_lumi_force(json_source, bril_ssh=get_bril_ssh(), min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
+	"""
+	Get the integrated luminosity for runs specified in JSONs from `brilcalc`
+
+	:param json_sources: CMS run JSON file or string
+	:type json_sources: str
+	:param bril_ssh: SSH connection string to a host capable of running `brilcalc`
+	:type bril_ssh: str
+	:param min_run: minimum run to use
+	:type min_run: int
+	:param max_run: maximum run to use
+	:type max_run: int
+	:param normtag: `brilcalc` normtag file
+	:type normtag: str
+	:returns: integrated luminosity for run ranges in /fb
+
+	:note: the requirement for specifying `bril_ssh` may be dropped in the future
+	       if the CMS database becomes externally accessible. Until then, use of
+	       SSH is required; a loopback (e.g. `"localhost"`) can be used if `brilcalc`
+	       is available locally.
+	"""
+	# parse jsons so that we can send any file and string input over SSH as run string
+	try:
+		json_data = json.loads(json_source)
+	except ValueError:
+		with open(json_source) as json_file:
+			json_data = json.load(json_file)
+	for run in json_data.keys():
+		if not min_run < int(run) < max_run:
+			del json_data[run]
+	json_string = json.dumps(json_data).replace(r'"', r'')
+	if json_string == "{}":
+		return 0.0
+	# execute brilcalc on a remote host
+	print >> sys.stderr, "Querying brilcalc for lumi (via %s)" % bril_ssh
+	with open(get_scriptpath("get_lumi.py")) as get_lumi_raw:
+		lumi_json_raw = subprocess.check_output([
+				"ssh", bril_ssh,
+				# stream script directly to remote python interpreter via CLI
+				'python -c "%(get_lumi)s" "%(json_string)s" '
+				'--lumi-unit "/pb" %(normtag)s' % {
+					"get_lumi": get_lumi_raw.read().replace(r'"', r'\"'),
+					"json_string": json_string,
+					"normtag": "" if normtag is None else ('--normtag "%s"' % normtag),
+				}
+			])
+	lumi_dict = json.loads(lumi_json_raw)
+	print >> sys.stderr, "done (%.3f /pb)" % lumi_dict["totrecorded"]
+	# query /pb for precision, convert to /fb
+	return lumi_dict["totrecorded"]/1000.0
 
 
 def download_tarball(url, extract_to='.'):
