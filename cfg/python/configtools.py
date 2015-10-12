@@ -190,6 +190,7 @@ def pipelinediff2(p1=None, p2=None):
 			if p1[k] != p2[k]:
 				print "    different %s: %s != %s" % (k, str(p1[k]), str(p2[k]))
 
+
 def remove_quantities(cfg, quantities):
 	for pipeline in cfg['Pipelines']:
 		for quantity in quantities:
@@ -198,19 +199,35 @@ def remove_quantities(cfg, quantities):
 			except IndexError:
 				pass
 
+
 def add_quantities(cfg, quantities):
 	for pipeline in cfg['Pipelines']:
 		cfg['Pipelines'][pipeline]['Quantities'].extend(quantities)
 
+
 # Queries to external data
 def get_jec(nickname):
 	"""
-	Get a specific JEC folder
+	Get a specific corrections folder
+
+	:param nickname: name of the JEC, such as `Summer15_25nsV5_MC`
+	:type nickname: str
+	:returns: JEC string as understood by Artus (`<path/nickname>`)
 	"""
 	jec_cache_folder = os.path.join(get_cachepath(), "data", "jec", nickname)
 	return cached_query(func=get_jec_force, func_kwargs={"nickname": nickname, "jec_folder": jec_cache_folder}, dependency_folders=[jec_cache_folder])
 
+
 def get_jec_force(nickname, jec_folder=None):
+	"""
+	Get a specific corrections folder from source
+
+	:param nickname: name of the JEC, such as `Summer15_25nsV5_MC`
+	:type nickname: str
+	:param jec_folder: folder in which to store JECs
+	:type jec_folder: str
+	:returns: JEC string as understood by Artus (`<path/nickname>`)
+	"""
 	if jec_folder is None:
 		jec_folder = os.path.join(getPath(), "data", "jec", nickname)
 	print >> sys.stderr, "Fetching tarball for JEC", nickname, "...",
