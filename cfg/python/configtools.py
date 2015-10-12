@@ -168,12 +168,9 @@ def expand(config, cutModes, corrLevels, default="default"):
 	# copy pipelines with different correction levels, naming scheme: cut_AlgoName + CorrectionLevel
 	for name, p in pipelines.items():
 		for corrLevel in corrLevels:
-			if corrLevel == 'None':
-				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')] = copy.deepcopy(p)
-				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '')]['CorrectionLevel'] = corrLevel
-			else:
-				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel] = copy.deepcopy(p)
-				pipelines[name + "_" + config['TaggedJets'].replace('Tagged', '') + corrLevel]['CorrectionLevel'] = corrLevel
+			pipelinename = name + "_" + config['TaggedJets'].replace('Tagged', '').replace('ak','AK') + corrLevel.replace('None','')
+			pipelines[pipelinename] = copy.deepcopy(p)
+			pipelines[pipelinename]['CorrectionLevel'] = corrLevel
 		del pipelines[name]
 	return config
 
