@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Excalibur.Plotting.utility.colors as colors
-from Excalibur.Plotting.utility.toolsZJet import PlottingJob
+from Excalibur.Plotting.utility.toolsZJet import PlottingJob, get_input_files
 
 import argparse
 import copy
@@ -34,58 +34,27 @@ def get_special_parser(args):
 	return known_args, args
 
 def response_extrapolation(args=None, additional_dictionary=None):
-	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters."""
-	if additional_dictionary is not None:
-		additional_dictionary = additional_dictionary.copy()
-		if 'files' in additional_dictionary and len(additional_dictionary['files']) == 2:
-			files = [
-				additional_dictionary['files'][0],
-				additional_dictionary['files'][1],
-				additional_dictionary['files'][0],
-				additional_dictionary['files'][1],
-				additional_dictionary['files'][1],
-			]
-			additional_dictionary.pop('files')
+	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters. Requires an input tuple of data, mc."""
+	additional_dictionary = additional_dictionary.copy() if additional_dictionary else {}
+	input_files, other_args = get_input_files(args)
+	if input_files: # CLI is expected to overwrite script, do it explicitly
+		additional_dictionary['files'] = input_files
+		args = other_args
+	assert additional_dictionary['files'] >= 2, "extrapolation requires data, mc tuple as input"
+	# explicitly clone expansion parameters to position additional MC quantities
+	for key, default in (('files', None), ('corrections', ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']), ('algorithms', ['AK5PFJetsCHS'])):
+		if key in additional_dictionary:
+			if len(additional_dictionary[key]) > 1:
+				additional_dictionary[key] = list(additional_dictionary[key][:2]) * 2 + [additional_dictionary[key][1]]
 		else:
-			files = None
-		if 'corrections' in additional_dictionary and len(additional_dictionary['corrections']) == 2:
-			corrections = [
-				additional_dictionary['corrections'][0],
-				additional_dictionary['corrections'][1],
-				additional_dictionary['corrections'][0],
-				additional_dictionary['corrections'][1],
-				additional_dictionary['corrections'][1],
-			]
-			additional_dictionary.pop('corrections')
-		else:
-			corrections = ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']
-		if 'algorithms' in additional_dictionary and len(additional_dictionary['algorithms']) == 2:
-			algorithms = [
-				additional_dictionary['algorithms'][0],
-				additional_dictionary['algorithms'][1],
-				additional_dictionary['algorithms'][0],
-				additional_dictionary['algorithms'][1],
-				additional_dictionary['algorithms'][1],
-			]
-			additional_dictionary.pop('algorithms')
-		else:
-			algorithms = ['AK5PFJetsCHS']
-		if 'labels' in additional_dictionary:
-			labels = additional_dictionary['labels']
-			additional_dictionary.pop('labels')
-		elif 'nicks' in additional_dictionary:
-			labels = additional_dictionary['nicks']
-			additional_dictionary.pop('nicks')
-		else:
-			labels = ['', '']
-	else:
-		labels = ['', '']
-		algorithms = ['AK5PFJetsCHS']
-		corrections = ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']
-		files = ["", ""]  # overwrite on command line
-	if labels != ['', '']:
-		labels = ["({0})".format(l) for l in labels]
-
+			additional_dictionary[key] = default
+	try:
+		labels = ["({0})".format(name) for name in additional_dictionary.pop('labels')]
+	except KeyError:
+		try:
+			labels = ["({0})".format(name) for name in additional_dictionary.pop('nicks')]
+		except KeyError:
+			labels = ['Data', 'MC']
 	d = {
 		'filename': 'extrapolation',
 		'labels': [
@@ -97,9 +66,7 @@ def response_extrapolation(args=None, additional_dictionary=None):
 			r'$\\mathit{p}_{T}$ balance',
 			'MPF',
 			'', '', '', '', '', '', '', '', ''],
-		'algorithms': algorithms,
 		'alphas': [0.3],
-		'corrections': corrections,
 		'zjetfolders': ['noalphacuts'],
 		'lines': [1.0],
 		'legend': 'lower left',
@@ -133,10 +100,6 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'subplot_fraction': 40,
 		'subplot_legend': 'lower left',
 	}
-
-	if files is not None:
-		d['files'] = files
-
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
 	return [PlottingJob(plots=[d], args=args)]
@@ -600,10 +563,6 @@ def comparison_run2(args=None):
 	"""Comparison for run2 samples."""
 	plotting_jobs = []
 	d = {
-		'files': [
-			'work/data15.root',
-			'work/mc15.root',
-		],
 		'labels': ['Data L1L2L3Res','MC L1L2L3'],
 		'y_subplot_label' : "Data/MC",
 		'algorithms': ['ak4PFJetsCHS'],
