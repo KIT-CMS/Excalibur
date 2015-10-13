@@ -311,7 +311,7 @@ def download_tarball(url, extract_to='.'):
 
 
 # local caching
-def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), dependency_folders=(), query_key=None):
+def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), dependency_folders=(), cache_key=None, cache_dir=get_cachepath()):
 	"""
 	Get the response to a query, caching it if possible
 
@@ -325,12 +325,14 @@ def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), depend
 	:type dependency_files: list[str]
 	:param dependency_folders: folders, including their content, the response depends on
 	:type dependency_folders: list[str]
-	:param query_key: overwrite the name of the cache data
-	:type query_key: str
+	:param cache_key: overwrite the name of the cache data
+	:type cache_key: str
+	:param cache_dir: directory to store cache data (response and meta info)
+	:type cache_dir: str
 	:returns: response from the query, possibly from an earlier cached call
 
-	:warning: The automatic generation of the `query_key` does not work
-	          deterministically for lambda functions; `query_key` should be set
+	:warning: The automatic generation of the `cache_key` does not work
+	          deterministically for lambda functions; `cache_key` should be set
 	          manually for lambda functions.
 	"""
 	def stat_file(file_path):
@@ -341,15 +343,15 @@ def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), depend
 		except OSError:
 			return -1, -1
 	# key for finding/storing cached responses
-	if query_key is None:
+	if cache_key is None:
 		mangle = lambda data: base64.b32encode(hashlib.sha1(str(data)).digest())
-		query_key = "_".join((
+		cache_key = "_".join((
 			func.__name__,
 			mangle(func_args),
 			mangle(sorted(func_kwargs.iteritems())),
 			mangle(sorted(dependency_files))
 		))
-	cache_path = os.path.join(get_cachepath(), query_key + ".pkl")
+	cache_path = os.path.join(cache_dir, cache_key + ".pkl")
 	try:
 		# check cache validity - use GeneratorExit to short-circuit
 		if not os.path.exists(cache_path):
