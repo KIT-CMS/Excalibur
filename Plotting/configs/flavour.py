@@ -539,6 +539,7 @@ def flavour_response_extrapolation(args=None, additional_dictionary=None):
 		'function_ranges': ['0,0.3'],
 		'function_nicknames': [f+"_func" for f in flavours],
 		#formatting
+		"alphas": [0.3],
 		"labels": flavourlabels + [None]*4,
 		'colors': ['black', 'red', 'blue', 'green']*2,
 		'y_lims': [0.83, 1.06],

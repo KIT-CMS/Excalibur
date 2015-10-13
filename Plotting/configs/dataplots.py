@@ -30,6 +30,7 @@ def response_time_dependence(args=None, additional_dictionary=None):
 			'function_nicknames': ['fnick{}'.format(i) for i in range(len(weights))],
 			# formatting
 			'y_lims': [0.8, 1.1],
+			'alphas': [0.3],
 			'colors': ['black', 'red', 'blue', 'green', 'purple', 'orange', 'cyan'][:len(weights)]*2,  # TODO take color names directly from plotmpl.py
 			# TODO improve x-axis ticks and ticklabels
 			'labels': labels + [None]*len(labels),
