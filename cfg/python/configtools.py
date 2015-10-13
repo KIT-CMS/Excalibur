@@ -241,10 +241,22 @@ def get_jec_force(nickname, jec_folder=None):
 
 
 def get_lumi(json_source, min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
+	if json_source.endswith(".json") or json_source.endswith(".txt"):
+		key = "lumi_jsonfile-" + os.path.splitext(os.path.basename(json_source))[0]
+	else:
+		key = "lumi_jsonstr-" + base64.b32encode(hashlib.sha1(str(json_source)).digest())
+	if min_run > float("-inf"):
+		key += "_min-" + str(min_run)
+	if max_run < float("inf"):
+		key += "_max-" + str(max_run)
+	if normtag is not None:
+		key += "_nt-" + os.path.splitext(os.path.basename(normtag))[0]
 	return cached_query(
 		func=get_lumi_force,
 		func_kwargs={"json_source": json_source, "min_run": min_run, "max_run": max_run, "normtag": normtag},
-		dependency_files=[json_source] + [normtag] if normtag is not None else []
+		dependency_files=[json_source] + [normtag] if normtag is not None else [],
+		cache_dir=os.path.join(getPath(), "data", "lumi"),
+		cache_key=key,
 	)
 
 
