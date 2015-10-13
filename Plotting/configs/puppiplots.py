@@ -144,19 +144,19 @@ def comparison_CHS_Puppi_all(args=None):
 
 				plotting_jobs += comparison_CHS_Puppi(args, d)
 
-				if met == 'NoMuNoHF':
-					if corrections == '':
-						d['www'] = 'comparison_CHS_Puppi' + met + '_mpf_corrected_' + zjetfolder + '_None'
-					else:
-						d['www'] = 'comparison_CHS_Puppi' + met + '_mpf_corrected_' + zjetfolder + '_' + corrections
-					plotting_jobs += comparison_CHS_Puppi(args, d, mpf_substract_muons=True)
+				#if met == 'NoMuNoHF':
+				#	if corrections == '':
+				#		d['www'] = 'comparison_CHS_Puppi' + met + '_mpf_corrected_' + zjetfolder + '_None'
+				#	else:
+				#		d['www'] = 'comparison_CHS_Puppi' + met + '_mpf_corrected_' + zjetfolder + '_' + corrections
+				#	plotting_jobs += comparison_CHS_Puppi(args, d, mpf_substract_muons=True)
 
 				if corrections == '':
 					d['www'] = 'comparison_CHS_Puppi' + met + '_bins_' + zjetfolder + '_None'
 				else:
 					d['www'] = 'comparison_CHS_Puppi' + met + '_bins_' + zjetfolder + '_' + corrections
 
-				#plotting_jobs += jec_comparisons.response_bin_comparisons(args, d, data_quantities=False)
+				plotting_jobs += jec_comparisons.response_bin_comparisons(args, d, data_quantities=False)
 	return plotting_jobs
 
 def comparison_CHS_Puppi_matched(args=None):
@@ -170,6 +170,21 @@ def comparison_CHS_Puppi_matched(args=None):
 
 	return comparison_CHS_Puppi(args, d)
 
+def comparison_CHS_PuppiNoMuons(args=None):
+
+	d = {
+		'files': [
+			'work/mc15PuppiNoMuNoHF_NoMuons.root',
+			'work/mc15.root',
+		],
+		"algorithms": ["ak4PFJetsPuppi", "ak4PFJetsCHS"],
+		'corrections': ['L1L2L3'],
+		'labels': ['Puppi', 'CHS'],
+	}
+
+	return jec_comparisons.response_bin_comparisons(args, d, data_quantities=False)
+
+
 def comparison_Puppi(args=None):
 	""" Do full comparison for E1 and E2 ntuples """
 	plotting_jobs = []
@@ -182,3 +197,32 @@ def comparison_Puppi(args=None):
 		'labels': ['L1L2L3', 'No corrections'],
 	}
 	return comparison_CHS_Puppi(args, d)
+
+def comparison_Puppi_datamc(args=None):
+	plotting_jobs = []
+	d = {
+		'files': [
+			'work/data15PuppiNoMuNoHF.root',
+			'work/mc15PuppiNoMuNoHF.root',
+		],
+		"algorithms": ["ak4PFJetsPuppiNoMu", "ak4PFJetsPuppi"],
+		'corrections': ['L1L2L3', "L1L2L3"],
+		'labels': ['Data', 'MC'],
+	}
+
+	plotting_jobs += jec_comparisons.basic_comparisons(args, d, data_quantities=True, only_normalized=True)
+	plotting_jobs += jec_comparisons.pf_fractions(args, d)
+	plotting_jobs += jec_comparisons.response_comparisons(args, additional_dictionary=d, data_quantities=True)
+	plotting_jobs += jec_comparisons.jet_resolution(args, additional_dictionary=d)
+	response_extrapolation_jobs = jec_comparisons.response_extrapolation(args, additional_dictionary=d)
+	response_extrapolation_jobs[0].plots[0]['legend'] = 'upper left'
+	response_extrapolation_jobs[0].plots[0]['legend_cols'] = 2
+	response_extrapolation_jobs[0].plots[0]['y_lims'] = [0.79, 1.2]
+	response_extrapolation_jobs[0].plots[0]['y_subplot_lims'] = [0.82, 1.07]
+	response_extrapolation_jobs[0].plots[0]['subplot_legend'] = 'lower left'
+	response_extrapolation_jobs[0].plots[0]['extrapolation_text_position'] = [0.18, 0.9]
+	plotting_jobs += response_extrapolation_jobs
+	d.update({'folders': ['finalcuts_' + d['algorithms'][0] +  d['corrections'][0], 'finalcuts_' + d['algorithms'][1] +  d['corrections'][1]]})
+	plotting_jobs += jec_comparisons.cutflow(args, d)
+
+	return plotting_jobs
