@@ -601,28 +601,48 @@ def comparison_fsp(args=None):
 			plotdict['rectangle_x'] = [0.0,20.0]
 			plotdict['rectangle_alpha'] = [0.2]
 			plotdict['rectangle_color'] = ["red"]
+			#plotdict['x_bins'] = '30,0,150'
+			#plotdict['zjetfolders'] = 'nocuts'
 		if plotdict['x_expressions'][0] == 'mu1eta':
 			plotdict['plot_modules'] =['PlotMplZJet', 'PlotMplRectangle']
 			plotdict['rectangle_x'] = [-2.5,-2.3,2.3,2.5]
 			plotdict['rectangle_alpha'] = [0.2]
 			plotdict['rectangle_color'] = ["red"]
+			#plotdict['zjetfolders'] = 'nocuts'
+			#plotdict['weights'] = '(mu1pt > 20)'
+		#if plotdict['x_expressions'][0] == 'mu1phi':
+			#plotdict['zjetfolders'] = 'nocuts'
+			#plotdict['weights'] = '(mu1pt > 20 && abs(mu1eta) < 2.3)'
 		if plotdict['x_expressions'][0] == 'zpt':
-			plotdict['y_lims'] = [1, 700]
 			plotdict['plot_modules'] =['PlotMplZJet', 'PlotMplRectangle']
 			plotdict['rectangle_x'] = [0.0,30.0]
 			plotdict['rectangle_alpha'] = [0.2]
 			plotdict['rectangle_color'] = ["red"]
+			plotdict['x_bins'] = "27,0,405"
+			#plotdict['zjetfolders'] = 'nocuts'
+			#plotdict['weights'] = '(mu1pt > 20 && abs(mu1eta) < 2.3)'
+		if plotdict['x_expressions'][0] == 'zmass':
+			plotdict['x_bins'] = '22,51,131'
+			#plotdict['zjetfolders'] = 'zcuts'
+		#if plotdict['x_expressions'][0] == 'zy':
+			#plotdict['zjetfolders'] = 'zcuts'
 		if plotdict['x_expressions'][0] == 'jet1pt':
-			plotdict['y_lims'] = [1, 700]
+			#plotdict['y_lims'] = [1, 700]
 			plotdict['plot_modules'] =['PlotMplZJet', 'PlotMplRectangle']
 			plotdict['rectangle_x'] = [0.0,12.0]
 			plotdict['rectangle_alpha'] = [0.2]
 			plotdict['rectangle_color'] = ["red"]
+			plotdict['x_bins'] = '33,0,396'
+			#plotdict['zjetfolders'] = 'zcuts'
+		if plotdict['x_expressions'][0] == 'jet1area':
+			plotdict['x_bins'] = '20,0.4,0.6'
 		if plotdict['x_expressions'][0] == 'jet1eta':
 			plotdict['plot_modules'] =['PlotMplZJet', 'PlotMplRectangle']
 			plotdict['rectangle_x'] = [-1.5,-1.3,1.3,1.5]
 			plotdict['rectangle_alpha'] = [0.2]
 			plotdict['rectangle_color'] = ["red"]
+			plotdict['x_bins'] = "30,-1.5,1.5"
+			#plotdict['zjetfolders'] = 'noalphanoetacuts'
 		if plotdict['x_expressions'][0] == 'alpha':
 			#plotdict['y_subplot_lims'] = [0, 10]
 			plotdict['plot_modules'] =['PlotMplZJet', 'PlotMplRectangle']
@@ -630,6 +650,7 @@ def comparison_fsp(args=None):
 			plotdict['rectangle_alpha'] = [0.2]
 			plotdict['rectangle_color'] = ["red"]
 			plotdict['legend'] = 'upper right'
+			#plotdict['zjetfolders'] = 'noalphacuts'
 
 	plotting_jobs += basic_jobs
 
@@ -638,10 +659,10 @@ def comparison_fsp(args=None):
 	response_comparisons_jobs = response_comparisons(args, d, data_quantities=True)
 	for plotdict in response_comparisons_jobs[0].plots:
 		if plotdict['y_expressions'][0] == 'ptbalance':
-			plotdict['y_lims'] = [0.75, 1.1]
+			#plotdict['y_lims'] = [0.75, 1.1]
 			plotdict['y_subplot_lims'] = [0.8, 1.1]
 		if plotdict['y_expressions'][0] == 'mpf':
-			plotdict['y_lims'] = [0.75, 1.1]
+			#plotdict['y_lims'] = [0.75, 1.1]
 			plotdict['y_subplot_lims'] = [0.8, 1.1]
 	plotting_jobs += response_comparisons_jobs
 	response_extrapolation_jobs = response_extrapolation(args, d)
@@ -657,10 +678,10 @@ def comparison_fsp(args=None):
 	plotting_jobs += response_extrapolation_jobs
 	#plotting_jobs += jet_resolution(args, additional_dictionary=d)
 
-	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
+	d.update({'folders': ['finalcuts_ak4PFJetsCHS' + d['corrections'][0], 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	cutflow_jobs = cutflow(args, d)
-	cutflow_jobs[0].plots[1]['y_log'] = True
-	cutflow_jobs[0].plots[1]['y_lims'] = [0.01, 1.00]
+	#cutflow_jobs[0].plots[1]['y_log'] = True
+	#cutflow_jobs[0].plots[1]['y_lims'] = [0.01, 1.00]
 	for plotdict in cutflow_jobs[0].plots:
 		plotdict['cutflow_blacklist'] = ['without filters']
 	plotting_jobs += cutflow_jobs
