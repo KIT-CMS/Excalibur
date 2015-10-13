@@ -170,8 +170,8 @@ def _2012(cfg, **kwargs):
 	cfg['Year'] = 2012
 	cfg['Energy'] = 8
 	cfg['JetIDVersion'] = 2014
-	cfg['MinZllJetDeltaRVeto'] = 0.0
-	cfg['JetLeptonLowerDeltaRCut'] = 0.0
+	cfg['MinZllJetDeltaRVeto'] = 0.3
+	cfg['JetLeptonLowerDeltaRCut'] = 0.3
 
 def _2015(cfg, **kwargs):
 	cfg['Year'] = 2015
@@ -193,17 +193,20 @@ def ee(cfg, **kwargs):
 	cfg['ElectronMetadata'] = 'electronMetadata'
 	# The order of these producers is important!
 	cfg['Processors'] = [
+		# electrons
 		'producer:ZJetValidElectronsProducer',
 		'filter:MinElectronsCountFilter',
 		'filter:MaxElectronsCountFilter',
+		# Z
+		'producer:ZeeProducer',
+		'filter:ZFilter',
+		# jets
 		'producer:ValidTaggedJetsProducer',
+		'producer:ValidZllJetsProducer',
 		'filter:ValidJetsFilter',
 		'producer:ZJetCorrectionsProducer',
 		'producer:TypeIMETProducer',
 		'producer:JetSorter',
-		'producer:ZeeProducer',
-		'filter:ZFilter',
-		'producer:RadiationJetProducer',
 	]
 	cfg['ElectronID'] = 'vbft95_tight'
 	cfg['ElectronIsoType'] = 'none'
@@ -251,17 +254,21 @@ def em(cfg, **kwargs):
 	cfg['ElectronMetadata'] = 'electronMetadata'
 	# The order of these producers is important!
 	cfg['Processors'] = [
+		# leptons
 		'producer:ValidMuonsProducer',
 		'filter:MinNMuonsCut',
 		'producer:ValidElectronsProducer',
 		'filter:MinElectronsCountFilter',
+		# Z
+		'producer:ZemProducer',
+		'filter:ZFilter',
+		# jets
 		'producer:ValidTaggedJetsProducer',
+		'producer:ValidZllJetsProducer',
 		'filter:ValidJetsFilter',
 		'producer:ZJetCorrectionsProducer',
 		'producer:TypeIMETProducer',
 		'producer:JetSorter',
-		'producer:ZemProducer',
-		'filter:ZFilter',
 	]
 	cfg['ElectronID'] = 'mvanontrig'
 	cfg['ElectronIsoType'] = 'pf'
