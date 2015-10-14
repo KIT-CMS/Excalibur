@@ -465,6 +465,7 @@ def jet_resolution(args=None, additional_dictionary=None):
 				'corrections': ['L1L2L3Res', 'L1L2L3'],
 				'x_expressions': quantity,
 				'x_bins': [quantity],
+				'x_errors': [True],
 				'x_log': (True if quantity == 'zpt' else False),
 				'y_expressions': method,
 				'y_lims': [0.0, 0.5],

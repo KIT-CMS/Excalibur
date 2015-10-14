@@ -40,9 +40,10 @@ class JetResolution(analysisbase.AnalysisBase):
 			for x_bin in xrange(1, response_hist.GetNbinsX()+1):
 				global_bin = response_hist.GetBin(x_bin)
 				x_value = response_hist.GetBinCenter(global_bin)
+				bin_width = response_hist.GetXaxis().GetBinWidth(global_bin)
 				y_value = response_hist.GetBinError(global_bin)
 				plotData.plotdict["root_objects"][resolution_nick].SetPoint(x_bin, x_value, y_value)
-				plotData.plotdict["root_objects"][resolution_nick].SetPointError(x_bin, 0, 0)
+				plotData.plotdict["root_objects"][resolution_nick].SetPointError(x_bin, bin_width/2, 0)
 
 
 
