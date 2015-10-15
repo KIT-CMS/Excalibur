@@ -241,23 +241,38 @@ def get_jec_force(nickname, jec_folder=None):
 
 
 def get_lumi(json_source, min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
-	if json_source.endswith(".json") or json_source.endswith(".txt"):
-		key = "lumi_jsonfile-" + os.path.splitext(os.path.basename(json_source))[0]
-	else:
-		key = "lumi_jsonstr-" + base64.b32encode(hashlib.sha1(str(json_source)).digest())
+	"""
+	Get the lumi for a specific set of runs from CMS run JSON
+	"""
+	cache_key = _lumi_cache_key(json_sources=[json_source], min_run=min_run, max_run=max_run, normtag=normtag)
+	cache_dep = [get_relsubpath(path) for path in [json_source, normtag] if path is not None]
+	return cached_query(
+		func=get_lumi_force,
+		func_kwargs={"json_source": json_source, "min_run": min_run, "max_run": max_run, "normtag": normtag},
+		dependency_files=cache_dep,
+		cache_dir=os.path.join(getPath(), "data", "lumi"),
+		cache_key=cache_key,
+	)
+
+
+def _lumi_cache_key(json_sources, min_run, max_run, normtag):
+	"""
+	Constructs a verbose key for lumi caches to allow identifying committed data
+	"""
+	key = "lumi"
+	for json_source in json_sources:
+		if json_source.endswith(".json") or json_source.endswith(".txt"):
+			key += "_jfile-" + os.path.splitext(os.path.basename(json_source))[0]
+		else:
+			key += "_jstr-" + base64.b32encode(hashlib.sha1(str(json_source)).digest())
 	if min_run > float("-inf"):
 		key += "_min-" + str(min_run)
 	if max_run < float("inf"):
 		key += "_max-" + str(max_run)
 	if normtag is not None:
 		key += "_nt-" + os.path.splitext(os.path.basename(normtag))[0]
-	return cached_query(
-		func=get_lumi_force,
-		func_kwargs={"json_source": json_source, "min_run": min_run, "max_run": max_run, "normtag": normtag},
-		dependency_files=[json_source] + [normtag] if normtag is not None else [],
-		cache_dir=os.path.join(getPath(), "data", "lumi"),
-		cache_key=key,
-	)
+	return key
+
 
 
 def get_lumi_force(json_source, bril_ssh=get_bril_ssh(), min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
@@ -323,6 +338,25 @@ def download_tarball(url, extract_to='.'):
 
 
 # local caching
+def get_relsubpath(path, reference_path=getPath()):
+	"""
+	Get a relative path for sub-folders/files, else an absolute one
+
+	This works similar to `os.path.relpath` but ensures that the relative path
+	is contained within the reference_path. If this is not the case, `path` is
+	returned unmodified.
+
+	This function is intended mainly to check whether something is subject to VCS.
+	"""
+	rel_path = os.path.relpath(
+		os.path.abspath(path),
+		os.path.abspath(reference_path)
+	)
+	if not rel_path.startswith(".."):
+		return rel_path
+	return path
+
+
 def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), dependency_folders=(), cache_key=None, cache_dir=get_cachepath()):
 	"""
 	Get the response to a query, caching it if possible
@@ -396,15 +430,16 @@ def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), depend
 			pickle.dump(
 				{
 					# response body
-					"response" : response,
+					"response": response,
 					# meta header
-					"meta" : {
-						"timestamp" : time.time(),
-						"dependency_files" : dict((dep_file, stat_file(dep_file)) for dep_file in dep_files),
-						"dependency_folders" : dict((dep_folder, stat_file(dep_folder)) for dep_folder in dependency_folders),
+					"meta": {
+						"timestamp": time.time(),
+						"dependency_files": dict((dep_file, stat_file(dep_file)) for dep_file in dep_files),
+						"dependency_folders": dict((dep_folder, stat_file(dep_folder)) for dep_folder in dependency_folders),
 					}
 				},
 				cache_file,
-				pickle.HIGHEST_PROTOCOL
+				# use ASCII protocol for better git integration
+				0,
 			)
 	return response
