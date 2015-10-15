@@ -403,6 +403,31 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedFloat;
         });
 
+    // Skim jet - jets found in skim, without checks for validity etc
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "skimjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (event.m_tjets->size() > 0) ? event.m_tjets->front().p4.Pt()
+                                               : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "skimjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (event.m_tjets->size() > 0) ? event.m_tjets->front().p4.Phi()
+                                               : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "skimjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (event.m_tjets->size() > 0) ? event.m_tjets->front().p4.Eta()
+                                               : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "skimjet1validity", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return ((event.m_tjets->size() > 0) &&
+                    (product.GetValidJetCount(settings, event, "None") > 0))
+                       ? (event.m_tjets->front().p4 ==
+                          product.GetValidJet(settings, event, 0, "None")->p4)
+                       : DefaultValues::UndefinedFloat;
+        });
+
     /////////
     // MET //
     /////////
