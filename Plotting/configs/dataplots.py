@@ -10,7 +10,7 @@ import Excalibur.Plotting.utility.binningsZJet as binningsZJet
 
 def response_time_dependence(args=None, additional_dictionary=None):
 	""" Plot the response vs time (run-number) for different eta regions"""
-	plots= []
+	plots = []
 	etabins = binningsZJet.BinningsDictZJet().binnings_dict["abseta"].split(" ")
 	weights = ["{}<abs(jet1eta)&&{}>abs(jet1eta)".format(lower, upper) for lower, upper in zip(etabins, etabins[1:])]
 	labels = [r"{:.2f}<|$\\eta_{{jet}}$|<{:.2f}".format(float(lower), float(upper)) for lower, upper in zip(etabins, etabins[1:])]
@@ -56,6 +56,23 @@ def response_time_dependence_2012(args=None, additional_dictionary=None):
 		'plot_modules': ['PlotMplZJet', 'PlotMplRunRanges'],
 		'x_bins': '190645 194480 195647 198230 199752 200992 202088 204564 206210 207231 208686',
 		'x_lims': [190456, 208686],
+	}
+	if additional_dictionary:
+		d.update(additional_dictionary)
+	return response_time_dependence(args, d)
+
+
+def response_time_dependence_2015(args=None, additional_dictionary=None):
+	"""
+	Time dependence plot for 2015
+	"""
+	d = {
+		'plot_modules': ['PlotMplZJet', 'PlotMplRunRanges'],
+		'x_bins': '50,248000,258000',
+		'x_lims': [248000, 258000],
+		'y_lims': [0.5, 1.5],
+		'run_range_year': 2015,
+		'algorithms': 'ak4PFJetsCHS',
 	}
 	if additional_dictionary:
 		d.update(additional_dictionary)
