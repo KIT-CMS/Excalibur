@@ -3,27 +3,9 @@
 
 import os
 import Excalibur.Plotting.harryinterface as harryinterface
+from Excalibur.Plotting.utility.toolsZJet import PlottingJob, get_input_files, lims_from_binning
+import Excalibur.Plotting.utility.binningsZJet as binningsZJet
 
-# helper functions
-def _get_input_files(args):
-	"""
-	Extract the list of input files from given CLI arguments
-	"""
-	args_nofiles = []
-	input_files = []
-	input_file_args = False
-	for elem in args:
-		if not input_file_args and elem == "-i":
-			input_file_args = True
-			continue
-		if input_file_args:
-			if not elem.startswith("-"):
-				input_files.append(elem)
-				continue
-			else:
-				input_file_args = False
-		args_nofiles.append(elem)
-	return input_files, args_nofiles
 
 def _expand_to_files(raw_list, file_count, add_number=False):
 	"""
@@ -37,6 +19,7 @@ def _expand_to_files(raw_list, file_count, add_number=False):
 			else:
 				out_list.append(item)
 	return out_list
+
 
 def cuts_2015(args=None, additional_dictionary=None):
 	"""
@@ -66,7 +49,7 @@ def cuts_2015(args=None, additional_dictionary=None):
 def muon_isolation(args=None, additional_dictionary=None):
 	"""Show criteria for muon isolation based selection"""
 	arg_plots = {}
-	input_files, args_nofiles = _get_input_files(args)
+	input_files, args_nofiles = get_input_files(args)
 	# variables == mu1pt, muinv2sumnhet, ...
 	# ISO == sumchpt + sumnhet + sumpet - 0.5 * sumpupt
 	for muid in (1, 2):
@@ -102,6 +85,7 @@ def muon_isolation(args=None, additional_dictionary=None):
 					arg_plots.setdefault(tuple(d_args), []).append(d)
 	for d_args in arg_plots:
 		harryinterface.harry_interface(arg_plots[d_args], d_args)
+
 
 def cut_n_muons(args=None, additional_dictionary=None):
 	"""Plot min/max N muon cut"""
@@ -141,10 +125,11 @@ def cut_n_muons(args=None, additional_dictionary=None):
 	plots.append(d2)
 	harryinterface.harry_interface(plots, args)
 
+
 def cut_muon_kinematics(args=None, additional_dictionary=None):
 	"""Plot pt and eta muon cut"""
 	arg_plots = {}
-	input_files, args_nofiles = _get_input_files(args)
+	input_files, args_nofiles = get_input_files(args)
 	for in_file in input_files:
 		args = args_nofiles[:]
 		args.extend(("-i", in_file))
@@ -173,10 +158,11 @@ def cut_muon_kinematics(args=None, additional_dictionary=None):
 	for args in arg_plots:
 		harryinterface.harry_interface(arg_plots[args], args)
 
+
 def cut_jet_kinematics(args=None, additional_dictionary=None):
 	"""Plot pt and eta jet1 cut"""
 	arg_plots = {}
-	input_files, args_nofiles = _get_input_files(args)
+	input_files, args_nofiles = get_input_files(args)
 	for in_file in input_files:
 		args = args_nofiles[:]
 		args.extend(("-i", in_file))
@@ -204,3 +190,69 @@ def cut_jet_kinematics(args=None, additional_dictionary=None):
 			arg_plots.setdefault(tuple(args), []).append(d)
 	for args in arg_plots:
 		harryinterface.harry_interface(arg_plots[args], args)
+
+
+def jetid_2015(args, additional_dictionary=None):
+	"""All jetID plots for 2015 data"""
+	d = {
+		"algorithms": ["ak4PFJetsCHS"],
+	}
+	if additional_dictionary is not None:
+		d.update(additional_dictionary)
+	plotting_jobs = []
+	plotting_jobs += jetid_efficiency(args=args, additional_dictionary=d)
+	plotting_jobs += jetid_changes(args=args, additional_dictionary=d)
+	return plotting_jobs
+
+
+def jetid_efficiency(args, additional_dictionary=None):
+	"""Plot efficiency of jetID veto for leading skim jet over pt, eta, phi"""
+	plots = []
+	input_files, args_nofiles = get_input_files(args)
+	binnings = binningsZJet.BinningsDictZJet()
+	for x_expr, x_binning in [
+		("skimjet1pt", "20,0,200"),
+		("skimjet1eta", binnings.binnings_dict["eta"]),
+		("skimjet1phi", binnings.binnings_dict["phi"]),
+		("zpt", "50,0,200"),
+	]:
+		d = {
+			'labels': ['valid'] * len(input_files) + ["total"] * len(input_files),
+			'x_expressions': [x_expr],
+			'x_lims': lims_from_binning(x_binning),
+			'weights': ['(weight*skimjet1validity)'] * len(input_files) + ["(weight*(skimjet1pt>=0))"] * len(input_files),
+			'x_bins': x_binning,
+			'filename': "jetid_efficiency_" + x_expr,
+			'analysis_modules': ['Ratio'],
+			'y_subplot_lims': [0.01, 0.99],
+		}
+		if additional_dictionary is not None:
+			d.update(additional_dictionary)
+		plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
+
+
+def jetid_changes(args, additional_dictionary=None):
+	"""Plot changes from jetID veto for leading jet vs leading skim jet over pt, eta, phi"""
+	plots = []
+	input_files, args_nofiles = get_input_files(args)
+	#binningsZJet.BinningsDictZJet().binnings_dict["abseta"]
+	for x_expr, x_binning in [
+		("jet1pt", "20,0,200"),
+		("jet1eta", binningsZJet.BinningsDictZJet().binnings_dict["eta"]),
+		("jet1phi", binningsZJet.BinningsDictZJet().binnings_dict["phi"])
+	]:
+		d = {
+			'labels': ['valid'] * len(input_files) + ["total"] * len(input_files),
+			'x_expressions': [x_expr],
+			'y_expressions': ["skim%s" % x_expr],
+			'x_lims': lims_from_binning(x_binning),
+			'y_lims': lims_from_binning(x_binning),
+			'x_bins': x_binning,
+			'y_bins': x_binning,
+			'filename': "jetid_changes_" + x_expr,
+		}
+		if additional_dictionary is not None:
+			d.update(additional_dictionary)
+		plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
