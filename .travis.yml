@@ -17,6 +17,7 @@ before_install:
   - ls /usr/include/root /usr/lib/*/root5.34
   - alias python='python2.7'
   - python --version
+  - python2.7 --version
   - root-config --cflags --ldflags
   - cd ..
   - wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz
@@ -44,4 +45,4 @@ script:
   - test_excalibur.sh data
   - test_excalibur.sh data15
   - test_excalibur.sh mc15
-  - merlin.py -i data.root -x zpt
+  - python2.7 scripts/merlin.py -i data.root -x zpt
