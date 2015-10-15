@@ -13,8 +13,10 @@ addons:
     packages:
     - clang
 before_install:
-  - sudo apt-get -y install libboost1.54-all-dev root-system libroot-bindings-python5.34 cmake
+  - sudo apt-get -y install libboost1.54-all-dev root-system libroot-bindings-python5.34 cmake python2.7
   - ls /usr/include/root /usr/lib/*/root5.34
+  - alias python='python2.7'
+  - python --version
   - root-config --cflags --ldflags
   - cd ..
   - wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz
