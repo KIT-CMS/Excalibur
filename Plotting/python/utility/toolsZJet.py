@@ -62,6 +62,7 @@ def call_python_function(function_name, python_path, unknown_args=None):
 				return
 	log.warning("Could not execute function {}".format(function_name))
 
+
 def get_input_files(args=None):
 	"""
 	Extract the list of input files from given CLI arguments
@@ -88,6 +89,16 @@ def get_input_files(args=None):
 				input_file_args = False
 		args_nofiles.append(elem)
 	return input_files, args_nofiles
+
+
+def lims_from_binning(binning):
+	"""
+	Convert a binning string to plot limits
+	"""
+	if ',' in binning:
+		return [float(border) for border in binning.split(',')[1:3]]
+	return [float(binning.split(None, 1)[0]), float(binning.rsplit(None, 1)[-1])]
+
 
 def get_module_list(path):
 	"""get a list with all python modules in the path."""
