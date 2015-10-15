@@ -60,7 +60,7 @@ class InputRootZJet(inputroot.InputRoot):
 
 		# add 'weight' by default to weights
 		if not plotData.plotdict['no_weight'] and not any(bool(json) is False for json in plotData.input_json_dicts):
-			plotData.plotdict['weights'] = ["(weight * {0})".format(weight) for weight in plotData.plotdict['weights']]
+			plotData.plotdict['weights'] = ["(weight * ({0}))".format(weight) for weight in plotData.plotdict['weights']]
 
 		# get int. lumi from input dicts
 		if plotData.plotdict['lumis'] is None:
