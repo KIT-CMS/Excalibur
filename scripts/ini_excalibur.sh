@@ -73,6 +73,7 @@ elif [ $USER = "berger" ]; then
     alias merlinlp='merlin.py --live evince --python'
     alias merlinlx='merlin.py --live evince -x'
 fi
+alias test_merlin='merlin.py -i ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root --corr L1L2L3 --live evince --userpc --formats pdf -x zpt'
 
 # get the weights for a simple reweighting in npv. weight string is printed as output
 # Usage: get_weights data.root mc.root
