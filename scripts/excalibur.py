@@ -77,8 +77,8 @@ def ZJet():
 	# Now the config .json is ready and we can run zjet
 	if options.batch:
 		if not options.resume:
-			prepareWork(options.work, options.out, options.clean)
-			writeDBS(conf, options.out, options.work + "/files.dbs")
+			prepare_wkdir_parent(options.work, options.out, options.clean)
+			writeDBS(conf["InputFiles"], options.out, options.work + "/files.dbs")
 			createRunfile(options.json, options.work + "/run-excalibur.sh", workpath = options.work)
 			# Copy config files, scripts and artus executable into working directory
 			shutil.copy(getEnv() + "/cfg/gc/json_modifier.py", options.work)
@@ -327,17 +327,6 @@ def writeJson(settings, filename):
 		json.dump(settings, f, sort_keys=True, indent=4, separators=(',', ': '))
 
 
-def writeDBS(settings, nickname, filename):
-	# ordering is important in the .dbs file format
-	with open(filename, 'wb') as f:
-		f.write("[" + nickname + "]\n")
-		f.write("nickname = " + nickname + "\n")
-		f.write("events = " + str(-len(settings['InputFiles'])) + "\n")
-		f.write("prefix = " + os.path.split(settings['InputFiles'][0])[0] + "\n")
-		for i in settings['InputFiles']:
-			f.write(os.path.split(i)[1] + " = -1\n")
-
-
 def copyFile(source, target, replace={}):
 	with open(source) as f:
 		text = f.read()
@@ -346,6 +335,28 @@ def copyFile(source, target, replace={}):
 	with open(target, 'wb') as f:
 		f.write(text)
 	return text
+
+
+def writeDBS(input_files, nickname, dbsfile_name):
+	"""
+	Create a DBS file of all input files
+
+	:param input_files: files to process
+	:type input_files: list[str]
+	:param nickname: name of the run
+	:type nickname: str
+	:param dbsfile_name: name (and path) to write DBS information to
+	:type dbsfile_name: str
+	"""
+	file_prefix = os.path.dirname(os.path.commonprefix(input_files))
+	# ordering is important in the .dbs file format
+	with open(dbsfile_name, 'wb') as f:
+		f.write("[" + nickname + "]\n")
+		f.write("nickname = " + nickname + "\n")
+		f.write("events = " + str(-len(input_files)) + "\n")
+		f.write("prefix = " + file_prefix + "\n")
+		for input_file in input_files:
+			f.write(os.path.relpath(input_file, file_prefix) + " = -1\n")
 
 
 def createGridControlConfig(settings, filename, original=None, timestamp='', batch="", jobs=None, files_per_job=None):
@@ -420,7 +431,7 @@ def createFileList(files, fast=False):
 		return files
 
 
-def prepareWork(work_path, out_name, clean=False):
+def prepare_wkdir_parent(work_path, out_name, clean=False):
 	"""
 	Prepare the parent directory hosting GC work directories
 
