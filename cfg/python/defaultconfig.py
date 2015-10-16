@@ -408,7 +408,7 @@ def data_2015(cfg, **kwargs):
 		cfg['Lumi'] = 0.04003
 	elif kwargs['bunchcrossing'] == "25ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_25nsV5_DATA/Summer15_25nsV5_DATA'
-		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-257599_13TeV_PromptReco_Collisions15_25ns_JSON.txt']
+		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt']
 		cfg['Lumi'] = configtools.get_lumi(json_source=cfg['JsonFiles'][0])  # 0.225
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
