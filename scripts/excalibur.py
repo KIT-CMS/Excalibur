@@ -79,33 +79,7 @@ def ZJet():
 		if not options.resume:
 			prepare_wkdir_parent(options.work, options.out, options.clean)
 			writeDBS(conf["InputFiles"], options.out, options.work + "/files.dbs")
-			create_runfile(options.json, options.work + "/run-excalibur.sh", workpath = options.work)
-			# Copy config files, scripts and artus executable into working directory
-			shutil.copy(getEnv() + "/cfg/gc/json_modifier.py", options.work)
-			shutil.copy(getEnv() + "/cfg/gc/gc_base.conf", options.work)
-			shutil.copy(getEnv() + "/scripts/ini_excalibur.sh", options.work)
-			shutil.copy(options.json, options.work)
-			shutil.copy(getEnv() + "/scripts/artus", options.work)
-			# Copy shared libraries into working directory/lib
-			print options.work
-			os.makedirs(options.work + "lib")
-			for lib in [
-				"/libartus_configuration.so",
-				"/libartus_consumer.so",
-				"/libartus_core.so",
-				"/libartus_externalcorr.so",
-				"/libartus_filter.so",
-				"/libartus_kappaanalysis.so",
-				"/libartus_provider.so",
-				"/libartus_utility.so",
-				"/../Kappa/lib/libKappa.so",
-				"/../KappaTools/lib/libKPlotTools.so",
-				"/../KappaTools/lib/libKRootTools.so",
-				"/../KappaTools/lib/libKToolbox.so"
-			]:
-				shutil.copy(getEnv('ARTUSPATH') + lib, options.work + 'lib/')
-			shutil.copy(getEnv('BOOSTPATH') + "/libboost_regex.so." + getEnv('BOOSTVER').split('-')[0], options.work + 'lib/')
-			shutil.copy(getEnv('BOOSTPATH') + "/libboost_program_options.so." + getEnv('BOOSTVER').split('-')[0], options.work + 'lib/')
+			populate_workdir(artus_json=options.json, workdir_path=options.work)
 			outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch, jobs=options.jobs, files_per_job=options.files_per_job)
 
 		outpath = options.work + "out/*.root"
@@ -412,6 +386,45 @@ def create_runfile(configjson, filename='test.sh', original=None, workpath=None)
 		text = text.replace('@WORKPATH@/', workpath)
 	with open(filename, 'wb') as f:
 		f.write(text)
+
+
+def populate_workdir(workdir_path, artus_json):
+	"""
+	Copy required resources to the working directory
+	"""
+	print "Populating workdir:", workdir_path
+	create_runfile(artus_json, workdir_path + "/run-excalibur.sh", workpath = workdir_path)
+	shutil.copy(artus_json, workdir_path)
+	# files to transfer: wkdir_subdir => basedir => relpaths
+	transfer_dict = {
+		"": {
+			getEnv(): [
+				"cfg/gc/json_modifier.py", "cfg/gc/gc_base.conf",
+				"scripts/ini_excalibur.sh", "scripts/artus"
+			],
+		},
+		"lib": {
+			getEnv('ARTUSPATH'): [
+				"libartus_configuration.so", "libartus_consumer.so",
+				"libartus_core.so", "libartus_externalcorr.so",
+				"libartus_filter.so", "libartus_kappaanalysis.so",
+				"libartus_provider.so", "libartus_utility.so",
+				# these should probably be read from a 'KAPPAPATH' - MF@20151016
+				"../Kappa/lib/libKappa.so", "../KappaTools/lib/libKPlotTools.so",
+				"../KappaTools/lib/libKRootTools.so", "../KappaTools/lib/libKToolbox.so"
+			],
+			getEnv('BOOSTPATH'): [
+				"libboost_regex.so." + getEnv('BOOSTVER').split('-')[0],
+				"libboost_program_options.so." + getEnv('BOOSTVER').split('-')[0]
+			],
+		}
+	}
+	for wkdir_subdir in transfer_dict:
+		if wkdir_subdir:
+			os.makedirs(os.path.join(workdir_path, wkdir_subdir))
+		for source_basedir in transfer_dict[wkdir_subdir]:
+			for relpath in transfer_dict[wkdir_subdir][source_basedir]:
+				shutil.copy(os.path.join(source_basedir, relpath), os.path.join(workdir_path, wkdir_subdir))
 
 
 def showMessage(title, message, fail=False):
