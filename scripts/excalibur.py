@@ -45,7 +45,7 @@ def ZJet():
 
 	# always make json config unless we resume existing one
 	if not options.isjson and not options.resume:
-		conf = import_config(options.cfg)
+		conf = import_config(options.cfg, options.config_mods)
 		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
 		if conf["OutputPath"] == "out":
 			conf["OutputPath"] = options.out + '.root'
@@ -150,12 +150,16 @@ def ZJet():
 	return gctime
 
 
-def import_config(config_file):
+def import_config(config_file, config_mods):
 	"""
 	Import a configuration from file
 	"""
 	config_module = imp.load_source("config", config_file)
-	return config_module.config()
+	config = config_module.config()
+	for mod_idx, mod_file in enumerate(config_mods):
+		mod_module = imp.load_source("config_mod%s" % mod_idx, mod_file)
+		config = mod_module.modify_config(config)
+	return config
 
 
 # ZJet Options
@@ -167,13 +171,23 @@ def getoptions(configdir=None, name='excalibur'):
 		configdir = tools.get_environment_variable("EXCALIBURCONFIGS")
 	config_dirs = configdir.split(':')
 	parser = argparse.ArgumentParser(
+		formatter_class=argparse.RawDescriptionHelpFormatter,
 		description="%(prog)s is the main analysis program.",
-		epilog="Have fun.")
+		epilog="""
+Config files must provide a function
+	`config() -> dict`.
+Config mod files must provide a function
+	`modify_config(config: dict) -> dict`.
+
+Have fun. ;)
+"""
+	)
 	# config file
 	parser.add_argument('cfg', metavar='cfg', type=str, nargs='?', default=None,
 		help="config file (.py or .py.json)" +
 			 " - path: %s and .py can be omitted. No config implies mc -f" % configdir)
-
+	parser.add_argument('config_mods', metavar='cfg_mod', type=str, nargs='*', default=[],
+		help="config modifier")
 	# options
 	parser.add_argument('-c', '--config', action='store_true',
 		help="produce json config only")
@@ -218,18 +232,19 @@ def getoptions(configdir=None, name='excalibur'):
 
 	# derive config file names
 	opt.cfg = resolve_config(opt.cfg, config_dirs)
+	opt.config_mods = [resolve_config(config_mod, config_dirs) for config_mod in opt.config_mods]
 	# test mode
 	if opt.cfg is None:
 		opt.cfg = 'mc'
 		if not opt.fast and not opt.batch and not opt.config:
 			opt.fast = [3]
-
+	# set paths for libraries and outputs
+	if not opt.out:
+		opt.out = get_config_nick(opt.cfg, opt.config_mods)
 	# derive json config file name
 	opt.isjson = (opt.cfg[-8:] == '.py.json')
-	opt.json = opt.cfg[:]
-	if not opt.isjson:
-		opt.json += ".json"
-	else:
+	opt.json = os.path.join(os.path.dirname(opt.cfg), opt.out + '.py.json')
+	if opt.isjson:
 		opt.cfg = opt.cfg[:-8]
 
 	# derive omitted values for fast and skip
@@ -238,9 +253,7 @@ def getoptions(configdir=None, name='excalibur'):
 	if opt.fast and len(opt.fast) == 1:
 		opt.fast = [-opt.fast[0], None]
 
-	# set paths for libraries and outputs
-	if not opt.out:
-		opt.out = get_config_nick(opt.cfg)
+	# workdirs
 	if not opt.work:
 		opt.work = getEnv('EXCALIBUR_WORK', True) or getEnv()
 	opt.work = os.path.join(opt.work, name, opt.out)
@@ -276,7 +289,7 @@ def resolve_config(config_name, config_dirs):
 
 
 def get_config_nick(config, modifiers=()):
-	return "_".join(
+	return "".join(
 		os.path.splitext(os.path.basename(name))[0] for name in
 		([config] + list(modifiers))
 	)
