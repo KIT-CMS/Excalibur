@@ -60,7 +60,7 @@ def ZJet():
 			print "pipelines configured, written to", options.json
 	# get an existing one
 	else:
-		with open(options.cfg) as config_json:
+		with open(options.json) as config_json:
 			conf = json.load(config_json)
 		cli_conf_options = ("skip", "nevents")
 		if any(getattr(options, attr, False) for attr in cli_conf_options):
@@ -251,6 +251,8 @@ def getoptions(configdir=None, name='excalibur'):
 	opt.json = opt.cfg[:]
 	if not opt.isjson:
 		opt.json += ".json"
+	else:
+		opt.cfg = opt.cfg[:-8]
 
 	# derive omitted values for fast and skip
 	if not opt.fast:
@@ -287,11 +289,12 @@ def resolve_config(config_name, config_dirs):
 	if os.path.isfile(config_name):
 		return config_name
 	if '/' not in config_name:
+		add_ext = '' if os.path.splitext(config_name)[1] else '.py'
 		for cdir in config_dirs:
-			candidate_file = os.path.join(cdir, config_name + '.py')
+			candidate_file = os.path.join(cdir, config_name + add_ext)
 			if os.path.isfile(candidate_file):
 				return candidate_file
-	ValueError("Config '%s' does not exist." % config_name)
+	raise ValueError("Config '%s' does not exist." % config_name)
 
 
 def get_config_nick(config, modifiers=()):
