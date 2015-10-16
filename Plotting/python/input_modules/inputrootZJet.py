@@ -46,8 +46,8 @@ class InputRootZJet(inputroot.InputRoot):
 		zjetlist =  ["algorithms", "corrections", "zjetfolders"]
 		self.prepare_list_args(plotData, zjetlist)
 		if plotData.plotdict['folders'] is None:
+			folders = []
 			if all( [plotData.plotdict[i] != [None] for i in zjetlist]):
-				folders = []
 				for algo, corr, folder in zip(*[plotData.plotdict[i] for i in zjetlist]):
 					folders.append("%s_%s%s/ntuple" % (folder, algo, corr))
 			plotData.plotdict['folders'] = folders
