@@ -31,13 +31,13 @@ def ZJet():
 			subprocess.call(['go.py', options.work + "/" + options.out + ".conf", "-d all"])
 		except:
 			print "could not delete currently running jobs"
-			exit(1)
+			sys.exit(1)
 		try:
 			shutil.rmtree(options.work)
 			print "Directory %s deleted." % options.work
 		except:
 			print "Could not delete output directory %s" % options.work
-		exit(0)
+		sys.exit(0)
 
 	# make json config
 	if not options.isjson and not options.resume:
@@ -60,7 +60,7 @@ def ZJet():
 
 	# exit here if json config was the only aim
 	if options.config:
-		exit(0)
+		sys.exit(0)
 
 	if not options.isjson and not options.resume:
 		Kappacompiled = False
@@ -107,19 +107,19 @@ def ZJet():
 			subprocess.check_call(['go.py', options.work + "/" + options.out + ".conf"])
 		except OSError:
 			print "Could not start grid-control! Do you have the grid-control directory in you PATH?"
-			exit(1)
+			sys.exit(1)
 		except KeyboardInterrupt:
-			exit(0)
+			sys.exit(0)
 		except subprocess.CalledProcessError:
 			print "grid-control run failed"
-			exit(1)
+			sys.exit(1)
 		gctime = time.time() - gctime
 
 		if glob.glob(outpath):
 			subprocess.call(['hadd', options.work + 'out.root'] + glob.glob(outpath))
 		else:
 			print "Batch job did not produce output %s. Exit." % outpath
-			exit(1)
+			sys.exit(1)
 
 		try:
 			print "Symlink to output file created: ", "%s/work/%s.root" % (getEnv(), options.out)
@@ -139,9 +139,9 @@ def ZJet():
 			print "Are you sure? [Y/n]"
 			try:
 				if raw_input() == "n":
-					exit(0)
+					sys.exit(0)
 			except KeyboardInterrupt:
-				exit(0)
+				sys.exit(0)
 		try:
 			child = subprocess.Popen(["artus", options.json] + (["--log-level", options.log_level] if options.log_level is not None else []))
 			streamdata = child.communicate()[0]
@@ -167,16 +167,14 @@ def ZJet():
 	return gctime
 
 
-def getoptions(configdir="", name='excalibur'):
+def getoptions(configdir=None, name='excalibur'):
 	"""Set standard options and read command line arguments. """
-	if configdir == "":
+	if configdir is None:
 		configdir = tools.get_environment_variable("EXCALIBURCONFIGS")
-
-
+	config_dirs = configdir.split(':')
 	parser = argparse.ArgumentParser(
 		description="%(prog)s is the main analysis program.",
 		epilog="Have fun.")
-
 	# config file
 	parser.add_argument('cfg', metavar='cfg', type=str, nargs='?', default=None,
 		help="config file (.py or .py.json)" +
@@ -224,42 +222,32 @@ def getoptions(configdir="", name='excalibur'):
 
 	opt = parser.parse_args()
 
-	# derive config file name
+	# derive config file names
+	opt.cfg = resolve_config(opt.cfg, config_dirs)
+	# test mode
 	if opt.cfg is None:
 		opt.cfg = 'mc'
 		if not opt.fast and not opt.batch and not opt.config:
 			opt.fast = [3]
-	if '/' not in opt.cfg:
-		for cdir in configdir.split(":"):
-			cfile = os.path.join(cdir, opt.cfg + '.py')
-			if os.path.isfile(cfile):
-				opt.cfg = cfile
-	if not os.path.isfile(opt.cfg):
-		print "Config file", opt.cfg, "does not exist."
-		exit(1)
 
 	# derive json config file name
 	opt.isjson = (opt.cfg[-8:] == '.py.json')
 	opt.json = opt.cfg[:]
-	if opt.isjson and opt.config:
-		print "Json config alread created. Nothing to do."
-		exit(1)
 	if not opt.isjson:
 		opt.json += ".json"
 
 	# derive omitted values for fast and skip
-	if opt.fast == []:
+	if not opt.fast:
 		opt.fast = [3]
 	if opt.fast and len(opt.fast) == 1:
 		opt.fast = [-opt.fast[0], None]
 
 	# set paths for libraries and outputs
 	if not opt.out:
-		opt.out = opt.cfg[opt.cfg.rfind('/') + 1:opt.cfg.rfind('.py')]
-	opt.base = getEnv()
+		opt.out = get_config_nick(opt.cfg)
 	if not opt.work:
 		opt.work = getEnv('EXCALIBUR_WORK', True) or getEnv()
-	opt.work += '/' + name + '/' + opt.out
+	opt.work = os.path.join(opt.work, name, opt.out)
 	if not opt.resume and not opt.delete:
 		opt.timestamp = time.strftime("_%Y-%m-%d_%H-%M")
 	else:
@@ -269,12 +257,32 @@ def getoptions(configdir="", name='excalibur'):
 			opt.timestamp = paths[-1][-17:]
 		except:
 			print "No existing output directory available!"
-			exit(1)
+			sys.exit(1)
 	opt.work += opt.timestamp + '/'
-
 	if opt.verbose:
+		print "Options:"
 		print opt
 	return opt
+
+
+def resolve_config(config_name, config_dirs):
+	if config_name is None:
+		return None
+	if os.path.isfile(config_name):
+		return config_name
+	if '/' not in config_name:
+		for cdir in config_dirs:
+			candidate_file = os.path.join(cdir, config_name + '.py')
+			if os.path.isfile(candidate_file):
+				return candidate_file
+	ValueError("Config '%s' does not exist." % config_name)
+
+
+def get_config_nick(config, modifiers=()):
+	return "_".join(
+		os.path.splitext(os.path.basename(name))[0] for name in
+		([config] + list(modifiers))
+	)
 
 
 def getEnv(variable='EXCALIBURPATH', nofail=False):
@@ -285,7 +293,7 @@ def getEnv(variable='EXCALIBURPATH', nofail=False):
 		print "Please source scripts/ini_excalibur.sh and CMSSW!"
 		if nofail:
 			return None
-		exit(1)
+		sys.exit(1)
 
 
 def writeJson(settings, filename):
@@ -380,7 +388,7 @@ def createFileList(files, fast=False):
 				files = [files]
 		if not files:
 			print "No input files found."
-			exit(1)
+			sys.exit(1)
 		if fast:
 			files = files[fast[0]:fast[1]]
 		return files
