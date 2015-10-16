@@ -17,6 +17,8 @@ import socket
 import Artus.Utility.tools as tools
 
 
+# ZJet Runner
+
 def ZJet():
 	"""ZJet modifies and runs the configs"""
 	aborted = False
@@ -182,6 +184,9 @@ def import_config(config_file):
 	return config_module.config()
 
 
+# ZJet Options
+
+
 def getoptions(configdir=None, name='excalibur'):
 	"""Set standard options and read command line arguments. """
 	if configdir is None:
@@ -303,6 +308,9 @@ def get_config_nick(config, modifiers=()):
 	)
 
 
+# ZJet Tools
+
+
 def getEnv(variable='EXCALIBURPATH', nofail=False):
 	try:
 		return os.environ[variable]
@@ -412,20 +420,25 @@ def createFileList(files, fast=False):
 		return files
 
 
-def prepareWork(work, out, clean=False):
-	"""ensure that the output path exists and delete old outputs optionally)
+def prepareWork(work_path, out_name, clean=False):
+	"""
+	Prepare the parent directory hosting GC work directories
 
-	to save your outputs simply rename them without timestamp
-"""
-	if work[-1] == '/':
-		work = work[:-1]
-	if "_20" in work:
-		paths = glob.glob(work[:-17]+"_20*")
-		paths.sort()
-		if paths:
-			paths.pop()
-	else:
-		paths = glob.glob(work + "_20*")
+	:param work_path: work directory path, e.g. `"/foo/bar/data15_25ns_2015-09-02_09-04"`
+	:type work_path: str
+	:param out_name: name of the run, e.g. `"data15_25ns"`
+	:type out_name: str
+	:param clean: remove old working directories
+	:type clean: bool
+
+	:note: The `work_path` can be specified in both `<config>` and
+	       `<config>_<run_date>` notation.
+	"""
+	work_path = work_path if work_path[-1] != '/' else work_path[:-1]
+	if "_20" in work_path:  # explicit run work dir path
+		paths = sorted(glob.glob(work_path[:-17]+"_20*"))[1:]
+	else:  # general task work dir path base
+		paths = glob.glob(work_path + "_20*")
 	if clean:
 		for p in paths:
 			if os.path.exists(p):
@@ -433,8 +446,8 @@ def prepareWork(work, out, clean=False):
 				shutil.rmtree(p)
 	elif len(paths) > 1:
 		print len(paths), "old output directories for this config. Clean-up recommended."
-	print "Output directory:", work
-	os.makedirs(work + "/work." + out)
+	print "Output directory:", work_path
+	os.makedirs(work_path + "/work." + out_name)
 
 
 def get_n_free_slots_ekpsg():
