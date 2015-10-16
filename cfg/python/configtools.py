@@ -245,7 +245,7 @@ def get_lumi(json_source, min_run=float("-inf"), max_run=float("inf"), normtag="
 	Get the lumi for a specific set of runs from CMS run JSON
 	"""
 	cache_key = _lumi_cache_key(json_sources=[json_source], min_run=min_run, max_run=max_run, normtag=normtag)
-	cache_dep = [get_relsubpath(path) for path in [json_source, normtag] if path is not None]
+	cache_dep = [get_relsubpath(path) for path in [json_source] if path is not None]
 	return cached_query(
 		func=get_lumi_force,
 		func_kwargs={"json_source": json_source, "min_run": min_run, "max_run": max_run, "normtag": normtag},
