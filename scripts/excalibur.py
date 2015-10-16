@@ -79,7 +79,7 @@ def ZJet():
 		if not options.resume:
 			prepare_wkdir_parent(options.work, options.out, options.clean)
 			writeDBS(conf["InputFiles"], options.out, options.work + "/files.dbs")
-			createRunfile(options.json, options.work + "/run-excalibur.sh", workpath = options.work)
+			create_runfile(options.json, options.work + "/run-excalibur.sh", workpath = options.work)
 			# Copy config files, scripts and artus executable into working directory
 			shutil.copy(getEnv() + "/cfg/gc/json_modifier.py", options.work)
 			shutil.copy(getEnv() + "/cfg/gc/gc_base.conf", options.work)
@@ -387,7 +387,19 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 	copyFile(original, filename, d)
 
 
-def createRunfile(configjson, filename='test.sh', original=None, workpath=None):
+def create_runfile(configjson, filename='test.sh', original=None, workpath=None):
+	"""
+	Create the wrapper for executing excalibur/artus in grid-control
+
+	:param configjson: Artus run json config
+	:type configjson: str
+	:param filename: path to write wrapper to
+	:type filename: str
+	:param original: path to template for the wrapper
+	:type original: str
+	:param workpath: path to GC work directory
+	:type workpath: str
+	"""
 	if original is None:
 		original = getEnv() + '/cfg/gc/run-excalibur.sh'
 	with open(original) as f:
@@ -396,7 +408,8 @@ def createRunfile(configjson, filename='test.sh', original=None, workpath=None):
 	text = text.replace('@SCRAM_ARCH@', getEnv('SCRAM_ARCH'))
 	text = text.replace('@EXCALIBURPATH@', getEnv())
 	text = text.replace('@CMSSW_BASE@', getEnv('CMSSW_BASE'))
-	text = text.replace('@WORKPATH@/', workpath)
+	if workpath is not None:
+		text = text.replace('@WORKPATH@/', workpath)
 	with open(filename, 'wb') as f:
 		f.write(text)
 
