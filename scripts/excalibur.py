@@ -41,10 +41,9 @@ def ZJet():
 			print "%s: %s" % (err.__class__.__name__, err)
 		sys.exit(0)
 
-	# make json config
+	# always make json config unless we resume existing one
 	if not options.isjson and not options.resume:
-		custom = imp.load_source("config", options.cfg)
-		conf = custom.config()
+		conf = import_config(options.cfg)
 		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
 		if conf["OutputPath"] == "out":
 			conf["OutputPath"] = options.out + '.root'
@@ -59,6 +58,13 @@ def ZJet():
 			writeJson(conf, options.json)
 			print len(conf["Pipelines"]),
 			print "pipelines configured, written to", options.json
+	# get an existing one
+	else:
+		with open(options.cfg) as config_json:
+			conf = json.load(config_json)
+		cli_conf_options = ("skip", "nevents")
+		if any(getattr(options, attr, False) for attr in cli_conf_options):
+			print "Resuming run, ignoring CLI options:", ", ".join(getattr(options, attr) for attr in cli_conf_options if getattr(options, attr, False))
 
 	# exit here if json config was the only aim
 	if options.config:
@@ -167,6 +173,14 @@ def ZJet():
 		except:
 			pass
 	return gctime
+
+
+def import_config(config_file):
+	"""
+	Import a configuration from file
+	"""
+	config_module = imp.load_source("config", config_file)
+	return config_module.config()
 
 
 def getoptions(configdir=None, name='excalibur'):
