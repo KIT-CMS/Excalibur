@@ -259,7 +259,7 @@ def getoptions(configdir=None, name='excalibur'):
 		opt.cfg = opt.cfg[:-8]
 
 	# derive omitted values for fast and skip
-	if not opt.fast:
+	if opt.fast == []:
 		opt.fast = [3]
 	if opt.fast and len(opt.fast) == 1:
 		opt.fast = [-opt.fast[0], None]
