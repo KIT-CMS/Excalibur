@@ -51,13 +51,9 @@ def ZJet():
 			conf['FirstEvent'] = options.skip
 		if options.nevents:
 			conf['ProcessNEvents'] = options.nevents
-		if options.printconfig:
-			print "json config:"
-			print json.dumps(conf, sort_keys=True, indent=4, separators=(',', ': '))
-		if not options.resume:
-			writeJson(conf, options.json)
-			print len(conf["Pipelines"]),
-			print "pipelines configured, written to", options.json
+		writeJson(conf, options.json)
+		print len(conf["Pipelines"]),
+		print "pipelines configured, written to", options.json
 	# get an existing one
 	else:
 		with open(options.json) as config_json:
@@ -66,6 +62,9 @@ def ZJet():
 		if any(getattr(options, attr, False) for attr in cli_conf_options):
 			print "Resuming run, ignoring CLI options:", ", ".join(getattr(options, attr) for attr in cli_conf_options if getattr(options, attr, False))
 
+	if options.printconfig:
+		print "json config:"
+		print json.dumps(conf, sort_keys=True, indent=4, separators=(',', ': '))
 	# exit here if json config was the only aim
 	if options.config:
 		sys.exit(0)
