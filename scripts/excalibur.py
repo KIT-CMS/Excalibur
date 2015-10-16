@@ -29,14 +29,16 @@ def ZJet():
 	if options.delete:
 		try:
 			subprocess.call(['go.py', options.work + "/" + options.out + ".conf", "-d all"])
-		except:
-			print "could not delete currently running jobs"
+		except Exception as err:
+			print "Could not delete currently running jobs"
+			print "%s: %s" % (err.__class__.__name__, err)
 			sys.exit(1)
 		try:
 			shutil.rmtree(options.work)
 			print "Directory %s deleted." % options.work
-		except:
+		except Exception as err:
 			print "Could not delete output directory %s" % options.work
+			print "%s: %s" % (err.__class__.__name__, err)
 		sys.exit(0)
 
 	# make json config
