@@ -7,12 +7,10 @@ def config():
 		ekppath="/storage/a/mfischer/skims/zjet/2015-10-09/DYJetsToLL_M_50_aMCatNLO_Asympt25ns_13TeV/*.root",
 		nafpath="/pnfs/desy.de/cms/tier2/store/user/mafische/skims/MF_AnyMu_2015_746/2015-10-09/DYJetsToLL_M_50_aMCatNLO_Asympt25ns_13TeV/*.root",
 	)
-	cfg['RC'] = False
 	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts', 'betacuts'], ['None', 'L1', 'L1L2L3'])
 
 	configtools.remove_quantities(cfg, ['jet1btag','jet1qgtag', 'jet1rc'])
 
-	cfg['JetMatchingAlgorithm'] = 'algorithmic'
 	cfg['DeltaRRadiationJet'] = 1
 
 	cfg['CutAlphaMax'] = 0.3
