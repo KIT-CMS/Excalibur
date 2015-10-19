@@ -68,7 +68,7 @@ def response_time_dependence_2015(args=None, additional_dictionary=None):
 	"""
 	d = {
 		'plot_modules': ['PlotMplZJet', 'PlotMplRunRanges'],
-		'x_bins': '50,248000,258000',
+		'x_bins': '10,248000,258000',
 		'x_lims': [248000, 258000],
 		'y_lims': [0.5, 1.5],
 		'run_range_year': 2015,
@@ -77,3 +77,16 @@ def response_time_dependence_2015(args=None, additional_dictionary=None):
 	if additional_dictionary:
 		d.update(additional_dictionary)
 	return response_time_dependence(args, d)
+
+
+def response_time_dependence_2015_25ns(args=None, additional_dictionary=None):
+	"""
+	Time dependence plot for 2015, 25ns data only
+	"""
+	d = {
+		'x_bins': '10,253000,258000',
+		'x_lims': [253000, 258000],
+	}
+	if additional_dictionary:
+		d.update(additional_dictionary)
+	return response_time_dependence_2015(args, d)
