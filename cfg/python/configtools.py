@@ -30,6 +30,13 @@ import urllib2
 import StringIO
 import subprocess
 
+import logging
+
+# settings used when making a choice
+config_logger = logging.getLogger("CONF")
+# internals of caching
+cache_logger = logging.getLogger("CACHE")
+
 
 def getConfig(inputtype, year, channel, **kwargs):
 	"""
@@ -158,7 +165,7 @@ def expand(config, cutModes, corrLevels, default="default"):
 	for cutMode in cutModes:
 		if cutMode not in modes:
 			print "cutMode", cutMode, "not defined!"
-			exit(1)
+			sys.exit(1)
 		pipelines[cutMode] = copy.deepcopy(p)
 		for cut in ["filter:%sCut" % m for m in modes[cutMode]]:
 			if cut in pipelines[cutMode]['Processors']:
@@ -217,7 +224,9 @@ def get_jec(nickname):
 	:returns: JEC string as understood by Artus (`<path/nickname>`)
 	"""
 	jec_cache_folder = os.path.join(get_cachepath(), "data", "jec", nickname)
-	return cached_query(func=get_jec_force, func_kwargs={"nickname": nickname, "jec_folder": jec_cache_folder}, dependency_folders=[jec_cache_folder])
+	jec_base = cached_query(func=get_jec_force, func_kwargs={"nickname": nickname, "jec_folder": jec_cache_folder}, dependency_folders=[jec_cache_folder])
+	config_logger.info("Using JEC %s", jec_base)
+	return jec_base
 
 
 def get_jec_force(nickname, jec_folder=None):
@@ -229,28 +238,34 @@ def get_jec_force(nickname, jec_folder=None):
 	:param jec_folder: folder in which to store JECs
 	:type jec_folder: str
 	:returns: JEC string as understood by Artus (`<path/nickname>`)
+
+	Supported sources:
+
+	**GitHub JEC Database**
+	  https://github.com/cms-jet/JECDatabase/
 	"""
 	if jec_folder is None:
 		jec_folder = os.path.join(getPath(), "data", "jec", nickname)
-	print >> sys.stderr, "Fetching tarball for JEC", nickname, "...",
+	config_logger.warning("Fetching JEC %s from %s", nickname, "JECDatabase")
 	jec_files = download_tarball("https://github.com/cms-jet/JECDatabase/blob/master/tarballs/%s.tar.gz?raw=true"%nickname, jec_folder)
-	print >> sys.stderr, "done (%d files)" % len(jec_files)
+	config_logger.warning("Retrieved JEC %s", len(jec_files))
 	return os.path.join(jec_folder, nickname)
 
 
 def get_lumi(json_source, min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
 	"""
-	Get the lumi for a specific set of runs from CMS run JSON
+	Get the lumi in /pb for a specific set of runs from CMS run JSON
 	"""
 	cache_key = _lumi_cache_key(json_sources=[json_source], min_run=min_run, max_run=max_run, normtag=normtag)
 	cache_dep = [get_relsubpath(path) for path in [json_source] if path is not None]
-	return cached_query(
+	lumi = cached_query(
 		func=get_lumi_force,
 		func_kwargs={"json_source": json_source, "min_run": min_run, "max_run": max_run, "normtag": normtag},
 		dependency_files=cache_dep,
 		cache_dir=os.path.join(getPath(), "data", "lumi"),
 		cache_key=cache_key,
 	)
+	config_logger.info("Using lumi %.3f/fb", lumi)
 
 
 def _lumi_cache_key(json_sources, min_run, max_run, normtag):
@@ -307,7 +322,7 @@ def get_lumi_force(json_source, bril_ssh=get_bril_ssh(), min_run=float("-inf"), 
 	if json_string == "{}":
 		return 0.0
 	# execute brilcalc on a remote host
-	print >> sys.stderr, "Querying brilcalc for lumi (via %s)" % bril_ssh
+	config_logger.warning("Querying brilcalc for lumi (via %s)", bril_ssh)
 	with open(get_scriptpath("get_lumi.py")) as get_lumi_raw:
 		lumi_json_raw = subprocess.check_output([
 				"ssh", bril_ssh,
@@ -320,7 +335,6 @@ def get_lumi_force(json_source, bril_ssh=get_bril_ssh(), min_run=float("-inf"), 
 				}
 			])
 	lumi_dict = json.loads(lumi_json_raw)
-	print >> sys.stderr, "done (%.3f /pb)" % lumi_dict["totrecorded"]
 	# query /pb for precision, convert to /fb
 	return lumi_dict["totrecorded"]/1000.0
 
@@ -399,26 +413,28 @@ def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), depend
 	try:
 		# check cache validity - use GeneratorExit to short-circuit
 		if not os.path.exists(cache_path):
-			raise GeneratorExit
+			raise GeneratorExit("not cached")
 		with open(cache_path, "rb") as cache_file:
 			cache_data = pickle.load(cache_file)
 		cache_meta = cache_data["meta"]
 		if not set(cache_meta.get("dependency_files", {}).keys()) >= set(dependency_files):
-			raise GeneratorExit
+			raise GeneratorExit("missing dependencies")
 		cache_files = cache_meta.get("dependency_files", {})
 		cache_folders = cache_meta.get("dependency_folders", {})
 		for dep_file in dependency_files:
 			if cache_files.get(dep_file, (-1, -1)) != stat_file(dep_file):
-				raise GeneratorExit
+				raise GeneratorExit("change in dep file ('%s')" % dep_file)
 		for dep_folder in dependency_folders:
 			if cache_folders.get(dep_folder, (-1, -1)) != stat_file(dep_folder):
-				raise GeneratorExit
+				raise GeneratorExit("change in dep folder ('%s')" % dep_folder)
 			dep_files = os.listdir(dep_folder) + [dep_file for dep_file in cache_files if os.path.dirname(dep_file) == dep_folder]
 			for dep_file in dep_files:
 				if cache_files.get(dep_file, (-1, -1)) != stat_file(dep_file):
-					raise GeneratorExit
+					raise GeneratorExit("change in dep folder ('%s')" % dep_file)
 		response = cache_data["response"]
-	except GeneratorExit:
+		cache_logger.info("Loaded '%s' in '%s'", cache_key, cache_dir)
+	except GeneratorExit as err_reason:
+		cache_logger.warning('regenerating cache, reason: %s', err_reason)
 		# cache is dirty, regenerate it
 		response = func(*func_args, **func_kwargs)
 		if not os.path.isdir(os.path.dirname(cache_path)):
@@ -440,4 +456,5 @@ def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), depend
 				# use ASCII protocol for better git integration
 				0,
 			)
+		cache_logger.info("Stored '%s' in '%s'", cache_key, cache_dir)
 	return response

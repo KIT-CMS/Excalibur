@@ -13,9 +13,11 @@ import subprocess
 import sys
 import time
 import socket
+import logging
 
 import Artus.Utility.tools as tools
 
+wrapper_logger = logging.getLogger("CORE")
 
 # ZJet Runner
 
@@ -54,8 +56,7 @@ def ZJet():
 		if options.nevents:
 			conf['ProcessNEvents'] = options.nevents
 		writeJson(conf, options.json)
-		print len(conf["Pipelines"]),
-		print "pipelines configured, written to", options.json
+		wrapper_logger.info("%d pipelines configured, written to %s", len(conf["Pipelines"]), options.json)
 	# get an existing one
 	else:
 		with open(options.json) as config_json:
@@ -126,7 +127,7 @@ def ZJet():
 			except KeyboardInterrupt:
 				sys.exit(0)
 		try:
-			child = subprocess.Popen(["artus", options.json] + (["--log-level", options.log_level] if options.log_level is not None else []))
+			child = subprocess.Popen(["artus", options.json] + (["--log-level", options.artus_log_level] if options.artus_log_level is not None else []))
 			streamdata = child.communicate()[0]
 			artus_returncode = child.returncode
 		except KeyboardInterrupt:
@@ -209,8 +210,9 @@ Have fun. ;)
 		help="verbosity")
 	parser.add_argument('-r', '--root', action='store_true',
 		help="open output file in ROOT TBrowser after completion")
-	parser.add_argument('--log-level', choices=['debug', 'info', 'warning', 'error', 'critical'],
-		help="Verbosity of Artus logging.")
+	parser.add_argument('--log-level', metavar="{artus|core|conf|cache}:{debug,info,warning,error,critical}",
+		default=["cache:critical", "core:info", "conf:info"],
+		help="Verbosity of logging. Category is optional and defaults to artus.", nargs='+')
 
 	batch_parser = parser.add_argument_group("batch processing arguments", "Deploy analysis to a cluster using grid-control.")
 	batch_parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
@@ -230,14 +232,23 @@ Have fun. ;)
 
 	opt = parser.parse_args()
 
-	# derive config file names
-	opt.cfg = resolve_config(opt.cfg, config_dirs)
-	opt.config_mods = [resolve_config(config_mod, config_dirs) for config_mod in opt.config_mods]
+	# logging
+	logging.basicConfig(level=logging.WARNING, stream=sys.stderr, format="%(name)5s: %(message)s")
+	opt.artus_log_level = None
+	for log_str in opt.log_level:
+		logger, _, level = log_str.upper().rpartition(":")
+		assert level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], "valid python/c++ log level required"
+		logging.getLogger(logger).level = getattr(logging, level)
+		if logger in ("", "artus"):
+			opt.artus_log_level = level
 	# test mode
 	if opt.cfg is None:
 		opt.cfg = 'mc'
 		if not opt.fast and not opt.batch and not opt.config:
 			opt.fast = [3]
+	# derive config file names
+	opt.cfg = resolve_config(opt.cfg, config_dirs)
+	opt.config_mods = [resolve_config(config_mod, config_dirs) for config_mod in opt.config_mods]
 	# set paths for libraries and outputs
 	if not opt.out:
 		opt.out = get_config_nick(opt.cfg, opt.config_mods)
