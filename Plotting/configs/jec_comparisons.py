@@ -190,7 +190,7 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 				'y_expressions': [method],
 				'x_expressions': [quantity],
 				'x_bins': bins,
-				'y_lims': [0.5, 1.5],
+				'y_lims': [0.6, 1.1],
 				'x_errors': [1],
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
@@ -199,11 +199,10 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 				'lines': [1.0],
 				'analysis_modules': ['Ratio'],
 				'filename': method + "_" + quantity.replace("(", "").replace(")", ""),
-				'y_subplot_lims': [0.5, 1.5],
+				'y_subplot_lims': [0.751, 1.249],
 			}
 			if quantity == 'abs(jet1eta)':
 				d['zjetfolders'] = ["noetacuts"]
-				d['y_lims'] = [0.6, 1.1],
 			if quantity == 'zpt':
 				d['x_log'] = True
 				d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
