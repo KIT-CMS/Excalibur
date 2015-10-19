@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import os
 import time
+import subprocess
 
 import Excalibur.Plotting.harryinterface as harryinterface
 import Artus.Utility.logger as logger
@@ -122,3 +124,25 @@ def jec_combination_25ns_20151001(args=None):
 		"_npv_weights" : ["(weight)", "(weight)*((npv==1)*6.9295+(npv==2)*4.58177+(npv==3)*3.68256+(npv==4)*3.39719+(npv==5)*3.06555+(npv==6)*2.74328+(npv==7)*2.418+(npv==8)*2.02356+(npv==9)*1.71068+(npv==10)*1.37638+(npv==11)*1.07853+(npv==12)*0.814396+(npv==13)*0.60545+(npv==14)*0.443644+(npv==15)*0.322044+(npv==16)*0.215438+(npv==17)*0.145175+(npv==18)*0.104847+(npv==19)*0.0769262+(npv==20)*0.0508476+(npv==21)*0.0331774+(npv==22)*0.0311605+(npv==23)*0.0153405+(npv==24)*0.0131355+(npv==25)*0.00283383+(npv==26)*0.0132552+(npv==27)*0+(npv==28)*0+(npv==29)*0+(npv==30)*0)"],
 	}
 	jec_combination(args, d)
+
+
+def jec_combination_25ns_20151016(args=None):
+	plots = []
+	mc_file = 'ntuples/MC_13TeV_74X_E2_25ns_2015-10-18.root'
+	for label in [
+		'', '_DCSOnly',
+		'_2015C', '_2015D',
+		'_DCSOnly_2015C', '_DCSOnly_2015D'
+	]:
+		data_file = 'ntuples/Data_13TEV_74X_E2_25ns%s_2015-10-16.root' % label
+		file_label = label[1:]+'_' if label.startswith('_') and not label.endswith('_') else label
+		d = {
+			'files' : [data_file, mc_file],
+			"algorithms": ["ak4PFJetsCHS"],
+			"_npv_weights" : ["1", subprocess.check_output(["get_weights.sh", data_file, mc_file]).strip()],
+			"file_label" : file_label,
+		}
+		print "Prepared: '%s'" % label
+		plots.append(d)
+	for d in plots:
+		jec_combination(args, d)
