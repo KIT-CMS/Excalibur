@@ -29,6 +29,10 @@ def jec_combination(args=None, additional_dictionary=None):
 		npv_weights = additional_dictionary.pop("_npv_weights")
 	except (AttributeError, KeyError):
 		npv_weights = ["1"]
+	try:
+		file_label = additional_dictionary.pop("file_label")
+	except (AttributeError, KeyError):
+		file_label = ""
 
 	now = time.localtime()
 	first = True
@@ -51,14 +55,14 @@ def jec_combination(args=None, additional_dictionary=None):
 						'analysis_modules': ['Ratio', 'ConvertToTGraphErrors'],
 						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 						# output
-						'filename': labelsuffix,
+						'filename': labelsuffix + file_label,
 					}
 					if additional_dictionary is not None:
 						d_mpl.update(additional_dictionary)
 					d_root = d_mpl.copy()
 					d_root.update({
 						'plot_modules': ['ExportRoot'],
-						'filename': 'combination_ZJet_' + time.strftime("%Y-%m-%d", now),
+						'filename': 'combination_ZJet_' + file_label + time.strftime("%Y-%m-%d", now),
 						'file_mode': ('RECREATE' if first else 'UPDATE'),
 					})
 					# make plots comparable to jec_comparison
