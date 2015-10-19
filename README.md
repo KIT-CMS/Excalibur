@@ -115,9 +115,10 @@ are stored in the ntuples/ folder.
 ###### Z boson and decay leptons
 - *z(mass|phi|pt|y|eta)*: Mass, phi, pT (transverse momentum), rapidity and pseudorapidity of the reconstructed Z boson.
 - *(mu|e)(1|2|plus|minus|)(pt|eta|phi)*: pT (transverse momentum), pseudorapidity, phi for leading/second/positive/negative muon/electron
-- *mu(sumchpt|sumpet|sumnhet|sumpupt)*: Muon isolation quantities: sum of charged
+- *mu(1|2)(sumchpt|sumpet|sumnhet|sumpupt)*: Muon isolation quantities: sum of charged
 hadron pT / photon Et / neutral hadron Et / pile-up pT in a (delta-R) cone around the muon.
 - *nmuons*: Number of valid muons in the event
+- *nmuonsinv*: Number of invalid muons in the event
 
 ###### Jets
 - *jet(1|2|3)(pt|eta|phi)*: pT, pseudorapidity, phi for leading/second/third jet
@@ -134,6 +135,7 @@ the pT for the intermediate correction levels is sometimes also needed.
 gluon resp. b-quarks
 - *radiation(\*)*: Jet radiated from the leading jet (Used in event-selection
 improvement studies)
+- *skimjet1(pt|eta|phi|validity)*: pT, pseudorapidity, phi, validity for leading jet in skim
 
 ###### Data 
 - *run*: Run for this event
