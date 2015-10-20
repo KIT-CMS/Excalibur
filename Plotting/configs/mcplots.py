@@ -43,7 +43,7 @@ def vertex_reco_efficiency(args=None, additional_dictionary=None):
 
 
 def z_response(args=None, additional_dictionary=None):
-	"""Z resolution (pT reco/gen) as function of gen pT"""
+	"""Z response (pT reco/gen) as function of gen pT"""
 	d = {
 		# input
 		'x_expressions': ['genzpt'],
@@ -59,6 +59,33 @@ def z_response(args=None, additional_dictionary=None):
 		'x_ticks':  [30, 50, 70, 100, 200, 400, 1000],
 		# output
 		'filename': 'z_response',
+	}
+	if additional_dictionary != None:
+		d.update(additional_dictionary)
+	return [PlottingJob(plots=[d], args=args)]
+
+
+def z_pt_resolution(args=None, additional_dictionary=None):
+	"""Z resolution (pT reco/gen) as function of gen pT"""
+	d = {
+		# input
+		'x_expressions': ['genzpt'],
+		'y_expressions': ['zpt/genzpt'],
+		'x_bins': 'zpt',
+		'tree_draw_options': 'profs',
+		'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors'],
+		'convert_nicks': ['nick0'],
+		'stat_error_nicks': ['nick0'],
+		# formatting
+		'x_log': True,
+		'y_label': r'Z $\\mathit{p}_T$ resolution',
+		'markers': ['o'],
+		'x_lims': [30, 1000],
+		'x_errors': [True],
+		'y_errors': [False],
+		'x_ticks':  [30, 50, 70, 100, 200, 400, 1000],
+		# output
+		'filename': 'z_pt_resolution',
 	}
 	if additional_dictionary != None:
 		d.update(additional_dictionary)
