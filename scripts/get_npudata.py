@@ -26,14 +26,6 @@ CLI.add_argument(
 	default="npuproducer_input.txt",
 )
 
-def converter(pileup_json):
-	print "Reading JSON... ",
-	with open(pileup_json) as pileup_source:
-		raw_data = json.load(pileup_source)
-	print "done"
-	for run in sorted(raw_data):
-		for lumi_section, lumi, xs_rms, xs_avg in sorted(raw_data[run]):
-			yield "%d %d %f %f %f" % (int(run), int(lumi_section), lumi, xs_rms, xs_avg)
 
 if __name__ == "__main__":
 	opts = CLI.parse_args()
