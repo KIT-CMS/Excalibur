@@ -38,8 +38,8 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_INTLIST(SampleReweightingNEvents)
 
     // NPUProducer (insert npu from external file)
-    IMPL_SETTING(std::string, NPUFile)
-    IMPL_SETTING(float, Minbxsec)
+    IMPL_SETTING(std::string, NPUFile)  // pileup JSON reformatted as csv
+    IMPL_SETTING(float, Minbxsec)       // MinBias Cross Section in mb
 
     // ElectronSFProducer
     IMPL_SETTING(std::string, ElectronSFRootfilePath)
