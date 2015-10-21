@@ -59,6 +59,7 @@ def get_bril_env(brilconda_path, brilws_path):
 	:returns: env for processes using brilws to run in
 	:rtype: dict
 	"""
+	print >> sys.stderr, "Preparing bril environment"
 	# construct dedicated env for bril commands
 	bril_env = os.environ.copy()
 	bril_env["PATH"] = ":".join((
@@ -78,6 +79,7 @@ def get_lumi(run_str, bril_env, unit="/pb", normtag=None):
 	"""
 	Get the lumi for a specific run string from brilcalc
 	"""
+	print >> sys.stderr, "Querying brilcalc"
 	# use CSV output for easier parsing
 	bril_out, bril_err = get_proc_output(
 		[
