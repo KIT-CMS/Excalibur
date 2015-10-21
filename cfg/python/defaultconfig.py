@@ -401,6 +401,10 @@ def data_2012(cfg, **kwargs):
 
 
 def data_2015(cfg, **kwargs):
+	cfg['Processors'] += ['producer:NPUProducer']
+	cfg['Minbxsec'] = 80.0
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data.txt'
+	cfg['Pipelines']['default']['Quantities'] += ['npumean']
 	# JSON & JEC for 50ns and 25ns - see /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
