@@ -550,5 +550,4 @@ def data_2015mm(cfg, **kwargs):
 
 
 def data_2012em(cfg, **kwargs):
-	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
-	cfg['HltPaths'] += ['HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
+	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL', 'HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
