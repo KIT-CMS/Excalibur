@@ -19,7 +19,23 @@ import Artus.Utility.jsonTools as jsonTools
 import Artus.HarryPlotter.utility.roottools as roottools
 import Artus.Utility.tools as tools
 
-PlottingJob = namedtuple('PlottingJob', 'plots args')
+class PlottingJob(object):
+	def __init__(self, plots, args):
+		assert plots is not None and args is not None, "Both `plots` and `args` must be defined for plotting jobs"
+		self.plots = plots
+		self.args = args
+
+	def __getitem__(self, item):
+		if item in ("plots", "args"):
+			return getattr(self, item)
+		raise KeyError("No such element %r" % item)
+
+	def __add__(self, other):
+		if not isinstance(other, self.__class__):
+			raise TypeError("cannot concatenate '%s' and '%s' objects" % (self.__class__.__name__, other.__class__.__name__))
+		if self.args != other.args:
+			raise ValueError("cannot concatenate '%s' objects with different 'args'" % self.__class__.__name__)
+		return PlottingJob(plots=self.plots + other.plots, args=self.args)
 
 def print_plotting_functions(plotting_path):
 	""" print the comments / docstrings of the plotting configs"""
