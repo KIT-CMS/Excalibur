@@ -86,6 +86,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		# automatically set labels to filenames if labels are not specified
 		if (
 			plotData.plotdict['labels'] == None and
+			'files' in plotData.plotdict and
 			plotData.plotdict['files'] != None and
 			len(plotData.plotdict['nicks']) == len(plotData.plotdict['files']) and  # check that the different nicks correspond to different files
 			len(set([i[0] for i in plotData.plotdict['files']])) == len(plotData.plotdict['files'])  # check that file(name)s are unique
