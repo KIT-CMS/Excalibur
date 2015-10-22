@@ -4,6 +4,7 @@
 """
 
 import matplotlib
+import os
 import datetime
 
 import Artus.HarryPlotter.plot_modules.plotmpl as plotmpl
@@ -81,6 +82,15 @@ class PlotMplZJet(plotmpl.PlotMpl):
 		elif plotData.plotdict['live'] is not None:
 			plotData.plotdict['output_dir'] = 'plots/live/'
 			plotData.plotdict['filename'] = 'plot'
+
+		# automatically set labels to filenames if labels are not specified
+		if (
+			plotData.plotdict['labels'] == None and
+			plotData.plotdict['files'] != None and
+			len(plotData.plotdict['nicks']) == len(plotData.plotdict['files']) and  # check that the different nicks correspond to different files
+			len(set([i[0] for i in plotData.plotdict['files']])) == len(plotData.plotdict['files'])  # check that file(name)s are unique
+		):
+			plotData.plotdict['labels'] = [os.path.splitext(os.path.basename(i[0]))[0] for i in plotData.plotdict['files']]
 
 		# marker and bar colors
 		if plotData.plotdict['marker_colors'] is not None:

@@ -8,7 +8,6 @@ import Artus.Utility.logger as logger
 log = logging.getLogger(__name__)
 
 import ROOT
-import os
 
 import Artus.HarryPlotter.input_modules.inputroot as inputroot
 import Artus.Utility.jsonTools as jsonTools
@@ -51,10 +50,6 @@ class InputRootZJet(inputroot.InputRoot):
 				for algo, corr, folder in zip(*[plotData.plotdict[i] for i in zjetlist]):
 					folders.append("%s_%s%s/ntuple" % (folder, algo, corr))
 			plotData.plotdict['folders'] = folders
-
-		# automatically set nicks, x-expressions if not explicitly given
-		if plotData.plotdict['nicks'] == None and plotData.plotdict['files'] != None and len(set(plotData.plotdict['files'])) > 1:
-			plotData.plotdict['nicks'] = [os.path.splitext(os.path.basename(i))[0] for i in plotData.plotdict['files']]
 
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
