@@ -43,7 +43,7 @@ class InputRootZJet(inputroot.InputRoot):
 		# this is needed so one can put together the folder name like in the old
 		# merlin plotting
 		zjetlist =  ["algorithms", "corrections", "zjetfolders"]
-		self.prepare_list_args(plotData, zjetlist)
+		self.prepare_list_args(plotData, zjetlist, help="ZJet options")
 		if plotData.plotdict['folders'] is None:
 			folders = []
 			if all( [plotData.plotdict[i] != [None] for i in zjetlist]):
