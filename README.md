@@ -265,7 +265,7 @@ called if a list with `PlottingJob` is returned by the config function.
 ## Troubleshooting
 In case of program errors:
 
-- Make sure you have sourced CMSSW and  `ini_excalibur.sh` / `ini_merlin.sh`
+- Make sure you have sourced CMSSW and  `ini_excalibur.sh`
 - Check that you are up to date in all four repositories (Excalibur, Artus, Kappa, KappaTools)
 - Use `make allclean` and `make all`
 
