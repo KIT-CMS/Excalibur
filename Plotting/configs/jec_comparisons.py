@@ -215,7 +215,7 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False):
+def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, mu=True):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	plots = []
 	# TODO move this to more general location
@@ -230,11 +230,6 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'met': ['20,0,100'],
 		'metphi': ['20,-3.1415,3.1415', 'lower center'],
 		'mpf': ['20,0,2'],
-		'mu1phi': ['20,-3.1415,3.1415', 'lower center'],
-		'mu1pt': ['20,0,150'],
-		'mu2pt': ['20,0,150'],
-		'muminuspt': ['20,0,150'],
-		'mupluspt': ['20,0,150'],
 		'npu': ['31,-0.5,30.5'],
 		'npumean': ['40,0,40'],
 		'npv': ['31,-0.5,30.5'],
@@ -245,15 +240,35 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'zpt': ['20,0,400'],
 		'zy': ['25,-2.5,2.5'],
 	}
+	x_dict_ee={
+		'e1phi': ['20,-3.1415,3.1415', 'lower center'],
+		'e1pt': ['20,0,150'],
+		'e2pt': ['20,0,150'],
+		'eminuspt': ['20,0,150'],
+		'epluspt': ['20,0,150'],
+	}
+	x_dict_mm={
+		'mu1phi': ['20,-3.1415,3.1415', 'lower center'],
+		'mu1pt': ['20,0,150'],
+		'mu2pt': ['20,0,150'],
+		'muminuspt': ['20,0,150'],
+		'mupluspt': ['20,0,150'],
+	}
+	if mu==True: x_dict.update(x_dict_mm)
+	else: x_dict.update(x_dict_ee)
+	
 	for q in x_dict:
 		if len(x_dict[q]) == 1:
 			x_dict[q] += ['best']
 
-	for quantity in ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
+	quantity_list= ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
 			 'npv', 'npumean', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
-			 'mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi',
-			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',
-			 'muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt'] \
+			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',]
+	quantity_list_ee=['e1pt', 'e1eta', 'e1phi', 'e2pt', 'e2eta', 'e2phi','eminusphi', 'eminuseta', 'eminuspt', 'eplusphi', 'epluseta', 'epluspt']
+	quantity_list_mm=['mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi','muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt']
+	quantity_list.extend(quantity_list_mm if mu else quantity_list_ee)
+	
+	for quantity in quantity_list \
 			 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
 		# normal comparison
 		d = {
@@ -516,10 +531,10 @@ def cutflow(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False):
+def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False, mu=True):
 	""" Do all comparison plots"""
 	plotting_jobs = []
-	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized)
+	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, mu)
 	plotting_jobs += basic_profile_comparisons(args, d)
 	plotting_jobs += pf_fractions(args, d)
 	plotting_jobs += response_comparisons(args, d, data_quantities)
@@ -559,6 +574,18 @@ def comparison_datamc(args=None):
 		'legend': None,
 	}
 	plotting_jobs += full_comparison(args, d)
+	return plotting_jobs
+	
+def comparison_datamc_Zee(args=None):
+	"""full data mc comparisons for work/data_ee.root and work/mc_ee.root"""
+	plotting_jobs = []
+	d = {
+		'files': ['work/data_ee.root', 'work/mc_ee.root'],
+		'labels': ['Data', 'MC'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'legend': None,
+	}
+	plotting_jobs += full_comparison(args, d, mu=False)
 	return plotting_jobs
 
 def comparison_run2(args=None):
