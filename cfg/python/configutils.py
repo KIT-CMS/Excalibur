@@ -158,6 +158,7 @@ class RunJSON(object):
 	@property
 	def artus_value(self):
 		"""Value to store in artus config JSON"""
+		config_logger.info("Using run JSON '%s'", self.path)
 		return [self.path]
 
 	def _make_dynamic_json(self):
