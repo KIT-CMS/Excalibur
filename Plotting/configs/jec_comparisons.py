@@ -276,8 +276,8 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'cutlabel': True,
 			'analysis_modules': ['Ratio'],
 			'y_subplot_lims': [0, 2],
+			'y_log': quantity in ['jet1pt', 'zpt']
 		}
-		d["y_log"] = quantity in ['jet1pt', 'zpt']
 		if quantity in x_dict:
 			d["x_bins"] = [x_dict[quantity][0]]
 			d["legend"] = x_dict[quantity][1]
