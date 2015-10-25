@@ -19,6 +19,20 @@ import Artus.Utility.tools as tools
 
 wrapper_logger = logging.getLogger("CORE")
 
+
+class ArtusJSONEncoder(json.JSONEncoder):
+	"""
+	JSON serializer to convert complex objects for Artus configs
+
+	Any object may provide a representation for use in Artus configs by
+	defining an `artus_value` attribute or property.
+	"""
+	def default(self, obj):
+		try:
+			return obj.artus_value
+		except AttributeError:
+			return json.JSONEncoder.default(self, obj)
+
 # ZJet Runner
 
 def ZJet():
@@ -67,7 +81,7 @@ def ZJet():
 
 	if options.printconfig:
 		print "json config:"
-		print json.dumps(conf, sort_keys=True, indent=4, separators=(',', ': '))
+		print json.dumps(conf, sort_keys=True, indent=4, separators=(',', ': '), cls=ArtusJSONEncoder)
 	# exit here if json config was the only aim
 	if options.config:
 		sys.exit(0)
@@ -322,7 +336,7 @@ def getEnv(variable='EXCALIBURPATH', nofail=False):
 
 def writeJson(settings, filename):
 	with open(filename, 'w') as f:
-		json.dump(settings, f, sort_keys=True, indent=4, separators=(',', ': '))
+		json.dump(settings, f, sort_keys=True, indent=4, separators=(',', ': '), cls=ArtusJSONEncoder)
 
 
 def copyFile(source, target, replace={}):
