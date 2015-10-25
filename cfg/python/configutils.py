@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-utilities for managing config files and their data
+advanced utilities for managing config files and their data
 """
 import os
 import sys
@@ -120,6 +120,9 @@ def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), depend
 	:param cache_dir: directory to store cache data (response and meta info)
 	:type cache_dir: str
 	:returns: response from the query, possibly from an earlier cached call
+
+	:note: By default, the `cache_key` identifies the function and its
+	       arguments. A custom `cache_key` should reflect this as needed.
 
 	:warning: The automatic generation of the `cache_key` does not work
 	          deterministically for lambda functions; `cache_key` should be set
