@@ -91,8 +91,8 @@ class RunJSON(object):
 	consistent use when multiple sources define runs and multiple consumers
 	depend on run selection.
 
-	:param json_paths: path(s) to one or several CMS run JSONs
-	:type json_paths: str or list[str]
+	:param base_jsons: path(s) to one or several CMS run JSONs
+	:type base_jsons: str or list[str]
 	:param json_store: directory to store dynamic jsons in
 	:type json_store: str
 
@@ -105,12 +105,29 @@ class RunJSON(object):
 		else:
 			return object.__new__(cls)
 
-	def __init__(self, json_paths, json_store=None, run_ranges=None):
-		if isinstance(json_paths, self.__class__):
+	def __init__(self, base_jsons, json_store=None, run_ranges=None):
+		if isinstance(base_jsons, self.__class__):
 			return
-		self._base_jsons = [json_paths] if isinstance(json_paths, basestring) else json_paths
+		self._base_jsons = [base_jsons] if isinstance(base_jsons, basestring) else base_jsons
 		self._run_ranges = run_ranges or []
 		self._store_path = json_store or os.path.join(getPath(), "data", "json")
+
+	def set_base_json(self, *json_paths):
+		"""Overwrite the base JSON run selection, discarding all others"""
+		self._base_jsons = json_paths
+
+	def add_base_json(self, json_path):
+		"""Add a base JSON for run selection"""
+		self._base_jsons.append(json_path)
+
+	def set_run_range(self, *run_ranges):
+		"""
+		Overwrite the run range whitelist, discarding all others
+
+		When called with no argument, the whitelist is cleared, allowing all
+		runs to be used.
+		"""
+		self._run_ranges = run_ranges
 
 	def add_run_range(self, min_run, max_run):
 		"""
@@ -168,7 +185,7 @@ class RunJSON(object):
 		"""Basename of dynamically created file"""
 		basename = "runjson_"
 		basename += "_".join([os.path.splitext(os.path.basename(json_path))[0] for json_path in self._base_jsons])
-		basename += "_runs" + "_".join(["%d-%d" % run_range for run_range in self._run_ranges])
+		basename += "_runs" + "_".join(["%.0f-%.0f" % run_range for run_range in self._run_ranges])
 		return basename + ".json"
 
 	@staticmethod

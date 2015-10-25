@@ -150,7 +150,7 @@ def add_quantities(cfg, quantities):
 		cfg['Pipelines'][pipeline]['Quantities'].extend(quantities)
 
 
-# Queries to external data
+# external and calculated data
 def get_jec(nickname):
 	"""
 	Get a specific corrections folder
@@ -188,39 +188,26 @@ def get_jec_force(nickname, jec_folder=None):
 	return os.path.join(jec_folder, nickname)
 
 
-def get_lumi(json_source, min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
+def get_lumi(json_source, normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
 	"""
 	Get the lumi in /pb for a specific set of runs from CMS run JSON
 	"""
-	cache_key = _lumi_cache_key(json_sources=[json_source], min_run=min_run, max_run=max_run, normtag=normtag)
+	json_source = getattr(json_source, "path", json_source)
+	# use verbose key for identifying commited lumi results
+	if json_source.endswith(".json") or json_source.endswith(".txt"):
+		cache_key = "lumi_path-" + os.path.splitext(os.path.basename(json_source))[0]
+	else:
+		cache_key = "lumi_rstr-" + base64.b32encode(hashlib.sha1(str(json_source)).digest())
+	cache_key += ("_nt-" + os.path.splitext(os.path.basename(normtag))[0]) if normtag else ""
 	cache_dep = [get_relsubpath(path) for path in [json_source] if path is not None]
 	lumi = cached_query(
 		func=get_lumi_force,
-		func_kwargs={"json_source": json_source, "min_run": min_run, "max_run": max_run, "normtag": normtag},
+		func_kwargs={"json_source": json_source, "normtag": normtag},
 		dependency_files=cache_dep,
 		cache_dir=os.path.join(getPath(), "data", "lumi"),
 		cache_key=cache_key,
 	)
 	config_logger.info("Using lumi %.3f/fb", lumi)
-
-
-def _lumi_cache_key(json_sources, min_run, max_run, normtag):
-	"""
-	Constructs a verbose key for lumi caches to allow identifying committed data
-	"""
-	key = "lumi"
-	for json_source in json_sources:
-		if json_source.endswith(".json") or json_source.endswith(".txt"):
-			key += "_jfile-" + os.path.splitext(os.path.basename(json_source))[0]
-		else:
-			key += "_jstr-" + base64.b32encode(hashlib.sha1(str(json_source)).digest())
-	if min_run > float("-inf"):
-		key += "_min-" + str(min_run)
-	if max_run < float("inf"):
-		key += "_max-" + str(max_run)
-	if normtag is not None:
-		key += "_nt-" + os.path.splitext(os.path.basename(normtag))[0]
-	return key
 
 
 def get_lumi_force(json_source, bril_ssh=None, min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
