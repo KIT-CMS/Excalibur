@@ -253,7 +253,6 @@ Have fun. ;)
 		logger, _, level = log_str.upper().rpartition(":")
 		assert level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], "valid python/c++ log level required"
 		logging.getLogger(logger).level = getattr(logging, level)
-		print logger, level
 		if logger in ("", "ARTUS"):
 			opt.artus_log_level = level.lower()
 	# test mode
