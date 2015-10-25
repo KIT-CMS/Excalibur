@@ -14,6 +14,7 @@ import tarfile
 import urllib2
 import StringIO
 import logging
+import json
 
 # settings used when making a choice
 config_logger = logging.getLogger("CONF")
@@ -79,6 +80,109 @@ def download_tarball(url, extract_to='.'):
 	archive = tarfile.open(fileobj=StringIO.StringIO(urllib2.urlopen(url).read()))
 	archive.extractall(path=extract_to)
 	return archive.getnames()
+
+
+class RunJSON(object):
+	"""
+	Abstraction of CMS run JSONs with joins and run whitelisting
+
+	The CMS run JSONs define which runs contain valid data. This class allows
+	joining of JSONs and filtering of runs via whitelisting. It is intended for
+	consistent use when multiple sources define runs and multiple consumers
+	depend on run selection.
+
+	:param json_paths: path(s) to one or several CMS run JSONs
+	:type json_paths: str or list[str]
+	:param json_store: directory to store dynamic jsons in
+	:type json_store: str
+
+	:note: When initialized with an existing instance, the later is returned
+	       unchanged.
+	"""
+	def __new__(cls, *args, **kwargs):
+		if isinstance(args[0], cls):
+			return args[0]
+		else:
+			return object.__new__(cls)
+
+	def __init__(self, json_paths, json_store=None, run_ranges=None):
+		if isinstance(json_paths, self.__class__):
+			return
+		self._base_jsons = [json_paths] if isinstance(json_paths, basestring) else json_paths
+		self._run_ranges = run_ranges or []
+		self._store_path = json_store or os.path.join(getPath(), "data", "json")
+
+	def add_run_range(self, min_run, max_run):
+		"""
+		Add a run range to the whitelist
+
+		:param min_run: lowest run to include
+		:type min_run: int or float
+		:param max_run: highest run to include
+		:type max_run: int or float
+		"""
+		self._run_ranges = self._join_ranges(self._run_ranges + [(min_run, max_run)])
+
+	def __str__(self):
+		return "RunJSON(files=%s,runs=%s)" % (self._base_jsons, self._run_ranges)
+
+	@property
+	def path(self):
+		"""Path to the JSON file"""
+		if len(self._base_jsons) == 1 and not self._run_ranges:
+			return self._base_jsons[0]
+		return cached_query(
+			func=self._make_dynamic_json,
+			dependency_files=self._base_jsons + [self._get_store_path(self._dynamic_basename())],
+			cache_key=os.path.splitext(self._dynamic_basename())[0],
+			cache_dir=self._store_path
+		)
+
+	@property
+	def artus_value(self):
+		"""Value to store in artus config JSON"""
+		return [self.path]
+
+	def _make_dynamic_json(self):
+		"""Create a file containing the json content"""
+		json_outpath = self._get_store_path(self._dynamic_basename())
+		json_data = {}
+		for json_path in self._base_jsons:
+			with open(json_path) as json_source:
+				new_json_data = json.load(json_source)
+			for run in new_json_data:
+				for min_run, max_run in self._run_ranges:
+					if min_run <= int(run) <= max_run:
+						json_data[run] = self._join_ranges(new_json_data[run] + json_data.get(run, []))
+						break
+		with open(json_outpath, "w") as output_file:
+			# dump compact but pretty-printed to play nice with git
+			json.dump(json_data, output_file, separators=(',', ':'), sort_keys=True, indent=1)
+		return json_outpath
+
+	def _get_store_path(self, json_name):
+		"""Get the path to the json in the local store"""
+		return os.path.join(self._store_path, os.path.basename(json_name))
+
+	def _dynamic_basename(self):
+		"""Basename of dynamically created file"""
+		basename = "runjson_"
+		basename += "_".join([os.path.splitext(os.path.basename(json_path))[0] for json_path in self._base_jsons])
+		basename += "_runs" + "_".join(["%d-%d" % run_range for run_range in self._run_ranges])
+		return basename + ".json"
+
+	@staticmethod
+	def _join_ranges(ranges):
+		"""Compress `(min, max)` ranges by joining overlapping ones"""
+		run_ranges = []
+		for min_run, max_run in sorted(ranges):
+			if not run_ranges:
+				run_ranges = [(min_run, max_run)]
+			elif min_run < run_ranges[-1][1] < max_run:
+				run_ranges[-1] = (run_ranges[-1][0], max_run)
+			else:
+				run_ranges.append((min_run, max_run))
+		return run_ranges
 
 
 # local caching

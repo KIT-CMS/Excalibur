@@ -21,7 +21,8 @@ import base64
 import subprocess
 
 from configutils import config_logger, cache_logger, env_logger
-from configutils import get_excalibur_env, getPath, get_cachepath, download_tarball, get_relsubpath, cached_query
+from configutils import get_excalibur_env, getPath, get_cachepath
+from configutils import download_tarball, get_relsubpath, cached_query, RunJSON
 
 
 def getConfig(inputtype, year, channel, **kwargs):
