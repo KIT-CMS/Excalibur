@@ -50,7 +50,6 @@ def getBaseConfig(tagged=True, **kwargs):
 					'jet1chf', 'jet1nhf', 'jet1ef',
 					'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
 					'jet1area',
-					
 					'jet1l1', 'jet1rc', 'jet1l2',
 					'jet1ptraw', 'jet1ptl1',
 					#'jet1unc',  # Leading jet uncertainty
@@ -182,8 +181,13 @@ def _2015(cfg, **kwargs):
 	cfg['JetPtMin'] = 15.
 	cfg['MinZllJetDeltaRVeto'] = 0.3
 	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
-
-
+	# data settings also used to derive values for mc
+	cfg['Minbxsec'] = 69.0
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
+	if kwargs.get('bunchcrossing', "50ns") == "50ns":
+		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
+	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
+		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt')
 
 ##
 ##
@@ -353,7 +357,7 @@ def mm(cfg, **kwargs):
 	cfg['Pipelines']['default']['Consumers'] += [
 		'KappaMuonsConsumer',
 	]
-	
+
 	# ValidMuonsProducer
 	cfg['MuonID'] = 'tight'
 	cfg['MuonIso'] = 'tight'
@@ -402,17 +406,12 @@ def data_2012(cfg, **kwargs):
 
 def data_2015(cfg, **kwargs):
 	cfg['Processors'] += ['producer:NPUProducer']
-	cfg['Minbxsec'] = 69.0
-	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
 	cfg['Pipelines']['default']['Quantities'] += ['npumean']
-	# JSON & JEC for 50ns and 25ns - see /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
-		cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt']
 		cfg['Lumi'] = 0.04003
-	elif kwargs['bunchcrossing'] == "25ns":
+	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
 		cfg['Jec'] = configtools.get_jec("Summer15_25nsV5_DATA")
-		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt')
 		cfg['Lumi'] = configtools.get_lumi(json_source=cfg['JsonFiles'])
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
@@ -435,8 +434,6 @@ def mc_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
 	elif kwargs['bunchcrossing'] == "25ns":
 		cfg['Jec'] = configtools.get_jec("Summer15_25nsV5_MC")
-		# run JSON for calculating pileup weights
-		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.txt')
 		cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
