@@ -15,6 +15,7 @@ import urllib2
 import StringIO
 import logging
 import json
+import glob
 
 # settings used when making a choice
 config_logger = logging.getLogger("CONF")
@@ -82,6 +83,8 @@ def download_tarball(url, extract_to='.'):
 	return archive.getnames()
 
 
+# lazily evaluated objects for dependencies
+# objects must provide the `artus_value` attribute/property
 class RunJSON(object):
 	"""
 	Abstraction of CMS run JSONs with joins and run whitelisting
@@ -201,6 +204,74 @@ class RunJSON(object):
 			else:
 				run_ranges.append((min_run, max_run))
 		return run_ranges
+
+
+class PUWeights(object):
+	"""
+	PileUp weights for tuning MC pileup distribution to match data
+
+	:param npu_data_source: a run JSON specifying the runs used in data
+	:type npu_data_source: str or :py:class:`~configutils.RunJSON`
+	:param npu_mc_source: input files for MC processing, i.e. the input file glob
+	:type npu_mc_source: str
+	:param pileup_json: path to json containing pileup information
+	:type pileup_json: str
+	:param min_bias_xsec: minimum bias cross section to assume
+	:type min_bias_xsec: float or int
+	:param weight_limits: min and max limits to truncate excessive weights
+	:type weight_limits: list[float or int]
+	:param puweight_store: directory to store PU Weight files in
+	:type puweight_store: str
+
+	:see: Artus' `puWeightCalc.py` for a functional description of parameters.
+	"""
+	def __init__(
+			self,
+			npu_data_source,
+			npu_mc_source,
+			pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt",
+			min_bias_xsec=69.0,
+			weight_limits=(0, 4),
+			puweight_store=None,
+	):
+		self.npu_data_source = npu_data_source
+		self.npu_mc_source = npu_mc_source
+		self.pileup_json = pileup_json
+		self.min_bias_xsec = min_bias_xsec
+		self.weight_limits = weight_limits
+		self._store_path = puweight_store or os.path.join(getPath(), "data", "pileup")
+
+	@property
+	def path(self):
+		"""Path to the PU Weight file"""
+		return cached_query(
+			func=self._make_pu_weights,
+			dependency_files=[getattr(self.npu_data_source, "path", self.npu_data_source), self._output_path()] + glob.glob(self.npu_mc_source),
+			cache_key=self._nickname(),
+		)
+
+	@property
+	def artus_value(self):
+		"""Value to store in artus config JSON"""
+		config_logger.info("Using PU Weights '%s'", self.path)
+		return self.path
+
+	def _make_pu_weights(self):
+		npu_data_source = getattr(self.npu_data_source, "path", self.npu_data_source)
+		npu_mc_skim_files = glob.glob(self.npu_mc_source)
+		output_path = self._output_path()
+		subprocess.check_call(["puWeightCalc.py", npu_data_source] + npu_mc_skim_files + ["--inputLumiJSON", self.pileup_json, "--minBiasXsec", str(self.min_bias_xsec), "--weight-limits"] + [str(weight) for weight in self.weight_limits] + ["--output", output_path])
+		return output_path
+
+	def _output_path(self):
+		"""Path to output file"""
+		return os.path.join(self._store_path, self._nickname() + ".root")
+
+	def _nickname(self):
+		"""Nickname for the generated PU Weights"""
+		def source_nick(source_str):
+			return "_SLASH_".join(os.path.split(source_str)[-2:]).replace("*", "_ANY_").replace("?", "_ONE_").replace("[", "_SEQS_").replace("]", "_SEQE_").replace("!", "_NOT_")
+		return "pileup_" + source_nick(getattr(self.npu_data_source, "path", self.npu_data_source)) + "_to_" + source_nick(self.npu_mc_source) + "_xsec_" + ("%.1f" % self.min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in self.weight_limits])
 
 
 # local caching
