@@ -76,20 +76,6 @@ jmzbin = {
 #expressions, labels, bins, used in jet_muon_ee_comparison and jet_muon_ee_comparison_tree and jet_muon_ee_comp_npv_tree
 jmeexpress = {
 	#relative reco gen for pT
-		'jetpt':'jet1pt/zpt',
-		'mupt':'muminuspt/genmuminuspt',
-		'ept':'eminuspt/geneminuspt',
-	#Delta reco gen for eta
-		'jeteta':'(abs(jet1eta-genjet1eta))',
-		'mueta':'(abs(muminuseta-genmuminuseta))',
-		'eeta':'(abs(eminuseta-geneminuseta))',
-	#Delta reco gen for phi, different formulas because of -pi < phi < pi (abs(abs(abs(jet1phi-jet2phi)-TMath::Pi())-TMath::Pi()))
-		'jetphi':'(abs(abs(abs(jet1phi-genjet1phi)-TMath::Pi())-TMath::Pi()))',
-		'muphi':'(abs(abs(abs(muminusphi-genmuminusphi)-TMath::Pi())-TMath::Pi()))',
-		'ephi':'(abs(abs(abs(eminusphi-geneminusphi)-TMath::Pi())-TMath::Pi()))',
-}
-jmeexpress2 = { ##Original
-	#relative reco gen for pT
 		'jetpt':'jet1pt/genjet1pt',
 		'mupt':'muminuspt/genmuminuspt',
 		'ept':'eminuspt/geneminuspt',
@@ -104,7 +90,7 @@ jmeexpress2 = { ##Original
 }
 jmelabel = {
 	#relative reco gen for pT
-		'pt':'{}$_{{reco}}/${}$_{{Z}}$'.format(latex['pt'],latex['pt'],),
+		'pt':'{}$_{{reco}}/${}$_{{gen}}$'.format(latex['pt'],latex['pt'],),
 		'eta':r'|$ \\eta_{{reco}} - \\eta_{{gen}}$|',
 		'phi':r'|$ \\phi_{{reco}} - \\phi_{{gen}}$|',
 }

@@ -62,7 +62,6 @@ def jet_muon_ee_comparison(args=None, additional_dictionary=None):
 				'step': True,
 			}
 			plots.append(d_1)
-			#print d_1
 
 	for d in plots:
 		d.update({
@@ -83,7 +82,6 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 
 	bins = {
 		"pt" : ['10 20 30 40 50 60 70 80 90 100 150 200 300 500 700'],
-		#"pt" : ['0 50 100 150 200 300 700'],
 		"phi" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
 		"eta" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
 	}
@@ -125,12 +123,13 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 			#get data
 			'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
 			'corrections': ['L1L2L3'],
-			#'zjetfolders':['zcuts'],
+			'zjetfolders':['zcuts'],
 
 			#binning
-			'x_expressions':["genjet1pt","genmuminuspt","geneminuspt"],
+			'x_expressions':["zpt","genmuminuspt","geneminuspt"],
 			'y_expressions':[jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
 			'tree_draw_options':  'profs',
+			"x_ticks": [30,50,70,100,200,400,1000], 
 			'x_bins': bins[parameter],
 			'x_log': True,
 			'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors',],
@@ -141,7 +140,7 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 			'nicks': ["jet1","mu","e"],
 			'labels': [latex["jet1"],latex["muminus"],latex["eminus"]],
 			'colors': [color['jet'],color['mu'], color['e']],
-			'x_label': "{}$/GeV$".format(latex["pt"]),
+			'x_label': "Z{}$/GeV$".format(latex["pt"]),
 			'y_label': "{} $resolution$".format(latex[parameter]),
 			'texts': '{} - $statistical$ $errors$'.format(latex[parameter]),
 			'title':'Resolution of {} \n depending on {}'.format(latex[parameter], latex['pt']),
@@ -171,19 +170,9 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 	
 	plots = []
 	parameterlist_jet1 = ['pt', 'phi', 'eta']
-	
-	#s="0"
-	#for n in range (1,50):
-	#	s+= ' ' +str(n)
-	#print s
-	#bins = {
-	#	"pt" : ['35,-0.5,34.5'],
-	#	"phi" : ['35,-0.5,34.5'],
-	#	"eta" : ['35,-0.5,34.5'],
-	#}
 
 	bins = {
-		"pt" : ['0 4 8 16 22 40'],
+		"pt" : ['35,-0.5,34.5'],
 		"phi" : ['35,-0.5,34.5'],
 		"eta" : ['35,-0.5,34.5'],
 	}
@@ -201,7 +190,7 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 			#get data
 			'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
 			'corrections': ['L1L2L3'],
-			#'zjetfolders':['zcuts'],
+			'zjetfolders':['zcuts'],
 			'weights':[weightlist['jet'], weightlist['mu'], weightlist['e']],
 
 			#binning
@@ -209,7 +198,7 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 			'y_expressions':[jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
 			'tree_draw_options': 'profs',
 			'x_bins': bins[parameter],
-			#'x_log': True,
+			'x_log': True,
 
 			#formatting
 			'nicks': ["jet1","mu","eminus"],
@@ -232,7 +221,7 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 			#get data
 			'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
 			'corrections': ['L1L2L3'],
-			#'zjetfolders':['zcuts'],
+			'zjetfolders':['zcuts'],
 			'weights':[weightlist['jet'], weightlist['mu'], weightlist['e']],
 
 			#binning
@@ -240,7 +229,7 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 			'y_expressions':[jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
 			'tree_draw_options': 'profs',
 			'x_bins': bins[parameter],
-			#'x_log': True,
+			'x_log': True,
 			'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors',],
 			'stat_error_nicks': ["jet1","mu","e"],
 			'convert_nicks': ["jet1","mu","e"],
