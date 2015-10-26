@@ -220,6 +220,10 @@ The plot axes can be automatically labelled via the entries of the LabelsDict in
 Plotting/python/utility/labelsZJet.py (simple strings like 'zpt' are replaced with
 nicer Latex labels).
 
+The `--layout` option implements special Matplotlib style settings. See
+Plotting/python/utility/matplotlib_rc.py for the list of style options. Use e.g.
+`--layout poster` to increase the font size for better plot readability in posters.
+
 ##### Python plot configs
 - Python functions allow to construct loops of plots, but cannot be saved or read
 as easily as json files. Execution of these functions with --python, a list of
