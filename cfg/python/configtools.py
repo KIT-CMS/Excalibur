@@ -264,38 +264,3 @@ def get_lumi_force(json_source, bril_ssh=None, min_run=float("-inf"), max_run=fl
 	lumi_dict = json.loads(lumi_json_raw)
 	# query /pb for precision, convert to /fb
 	return lumi_dict["totrecorded"]/1000.0
-
-
-def get_puweights(
-		npu_data_source, npu_mc_source,
-		pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt",
-		min_bias_xsec=69.0, weight_limits=(0, 4)
-	):
-	"""
-	Get path of root weight file for matching MC pileup to Data
-
-	:param npu_data_source: JSON of runs used for data
-	:param npu_mc_source: glob to a skim
-
-	:see: Artus' `puWeightCalc.py` for a description of parameters.
-	"""
-	npu_data_source = getattr(npu_data_source, "path", npu_data_source)
-	# verbose nicks: basename with glob characters replaced
-	def source_nick(source_str):
-		return os.path.basename(source_str).replace("*", "_ANY_").replace("?", "_ONE_").replace("[", "_SEQS_").replace("]", "_SEQE_").replace("!", "_NOT_")
-	npu_mc_skim_files = glob.glob(npu_mc_source)
-	cache_key = "pileup_" + source_nick(npu_data_source) + "_to_" + source_nick(npu_mc_source) + "_xsec_" + ("%.1f" % min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in weight_limits])
-	output_path = os.path.join(getPath(), "data", "pileup", cache_key + ".root")
-	pu_weight_path = cached_query(
-		func=get_puweights_raw,
-		func_kwargs={"npu_data_source": npu_data_source, "npu_mc_source": npu_mc_skim_files, "pileup_json": pileup_json, "min_bias_xsec": min_bias_xsec, "weight_limits": weight_limits, "output_path": output_path},
-		dependency_files=[npu_data_source] + npu_mc_skim_files,
-		cache_key=cache_key,
-	)
-	return pu_weight_path
-
-
-def get_puweights_raw(npu_data_source, npu_mc_source, pileup_json, min_bias_xsec, weight_limits, output_path):
-	config_logger.warning("Calculating MC weights PU")
-	subprocess.check_call(["puWeightCalc.py", npu_data_source] + npu_mc_source + ["--inputLumiJSON", pileup_json, "--minBiasXsec", str(min_bias_xsec), "--weight-limits"] + [str(weight) for weight in weight_limits] + ["--output", output_path])
-	return output_path
