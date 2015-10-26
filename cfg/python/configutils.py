@@ -16,6 +16,7 @@ import StringIO
 import logging
 import json
 import glob
+import subprocess
 
 # settings used when making a choice
 config_logger = logging.getLogger("CONF")
@@ -279,8 +280,10 @@ class PUWeights(object):
 	def _nickname(self):
 		"""Nickname for the generated PU Weights"""
 		def source_nick(source_str):
-			return "_SLASH_".join(os.path.split(source_str)[-2:]).replace("*", "_ANY_").replace("?", "_ONE_").replace("[", "_SEQS_").replace("]", "_SEQE_").replace("!", "_NOT_")
-		return "pileup_" + source_nick(str(self.npu_data_source)) + "_to_" + source_nick(self.npu_mc_source) + "_xsec_" + ("%.1f" % self.min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in self.weight_limits])
+			nick = os.path.splitext("_".join(source_str.split(os.sep)[-2:]))[0]
+			nick = nick.replace("*", "_ST_").replace("?", "_QM_").replace("[", "_SO_").replace("]", "_SE_").replace("!", "_NO_")
+			return nick
+		return ("pileup_" + source_nick(str(self.npu_data_source)) + "_to_" + source_nick(self.npu_mc_source) + "_xsec_" + ("%.1f" % self.min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in self.weight_limits])).replace("__", "_")
 
 
 
