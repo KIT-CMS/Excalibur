@@ -144,7 +144,10 @@ class RunJSON(object):
 		self._run_ranges = self._join_ranges(self._run_ranges + [(min_run, max_run)])
 
 	def __str__(self):
-		return "RunJSON(files=%s,runs=%s)" % (self._base_jsons, self._run_ranges)
+		return self.path
+
+	def __repr__(self):
+		return "RunJSON(files=%s, runs=%s)" % (self._base_jsons, self._run_ranges)
 
 	@property
 	def path(self):
@@ -241,12 +244,18 @@ class PUWeights(object):
 		self.weight_limits = weight_limits
 		self._store_path = puweight_store or os.path.join(getPath(), "data", "pileup")
 
+	def __str__(self):
+		return self.path
+
+	def __repr__(self):
+		return "%s(npu_data_source=%s, npu_mc_source=%s, pileup_json=%s, min_bias_xsec=%.1f, weight_limits=%s)" % (self.__class__.__name__, self.npu_data_source, self.npu_mc_source, self.pileup_json, self.min_bias_xsec, self.weight_limits)
+
 	@property
 	def path(self):
 		"""Path to the PU Weight file"""
 		return cached_query(
 			func=self._make_pu_weights,
-			dependency_files=[getattr(self.npu_data_source, "path", self.npu_data_source), self._output_path()] + glob.glob(self.npu_mc_source),
+			dependency_files=[str(self.npu_data_source), self._output_path()] + glob.glob(self.npu_mc_source),
 			cache_key=self._nickname(),
 		)
 
@@ -257,7 +266,7 @@ class PUWeights(object):
 		return self.path
 
 	def _make_pu_weights(self):
-		npu_data_source = getattr(self.npu_data_source, "path", self.npu_data_source)
+		npu_data_source = str(self.npu_data_source)
 		npu_mc_skim_files = glob.glob(self.npu_mc_source)
 		output_path = self._output_path()
 		subprocess.check_call(["puWeightCalc.py", npu_data_source] + npu_mc_skim_files + ["--inputLumiJSON", self.pileup_json, "--minBiasXsec", str(self.min_bias_xsec), "--weight-limits"] + [str(weight) for weight in self.weight_limits] + ["--output", output_path])
@@ -271,7 +280,9 @@ class PUWeights(object):
 		"""Nickname for the generated PU Weights"""
 		def source_nick(source_str):
 			return "_SLASH_".join(os.path.split(source_str)[-2:]).replace("*", "_ANY_").replace("?", "_ONE_").replace("[", "_SEQS_").replace("]", "_SEQE_").replace("!", "_NOT_")
-		return "pileup_" + source_nick(getattr(self.npu_data_source, "path", self.npu_data_source)) + "_to_" + source_nick(self.npu_mc_source) + "_xsec_" + ("%.1f" % self.min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in self.weight_limits])
+		return "pileup_" + source_nick(str(self.npu_data_source)) + "_to_" + source_nick(self.npu_mc_source) + "_xsec_" + ("%.1f" % self.min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in self.weight_limits])
+
+
 
 
 # local caching
