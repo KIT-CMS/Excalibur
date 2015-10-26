@@ -272,6 +272,8 @@ In case of program errors:
 - Make sure you have sourced CMSSW and  `ini_excalibur.sh`
 - Check that you are up to date in all four repositories (Excalibur, Artus, Kappa, KappaTools)
 - Use `make allclean` and `make all`
+- Merlin sometimes needs arguments including whitespaces enclosed in double and
+single quotes, e.g. `--x-bins "'10 20 50'"`
 
 
 ## Tutorial
