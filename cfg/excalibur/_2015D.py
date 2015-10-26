@@ -12,6 +12,4 @@ def modify_config(cfg):
 			nafpath="/pnfs/desy.de/cms/tier2/store/user/mafische/skims/MF_AnyMu_2015_746/2015-10-09/DoubleMu_Run2015D_Sep2015_13TeV/*.root",
 		)
 		cfg['Lumi'] = configtools.get_lumi(json_source=cfg['JsonFiles'])
-	else:
-		cfg['PileupWeightFile'] = configtools.get_puweights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=69.0, weight_limits=(0, 4))
 	return cfg

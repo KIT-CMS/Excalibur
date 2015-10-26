@@ -9,7 +9,7 @@ def config():
 	)
 	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts', 'betacuts'], ['None', 'L1', 'L1L2L3'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc'])
-	cfg['PileupWeightFile'] = configtools.get_puweights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=69.0, weight_limits=(0, 4))
+	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
