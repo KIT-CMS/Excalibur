@@ -3,28 +3,28 @@
 import os
 import time
 import subprocess
+import itertools
 
 import Excalibur.Plotting.harryinterface as harryinterface
 import Artus.Utility.logger as logger
+
 
 def jec_combination(args=None, additional_dictionary=None):
 	"""function to create the root combination file for the jec group."""
 	mpl_plots = []
 	root_plots = []
-
 	methoddict = {
 		'ptbalance': 'PtBal',
 		'mpf': 'MPF',
 		'rawmpf': 'MPF-notypeI',
 	}
-
 	alpha_limits = [0.1, 0.15, 0.2, 0.3, 0.4]
 	alpha_cuts = ['(alpha<{})'.format(limit) for limit in alpha_limits]
 	alpha_strings = ['a'+str(int(100*limit)) for limit in alpha_limits]
 
 	eta_borders = [0, 0.783, 1.305, 1.93, 2.5, 2.964, 3.2, 5.191]
 	eta_cuts = ["({0}<=abs(jet1eta)&&abs(jet1eta)<{1})".format(*b) for b in zip(eta_borders[:-1], eta_borders[1:])]
-	eta_cuts = ["(0<=abs(jet1eta)&&abs(jet1eta)<1.3)"] + eta_cuts # also include standard barrel jet selection
+	eta_cuts = ["(0<=abs(jet1eta)&&abs(jet1eta)<1.3)"] + eta_cuts  # also include standard barrel jet selection
 	eta_strings = ["eta_{0:0>2d}_{1:0>2d}".format(int(round(10*up)), int(round(10*low))) for up, low in zip(eta_borders[:-1], eta_borders[1:])]
 	eta_strings = ["eta_00_13"] + eta_strings
 	try:
@@ -77,6 +77,49 @@ def jec_combination(args=None, additional_dictionary=None):
 	harryinterface.harry_interface(root_plots, args + ['--max-processes', '1'])
 
 
+def jec_pu_combination(args=None, additional_dictionary=None):
+	"""Create combination info on pileup"""
+	mpl_plots = []
+	root_plots = []
+	try:
+		file_label = additional_dictionary.pop("file_label")
+	except (AttributeError, KeyError):
+		file_label = ""
+	now = time.localtime()
+	create_file = True
+	for x_expression, y_expression in [("npumean", "rho"), ("npv", "rho"), ("npumean", "npv")]:
+		for correction in ['L1L2L3']: # no L1L2L3Res available atm
+			labelsuffix = "_".join((x_expression, "vs", y_expression, 'CHS', correction))
+			d_mpl = {
+				'x_expressions': [x_expression],
+				'y_expressions': [y_expression],
+				'tree_draw_options': 'prof',
+				'corrections': ['L1L2L3'],
+				'cutlabel': True,
+				'markers': ['o', 'd'],
+				'x_bins': "50,0.5,50.5",
+				'legend': 'lower right',
+				'analysis_modules': ['Ratio', 'ConvertToTGraphErrors'],
+				'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
+			}
+			if additional_dictionary is not None:
+				d_mpl.update(additional_dictionary)
+			d_root = d_mpl.copy()
+			d_root.update({
+				'plot_modules': ['ExportRoot'],
+				'filename': 'combination_ZJet_PU_' + file_label + time.strftime("%Y-%m-%d", now),
+				'file_mode': ('RECREATE' if create_file else 'UPDATE'),
+			})
+			create_file = False
+			mpl_plots.append(d_mpl)
+			root_plots.append(d_root)
+	harryinterface.harry_interface(mpl_plots, args)
+	harryinterface.harry_interface(root_plots, args + ['--max-processes', '1'])
+
+
+
+
+
 def jec_combination_20150722(args=None):
 	d = {
 		'files': [
@@ -88,6 +131,7 @@ def jec_combination_20150722(args=None):
 		"_npv_weights" : ["1", "(npv==1)*60.7406+(npv==2)*4.00814+(npv==3)*5.16789+(npv==4)*4.87128+(npv==5)*4.18218+(npv==6)*3.43252+(npv==7)*3.26353+(npv==8)*2.78556+(npv==9)*2.65932+(npv==10)*2.02964+(npv==11)*1.64236+(npv==12)*1.30764+(npv==13)*1.17253+(npv==14)*0.901506+(npv==15)*0.687614+(npv==16)*0.636555+(npv==17)*0.366818+(npv==18)*0.318782+(npv==19)*0.21218+(npv==20)*0.148066+(npv==21)*0.104698+(npv==22)*0.0391752+(npv==23)*0.0121797+(npv==24)*0.0611739+(npv==25)*0.0192279+(npv==26)*0+(npv==27)*0+(npv==28)*0+(npv==29)*0+(npv==30)*0"],
 	}
 	jec_combination(args, d)
+
 
 def jec_combination_20150804(args=None):
 	d = {
@@ -101,6 +145,7 @@ def jec_combination_20150804(args=None):
 	}
 	jec_combination(args, d)
 
+
 def jec_combination_20150814(args=None):
 	d = {
 		'files': [
@@ -112,6 +157,7 @@ def jec_combination_20150814(args=None):
 		"_npv_weights" : ["1", "(npv==1)*14.8846+(npv==2)*3.58332+(npv==3)*1.84285+(npv==4)*2.45195+(npv==5)*1.50428+(npv==6)*0.996686+(npv==7)*1.34553+(npv==8)*1.26528+(npv==9)*1.21698+(npv==10)*1.20916+(npv==11)*1.14444+(npv==12)*1.09916+(npv==13)*1.1722+(npv==14)*1.11612+(npv==15)*1.202+(npv==16)*1.12021+(npv==17)*1.00273+(npv==18)*1.00425+(npv==19)*0.768872+(npv==20)*0.785899+(npv==21)*0.649426+(npv==22)*0.714884+(npv==23)*0.534425+(npv==24)*0.278714+(npv==25)*0.333719+(npv==26)*0.28414+(npv==27)*0.0830113+(npv==28)*0.171738+(npv==29)*0.145598+(npv==30)*0.13861"],
 	}
 	jec_combination(args, d)
+
 
 def jec_combination_25ns_20151001(args=None):
 	d = {
