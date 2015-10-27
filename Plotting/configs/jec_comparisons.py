@@ -58,12 +58,12 @@ def response_extrapolation(args=None, additional_dictionary=None):
 	d = {
 		'filename': 'extrapolation',
 		'labels': [
-			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[0]),
-			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[1]),
+			r"$\\mathit{p}_{T}$ balance" + " {0}".format(labels[0]),
+			r"$\\mathit{p}_{T}$ balance" + " {0}".format(labels[1]),
 			'MPF {0}'.format(labels[0]),
 			'MPF {0}'.format(labels[1]),
-			r'$\\mathit{p}_T^{reco}$/$\\mathit{p}_T^{ptcl}$',
-			r'$\\mathit{p}_T$ balance',
+			r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$',
+			r'$\\mathit{p}_{T}$ balance',
 			'MPF',
 			'', '', '', '', '', '', '', '', ''],
 		'alphas': [0.3],
@@ -221,7 +221,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	# TODO move this to more general location
 	x_dict = {
 		'alpha': ['20,0,1'],
-		'jet1area': ['20,0.7,0.9'],
+		'jet1area': ['20,0.4,0.6'],
 		'jet1phi': ['20,-3.1415,3.1415', 'lower center'],
 		'jet1pt': ['20,0,400'],
 		'jet2eta': ['20,-5,5'],
