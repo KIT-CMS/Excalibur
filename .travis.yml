@@ -15,7 +15,6 @@ addons:
 before_install:
   - sudo apt-get -y install libboost1.54-all-dev root-system libroot-bindings-python5.34 cmake python2.7 python-numpy
   - ls /usr/include/root /usr/lib/*/root5.34
-  - alias python='python2.7'
   - python --version
   - python2.7 --version
   - root-config --cflags --ldflags
@@ -45,4 +44,4 @@ script:
   - test_excalibur.sh data
   - test_excalibur.sh data15
   - test_excalibur.sh mc15
-  - python2.7 scripts/merlin.py -i data.root -x zpt
+  - python scripts/merlin.py -i data.root -x zpt
