@@ -30,8 +30,11 @@ class ArtusJSONEncoder(json.JSONEncoder):
 	def default(self, obj):
 		try:
 			return obj.artus_value
-		except AttributeError:
-			return json.JSONEncoder.default(self, obj)
+		except AttributeError as aerr:
+			# reraise any error happening inside the method
+			if aerr.message.endswith("object has no attribute 'artus_value'"):
+				return json.JSONEncoder.default(self, obj)
+			raise
 
 # ZJet Runner
 
