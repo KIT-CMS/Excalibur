@@ -127,21 +127,24 @@ def response_bin_comparisons(args=None, additional_dictionary=None, data_quantit
 	for quantity, title_quantity, bins in zip(
 		[
 			'zpt',
+			'alpha',
 			#'npv',
 			#'abs(jet1eta)'
 		],
 		[
 			r"$\\mathit{p}_{T}^{Z}$",
+			r"$\\alpha$"
 			#'$\\mathit{n}_{PV}$',
 			#'|$\\mathit{\eta}_{Leading \ Jet}$|'
 		],
 		[
 			"30 40 50 60 75 95 125 180 300 1000",
+			"0 0.05 0.1 0.15 0.2 0.25 0.3",
 			#"-0.5 4.5 8.5 15.5 21.5 45.5",
 			#"0 0.783 1.305 1.93 2.5 2.964 3.139 5.191"
 		]
 	):
-		for method in ['ptbalance']:
+		for method in ['ptbalance', 'mpf']:
 			bin_edges = bins.split(" ")
 			for i in xrange(len(bin_edges)-1):
 				filename_postfix = "{0}-{1}".format(bin_edges[i], bin_edges[i+1])
