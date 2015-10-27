@@ -25,7 +25,7 @@ import shutil
 
 from configutils import config_logger, cache_logger, env_logger
 from configutils import get_excalibur_env, getPath, get_cachepath
-from configutils import download_tarball, get_relsubpath, cached_query, RunJSON, PUWeights
+from configutils import download_tarball, get_relsubpath, cached_query, RunJSON, PUWeights, InputFiles
 
 
 def getConfig(inputtype, year, channel, **kwargs):
@@ -68,15 +68,7 @@ def updateConfig(conf, tupl, **kwargs):
 
 def setInputFiles(ekppath=None, nafpath=None):
 	"""Return ekppath if you're at EKP, nafpath if at NAF. """
-	d = {'ekp': ekppath, 'naf': nafpath}
-	host = socket.gethostname()[:3]
-	if host in d:
-		if d[host] in [None, '']:
-			sys.exit("ERROR: You're at %s, but the path for this skim is not set here!" % host.upper())
-		else:
-			return d[host]
-	else:
-		sys.exit("ERROR: Cant determine input file location!")
+	return InputFiles(ekppath=ekppath, nafpath=nafpath)
 
 
 def changeNamingScheme(cfg, old=True):
