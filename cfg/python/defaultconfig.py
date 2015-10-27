@@ -181,6 +181,8 @@ def _2015(cfg, **kwargs):
 	cfg['JetPtMin'] = 15.
 	cfg['MinZllJetDeltaRVeto'] = 0.3
 	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
+	# create empty containers to allow using references prematurely
+	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 69.0
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
@@ -407,6 +409,7 @@ def data_2012(cfg, **kwargs):
 def data_2015(cfg, **kwargs):
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['Pipelines']['default']['Quantities'] += ['npumean']
+	cfg['CutAlphaMax'] = 0.3
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
 		cfg['Lumi'] = 0.04003
@@ -430,17 +433,21 @@ def mc_2012(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 
 def mc_2015(cfg, **kwargs):
-	if kwargs.get('bunchcrossing', "50ns") == "50ns":
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
-	elif kwargs['bunchcrossing'] == "25ns":
-		cfg['Jec'] = configtools.get_jec("Summer15_25nsV5_MC")
-		cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
-	else:
-		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
+	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
+	cfg['DeltaRRadiationJet'] = 1
+	cfg['CutAlphaMax'] = 0.3
+	cfg['CutBetaMax'] = 0.1
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
+	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
+	if kwargs.get('bunchcrossing', "50ns") == "50ns":
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
+	elif kwargs['bunchcrossing'] == "25ns":
+		cfg['Jec'] = configtools.get_jec("Summer15_25nsV5_MC")
+	else:
+		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
