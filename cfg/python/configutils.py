@@ -17,6 +17,7 @@ import logging
 import json
 import glob
 import subprocess
+import socket
 
 # settings used when making a choice
 config_logger = logging.getLogger("CONF")
@@ -256,7 +257,7 @@ class PUWeights(object):
 		"""Path to the PU Weight file"""
 		return cached_query(
 			func=self._make_pu_weights,
-			dependency_files=[str(self.npu_data_source), self._output_path()] + glob.glob(self.npu_mc_source),
+			dependency_files=[str(self.npu_data_source), self._output_path()] + glob.glob(str(self.npu_mc_source)),
 			cache_key=self._nickname(),
 		)
 
@@ -268,7 +269,7 @@ class PUWeights(object):
 
 	def _make_pu_weights(self):
 		npu_data_source = str(self.npu_data_source)
-		npu_mc_skim_files = glob.glob(self.npu_mc_source)
+		npu_mc_skim_files = glob.glob(str(self.npu_mc_source))
 		output_path = self._output_path()
 		subprocess.check_call(["puWeightCalc.py", npu_data_source] + npu_mc_skim_files + ["--inputLumiJSON", self.pileup_json, "--minBiasXsec", str(self.min_bias_xsec), "--weight-limits"] + [str(weight) for weight in self.weight_limits] + ["--output", output_path])
 		return output_path
@@ -283,9 +284,54 @@ class PUWeights(object):
 			nick = os.path.splitext("_".join(source_str.split(os.sep)[-2:]))[0]
 			nick = nick.replace("*", "_ST_").replace("?", "_QM_").replace("[", "_SO_").replace("]", "_SE_").replace("!", "_NO_")
 			return nick
-		return ("pileup_" + source_nick(str(self.npu_data_source)) + "_to_" + source_nick(self.npu_mc_source) + "_xsec_" + ("%.1f" % self.min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in self.weight_limits])).replace("__", "_")
+		return ("pileup_" + source_nick(str(self.npu_data_source)) + "_to_" + source_nick(str(self.npu_mc_source)) + "_xsec_" + ("%.1f" % self.min_bias_xsec) + "_weights_" + "-".join([str(weight) for weight in self.weight_limits])).replace("__", "_")
 
 
+class InputFiles(object):
+	"""
+	Domain specific input file resolution
+
+	:param ekppath: glob for files at EKP
+	:type ekppath: str
+	:param nafpath: glob for files at NAF
+	:type nafpath: str
+
+	:note: The interface accepts *any* parameter of the form `domain = glob`,
+	       with both `domain` and `glob` being strings. `domain` is truncated
+	       to three characters, lower case. The explicit parameters `ekppath`
+	       and `nafpath` exist for compatibility; there is no special handling.
+	"""
+	def __init__(self, **kwargs):
+		self.inputs = {}
+		self.set_input(**kwargs)
+		self.host = socket.gethostname()[:3].lower()
+
+	def set_input(self, **kwargs):
+		"""Overwrite the input for specific domains"""
+		for domain in kwargs:
+			self.inputs[domain[:3].lower()] = kwargs[domain]
+
+	def __str__(self):
+		return self.path
+
+	def __repr__(self):
+		return "%s(host=%s,inputs=%s)" % (self.__class__.__name__, self.host, self.inputs)
+
+	@property
+	def path(self):
+		"""Path to the input files used (i.e. the glob for the local domain)"""
+		try:
+			if not self.inputs[self.host]:
+				raise KeyError
+			return self.inputs[self.host]
+		except KeyError:
+			raise KeyError("Input file for domain '%s' not set" % self.host)
+
+	@property
+	def artus_value(self):
+		"""Value to store in artus config JSON"""
+		config_logger.info("Using Input Files '%s' (Domain: '%s')", self.path, self.host)
+		return self.path
 
 
 # local caching
