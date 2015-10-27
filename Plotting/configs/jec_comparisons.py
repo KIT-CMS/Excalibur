@@ -393,7 +393,7 @@ def pf_fractions(args=None, additional_dictionary=None):
 		):
 			# put together the list for quantities, labels, nicks
 			pftypes = ["CHad", r"$\\gamma$", "NHad", r"$e$", r"$\\mu$"]
-			quantities = ["jet1chf", "jet1pf", "jet1nhf", "jet1ef", "jet1mf"]
+			quantities = ["jet1chf", "jet1pf", "(jet1nhf-jet1hfhf)", "jet1ef", "jet1mf"]
 			if x_quantity == 'abs(jet1eta)':
 				pftypes += ["HFhad", "HFem"]
 				quantities += ["jet1hfhf", "jet1hfemf"]
