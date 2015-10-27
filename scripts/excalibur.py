@@ -481,21 +481,22 @@ def showMessage(title, message, fail=False):
 
 
 def createFileList(files, fast=False):
-		if type(files) == str:
-			if "*.root" in files:
-				print "Creating file list from", files
-				files = glob.glob(files)
-				# Direct access to /pnfs is buggy, prepend dcap to file paths
-				if 'naf' in socket.gethostname():
-					files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
-			else:
-				files = [files]
-		if not files:
-			print "No input files found."
-			sys.exit(1)
-		if fast:
-			files = files[fast[0]:fast[1]]
-		return files
+	files = getattr(files, "artus_value", files)
+	if type(files) == str:
+		if "*.root" in files:
+			print "Creating file list from", files
+			files = glob.glob(files)
+			# Direct access to /pnfs is buggy, prepend dcap to file paths
+			if 'naf' in socket.gethostname():
+				files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
+		else:
+			files = [files]
+	if not files:
+		print "No input files found."
+		sys.exit(1)
+	if fast:
+		files = files[fast[0]:fast[1]]
+	return files
 
 
 def prepare_wkdir_parent(work_path, out_name, clean=False):
