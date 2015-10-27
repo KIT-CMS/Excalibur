@@ -5,4 +5,4 @@ TYPE=${1:-data15}
 $EXCALIBURPATH/scripts/artus $EXCALIBURPATH/test/$TYPE.py.json
 
 echo -e "\n\nChecking reference file and new output"
-python2.7 $ARTUSPATH/Utility/scripts/compareRootFiles.py $TYPE.root $EXCALIBURPATH/test/$TYPE.root $2
+$ARTUSPATH/Utility/scripts/compareRootFiles.py $TYPE.root $EXCALIBURPATH/test/$TYPE.root $2
