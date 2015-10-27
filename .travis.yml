@@ -45,3 +45,4 @@ script:
   - test_excalibur.sh data
   - test_excalibur.sh data15
   - test_excalibur.sh mc15
+  - python2.7 scripts/merlin.py -i data.root -x zpt
