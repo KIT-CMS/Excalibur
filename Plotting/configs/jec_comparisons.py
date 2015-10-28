@@ -95,7 +95,8 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'ratio_numerator_nicks': ['ptbalance_data', 'mpf_data'],
 		'ratio_denominator_nicks': ['ptbalance_mc', 'mpf_mc'],
 		'ratio_result_nicks': ['ptbalance_ratio', 'mpf_ratio'],
-		'y_subplot_lims': [0.966, 1.015],
+		'y_subplot_lims': [0.966, 1.034],
+		'extrapolation_text_position': [0.18, 1.025],
 		'y_subplot_label': 'Data / MC',
 		'subplot_fraction': 40,
 		'subplot_legend': 'lower left',
@@ -223,24 +224,24 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	plots = []
 	# TODO move this to more general location
 	x_dict = {
-		'alpha': ['20,0,1'],
-		'jet1area': ['20,0.4,0.6'],
+		'alpha': ['40,0,1'],
+		'jet1area': ['40,0.3,0.9'],
 		'jet1phi': ['20,-3.1415,3.1415', 'lower center'],
-		'jet1pt': ['20,0,400'],
+		'jet1pt': ['40,0,400'],
 		'jet2eta': ['20,-5,5'],
 		'jet2phi': ['20,-3.1415,3.1415', 'lower center'],
-		'jet2pt': ['15,0,75'],
-		'met': ['20,0,100'],
+		'jet2pt': ['30,0,75'],
+		'met': ['40,0,100'],
 		'metphi': ['20,-3.1415,3.1415', 'lower center'],
-		'mpf': ['20,0,2'],
+		'mpf': ['40,0,2'],
 		'npu': ['31,-0.5,30.5'],
 		'npumean': ['40,0,40'],
 		'npv': ['31,-0.5,30.5'],
-		'ptbalance': ['20,0,2'],
-		'rawmet': ['20,0,100'],
-		'zmass': ['20,71,111'],
+		'ptbalance': ['40,0,2'],
+		'rawmet': ['40,0,100'],
+		'zmass': ['40,71,111'],
 		'zphi': ['20,-3.1415,3.1415', 'lower center'],
-		'zpt': ['20,0,400'],
+		'zpt': ['40,0,400'],
 		'zy': ['25,-2.5,2.5'],
 	}
 	x_dict_ee={
@@ -259,7 +260,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	}
 	if mu==True: x_dict.update(x_dict_mm)
 	else: x_dict.update(x_dict_ee)
-	
+
 	for q in x_dict:
 		if len(x_dict[q]) == 1:
 			x_dict[q] += ['best']
@@ -270,7 +271,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	quantity_list_ee=['e1pt', 'e1eta', 'e1phi', 'e2pt', 'e2eta', 'e2phi','eminusphi', 'eminuseta', 'eminuspt', 'eplusphi', 'epluseta', 'epluspt']
 	quantity_list_mm=['mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi','muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt']
 	quantity_list.extend(quantity_list_mm if mu else quantity_list_ee)
-	
+
 	for quantity in quantity_list \
 			 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
 		# normal comparison
@@ -578,7 +579,7 @@ def comparison_datamc(args=None):
 	}
 	plotting_jobs += full_comparison(args, d)
 	return plotting_jobs
-	
+
 def comparison_datamc_Zee(args=None):
 	"""full data mc comparisons for work/data_ee.root and work/mc_ee.root"""
 	plotting_jobs = []
