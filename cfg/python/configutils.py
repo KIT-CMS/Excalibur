@@ -113,13 +113,13 @@ class RunJSON(object):
 	def __init__(self, base_jsons, json_store=None, run_ranges=None):
 		if isinstance(base_jsons, self.__class__):
 			return
-		self._base_jsons = [base_jsons] if isinstance(base_jsons, basestring) else base_jsons
+		self._base_jsons = [base_jsons] if isinstance(base_jsons, basestring) else list(base_jsons)
 		self._run_ranges = run_ranges or []
 		self._store_path = json_store or os.path.join(getPath(), "data", "json")
 
 	def set_base_json(self, *json_paths):
 		"""Overwrite the base JSON run selection, discarding all others"""
-		self._base_jsons = json_paths
+		self._base_jsons = list(json_paths)
 
 	def add_base_json(self, json_path):
 		"""Add a base JSON for run selection"""
@@ -132,7 +132,7 @@ class RunJSON(object):
 		When called with no argument, the whitelist is cleared, allowing all
 		runs to be used.
 		"""
-		self._run_ranges = run_ranges
+		self._run_ranges = list(run_ranges)
 
 	def add_run_range(self, min_run, max_run):
 		"""
