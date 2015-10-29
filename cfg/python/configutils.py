@@ -87,6 +87,45 @@ def download_tarball(url, extract_to='.'):
 
 # lazily evaluated objects for dependencies
 # objects must provide the `artus_value` attribute/property
+class DeferredCall(object):
+	"""
+	Call that is evaluated lazily
+
+	Instances allow an explicit resolution via the `resolve` method. They also
+	serve as proxies for immutable operations, such as `dc + 2` or `len(dc)`.
+	Methods that allow mutation may be available, but their effect will be lost.
+	"""
+	def __init__(self, func, *func_args, **func_kwargs):
+		self.func = func
+		self.func_args = func_args
+		self.func_kwargs = func_kwargs
+
+	def resolve(self):
+		"""Resolve and return the call"""
+		return self.func(*self.func_args, **self.func_kwargs)
+
+	@property
+	def artus_value(self):
+		"""Value to store in artus config JSON"""
+		return self.resolve()
+
+	# magic must be resolved explicitly
+	# self other - resolve in reflected order to allow other to resolve as well
+	for so_magic in [("lt", "gt"), ("le", "ge"), ("eq", "eq"), ("ne", "ne"), ("add", "radd"), ("sub", "rsub"), ("mul", "rmul"), ("div", "rdiv"), ("truediv", "rtruediv"), ("floordiv", "rfloordiv"), ("mod", "rmod"), ("divmod", "rdivmod"), ("pow", "rpow"), ("lshift", "rlshift"), ("rshift", "rrshift"), ("and", "rand"), ("xor", "rxor"), ("or", "ror")]:
+		for func_name, refl_name in [(so_magic[0], so_magic[1]), (so_magic[1], so_magic[0])]:
+			exec("def __%(fname)s__(self, other):\n\ttry:\n\t\tres = other.__%(rname)s__(self.resolve())\n\t\tif res == NotImplemented:\n\t\t\traise AttributeError\n\texcept AttributeError:\n\t\tres = self.resolve().__%(fname)s__(other)\n\treturn res" % {"fname": func_name, "rname": refl_name})
+
+	# regular magic - immutable only
+	for magic in ("str", "nonzero", "unicode", "getattr", "call", "len", "getitem", "missing", "iter", "reversed", "contains", "getslice", "neg", "pos", "abs", "invert", "complex", "int", "long", "float", "oct", "hex", "index"):
+		exec("def __%(fname)s__(self, *args, **kwargs):\n\treturn self.resolve().__%(fname)s__(*args, **kwargs)" % {"fname": magic})
+
+
+class DeferredAttribute(DeferredCall):
+	"""Attribute/Property that is dereferenced lazily"""
+	def __init__(self, owner, attribute_name):
+		DeferredCall.__init__(self, lambda: getattr(owner, attribute_name))
+
+
 class RunJSON(object):
 	"""
 	Abstraction of CMS run JSONs with joins and run whitelisting
