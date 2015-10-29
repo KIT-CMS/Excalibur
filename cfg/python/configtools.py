@@ -187,7 +187,10 @@ def get_lumi(json_source, normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_js
 	"""
 	Get the lumi in /pb for a specific set of runs from CMS run JSON
 	"""
-	json_source = getattr(json_source, "path", json_source)
+	json_source = getattr(json_source, "artus_value", json_source)
+	if not isinstance(json_source, basestring):
+		assert len(json_source) == 1
+		json_source = json_source[0]
 	# use verbose key for identifying commited lumi results
 	if json_source.endswith(".json") or json_source.endswith(".txt"):
 		cache_key = "lumi_path-" + os.path.splitext(os.path.basename(json_source))[0]
@@ -203,6 +206,7 @@ def get_lumi(json_source, normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_js
 		cache_key=cache_key,
 	)
 	config_logger.info("Using lumi %.3f/fb", lumi)
+	return lumi
 
 
 def get_lumi_force(json_source, bril_ssh=None, min_run=float("-inf"), max_run=float("inf"), normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
