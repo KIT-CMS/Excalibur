@@ -224,7 +224,7 @@ class PUWeights(object):
 	:param min_bias_xsec: minimum bias cross section to assume
 	:type min_bias_xsec: float or int
 	:param weight_limits: min and max limits to truncate excessive weights
-	:type weight_limits: list[float or int]
+	:type weight_limits: Tuple[float or int, float or int]
 	:param puweight_store: directory to store PU Weight files in
 	:type puweight_store: str
 
@@ -330,12 +330,12 @@ class InputFiles(object):
 	@property
 	def artus_value(self):
 		"""Value to store in artus config JSON"""
-		config_logger.info("Using Input Files '%s' (Domain: '%s')", self.path, self.host)
-		return self.path
+		config_logger.info("Using Input Files '%s' (Domain: '%s')", self.resolve(), self.host)
+		return self.resolve()
 
 
 # local caching
-def get_relsubpath(path, reference_path=getPath()):
+def get_relsubpath(path, reference_path=None):
 	"""
 	Get a relative path for sub-folders/files, else an absolute one
 
@@ -345,6 +345,7 @@ def get_relsubpath(path, reference_path=getPath()):
 
 	This function is intended mainly to check whether something is subject to VCS.
 	"""
+	reference_path = reference_path if reference_path is not None else getPath()
 	rel_path = os.path.relpath(
 		os.path.abspath(path),
 		os.path.abspath(reference_path)
@@ -354,7 +355,7 @@ def get_relsubpath(path, reference_path=getPath()):
 	return path
 
 
-def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), dependency_folders=(), cache_key=None, cache_dir=get_cachepath()):
+def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), dependency_folders=(), cache_key=None, cache_dir=None):
 	"""
 	Get the response to a query, caching it if possible
 
@@ -381,6 +382,7 @@ def cached_query(func, func_args=(), func_kwargs={}, dependency_files=(), depend
 	          deterministically for lambda functions; `cache_key` should be set
 	          manually for lambda functions.
 	"""
+	cache_dir = cache_dir if cache_dir is not None else get_cachepath()
 	def stat_file(file_path):
 		"""Get a comparable representation of file validity"""
 		try:
