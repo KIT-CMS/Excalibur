@@ -146,13 +146,12 @@ class RunJSON(object):
 		self._run_ranges = self._join_ranges(self._run_ranges + [(min_run, max_run)])
 
 	def __str__(self):
-		return self.path
+		return self.resolve()
 
 	def __repr__(self):
 		return "RunJSON(files=%s, runs=%s)" % (self._base_jsons, self._run_ranges)
 
-	@property
-	def path(self):
+	def resolve(self):
 		"""Path to the JSON file"""
 		if len(self._base_jsons) == 1 and not self._run_ranges:
 			return self._base_jsons[0]
@@ -166,8 +165,8 @@ class RunJSON(object):
 	@property
 	def artus_value(self):
 		"""Value to store in artus config JSON"""
-		config_logger.info("Using run JSON '%s'", self.path)
-		return [self.path]
+		config_logger.info("Using run JSON '%s'", self.resolve())
+		return [self.resolve()]
 
 	def _make_dynamic_json(self):
 		"""Create a file containing the json content"""
@@ -247,13 +246,12 @@ class PUWeights(object):
 		self._store_path = puweight_store or os.path.join(getPath(), "data", "pileup")
 
 	def __str__(self):
-		return self.path
+		return self.resolve()
 
 	def __repr__(self):
 		return "%s(npu_data_source=%s, npu_mc_source=%s, pileup_json=%s, min_bias_xsec=%.1f, weight_limits=%s)" % (self.__class__.__name__, self.npu_data_source, self.npu_mc_source, self.pileup_json, self.min_bias_xsec, self.weight_limits)
 
-	@property
-	def path(self):
+	def resolve(self):
 		"""Path to the PU Weight file"""
 		return cached_query(
 			func=self._make_pu_weights,
@@ -264,8 +262,8 @@ class PUWeights(object):
 	@property
 	def artus_value(self):
 		"""Value to store in artus config JSON"""
-		config_logger.info("Using PU Weights '%s'", self.path)
-		return self.path
+		config_logger.info("Using PU Weights '%s'", self.resolve())
+		return self.resolve()
 
 	def _make_pu_weights(self):
 		npu_data_source = str(self.npu_data_source)
@@ -312,13 +310,12 @@ class InputFiles(object):
 			self.inputs[domain[:3].lower()] = kwargs[domain]
 
 	def __str__(self):
-		return self.path
+		return self.resolve()
 
 	def __repr__(self):
 		return "%s(host=%s,inputs=%s)" % (self.__class__.__name__, self.host, self.inputs)
 
-	@property
-	def path(self):
+	def resolve(self):
 		"""Path to the input files used (i.e. the glob for the local domain)"""
 		try:
 			if not self.inputs[self.host]:
