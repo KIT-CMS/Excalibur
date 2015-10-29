@@ -58,12 +58,12 @@ def response_extrapolation(args=None, additional_dictionary=None):
 	d = {
 		'filename': 'extrapolation',
 		'labels': [
-			r"$\\mathit{p}_{T}$ balance" + " {0}".format(labels[0]),
-			r"$\\mathit{p}_{T}$ balance" + " {0}".format(labels[1]),
+			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[0]),
+			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[1]),
 			'MPF {0}'.format(labels[0]),
 			'MPF {0}'.format(labels[1]),
-			r'$p_T^\\mathrm{reco}$/$p_T^\\mathrm{ptcl}$',
-			r'$\\mathit{p}_{T}$ balance',
+			r'$\\mathit{p}_T^\\mathrm{reco}$/$\\mathit{p}_T^\\mathrm{ptcl}$',
+			r'$\\mathit{p}_T$ balance',
 			'MPF',
 			'', '', '', '', '', '', '', '', ''],
 		'alphas': [0.3],
