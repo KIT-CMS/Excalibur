@@ -219,20 +219,20 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, mu=True):
+def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, channel="m"):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	plots = []
 	# TODO move this to more general location
 	x_dict = {
 		'alpha': ['40,0,1'],
 		'jet1area': ['40,0.3,0.9'],
-		'jet1phi': ['20,-3.1415,3.1415', 'lower center'],
+		'jet1phi': ['20,-3.1415,3.1415',],
 		'jet1pt': ['40,0,400'],
 		'jet2eta': ['20,-5,5'],
-		'jet2phi': ['20,-3.1415,3.1415', 'lower center'],
+		'jet2phi': ['20,-3.1415,3.1415',],
 		'jet2pt': ['30,0,75'],
 		'met': ['40,0,100'],
-		'metphi': ['20,-3.1415,3.1415', 'lower center'],
+		'metphi': ['20,-3.1415,3.1415',],
 		'mpf': ['40,0,2'],
 		'npu': ['31,-0.5,30.5'],
 		'npumean': ['40,0,40'],
@@ -240,26 +240,26 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'ptbalance': ['40,0,2'],
 		'rawmet': ['40,0,100'],
 		'zmass': ['40,71,111'],
-		'zphi': ['20,-3.1415,3.1415', 'lower center'],
+		'zphi': ['20,-3.1415,3.1415',],
 		'zpt': ['40,0,400'],
 		'zy': ['25,-2.5,2.5'],
 	}
 	x_dict_ee={
-		'e1phi': ['20,-3.1415,3.1415', 'lower center'],
+		'e1phi': ['20,-3.1415,3.1415',],
 		'e1pt': ['20,0,150'],
 		'e2pt': ['20,0,150'],
 		'eminuspt': ['20,0,150'],
 		'epluspt': ['20,0,150'],
 	}
 	x_dict_mm={
-		'mu1phi': ['20,-3.1415,3.1415', 'lower center'],
+		'mu1phi': ['20,-3.1415,3.1415',],
 		'mu1pt': ['20,0,150'],
 		'mu2pt': ['20,0,150'],
 		'muminuspt': ['20,0,150'],
 		'mupluspt': ['20,0,150'],
 	}
-	if mu==True: x_dict.update(x_dict_mm)
-	else: x_dict.update(x_dict_ee)
+	if channel=="m": x_dict.update(x_dict_mm)
+	elif channel=="e": x_dict.update(x_dict_ee)
 
 	for q in x_dict:
 		if len(x_dict[q]) == 1:
@@ -270,7 +270,8 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',]
 	quantity_list_ee=['e1pt', 'e1eta', 'e1phi', 'e2pt', 'e2eta', 'e2phi','eminusphi', 'eminuseta', 'eminuspt', 'eplusphi', 'epluseta', 'epluspt']
 	quantity_list_mm=['mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi','muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt']
-	quantity_list.extend(quantity_list_mm if mu else quantity_list_ee)
+	if channel=="m": quantity_list.extend(quantity_list_mm)
+	elif channel=="e": quantity_list.extend(quantity_list_ee)
 
 	for quantity in quantity_list \
 			 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
@@ -291,6 +292,10 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		if quantity == 'alpha' and (additional_dictionary is None or 'zjetfolders' not in additional_dictionary):
 			d['zjetfolders'] = ['noalphacuts']
 
+		if quantity=='zphi':
+			d['y_rel_lims']=[1,1.3]
+		elif quantity== 'zpt':
+			d['y_rel_lims']=[1,400]
 		if not only_normalized:
 			plots.append(d)
 
@@ -535,10 +540,10 @@ def cutflow(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False, mu=True):
+def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False, channel="m"):
 	""" Do all comparison plots"""
 	plotting_jobs = []
-	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, mu)
+	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
 	plotting_jobs += basic_profile_comparisons(args, d)
 	plotting_jobs += pf_fractions(args, d)
 	plotting_jobs += response_comparisons(args, d, data_quantities)
@@ -575,9 +580,11 @@ def comparison_datamc(args=None):
 		'files': ['work/data.root', 'work/mc.root'],
 		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
-		'legend': None,
+		#'legend': None,
 	}
 	plotting_jobs += full_comparison(args, d)
+	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3Res', 'finalcuts_AK5PFJetsCHSL1L2L3']})
+	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_datamc_Zee(args=None):
@@ -587,10 +594,41 @@ def comparison_datamc_Zee(args=None):
 		'files': ['work/data_ee.root', 'work/mc_ee.root'],
 		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
-		'legend': None,
+		#'legend': None,
 	}
-	plotting_jobs += full_comparison(args, d, mu=False)
+	plotting_jobs += full_comparison(args, d, channel="e")
+	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3Res', 'finalcuts_AK5PFJetsCHSL1L2L3']})
+	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
+
+def comparison_mmee_data(args=None):
+	"""full mm ee comparisons for work/data.root and work/data_ee.root"""
+	plotting_jobs = []
+	d = {
+		'files': ['work/data.root', 'work/data_ee.root'],
+		'labels': ['Datamu', 'Datae'],
+		'corrections': ['L1L2L3Res', 'L1L2L3Res'],
+		#'legend': None,
+	}
+	plotting_jobs += full_comparison(args, d, channel="em")
+	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3Res', 'finalcuts_AK5PFJetsCHSL1L2L3Res']})
+	plotting_jobs += cutflow(args, d)
+	return plotting_jobs
+
+def comparison_mmee_mc(args=None):
+	"""full mm ee comparisons for work/mc_ee.root and work/mc_ee.root"""
+	plotting_jobs = []
+	d = {
+		'files': ['work/mc.root', 'work/mc_ee.root'],
+		'labels': ['MCmu', 'MCe'],
+		'corrections': ['L1L2L3', 'L1L2L3'],
+		#'legend': None,
+	}
+	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="em")
+	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3', 'finalcuts_AK5PFJetsCHSL1L2L3']})
+	plotting_jobs += cutflow(args, d)
+	return plotting_jobs
+
 
 def comparison_run2(args=None):
 	"""Comparison for run2 samples."""
