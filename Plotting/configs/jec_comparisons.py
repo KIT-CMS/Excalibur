@@ -611,7 +611,7 @@ def comparison_mmee_data(args=None):
 		#'legend': None,
 	}
 	plotting_jobs += full_comparison(args, d, channel="em")
-	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3Res', 'finalcuts_AK5PFJetsCHSL1L2L3Res']})
+	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3Res', 'finalcuts_ak5PFJetsCHSL1L2L3Res']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
