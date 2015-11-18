@@ -72,6 +72,12 @@ elif [ $USER = "berger" ]; then
     alias merlinl='merlin.py --live evince'
     alias merlinlp='merlin.py --live evince --python'
     alias merlinlx='merlin.py --live evince -x'
+elif [ $USER = "mfischer" ]; then
+    if [[ $HOSTNAME == *"naf"* ]]; then
+        export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control
+        export EXCALIBUR_WORK=/nfs/dust/cms/user/mfischer/calib/gc-work/excalibur/
+        export EXCALIBURBRILSSH="mafische@lxplus.cern.ch"
+    fi
 fi
 alias test_merlin='merlin.py -i ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root --corr L1L2L3 --live evince --userpc --formats pdf -x zpt'
 
