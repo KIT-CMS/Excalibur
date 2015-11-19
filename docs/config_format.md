@@ -28,7 +28,7 @@ A regular python script which must provide the function
 
 	modify_config(cfg: dict) -> dict
 
-The input `dict ist the previous configuration.
+The input `dict` ist the previous configuration.
 The returned `dict` is used for further configuration.
 
 Usually, such a configuration will not be able to work on its own.
