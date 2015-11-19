@@ -4,7 +4,7 @@
 
 ### Configs and Config Modifiers
 
-See config_base.md
+See config_format.md
 
 ### Config Classes
 
