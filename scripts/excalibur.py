@@ -85,7 +85,7 @@ def ZJet():
 
 	if options.printconfig:
 		print "json config:"
-		print json.dumps(conf, sort_keys=True, indent=4, separators=(',', ': '), cls=ArtusJSONEncoder)
+		dump_json(settings=conf, file_obj=sys.stdout)
 	# exit here if json config was the only aim
 	if options.config:
 		sys.exit(0)
@@ -339,8 +339,13 @@ def getEnv(variable='EXCALIBURPATH', nofail=False):
 
 
 def writeJson(settings, filename):
-	with open(filename, 'w') as f:
-		json.dump(settings, f, sort_keys=True, indent=4, separators=(',', ': '), cls=ArtusJSONEncoder)
+	with open(filename, 'w') as json_file:
+		dump_json(settings, json_file)
+
+
+def dump_json(settings, file_obj):
+	"""Dump JSON to file-like object"""
+	json.dump(settings, file_obj, sort_keys=True, indent=4, separators=(',', ': '), cls=ArtusJSONEncoder)
 
 
 def copyFile(source, target, replace={}):
