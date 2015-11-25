@@ -370,6 +370,81 @@ class InputFiles(object):
 		return self.resolve()
 
 
+class Lumi(object):
+	"""
+	Lumi information in /fb for the used runs
+
+	:param json_source: a run JSON file specifying the runs used in data
+	:type json_source: str or :py:class:`~configutils.RunJSON`
+	:param normtag: `brilcalc` normtag file
+	:type normtag: str
+
+	:note: Internally uses the `brilcalc` tool, which may currently only be run
+	       at CERN. Connects via SSH using the address in $EXCALIBURBRILSSH`.
+	"""
+	def __init__(self, json_source, normtag="/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json"):
+		self.json_source = json_source
+		self.normtag = normtag
+
+	def resolve(self):
+		"""Lumi for the given runs in /fb"""
+		json_source = getattr(self.json_source, "artus_value", self.json_source)
+		if not isinstance(json_source, basestring):
+			assert len(json_source) == 1, 'Lumi calculation supports only 1 run JSON'
+			json_source = json_source[0]
+		# use verbose key for identifying commited lumi results
+		cache_key = "lumi_path-" + os.path.splitext(os.path.basename(json_source))[0]
+		cache_key += ("_nt-" + os.path.splitext(os.path.basename(self.normtag))[0]) if self.normtag else ""
+		cache_dep = [get_relsubpath(path) for path in [json_source] if path is not None]
+		lumi = cached_query(
+			func=self._get_lumi,
+			dependency_files=cache_dep,
+			cache_dir=os.path.join(getPath(), "data", "lumi"),
+			cache_key=cache_key,
+		)
+		return lumi
+
+	@property
+	def artus_value(self):
+		"""Value to store in artus config JSON"""
+		lumi = self.resolve()
+		config_logger.info("Using lumi %.3f/fb", lumi)
+		return lumi
+
+	def _get_lumi(self):
+		json_source = getattr(self.json_source, "artus_value", self.json_source)
+		if not isinstance(json_source, basestring):
+			assert len(json_source) == 1, 'Lumi calculation supports only 1 run JSON'
+			json_source = json_source[0]
+		bril_ssh = get_excalibur_env("EXCALIBURBRILSSH", default="lxplus.cern.ch")
+		# parse jsons so that we can send any file and string input over SSH as run string
+		try:
+			json_data = json.loads(json_source)
+		except ValueError:
+			with open(json_source) as json_file:
+				json_data = json.load(json_file)
+		# remove string quotes - brilssh uses own format...
+		json_string = json.dumps(json_data).replace(r'"', r'')
+		if json_string == "{}":
+			return 0.0
+		# execute brilcalc on a remote host
+		config_logger.warning("Querying brilcalc for lumi (via %s)", bril_ssh)
+		with open(os.path.join(getPath(), "scripts", "get_lumi.py")) as get_lumi_raw:
+			lumi_json_raw = subprocess.check_output([
+					"ssh", bril_ssh,
+					# stream script directly to remote python interpreter via CLI
+					'python -c "%(get_lumi)s" "%(json_string)s" '
+					'--lumi-unit "/pb" %(normtag)s' % {
+						"get_lumi": get_lumi_raw.read().replace(r'"', r'\"'),
+						"json_string": json_string,
+						"normtag": "" if self.normtag is None else ('--normtag "%s"' % self.normtag),
+					}
+				])
+		lumi_dict = json.loads(lumi_json_raw)
+		# query /pb for precision, convert to /fb
+		return lumi_dict["totrecorded"]/1000.0
+
+
 # local caching
 def get_relsubpath(path, reference_path=None):
 	"""
