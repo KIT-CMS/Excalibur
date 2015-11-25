@@ -208,8 +208,6 @@ Have fun. ;)
 	parser.add_argument('config_mods', metavar='cfg_mod', type=str, nargs='*', default=[],
 		help="config modifier")
 	# options
-	parser.add_argument('-c', '--config', action='store_true',
-		help="produce json config only")
 	parser.add_argument('-C', '--clean', action='store_true',
 		help="delete old outputs but one with the same name")
 	parser.add_argument('-f', '--fast', type=int, nargs='*', default=None,
@@ -218,8 +216,6 @@ Have fun. ;)
 		help="do not print the logo")
 	parser.add_argument('-o', '--out', type=str, default=None,
 		help="specify custom output name (default: config name)")
-	parser.add_argument('-p', '--printconfig', action='store_true',
-		help="print json config (long output)")
 	parser.add_argument('-s', '--skip', type=int, default=None,
 		help="skip the first n events.")
 	parser.add_argument('-n', '--nevents', type=int, default=None,
@@ -231,6 +227,12 @@ Have fun. ;)
 	parser.add_argument('--log-level', metavar="{artus|core|conf|cache}:{debug,info,warning,error,critical}",
 		default=["cache:critical", "core:info", "conf:info"],
 		help="Verbosity of logging. Category is optional and defaults to artus.", nargs='+')
+
+	config_parser = parser.add_argument_group("configuration arguments", "Act on or modify the configuration.")
+	config_parser.add_argument('-c', '--config', action='store_true',
+		help="produce json config only")
+	config_parser.add_argument('-p', '--printconfig', action='store_true',
+		help="print json config (long output)")
 
 	batch_parser = parser.add_argument_group("batch processing arguments", "Deploy analysis to a cluster using grid-control.")
 	batch_parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
