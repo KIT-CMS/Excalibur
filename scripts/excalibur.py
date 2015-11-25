@@ -301,7 +301,9 @@ Have fun. ;)
 	opt.work += opt.timestamp + '/'
 	if opt.verbose:
 		print "Options:"
-		print opt
+		key_len = max(map(len, vars(opt).iterkeys()))
+		for key, value in vars(opt).iteritems():
+			print key.ljust(key_len), "=", value
 	return opt
 
 
