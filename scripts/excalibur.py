@@ -14,6 +14,8 @@ import sys
 import time
 import socket
 import logging
+import itertools
+import ast
 
 import Artus.Utility.tools as tools
 
@@ -36,6 +38,17 @@ class ArtusJSONEncoder(json.JSONEncoder):
 			if aerr.message.endswith("object has no attribute 'artus_value'"):
 				return json.JSONEncoder.default(self, obj)
 			raise
+
+
+def group_iter(iterable, n):
+	"s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), (s2n,s2n+1,s2n+2,...s3n-1), ..."
+	return itertools.izip(*[iter(iterable)]*n)
+
+
+def pair_iter(iterable):
+	"""Return pairs from the iterable: s -> (s0,s1), (s2,s3), ..."""
+	return group_iter(iterable, 2)
+
 
 # ZJet Runner
 
@@ -73,6 +86,8 @@ def ZJet():
 			conf['FirstEvent'] = options.skip
 		if options.nevents:
 			conf['ProcessNEvents'] = options.nevents
+		for key, value in options.set_opts:
+			conf[key] = value
 		writeJson(conf, options.json)
 		wrapper_logger.info("%d pipelines configured, written to %s", len(conf["Pipelines"]), options.json)
 	# get an existing one
@@ -233,6 +248,8 @@ Have fun. ;)
 		help="produce json config only")
 	config_parser.add_argument('-p', '--printconfig', action='store_true',
 		help="print json config (long output)")
+	config_parser.add_argument('--set-opts', nargs='*', metavar="OPTION VALUE", default=[],
+		help="Overwrite individual option. Parsed as python expression, falls back to string.")
 
 	batch_parser = parser.add_argument_group("batch processing arguments", "Deploy analysis to a cluster using grid-control.")
 	batch_parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
@@ -299,6 +316,18 @@ Have fun. ;)
 			print "No existing output directory available!"
 			sys.exit(1)
 	opt.work += opt.timestamp + '/'
+
+	# transform overwrite options to python types
+	if not len(opt.set_opts) % 2 == 0:
+		raise ValueError('Overwrite options must be specified as pairs of OPTTION VALUE.')
+	set_opts = []
+	for option, value in pair_iter(opt.set_opts):
+		try:
+			set_opts.append((option, ast.literal_eval(value)))
+		except ValueError:
+			set_opts.append((option, value))
+	opt.set_opts = set_opts
+
 	if opt.verbose:
 		print "Options:"
 		key_len = max(map(len, vars(opt).iterkeys()))
