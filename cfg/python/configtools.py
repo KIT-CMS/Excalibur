@@ -11,17 +11,9 @@ The most used functions are:
 - Run to acutally call artus and run it
 """
 import copy
-import socket
 import os
-import json
 import sys
 import defaultconfig
-import hashlib
-import base64
-import subprocess
-import glob
-import itertools
-import shutil
 
 from configutils import config_logger, cache_logger, env_logger
 from configutils import get_excalibur_env, getPath, get_cachepath
