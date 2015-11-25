@@ -415,7 +415,7 @@ def data_2015(cfg, **kwargs):
 		cfg['Lumi'] = 0.04003
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
 		cfg['Jec'] = configtools.get_jec("Summer15_25nsV6_DATA")
-		cfg['Lumi'] = configtools.get_lumi(json_source=cfg['JsonFiles'])
+		cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
