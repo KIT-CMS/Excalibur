@@ -80,8 +80,9 @@ def getBaseConfig(tagged=True, **kwargs):
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['run', 'event', 'lumi']
-	cfg['Processors'] += [
+	cfg['Processors'] = [
 		'filter:JsonFilter',
+	]+cfg['Processors']+[
 		'producer:HltProducer',
 		'filter:HltFilter',
 	]
