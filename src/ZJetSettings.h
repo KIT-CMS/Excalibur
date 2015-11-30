@@ -49,6 +49,9 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, ElectronPtVariationFile)
     IMPL_SETTING_DEFAULT(std::string, ElectronPtVariation, "None")
 
+    // ZJetValidElectronsProducer
+    IMPL_SETTING_DEFAULT(bool, ExcludeECALGap, false)
+
     // MuonCorrector
     IMPL_SETTING(std::string, MuonCorrectionParameters)
     IMPL_SETTING_DEFAULT(std::string, MuonCorrectionParametersRunD, "None")

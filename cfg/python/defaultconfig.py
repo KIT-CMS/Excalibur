@@ -508,6 +508,7 @@ def _2012mm(cfg, **kwargs):
 
 def _2012ee(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
+	cfg['ExcludeECALGap'] = True
 	if cfg['ElectronID'] is not 'none':
 		if 'producer:EventWeightProducer' in cfg['Processors']:
 			cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:ElectronSFProducer')
