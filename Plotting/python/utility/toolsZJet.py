@@ -94,7 +94,7 @@ def get_input_files(args=None):
 	input_files = []
 	input_file_args = False
 	for elem in args:
-		if not input_file_args and elem == "-i":
+		if not input_file_args and elem in ("-i", "--files"):
 			input_file_args = True
 			continue
 		if input_file_args:
