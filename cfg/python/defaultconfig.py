@@ -197,7 +197,7 @@ def _2015(cfg, **kwargs):
 
 
 def ee(cfg, **kwargs):
-	cfg['Electrons'] = 'correlectrons'
+	cfg['Electrons'] = 'electrons'
 	cfg['ElectronMetadata'] = 'electronMetadata'
 	# The order of these producers is important!
 	cfg['Processors'] = [
@@ -231,7 +231,7 @@ def ee(cfg, **kwargs):
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
 	cfg['CutAlphaMax'] = 0.2
-	cfg['ZMassRange'] = 10
+	cfg['ZMassRange'] = 20
 
 	cfg['Pipelines']['default']['Quantities'] += [
 		'epluspt', 'epluseta', 'eplusphi', 'eplusiso',
@@ -300,7 +300,6 @@ def em(cfg, **kwargs):
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
 	cfg['CutAlphaMax'] = 0.2
-	cfg['ZMassRange'] = 10
 
 	cfg['Pipelines']['default']['Quantities'] += [
 		'e1pt', 'e1eta', 'e1phi', 'e1looseid', 'e1mediumid', 'e1tightid', 'e1vetoid',
@@ -439,6 +438,7 @@ def mc_2015(cfg, **kwargs):
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
+	cfg['GenParticleStatus'] = 22
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
@@ -507,6 +507,8 @@ def _2012mm(cfg, **kwargs):
 	pass
 
 def _2012ee(cfg, **kwargs):
+	cfg['ZMassRange'] = 10
+	cfg['Electrons']='correlectrons'
 	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
 	cfg['ExcludeECALGap'] = True
 	if cfg['ElectronID'] is not 'none':
@@ -564,3 +566,12 @@ def data_2015mm(cfg, **kwargs):
 
 def data_2012em(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL', 'HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
+
+def data_2015ee(cfg, **kwargs):
+	cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL'] 
+	cfg['Electrons']= 'electrons'
+
+def mc_2015ee(cfg, **kwargs):
+	cfg['RecoElectronMatchingGenParticleStatus'] = 1
+	cfg['GenElectronStatus'] = 1
+
