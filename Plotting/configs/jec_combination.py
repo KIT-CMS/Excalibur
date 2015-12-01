@@ -7,6 +7,56 @@ import itertools
 
 import Excalibur.Plotting.harryinterface as harryinterface
 import Artus.Utility.logger as logger
+from Excalibur.Plotting.utility.toolsZJet import get_input_files
+
+
+def apply_double_profile(plotDict, args=None):
+	"""
+	Plot <y> vs <x>, i.e. use mean/err for X&Y per X bin
+
+	:param plotDict: the HarryPlotter job information
+	:param args: the command line arguments
+
+	:note: This modifies `plotDict` inplace.
+	"""
+	if not 'prof' in plotDict['tree_draw_options'] or 'profs' in plotDict['tree_draw_options']:
+		if isinstance(plotDict['tree_draw_options'], basestring):
+			plotDict['tree_draw_options'] = [plotDict['tree_draw_options']]
+		plotDict['tree_draw_options'].append('prof')
+	# Parameter List Expansion
+	#   the x vs x profile must be an exakt match of y vs x
+	#   we thus must replicate all settings for their position to match
+	# settings we need to replicate in a controlled fashion
+	input_root_opts = ['nicks', 'x_expressions', 'y_expressions', 'z_expressions', 'x_bins', 'y_bins', 'z_bins', 'scale_factors', 'files', 'directories', 'folders', 'weights', 'friend_trees', 'tree_draw_options']
+	if not plotDict.get('files'):
+		plotDict['files'] = get_input_files(args)[0]
+	# make sure all n-length (non-0,1) objects have the same size
+	opt_n_length_max = max(len(plotDict.get(opt_name, ())) for opt_name in input_root_opts if not isinstance(plotDict.get(opt_name), str))
+	assert opt_n_length_max > 0, 'Cannot expand empty plot definition'
+	for opt_name in input_root_opts:
+		if opt_name not in plotDict or isinstance(plotDict[opt_name], str):
+			continue
+		assert len(plotDict[opt_name]) <= 1 or len(plotDict[opt_name]) == opt_n_length_max, "Replication requires elements to be either 0, 1 or same max length ('%s' is %d/%d)" % (opt_name, len(plotDict[opt_name]), opt_n_length_max)
+		# TODO: dunno if checking for None is required, saw this in HP - MF@20151130
+		if not plotDict[opt_name] or plotDict[opt_name][0] is None:
+			continue
+		if len(plotDict[opt_name]) == 1:
+			plotDict[opt_name] = plotDict[opt_name] * opt_n_length_max
+		plotDict[opt_name] *= 2
+	if not plotDict.get('nicks') or plotDict['nicks'][0] is None:
+		plotDict['nicks'] = ["nick_%s" % nick for nick in plotDict['y_expressions']]
+	# X-Y Profile matching
+	# explicitly create new x profiles
+	plotDict['y_expressions'] = plotDict['y_expressions'][:opt_n_length_max] + plotDict['x_expressions'][opt_n_length_max:]
+	plotDict['nicks'] = plotDict['nicks'][opt_n_length_max:] + ['%s_x_prof' % nick for nick in plotDict['nicks'][:opt_n_length_max]]
+	# create new y vs <x> graphs
+	plotDict.setdefault('analysis_modules', []).insert(0, 'TGraphFromHistograms')
+	plotDict['tgraph_y_nicks'] = plotDict['nicks'][:opt_n_length_max]
+	plotDict['tgraph_x_nicks'] = plotDict['nicks'][opt_n_length_max:]
+	plotDict['tgraph_result_nicks'] = ['%s_vs_x_prof' % nick for nick in plotDict['nicks'][:opt_n_length_max]]
+	# disable source plots
+	plotDict['nicks_blacklist'] = [r'^%s$' % nick for nick in plotDict['nicks']]
+	return plotDict
 
 
 def jec_combination(args=None, additional_dictionary=None):
