@@ -95,22 +95,25 @@ def jec_combination(args=None, additional_dictionary=None):
 					labelsuffix = '_'.join([methoddict[method], 'CHS', alphastring, etastring, correction])
 					eta_alpha_cut = '&&'.join((alphacut, etacut))
 					d_mpl = {
-						# input
 						'x_expressions': ['zpt'],
 						'y_expressions': [method],
+						'nicks': ['data', 'mc'],
 						'x_bins': 'zpt',
 						'corrections': [correction],
 						'zjetfolders': ['noalphanoetacuts'],
 						'weights': ["(%s)*(%s)" % (eta_alpha_cut, npv_weight) for npv_weight in npv_weights],
-						'tree_draw_options' : 'prof',
+						'tree_draw_options' : ['prof'],
 						# ratio, labels
-						'analysis_modules': ['Ratio', 'ConvertToTGraphErrors'],
+						'analysis_modules': ['Ratio'],
+						'ratio_numerator_nicks':['data'],
+						'ratio_denominator_nicks':['mc'],
 						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 						# output
 						'filename': labelsuffix + file_label,
 					}
 					if additional_dictionary is not None:
 						d_mpl.update(additional_dictionary)
+					apply_double_profile(d_mpl, args)
 					d_root = d_mpl.copy()
 					d_root.update({
 						'plot_modules': ['ExportRoot'],
