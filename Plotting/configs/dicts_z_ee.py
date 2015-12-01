@@ -40,9 +40,9 @@ weighting_z = {
 }
 weighting_e = {
 		"0_pt_noweight" : ["1", "1", "1"],
-		"1_pt_lower50" : ["(genjet1pt<50)", "(genmuminuspt<50)", "(geneminuspt<50)"],
-		"2_pt_50to100" : ["(genjet1pt>50&&genjet1pt<100)", "(genmuminuspt>50&&genmuminuspt<100)", "(geneminuspt>50&&geneminuspt<100)"],
-		"3_pt_higher100" : ["(genjet1pt>100)", "(genmuminuspt>100)", "(geneminuspt>100)"],
+		"1_pt_lower50" : [ "(geneminuspt<50)", "(genjet1pt<50)", "(genmuminuspt<50)"],
+		"2_pt_50to100" :["(geneminuspt>50&&geneminuspt<100)","(genjet1pt>50&&genjet1pt<100)","(genmuminuspt>50&&genmuminuspt<100)"],
+		"3_pt_higher100" : [ "(geneminuspt>100)", "(genjet1pt>100)", "(genmuminuspt>100)"],
 }
 
 
@@ -74,7 +74,7 @@ jmzbin = {
 }
 
 #expressions, labels, bins, used in jet_muon_ee_comparison and jet_muon_ee_comparison_tree and jet_muon_ee_comp_npv_tree
-jmeexpress = {
+ejmexpress = {
 	#relative reco gen for pT
 		'jetpt':'jet1pt/genjet1pt',
 		'mupt':'muminuspt/genmuminuspt',
@@ -88,13 +88,13 @@ jmeexpress = {
 		'muphi':'(abs(abs(abs(muminusphi-genmuminusphi)-TMath::Pi())-TMath::Pi()))',
 		'ephi':'(abs(abs(abs(eminusphi-geneminusphi)-TMath::Pi())-TMath::Pi()))',
 }
-jmelabel = {
+ejmlabel = {
 	#relative reco gen for pT
 		'pt':'{}$_{{reco}}/${}$_{{gen}}$'.format(latex['pt'],latex['pt'],),
 		'eta':r'|$ \\eta_{{reco}} - \\eta_{{gen}}$|',
 		'phi':r'|$ \\phi_{{reco}} - \\phi_{{gen}}$|',
 }
-jmebin = {
+ejmbin = {
 	'pt':'50,0.8,1.2',
 	'eta':'50,0,0.06',
 	'phi':'50,0,0.06',

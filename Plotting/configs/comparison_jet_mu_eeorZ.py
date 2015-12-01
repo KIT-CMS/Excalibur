@@ -10,14 +10,14 @@ from dicts_z_ee import weighting_e
 from dicts_z_ee import jmzexpress
 from dicts_z_ee import jmzlabel
 from dicts_z_ee import jmzbin
-from dicts_z_ee import jmeexpress
-from dicts_z_ee import jmelabel
-from dicts_z_ee import jmebin
+from dicts_z_ee import ejmexpress
+from dicts_z_ee import ejmlabel
+from dicts_z_ee import ejmbin
 
 #Features jet_muon_ee_comparison functions in first half, then same functions with Z instead of ee
 
 ###########################
-def jet_muon_ee_comparison(args=None, additional_dictionary=None):
+def ee_jet_muon_comparison(args=None, additional_dictionary=None, run=2):
 	""" Quality of reconstruction of pt, eta, phi for (jet1, muminus, eminus) in one plot. 
 	1D-plots of eminus/geneminus, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each, with weights for pt>50, 50<pt<100, pt>100.
 	"""
@@ -26,6 +26,12 @@ def jet_muon_ee_comparison(args=None, additional_dictionary=None):
 	plots = []
 	parameterlist = ['pt', 'phi', 'eta']
 	weightinglist_pt = ["0_pt_noweight", "1_pt_lower50", "2_pt_50to100", "3_pt_higher100"]
+	if run==2: 
+		files=['work/mc15_25ns_ee.root','work/mc15_25ns.root', 'work/mc15_25ns.root'],
+		algo =['ak4PFJetsCHS'],
+	elif run==1:
+		files =['work/mc_ee.root', 'work/mc.root', 'work/mc.root'],
+		algo = ['ak5PFJetsCHS'],
 	
 	for parameter in parameterlist:
 		for selection in weightinglist_pt:
@@ -33,24 +39,26 @@ def jet_muon_ee_comparison(args=None, additional_dictionary=None):
 			#1D-plots 
 			d_1 = {
 				#get data
-				'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
+				'files':files,
 				'corrections': ['L1L2L3'],
+				'algorithms': algo,
 				#'zjetfolders':['zcuts'],
 
 				#binning
-				'x_expressions': [jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
-				'x_label': jmelabel['{}'.format(parameter)],
-				'x_bins': jmebin['{}'.format(parameter)],
+				'x_expressions': [ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
+				'x_label': ejmlabel['{}'.format(parameter)],
+				'x_bins': ejmbin['{}'.format(parameter)],
+				'y_label':'Electron Events',
 
 				#weights and normalization
 				'weights': weighting_e[selection],
-				'analysis_modules': ['NormalizeToFirstHisto','NormalizeToFirstHisto',],
+				'analysis_modules': ['NormalizeToFirstHisto','NormalizeToFirstHisto','NormalizeToFirstHisto'],
 
 				
 				#nicknames, text
-				'nicks': ["jet1","mu","eminus"],
-				'labels': [latex["jet1"],latex["muminus"],latex["eminus"]],
-				'colors': [color['jet'],color['mu'], color['e']],
+				'nicks': ["eminus","jet1","mu"],
+				'labels': [latex["eminus"],latex["jet1"],latex["muminus"]],
+				'colors': [color['e'], color['jet'],color['mu']],
 				'texts': '{}'.format(latex[selection]),
 				'title':'Reconstruction of {}'.format(latex[parameter]),
 		
@@ -85,30 +93,37 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 		"phi" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
 		"eta" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
 	}
+	if run==2: 
+		files=['work/mc15_25ns_ee.root','work/mc15_25ns.root', 'work/mc15_25ns.root'],
+		algo =['ak4PFJetsCHS'],
+	elif run==1:
+		files =['work/mc_ee.root', 'work/mc.root', 'work/mc.root'],
+		algo = ['ak5PFJetsCHS'],
 
 	for parameter in parameterlist_jet1:
 
 		#Tree-plots 
 		d_1 = {
 			#get data
-			'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
+			'files':files,
 			'corrections': ['L1L2L3'],
+			'algorithms': algo,
 			#'zjetfolders':['zcuts'],
 
 			#binning
-			'x_expressions':["genjet1pt","genmuminuspt","geneminuspt"],
-			'y_expressions':[jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
+			'x_expressions':["geneminuspt","genjet1pt","genmuminuspt"],
+			'y_expressions':[ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options': 'profs',
 			'x_bins': bins[parameter],
-			#'x_log': True,
+			'x_log': True,
 
 			#formatting
-			'nicks': ["jet1","mu","eminus"],
-			'labels': [latex["jet1"],latex["muminus"],latex["eminus"]],
-			'colors': [color['jet'],color['mu'], color['e']],
+			'nicks': ["eminus","jet1","mu"],
+			'labels': [latex["eminus"],latex["jet1"],latex["muminus"]],
+			'colors': [color['e'],color['jet'], color['mu']],
 			'texts': '{} - $error$ $bars$ $show$ $standard$ $deviation$'.format(latex[parameter]),
 			'x_label': "{}$/GeV$".format(latex["pt"]),
-			'y_label': jmelabel['{}'.format(parameter)],
+			'y_label': ejmlabel['{}'.format(parameter)],
 			'title':'Reconstruction of {} \n depending on {}'.format(latex[parameter], latex['pt']),
 			'markers': ['_', '4', '3'],
 			'marker_fill_styles': ['none', 'none', 'none'],
@@ -121,25 +136,26 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 		# shows errors in bin contents
 		d_2 = {
 			#get data
-			'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
+			'files':files,
 			'corrections': ['L1L2L3'],
-			'zjetfolders':['zcuts'],
+			'algorithms': algo,
+			#'zjetfolders':['zcuts'],
 
 			#binning
 			'x_expressions':["zpt","genmuminuspt","geneminuspt"],
-			'y_expressions':[jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
+			'y_expressions':[ejmexpress["e{}".format(parameter)], ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options':  'profs',
 			"x_ticks": [30,50,70,100,200,400,1000], 
 			'x_bins': bins[parameter],
 			'x_log': True,
 			'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors',],
-			'stat_error_nicks': ["jet1","mu","e"],
-			'convert_nicks': ["jet1","mu","e"],
+			'stat_error_nicks': ["e","jet1","mu"],
+			'convert_nicks': ["e","jet1","mu"],
 			
 			#formatting
-			'nicks': ["jet1","mu","e"],
-			'labels': [latex["jet1"],latex["muminus"],latex["eminus"]],
-			'colors': [color['jet'],color['mu'], color['e']],
+			'nicks': ["e","jet1","mu"],
+			'labels': [latex["eminus"],latex["jet1"],latex["muminus"]],
+			'colors': [color['e'], color['jet'],color['mu']],
 			'x_label': "Z{}$/GeV$".format(latex["pt"]),
 			'y_label': "{} $resolution$".format(latex[parameter]),
 			'texts': '{} - $statistical$ $errors$'.format(latex[parameter]),
@@ -167,46 +183,51 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 	"""Comparison of jet, muon, e reconstruction depending on number of pileupevents (npv): Tree-plots of eminus/geneminus, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each. Additionally, plots of  statistical errors of said Tree-plots depending on npv.
 	"""
-	
+
 	plots = []
 	parameterlist_jet1 = ['pt', 'phi', 'eta']
-
 	bins = {
 		"pt" : ['35,-0.5,34.5'],
 		"phi" : ['35,-0.5,34.5'],
 		"eta" : ['35,-0.5,34.5'],
 	}
-
 	weightlist ={
 		"e" : "(eminuspt/geneminuspt>0&&eminuspt/geneminuspt<5)",
 		"jet" : "(jet1pt/genjet1pt>0&&jet1pt/genjet1pt<5)",
 		"mu" : "(muminuspt/genmuminuspt>0&&muminuspt/genmuminuspt<5)",
 	}
+	if run==2: 
+		files=['work/mc15_25ns_ee.root','work/mc15_25ns.root', 'work/mc15_25ns.root'],
+		algo =['ak4PFJetsCHS'],
+	elif run==1:
+		files =[ 'work/mc_ee.root', 'work/mc.root', 'work/mc.root'],
+		algo = ['ak5PFJetsCHS'],
 
 	for parameter in parameterlist_jet1:
 
 		#Tree-plots 
 		d_1 = {
 			#get data
-			'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
+			'files':files,
+			'algorithms': algo,
 			'corrections': ['L1L2L3'],
 			'zjetfolders':['zcuts'],
-			'weights':[weightlist['jet'], weightlist['mu'], weightlist['e']],
+			'weights':[weightlist['e'], weightlist['jet'], weightlist['mu']],
 
 			#binning
 			'x_expressions':["npv","npv","npv"],
-			'y_expressions':[jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
+			'y_expressions':[ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options': 'profs',
 			'x_bins': bins[parameter],
 			'x_log': True,
 
 			#formatting
-			'nicks': ["jet1","mu","eminus"],
-			'labels': [latex["jet1"],latex["muminus"],latex["eminus"]],
-			'colors': [color['jet'],color['mu'], color['e']],
+			'nicks': ["eminus","jet1","mu"],
+			'labels': [latex["eminus"],latex["jet1"],latex["muminus"]],
+			'colors': [ color['e'],color['jet'],color['mu']],
 			'texts': '{} - $error$ $bars$ $show$ $standard$ $deviation$'.format(latex[parameter]),
 			'x_label': "$pileup$ $activity$ $n_{{PV}}$",
-			'y_label': jmelabel['{}'.format(parameter)],
+			'y_label': ejmlabel['{}'.format(parameter)],
 			'title':'Reconstruction of {} \n depending on npv'.format(latex[parameter], latex['pt']),
 			'markers': ['_', '4', '3'],
 			'marker_fill_styles': ['none', 'none', 'none'],
@@ -219,25 +240,26 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 		# shows errors in bin contents
 		d_2 = {
 			#get data
-			'files':['work/mc.root','work/mc.root', 'work/mc_ee.root'],
+			'files':files,
+			'algorithms': algo,
 			'corrections': ['L1L2L3'],
 			'zjetfolders':['zcuts'],
 			'weights':[weightlist['jet'], weightlist['mu'], weightlist['e']],
 
 			#binning
 			'x_expressions':["npv","npv","npv"],
-			'y_expressions':[jmeexpress["jet{}".format(parameter)],jmeexpress["mu{}".format(parameter)],jmeexpress["e{}".format(parameter)]],
+			'y_expressions':[ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options': 'profs',
 			'x_bins': bins[parameter],
 			'x_log': True,
 			'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors',],
-			'stat_error_nicks': ["jet1","mu","e"],
-			'convert_nicks': ["jet1","mu","e"],
+			'stat_error_nicks': ["e","jet1","mu"],
+			'convert_nicks': ["e","jet1","mu"],
 			
 			#formatting
-			'nicks': ["jet1","mu","e"],
-			'labels': [latex["jet1"],latex["muminus"],latex["eminus"]],
-			'colors': [color['jet'],color['mu'], color['e']],
+			'nicks': ["e","jet1","mu"],
+			'labels': [latex["eminus"],latex["jet1"],latex["muminus"]],
+			'colors': [ color['e'],color['jet'],color['mu']],
 			'x_label': "$pileup$ $activity$ $npv$".format(latex["pt"]),
 			'y_label': "{} $resolution$".format(latex[parameter]),
 			'texts': '{} - $statistical$ $errors$'.format(latex[parameter]),
@@ -272,17 +294,23 @@ def jet_muon_z_comparison(args=None, additional_dictionary=None):
 
 	plots = []
 	parameterlist_jet1 = ['pt', 'phi', 'eta']
-
 	weightinglist_pt = ["0_pt_noweight", "1_pt_lower50", "2_pt_50to100", "3_pt_higher100"]
-	
+	if run==2: 
+		files=['work/mc15_25ns.root'],
+		algo =['ak4PFJetsCHS'],
+	elif run==1:
+		files =[ 'work/mc.root'],
+		algo = ['ak5PFJetsCHS'],
+
 	for parameter in parameterlist_jet1:
 		for selection in weightinglist_pt:
 
 			#1D-plots 
 			d_1 = {
 				#get data
-				'files':[ 'work/mc.root'],
+				'files':files,
 				'corrections': ['L1L2L3'],
+				'algorithms': algo,
 
 				#binning
 				'x_expressions': [jmzexpress["jet{}".format(parameter)],jmzexpress["mu{}".format(parameter)],jmzexpress["z{}".format(parameter)]],
@@ -333,13 +361,20 @@ def jet_muon_z_comparison_tree(args=None, additional_dictionary=None):
 		"phi" : ['10 30 40 50 60 70 80 90 100 150 200 250 300 400 500 600'],
 		"eta" : ['10 30 40 50 60 70 80 90 100 150 200 250 300 400 500 600'],
 	}
+	if run==2: 
+		files=['work/mc15_25ns.root'],
+		algo =['ak4PFJetsCHS'],
+	elif run==1:
+		files =[ 'work/mc.root'],
+		algo = ['ak5PFJetsCHS'],
 
 	for parameter in parameterlist_jet1:
 
 		#Tree-plots 
 		d_1 = {
 			#get data
-			'files':[ 'work/mc.root'],
+			'files':files,
+			'algorithms': algo,
 			'corrections': ['L1L2L3'],
 
 			#binning
@@ -370,7 +405,8 @@ def jet_muon_z_comparison_tree(args=None, additional_dictionary=None):
 		# shows errors in bin contents
 		d_2 = {
 			#get data
-			'files':[ 'work/mc.root'],
+			'files':files,
+			'algorithms': algo,
 			'corrections': ['L1L2L3'],
 
 			#binning
@@ -413,15 +449,21 @@ def jet_muon_z_comparison_tree(args=None, additional_dictionary=None):
 
 
 #############
-def zmass_ee_mm(args=None, additional_dictionary=None):
+def zmass_ee_mm(args=None, additional_dictionary=None, run=2):
 	"""1D histograms for Zmass calculated from ee and mm
 	"""
 
 	plots = []
-
+	if run==2: 
+		files=['work/mc15_25ns_ee.root','work/mc15_25ns.root', 'work/mc15_25ns.root'],
+		algo =['ak4PFJetsCHS'],
+	elif run==1:
+		files =[ 'work/mc_ee.root', 'work/mc.root', 'work/mc.root'],
+		algo = ['ak5PFJetsCHS'],
 	d_1 = {
 		#get data
-		'files':[ 'work/mc.root', 'work/mc_ee.root', 'work/mc.root'],
+		'files':files,
+		'algorithms': algo,
 		'corrections': ['L1L2L3'],
 
 		#binning
@@ -430,11 +472,12 @@ def zmass_ee_mm(args=None, additional_dictionary=None):
 		'x_label':'$m_{{Z}}$ / GeV',
 
 		#formatting
-		'nicks': ["zmu","ze", 'genz'],
-		'labels': [r"$Z_{{\\mu}}$","$Z_{e}$", "$Z_{gen}$"],
-		'colors': [color['mu'],color['e'], color['undef']],
-		'filename': 'zmass_ee_mm_comparison_2',
+		'nicks': ["ze","zmu", 'genz'],
+		'labels': ["$Z_{e}$",r"$Z_{{\\mu}}$","$Z_{gen}$"],
+		'colors': [color['e'],color['mu'], color['undef']],
+		'filename': 'zmass_ee_mm_comparison_run{}'.format(str(run)),
 		'analysis_modules': ['NormalizeToFirstHisto',],
+		'y_label':'Electron Events',
 		'markers': ['_', '4', '3'],
 		'marker_fill_styles': ['none', 'none', 'none'],
 		'line_styles': ['-'],

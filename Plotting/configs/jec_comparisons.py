@@ -33,7 +33,7 @@ def get_special_parser(args):
 		known_args, args = parser.parse_known_args(args)
 	return known_args, args
 
-def response_extrapolation(args=None, additional_dictionary=None):
+def response_extrapolation(args=None, additional_dictionary=None, inputtuple='datamc'):
 	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters. Requires an input tuple of data, mc."""
 	additional_dictionary = additional_dictionary.copy() if additional_dictionary else {}
 	input_files, other_args = get_input_files(args)
@@ -45,7 +45,9 @@ def response_extrapolation(args=None, additional_dictionary=None):
 	for key, default in (('files', None), ('corrections', ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']), ('algorithms', ['AK5PFJetsCHS'])):
 		if key in additional_dictionary:
 			if len(additional_dictionary[key]) > 1:
-				additional_dictionary[key] = list(additional_dictionary[key][:2]) * 2 + [additional_dictionary[key][1]]
+				additional_dictionary[key] = list(additional_dictionary[key][:2]) * 2 
+				if inputtuple== 'datamc': additional_dictionary[key] += [additional_dictionary[key][1]]
+				elif inputtuple== 'mcmc': additional_dictionary[key] += [additional_dictionary[key][0]] + [additional_dictionary[key][1]]
 		else:
 			additional_dictionary[key] = default
 	try:
@@ -55,17 +57,62 @@ def response_extrapolation(args=None, additional_dictionary=None):
 			labels = ["({0})".format(name) for name in additional_dictionary.pop('nicks')]
 		except KeyError:
 			labels = ['Data', 'MC']
-	d = {
-		'filename': 'extrapolation',
-		'labels': [
+	labellist = [
 			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[0]),
 			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[1]),
 			'MPF {0}'.format(labels[0]),
-			'MPF {0}'.format(labels[1]),
-			r'$\\mathit{p}_T^\\mathrm{reco}$/$\\mathit{p}_T^\\mathrm{ptcl}$',
-			r'$\\mathit{p}_T$ balance',
+			'MPF {0}'.format(labels[1])]
+	if inputtuple == 'datamc':
+		labellist.extend([r'$\\mathit{p}_T^\\mathrm{reco}$/$\\mathit{p}_T^\\mathrm{ptcl}$'])
+	elif inputtuple == 'mcmc':
+		labellist.extend([r'$\\mathit{p}_T^\\mathrm{reco}$/$\\mathit{p}_T^\\mathrm{ptcl}$'+' {}'.format(labels[0].replace('MC',''))])
+		labellist.extend([r'$\\mathit{p}_T^\\mathrm{reco}$/$\\mathit{p}_T^\\mathrm{ptcl}$'+' {}'.format(labels[1].replace('MC',''))])
+	labellist.extend([r'$\\mathit{p}_T$ balance',
 			'MPF',
-			'', '', '', '', '', '', '', '', ''],
+			'', '', '', '', '', '', '', '', ''])
+	yexpress=['ptbalance', 'ptbalance', 'mpf', 'mpf']
+	if inputtuple == 'datamc':
+		yexpress.extend(["jet1pt/matchedgenjet1pt"])
+	elif inputtuple == 'mcmc':
+		yexpress.extend(["jet1pt/matchedgenjet1pt","jet1pt/matchedgenjet1pt"])
+	nicklist= {
+		'datamc':['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc','reco_gen_jet'],
+		'mcmc':['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc','reco_gen_jet', 'reco_gen_jet2'],
+		'datadata':['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc'],
+	}
+	markerlist= {
+		'datamc':['s', 'o', 's', 'o', '*', 'o', 'o'],
+		'mcmc':['s', 'o', 's', 'o', '^', '*', 'o', 'o'],
+		'datadata':['s', 'o', 's', 'o', 'o', 'o'],
+	}
+	fitlist= {
+		'datamc':['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc','reco_gen_jet','ptbalance_ratio', 'mpf_ratio'],
+		'mcmc':['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc','reco_gen_jet', 'reco_gen_jet2', 'ptbalance_ratio', 'mpf_ratio'],
+		'datadata':['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc', 'ptbalance_ratio', 'mpf_ratio'],
+	}
+	fitnicklist= {
+		'datamc':['ptbalance_data_fit', 'ptbalance_mc_fit', 'mpf_data_fit', 'mpf_mc_fit', 'reco_gen_jet_fit', 'ptbalance_ratio_fit', 'mpf_ratio_fit'],
+		'mcmc':['ptbalance_data_fit', 'ptbalance_mc_fit', 'mpf_data_fit', 'mpf_mc_fit', 'reco_gen_jet_fit','reco_gen_jet_fit2', 'ptbalance_ratio_fit', 'mpf_ratio_fit'],
+		'datadata':['ptbalance_data_fit', 'ptbalance_mc_fit', 'mpf_data_fit', 'mpf_mc_fit', 'ptbalance_ratio_fit', 'mpf_ratio_fit'],
+	}
+	colorlist= {
+		'datamc':['orange', 'darkred', 'royalblue', 'darkblue', 'darkgreen', 'darkred', 'darkblue'],
+		'mcmc':['orange', 'darkred', 'royalblue', 'darkblue', 'lightgreen', 'darkgreen', 'darkred', 'darkblue'],
+		'datadata':['orange', 'darkred', 'royalblue', 'darkblue', 'darkred', 'darkblue'],
+	}
+	filllist= {
+		'datamc':['none', 'none', 'full', 'full', 'full', 'none', 'full'],
+		'mcmc':['none', 'none', 'full', 'full', 'full', 'full', 'none', 'full'],
+		'datadata':['none', 'none', 'full', 'full', 'none', 'full'],
+	}
+	linelist= {
+		'datamc':[None, None, None, None, None, None, None, '--', '--', '--', '--', '--', '--', '--'],
+		'mcmc':[None, None, None, None, None, None, None, None, '--', '--', '--', '--', '--', '--', '--'],
+		'datadata':[None, None, None, None, None, None, '--', '--', '--', '--', '--', '--', '--'],
+	}
+	d = {
+		'filename': 'extrapolation',
+		'labels': labellist,
 		'alphas': [0.3],
 		'zjetfolders': ['noalphacuts'],
 		'lines': [1.0],
@@ -73,14 +120,14 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'x_expressions': 'alpha',
 		'x_bins': '6,0,0.3',
 		'x_lims': [0,0.3],
-		'y_expressions': ['ptbalance', 'ptbalance', 'mpf', 'mpf', "jet1pt/matchedgenjet1pt"],
+		'y_expressions': yexpress,
 		'y_label': 'Jet Response',
 		'y_lims': [0.88,1.03],
-		'nicks': ['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc', 'reco_gen_jet'],
-		'colors': ['orange', 'darkred', 'royalblue', 'darkblue', 'darkgreen', 'darkred', 'darkblue'],
-		'markers': ['s', 'o', 's', 'o', '*', 'o', 'o'],
-		'marker_fill_styles': ['none', 'none', 'full', 'full', 'full', 'none', 'full'],
-		'line_styles': [None, None, None, None, None, None, None, '--', '--', '--', '--', '--', '--', '--'],
+		'nicks': nicklist[inputtuple],
+		'colors': colorlist[inputtuple],
+		'markers': markerlist[inputtuple],
+		'marker_fill_styles': filllist[inputtuple],
+		'line_styles': linelist[inputtuple],
 		'line_widths': ['1'],
 		'tree_draw_options': 'prof',
 		'analysis_modules': ['Ratio', 'FunctionPlot'],
@@ -88,16 +135,16 @@ def response_extrapolation(args=None, additional_dictionary=None):
 		'extrapolation_text_nicks': ['ptbalance_ratio_fit', 'mpf_ratio_fit'],
 		'extrapolation_text_colors': ['darkred', 'darkblue'],
 		'functions': ['[0]+[1]*x'],
-		'function_fit': ['ptbalance_data', 'ptbalance_mc', 'mpf_data', 'mpf_mc', 'reco_gen_jet', 'ptbalance_ratio', 'mpf_ratio'],
+		'function_fit': fitlist[inputtuple],
 		'function_parameters': ['1,1'],
 		'function_ranges': ['0,0.3'],
-		'function_nicknames': ['ptbalance_data_fit', 'ptbalance_mc_fit', 'mpf_data_fit', 'mpf_mc_fit', 'reco_gen_jet_fit', 'ptbalance_ratio_fit', 'mpf_ratio_fit'],
+		'function_nicknames': fitnicklist[inputtuple],
 		'ratio_numerator_nicks': ['ptbalance_data', 'mpf_data'],
 		'ratio_denominator_nicks': ['ptbalance_mc', 'mpf_mc'],
 		'ratio_result_nicks': ['ptbalance_ratio', 'mpf_ratio'],
 		'y_subplot_lims': [0.966, 1.034],
 		'extrapolation_text_position': [0.18, 1.025],
-		'y_subplot_label': 'Data / MC',
+		'y_subplot_label': '{} / {}'.format(labels[0], labels[1]).replace('(','').replace(')',''),
 		'subplot_fraction': 40,
 		'subplot_legend': 'lower left',
 	}
@@ -305,7 +352,10 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'analysis_modules': ['NormalizeToFirstHisto', 'Ratio'],
 			'filename': quantity+"_shapeComparison",
 			'title': "Shape Comparison",
+			'legend': 'upper right',
 		})
+		if channel=='em':
+			d2['y_label']= 'Electron Events'
 		if additional_dictionary:
 			d2.update(additional_dictionary)
 		plots.append(d2)
@@ -540,14 +590,14 @@ def cutflow(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False, channel="m"):
+def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False, channel="m", inputtuple="datamc"):
 	""" Do all comparison plots"""
 	plotting_jobs = []
 	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
 	plotting_jobs += basic_profile_comparisons(args, d)
 	plotting_jobs += pf_fractions(args, d)
 	plotting_jobs += response_comparisons(args, d, data_quantities)
-	plotting_jobs += response_extrapolation(args, d)
+	plotting_jobs += response_extrapolation(args, d, inputtuple)
 	plotting_jobs += jet_resolution(args, additional_dictionary=d)
 	return plotting_jobs
 
@@ -573,31 +623,33 @@ def muon_2d(args=None, additional_dictionary=None):
 		d.update(additional_dictionary)
 	return [PlottingJob(plots=[d], args=args)]
 
-def comparison_datamc(args=None):
-	"""full data mc comparisons for work/data.root and work/mc.root"""
+def comparison_datamc_Zmm(args=None):
+	"""full data mc comparisons for work/data.root and work/mc.root for Zmm"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/mc.root'],
-		'labels': ['Data', 'MC'],
+		'labels': ['DATA', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
-		#'legend': None,
+		'www_title': 'Comparison Data MC for Zmm',
+		'www_text':'Run1: full data mc comparisons for work/data.root and work/mc.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d)
-	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3Res', 'finalcuts_AK5PFJetsCHSL1L2L3']})
+	plotting_jobs += full_comparison(args, d, channel="m", inputtuple='datamc')
+	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3Res', 'finalcuts_ak5PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_datamc_Zee(args=None):
-	"""full data mc comparisons for work/data_ee.root and work/mc_ee.root"""
+	"""full data mc comparisons for work/data_ee.root and work/mc_ee.root for Zee"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data_ee.root', 'work/mc_ee.root'],
-		'labels': ['Data', 'MC'],
+		'labels': ['DATA', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
-		#'legend': None,
+		'www_title': 'Comparison Data MC for Zee',
+		'www_text':'Run1: full data mc comparisons for work/data_ee.root and work/mc_ee.root for Zee',
 	}
-	plotting_jobs += full_comparison(args, d, channel="e")
-	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3Res', 'finalcuts_AK5PFJetsCHSL1L2L3']})
+	plotting_jobs += full_comparison(args, d, channel="e", inputtuple='datamc')
+	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3Res', 'finalcuts_ak5PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
@@ -606,11 +658,12 @@ def comparison_mmee_data(args=None):
 	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/data_ee.root'],
-		'labels': ['Datamu', 'Datae'],
+		'labels': ['DATAmu', 'DATAe'],
 		'corrections': ['L1L2L3Res', 'L1L2L3Res'],
-		#'legend': None,
+		'www_title': 'Comparison mm ee for Data',
+		'www_text':'Run1: full Zmm Zee comparisons for work/data.root and work/data_ee.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d, channel="em")
+	plotting_jobs += full_comparison(args, d, channel="em", inputtuple='datadata')
 	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3Res', 'finalcuts_ak5PFJetsCHSL1L2L3Res']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
@@ -622,14 +675,15 @@ def comparison_mmee_mc(args=None):
 		'files': ['work/mc.root', 'work/mc_ee.root'],
 		'labels': ['MCmu', 'MCe'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
-		#'legend': None,
+		'www_title': 'Comparison mm ee for MC',
+		'www_text':'Run1: full Zmm Zee comparisons for work/mc.root and work/mc_ee.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="em")
-	d.update({'folders': ['finalcuts_AK5PFJetsCHSL1L2L3', 'finalcuts_AK5PFJetsCHSL1L2L3']})
+	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="em", inputtuple='mcmc')
+	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3', 'finalcuts_ak5PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
-
+### run2
 def comparison_run2(args=None):
 	"""Comparison for run2 samples."""
 	plotting_jobs = []
@@ -643,14 +697,77 @@ def comparison_run2(args=None):
 
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
-
 	jec_factors.jec_factors(args, {
 		'files': ['work/mc15.root'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'corrections': ['L1L2L3'],
 	}, rc=False, res=False)
-
 	return plotting_jobs
+
+def comparison_datamc_Zmm_run2(args=None):
+	"""Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
+	plotting_jobs = []
+	d = {
+		'files': ['work/data15_25ns.root', 'work/mc15_25ns.root'],
+		'labels': ['DATAmu', 'MCmu'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'algorithms': ['ak4PFJetsCHS'],
+		'www_title': 'Comparison Data MC for Zmm, run2',
+		'www_text':'Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm',
+	}
+	plotting_jobs += full_comparison(args, d, channel="m", inputtuple='datamc')
+	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
+	plotting_jobs += cutflow(args, d)
+	return plotting_jobs
+
+def comparison_datamc_Zee_run2(args=None):
+	"""Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root"""
+	plotting_jobs = []
+	d = {
+		'files': ['work/data15_25ns_ee.root', 'work/mc15_25ns_ee.root'],
+		'labels': ['DATAe', 'MCe'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'algorithms': ['ak4PFJetsCHS'],
+		'www_title': 'Comparison Data MC for Zee, run2',
+		'www_text':'Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root',
+	}
+	plotting_jobs += full_comparison(args, d, channel="e", inputtuple='datamc')
+	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
+	plotting_jobs += cutflow(args, d)
+	return plotting_jobs
+
+def comparison_mmee_data_run2(args=None):
+	"""Run2: full mm ee comparisons for work/data15_25ns.root and work/data15_25ns_ee.root"""
+	plotting_jobs = []
+	d = {
+		'files': ['work/data15_25ns_ee.root', 'work/data15_25ns.root'],
+		'labels': ['DATAe','DATAmu'],
+		'corrections': ['L1L2L3Res', 'L1L2L3Res'],
+		'algorithms': ['ak4PFJetsCHS'],
+		'www_title': 'Comparison Zmm Zee for Data, run2',
+		'www_text':'Run2: full mm ee comparisons for work/data15_25ns_ee.root and work/data15_25ns.root',
+	}
+	plotting_jobs += full_comparison(args, d, channel="em", inputtuple='datadata')
+	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3Res']})
+	plotting_jobs += cutflow(args, d)
+	return plotting_jobs
+
+def comparison_mmee_mc_run2(args=None):
+	"""Run2: full mm ee comparisons for work/mc15_25ns.root and work/mc15_25ns_ee.root"""
+	plotting_jobs = []
+	d = {
+		'files': ['work/mc15_25ns_ee.root', 'work/mc15_25ns.root'],
+		'labels': ['MCe', 'MCmu'],
+		'corrections': ['L1L2L3', 'L1L2L3'],
+		'algorithms': ['ak4PFJetsCHS'],
+		'www_title': 'Comparison Zmm Zee for MC, run2',
+		'www_text':'Run2: full mm ee comparisons for work/mc15_25ns_ee.root and work/mc15_25ns.root',
+	}
+	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="em", inputtuple='mcmc')
+	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3', 'finalcuts_ak4PFJetsCHSL1L2L3']})
+	plotting_jobs += cutflow(args, d)
+	return plotting_jobs
+#####
 
 def comparison_fsp(args=None):
 	"""Comparison for fsp cms workshop."""
