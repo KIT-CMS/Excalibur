@@ -432,6 +432,7 @@ def mc_2012(cfg, **kwargs):
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
 	# insert PU weight producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
+	# 2012 PU weight file determined with: puWeightCalc.py data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt /storage/a/dhaitz/skims/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/*.root  --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions12/8TeV/PileUp/pileup_latest.txt  --minBiasXsec 69 --weight-limits 0 10   --output $EXCALIBURPATH/data/pileup/weights_190456-208686_8TeV_22Jan2013ReReco_madgraphPU-RD.root
 	cfg['PileupWeightFile'] = configtools.getPath() + '/data/pileup/weights_190456-208686_8TeV_22Jan2013ReReco_madgraphPU-RD.root'
 	cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 
