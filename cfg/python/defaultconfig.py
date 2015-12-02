@@ -438,7 +438,7 @@ def mc_2015(cfg, **kwargs):
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
-	cfg['GenParticleStatus'] = 22
+	cfg['GenParticleStatus'] = 22  # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
@@ -572,6 +572,9 @@ def data_2015ee(cfg, **kwargs):
 	cfg['Electrons']= 'electrons'
 
 def mc_2015ee(cfg, **kwargs):
+	# not sure about the status codes in aMCatNLO/MG5. theres usually an e+/e-
+	# pair with status 1 in each event, so take this number for now
+	# see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
 	cfg['RecoElectronMatchingGenParticleStatus'] = 1
 	cfg['GenElectronStatus'] = 1
 
