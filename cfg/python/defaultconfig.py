@@ -1,5 +1,9 @@
 import configtools
 
+###
+# base config
+###
+
 def getBaseConfig(tagged=True, **kwargs):
 	cfg = {
 		# Artus General Settings
@@ -73,9 +77,12 @@ def getBaseConfig(tagged=True, **kwargs):
 		cfg['Pipelines']['default']['Quantities'] += ['jet1btag', 'jet1qgtag']
 	return cfg
 
-##
-##
 
+###
+# config fragments for single categories (data/MC, year, channel)
+###
+
+# data/MC:
 
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True
@@ -157,9 +164,7 @@ def mc(cfg, **kwargs):
 	cfg['CrossSection'] = -1
 	cfg['BaseWeight'] = 1000  # pb^-1 -> fb^-1
 
-##
-##
-
+## year:
 
 def _2011(cfg, **kwargs):
 	cfg['Year'] = 2011
@@ -192,9 +197,7 @@ def _2015(cfg, **kwargs):
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
 		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt')
 
-##
-##
-
+# channel:
 
 def ee(cfg, **kwargs):
 	cfg['Electrons'] = 'electrons'
@@ -388,8 +391,8 @@ def mm(cfg, **kwargs):
 
 
 ###
+# config fragments for combinations of two categories (data/MC+year, year+channel, ...)
 ###
-
 
 def data_2011(cfg, **kwargs):
 	pass
@@ -524,17 +527,16 @@ def _2015mm(cfg, **kwargs):
 	cfg['MuonID'] = 'tight'
 
 
-##
-##
+###
+# config fragments for combinations of three categories (data/MC+year+channel)
+###
 
 def mc_2011mm(cfg, **kwargs):
 	pass
 
-
 def mc_2012ee(cfg, **kwargs):
 	cfg['Processors'] += ['producer:HltProducer']
 	cfg['Pipelines']['default']['Quantities'] += ['hlt']
-
 
 def mc_2012mm(cfg, **kwargs):
 	pass
@@ -544,10 +546,8 @@ def mc_2012mm(cfg, **kwargs):
 	#cfg["MuonRadiationCorrection"] = False
 	#cfg["MuonCorrectionParameters"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012_MC_53X_smearReReco.txt"
 
-
 def data_2011mm(cfg, **kwargs):
 	pass
-
 
 def data_2012mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Mu8']
@@ -558,11 +558,8 @@ def data_2012mm(cfg, **kwargs):
 	#cfg["MuonCorrectionParameters"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012ABC_DATA_ReReco_53X.txt"
 	#cfg["MuonCorrectionParametersRunD"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012D_DATA_ReReco_53X.txt"
 
-
-
 def data_2015mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
-
 
 def data_2012em(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL', 'HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
