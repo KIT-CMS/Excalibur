@@ -17,7 +17,6 @@
 #include "Producers/ElectronPtVariator.h"
 
 // filters
-#include "Filters/ZFilter.h"
 #include "Filters/ZJetCutsFilter.h"
 
 // consumers
@@ -75,8 +74,6 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new ZPtCut();
     else if (id == BackToBackCut().GetFilterId())
         return new BackToBackCut();
-    else if (id == ZFilter().GetFilterId())
-        return new ZFilter();
     else if (id == MinNMuonsCut().GetFilterId())
         return new MinNMuonsCut();
     else if (id == MaxNMuonsCut().GetFilterId())
