@@ -5,10 +5,6 @@
 class ZJetSettings : public KappaSettings
 {
   public:
-    // ZProducer
-    IMPL_SETTING_DEFAULT(float, ZMass, 91.1876f)
-    IMPL_SETTING(float, ZMassRange)
-
     // ValidZllJetsProducer
     IMPL_SETTING(float, MinZllJetDeltaRVeto)
 

@@ -18,11 +18,6 @@ class ZJetProduct : public KappaProduct
   public:
     ZJetProduct() : KappaProduct() {}
 
-    // Added by ZProducer
-    bool m_validZ = false;
-    KLV m_z;
-    std::pair<KLepton*, KLepton*> m_zLeptons;
-
     // Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the
     // product after creation
     std::map<std::string, std::vector<std::shared_ptr<KJet>>> m_correctedZJets;

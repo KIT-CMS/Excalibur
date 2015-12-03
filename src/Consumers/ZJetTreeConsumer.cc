@@ -493,78 +493,78 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     // leading Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl1pt", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->p4.Pt();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl1phi", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->p4.Phi();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl1eta", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->p4.Eta();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "zl1pdgid", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedInt;
             return kleptonflavour_to_pdgid(product.m_zLeptons.first->flavour());
         });
     // second leading Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl2pt", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.second->p4.Pt();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl2phi", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.second->p4.Phi();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl2eta", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.second->p4.Eta();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "zl2pdgid", [](event_type const& event, product_type const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedInt;
             return kleptonflavour_to_pdgid(product.m_zLeptons.second->flavour());
         });
     // positive charge Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zlpluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->charge() > 0 ? product.m_zLeptons.first->p4.Pt()
                                                           : product.m_zLeptons.second->p4.Pt();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zlplusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->charge() > 0 ? product.m_zLeptons.first->p4.Phi()
                                                           : product.m_zLeptons.second->p4.Phi();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zlpluseta", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->charge() > 0 ? product.m_zLeptons.first->p4.Eta()
                                                           : product.m_zLeptons.second->p4.Eta();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "zlpluspdgid", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedInt;
             return product.m_zLeptons.first->charge() > 0
                        ? kleptonflavour_to_pdgid(product.m_zLeptons.first->flavour())
@@ -573,28 +573,28 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     // negative charge Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zlminuspt", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->charge() < 0 ? product.m_zLeptons.first->p4.Pt()
                                                           : product.m_zLeptons.second->p4.Pt();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zlminusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->charge() < 0 ? product.m_zLeptons.first->p4.Phi()
                                                           : product.m_zLeptons.second->p4.Phi();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zlminuseta", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedFloat;
             return product.m_zLeptons.first->charge() < 0 ? product.m_zLeptons.first->p4.Eta()
                                                           : product.m_zLeptons.second->p4.Eta();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "zlminuspdgid", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_validZ)
+            if (!product.m_zValid)
                 return DefaultValues::UndefinedInt;
             return product.m_zLeptons.first->charge() < 0
                        ? kleptonflavour_to_pdgid(product.m_zLeptons.first->flavour())
