@@ -422,7 +422,7 @@ def pf_comparisons(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def pf_fractions(args=None, additional_dictionary=None):
+def pf_fractions(args=None, additional_dictionary=None, subtract_hf=True):
 	"""PF fractions and contributions to leading jet vs. ZpT, NPV, jet |eta|"""
 	plots = []
 
@@ -449,7 +449,9 @@ def pf_fractions(args=None, additional_dictionary=None):
 		):
 			# put together the list for quantities, labels, nicks
 			pftypes = ["CHad", r"$\\gamma$", "NHad", r"$e$", r"$\\mu$"]
-			quantities = ["jet1chf", "jet1pf", "(jet1nhf-jet1hfhf)", "jet1ef", "jet1mf"]
+			quantities = ["jet1chf", "jet1pf",
+			              ("(jet1nhf-jet1hfhf)" if subtract_hf else "jet1nhf"),  # no subtraction for pre-73X samples
+			              "jet1ef", "jet1mf"]
 			if x_quantity == 'abs(jet1eta)':
 				pftypes += ["HFhad", "HFem"]
 				quantities += ["jet1hfhf", "jet1hfemf"]
@@ -590,12 +592,13 @@ def cutflow(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False, channel="m", inputtuple="datamc"):
+def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False,
+	                channel="m", inputtuple="datamc", subtract_hf=True):
 	""" Do all comparison plots"""
 	plotting_jobs = []
 	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
 	plotting_jobs += basic_profile_comparisons(args, d)
-	plotting_jobs += pf_fractions(args, d)
+	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
 	plotting_jobs += response_comparisons(args, d, data_quantities)
 	plotting_jobs += response_extrapolation(args, d, inputtuple)
 	plotting_jobs += jet_resolution(args, additional_dictionary=d)
