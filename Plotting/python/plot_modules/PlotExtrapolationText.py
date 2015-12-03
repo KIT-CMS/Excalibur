@@ -18,7 +18,7 @@ class PlotExtrapolationText(plotbase.PlotBase):
 				help="Nicks of the ratio fits in the subplot.")
 		self.plot_extrapolation_text_options.add_argument("--extrapolation-text-colors", type=str, nargs="+",
 				help="Colors of the text")
-		self.plot_extrapolation_text_options.add_argument("--extrapolation-text-size", type=int, nargs="?",
+		self.plot_extrapolation_text_options.add_argument("--extrapolation-text-size", type=int, default=14,
 				help="Size of the text")
 		self.plot_extrapolation_text_options.add_argument("--extrapolation-text-position", type=float, nargs="?",
 				help="Position of the text in x/y-coordinates")
@@ -27,55 +27,34 @@ class PlotExtrapolationText(plotbase.PlotBase):
 	def prepare_args(self, parser, plotData):
 		super(PlotExtrapolationText, self).prepare_args(parser, plotData)
 		# arguments are now available in the plotdict, can be modified if necessary
-		# plotData.plotdict['argument']
 		self.prepare_list_args(
 				plotData,
 				["extrapolation_text_colors"],
 				n_items = max([len(plotData.plotdict[l]) for l in ["extrapolation_text_nicks"] if plotData.plotdict[l] is not None]
 		))
 
-		if plotData.plotdict["extrapolation_text_size"] == None:
-			plotData.plotdict["extrapolation_text_size"] = 14
 
 	def run(self, plotData):
 		size = plotData.plotdict["extrapolation_text_size"]
-		for ax in [plotData.plot.axes[1]]:
+		ax = plotData.plot.axes[1]
 
-			if plotData.plotdict["extrapolation_text_position"] == None:
-				xlim = ax.get_xlim()
-				ylim = ax.get_ylim()
-				pos = [xlim[0] + 0.03 * (xlim[1] - xlim[0]), ylim[1] - 0.15 * (ylim[1] - ylim[0])]
-			else:
-				pos = plotData.plotdict["extrapolation_text_position"]
+		for index, (nick, color) in enumerate(zip(
+				plotData.plotdict["extrapolation_text_nicks"],
+				plotData.plotdict["extrapolation_text_colors"],
+		)):
+			fit_function = plotData.plotdict["root_objects"][nick]
+			fit_result = plotData.fit_results[nick]
 
-			transform = ax.transData
-			for nick, color, in zip(
-					plotData.plotdict["extrapolation_text_nicks"],
-					plotData.plotdict["extrapolation_text_colors"],
-			):
-				fit = plotData.plotdict["root_objects"][nick]
-				fit_result = plotData.fit_results[nick]
+			# texts with y-intercept and chi^2
+			texts = ["$\mathit{R}_0$ = %.4f $\pm$ %.4f" % (fit_function.GetParameter(0), fit_function.GetParError(0)),
+					"$\chi^2 / \mathit{n.d.f}$ = %.2f / %d" % (fit_result.Chi2(), fit_result.Ndf())]
 
-				first_text = ax.text(pos[0],
-						pos[1],
-						"$\mathit{R}_0$ = %.4f $\pm$ %.4f" % (fit.GetParameter(0), fit.GetParError(0)),
+			for text, ypos in zip(texts, [0.95, 0.95-(size/150.)]):
+				# x/y coords are chosen depending on font size to put the text in the upper right corner
+				ax.text(1.-(size*0.03),
+						ypos-0.015*size*index,
+						text,
 						color=color,
 						size=size,
-						transform=transform)
-
-				first_text.draw(plotData.plot.fig.canvas.get_renderer())
-				ex = first_text.get_window_extent()
-				t = transforms.offset_copy(first_text._transform, y=-(ex.height+10), units='dots')
-
-				second_text = ax.text(pos[0],
-						pos[1],
-						"$\chi^2 / \mathit{n.d.f}$ = %.2f / %d" % (fit_result.Chi2(), fit_result.Ndf()),
-						color=color,
-						size=size,
-						transform=t)
-
-				second_text.draw(plotData.plot.fig.canvas.get_renderer())
-				ex = second_text.get_window_extent()
-				transform = transforms.offset_copy(second_text._transform, y=-(ex.height+10), units='dots')
-
-
+						va='top',
+						transform=ax.transAxes)
