@@ -17,8 +17,6 @@ import logging
 import itertools
 import ast
 
-import Artus.Utility.tools as tools
-
 wrapper_logger = logging.getLogger("CORE")
 print "Python version:", sys.version_info
 
@@ -202,7 +200,7 @@ def import_config(config_file, config_mods):
 def getoptions(configdir=None, name='excalibur'):
 	"""Set standard options and read command line arguments. """
 	if configdir is None:
-		configdir = tools.get_environment_variable("EXCALIBURCONFIGS")
+		configdir = getEnv("EXCALIBURCONFIGS")
 	config_dirs = configdir.split(':')
 	parser = argparse.ArgumentParser(
 		formatter_class=argparse.RawDescriptionHelpFormatter,
