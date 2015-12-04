@@ -8,6 +8,7 @@ import itertools
 import Excalibur.Plotting.harryinterface as harryinterface
 import Artus.Utility.logger as logger
 from Excalibur.Plotting.utility.toolsZJet import get_input_files
+import warnings
 
 
 def apply_double_profile(plotDict, args=None):
@@ -81,6 +82,7 @@ def jec_combination(args=None, additional_dictionary=None):
 	eta_strings = ["eta_00_13"] + eta_strings
 	try:
 		npv_weights = additional_dictionary.pop("_npv_weights")
+		warnings.warn("Usage of '_npv_weights' is deprecated. Use PUWeights in Excalibur instead.")
 	except (AttributeError, KeyError):
 		npv_weights = ["1"]
 	try:
