@@ -1,3 +1,4 @@
+# travis config for Excalibur
 sudo: required
 language: cpp
 services: docker

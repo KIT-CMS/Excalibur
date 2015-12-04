@@ -87,7 +87,7 @@ help:
 
 all:
 	make -C $(KAPPAPATH)/DataFormats/test
-	make -C $(KAPPATOOLSPATH) -j12
+	cd $(KAPPATOOLSPATH); cmake .; make -j12; cd -
 	cd $(ARTUSPATH); cmake .; make -j12; cd -
 	make -j12
 
