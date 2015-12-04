@@ -42,7 +42,8 @@ def apply_double_profile(plotDict, args=None):
 			continue
 		if len(plotDict[opt_name]) == 1:
 			plotDict[opt_name] = plotDict[opt_name] * opt_n_length_max
-		plotDict[opt_name] *= 2
+		# never modify inplace - input may be mutable and used elsewhere/recursively
+		plotDict[opt_name] = plotDict[opt_name][:] * 2
 	if not plotDict.get('nicks') or plotDict['nicks'][0] is None:
 		plotDict['nicks'] = ["nick_%s" % nick for nick in plotDict['y_expressions']]
 	# X-Y Profile matching
