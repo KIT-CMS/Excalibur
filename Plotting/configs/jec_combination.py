@@ -245,3 +245,13 @@ def jec_combination_25ns_20151016(args=None):
 		plots.append(d)
 	for d in plots:
 		jec_combination(args, d)
+
+def jec_combination_20151204_Zee(args=None):
+	d = {
+		'files': [
+			'ntuples/Data_Zee_13TeV_74X_E2_25ns_2015-12-04.root',
+			'ntuples/MC_Zee_13TeV_74X_E2_25ns_2015-12-04.root',
+		],
+		"algorithms": ["ak4PFJetsCHS",],
+	}
+	jec_combination(args, d)
