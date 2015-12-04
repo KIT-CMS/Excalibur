@@ -36,7 +36,7 @@ def apply_double_profile(plotDict, args=None):
 	for opt_name in input_root_opts:
 		if opt_name not in plotDict or isinstance(plotDict[opt_name], str):
 			continue
-		assert len(plotDict[opt_name]) <= 1 or len(plotDict[opt_name]) == opt_n_length_max, "Replication requires elements to be either 0, 1 or same max length ('%s' is %d/%d)" % (opt_name, len(plotDict[opt_name]), opt_n_length_max)
+		assert len(plotDict[opt_name]) <= 1 or len(plotDict[opt_name]) == opt_n_length_max, "Replication requires all input_root options to be either of 0, 1 or same max length ('%s' is %d/%d)" % (opt_name, len(plotDict[opt_name]), opt_n_length_max)
 		# TODO: dunno if checking for None is required, saw this in HP - MF@20151130
 		if not plotDict[opt_name] or plotDict[opt_name][0] is None:
 			continue
