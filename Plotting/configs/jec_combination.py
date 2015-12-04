@@ -52,7 +52,8 @@ def apply_double_profile(plotDict, args=None):
 	plotDict['y_expressions'] = plotDict['y_expressions'][:opt_n_length_max] + plotDict['x_expressions'][opt_n_length_max:]
 	plotDict['nicks'] = plotDict['nicks'][opt_n_length_max:] + ['%s_x_prof' % nick for nick in plotDict['nicks'][:opt_n_length_max]]
 	# create new y vs <x> graphs
-	plotDict.setdefault('analysis_modules', []).insert(0, 'TGraphFromHistograms')
+	plotDict['analysis_modules'] = plotDict.get('analysis_modules', [])[:]
+	plotDict['analysis_modules'].insert(0, 'TGraphFromHistograms')
 	plotDict['tgraph_strip_empty'] = True
 	plotDict['tgraph_y_nicks'] = plotDict['nicks'][:opt_n_length_max]
 	plotDict['tgraph_x_nicks'] = plotDict['nicks'][opt_n_length_max:]
