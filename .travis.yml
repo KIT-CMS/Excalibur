@@ -22,8 +22,8 @@ before_install:
   - wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz
   - tar xzf CondFormats.tar.gz
   - git clone --depth=10 https://github.com/KappaAnalysis/Kappa.git
-  - git clone --depth=10 https://github.com/KappaAnalysis/KappaTools.git
-  - git clone --depth=10 https://github.com/artus-analysis/Artus.git
+  - git clone --depth=10 -b scram_cmake https://github.com/KappaAnalysis/KappaTools.git
+  - git clone --depth=10 -b kappatools_scram https://github.com/artus-analysis/Artus.git
   - cd Excalibur
 install:
   - sed -i 's/\ -j[0-9]*/\ -j2/' Makefile
