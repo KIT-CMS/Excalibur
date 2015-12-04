@@ -67,7 +67,7 @@ def jec_combination(args=None, additional_dictionary=None):
 	"""function to create the root combination file for the jec group."""
 	mpl_plots = []
 	root_plots = []
-	methoddict = {
+	label_dict = {
 		'ptbalance': 'PtBal',
 		'mpf': 'MPF',
 		'rawmpf': 'MPF-notypeI',
@@ -110,11 +110,12 @@ def jec_combination(args=None, additional_dictionary=None):
 				}
 				# responses
 				for method in ['mpf', 'ptbalance', 'rawmpf']:
-					labelsuffix = '_'.join([methoddict[method], 'CHS', alphastring, etastring, correction])
+					labelsuffix = '_'.join([label_dict[method], 'CHS', alphastring, etastring, correction])
 					d_mpl = {
 						'x_expressions': ['zpt'],
 						'y_expressions': [method],
 						'x_bins': 'zpt',
+						'y_label': method,
 						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 						'filename': labelsuffix + file_label,
 					}
@@ -140,8 +141,9 @@ def jec_combination(args=None, additional_dictionary=None):
 					d_mpl = {
 						'x_expressions': [x_expression],
 						'y_expressions': [y_expression],
+						'y_label': y_expression,
 						'cutlabel': True,
-						'x_bins': "50,0.5,50.5",
+						'x_bins': "25,0.5,25.5",
 						'legend': 'upper left',
 						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 						'filename': labelsuffix + file_label,
