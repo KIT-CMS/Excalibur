@@ -107,9 +107,7 @@ def jec_combination(args=None, additional_dictionary=None):
 					'analysis_modules': ['Ratio'],
 					'ratio_numerator_nicks':['data'],
 					'ratio_denominator_nicks':['mc'],
-					'file_mode': ('RECREATE' if first else 'UPDATE'),
 				}
-				first = False
 				# responses
 				for method in ['mpf', 'ptbalance', 'rawmpf']:
 					labelsuffix = '_'.join([methoddict[method], 'CHS', alphastring, etastring, correction])
@@ -128,7 +126,9 @@ def jec_combination(args=None, additional_dictionary=None):
 					d_root.update({
 						'plot_modules': ['ExportRoot'],
 						'filename': 'combination_ZJet_' + file_label + time.strftime("%Y-%m-%d", now),
+						'file_mode': ('RECREATE' if first else 'UPDATE'),
 					})
+					first = False
 					# make plots comparable to jec_comparison
 					d_mpl['x_log'] = True
 					d_mpl['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
@@ -136,12 +136,11 @@ def jec_combination(args=None, additional_dictionary=None):
 					root_plots.append(d_root)
 				# pileup info
 				for x_expression, y_expression in [("npumean", "rho"), ("npumean", "npv")]:
-					labelsuffix = "_".join((x_expression, "vs", y_expression, 'CHS', correction))
+					labelsuffix = "_".join((x_expression, "vs", y_expression, 'CHS', alphastring, etastring, correction))
 					d_mpl = {
 						'x_expressions': [x_expression],
 						'y_expressions': [y_expression],
 						'cutlabel': True,
-						'markers': ['o', 'd'],
 						'x_bins': "50,0.5,50.5",
 						'legend': 'upper left',
 						'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
@@ -150,10 +149,12 @@ def jec_combination(args=None, additional_dictionary=None):
 					d_mpl.update(base_plot)
 					if additional_dictionary is not None:
 						d_mpl.update(additional_dictionary)
+					apply_double_profile(d_mpl, args)
 					d_root = d_mpl.copy()
 					d_root.update({
 						'plot_modules': ['ExportRoot'],
 						'filename': 'combination_ZJet_' + file_label + time.strftime("%Y-%m-%d", now),
+						'file_mode': 'RECREATE',
 					})
 					mpl_plots.append(d_mpl)
 					root_plots.append(d_root)
