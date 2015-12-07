@@ -71,6 +71,9 @@ def jec_combination(args=None, additional_dictionary=None):
 		'ptbalance': 'PtBal',
 		'mpf': 'MPF',
 		'rawmpf': 'MPF-notypeI',
+		'npumean': 'Mu',
+		'rho': 'Rho',
+		'npv': 'NPV',
 	}
 	alpha_limits = [0.1, 0.15, 0.2, 0.3, 0.4]
 	alpha_cuts = ['(alpha<{})'.format(limit) for limit in alpha_limits]
@@ -137,7 +140,7 @@ def jec_combination(args=None, additional_dictionary=None):
 					root_plots.append(d_root)
 				# pileup info
 				for x_expression, y_expression in [("npumean", "rho"), ("npumean", "npv")]:
-					labelsuffix = "_".join((x_expression, "vs", y_expression, 'CHS', alphastring, etastring, correction))
+					labelsuffix = "_".join((y_expression, "vs", x_expression, 'CHS', alphastring, etastring, correction))
 					d_mpl = {
 						'x_expressions': [x_expression],
 						'y_expressions': [y_expression],
