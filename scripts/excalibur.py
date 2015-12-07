@@ -18,7 +18,6 @@ import itertools
 import ast
 
 wrapper_logger = logging.getLogger("CORE")
-print "Python version:", sys.version_info
 
 
 class ArtusJSONEncoder(json.JSONEncoder):
