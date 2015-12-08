@@ -39,7 +39,7 @@ CLI_break = CLI.add_argument_group("break conditions", "when to stop automatic s
 CLI_break.add_argument("-f", "--max-files", default=float("inf"), type=int, help="Stop after finding this many files. [Default: %(default)s]")
 CLI_break.add_argument("-t", "--timeout", default=float("inf"), type=int, help="Stop after this much time has passed. [Default: %(default)s]")
 CLI_break.add_argument("-s", "--signal", nargs="*", default=["SIGQUIT", "SIGTERM", "SIGINT"], help="Stop after receiving this signal. [Default: %(default)s]")
-CLI_break.add_argument("-p", "--pid", nargs="*", default=[], help="Stop after all these processes have finished. [Default: %(default)s]")
+CLI_break.add_argument("-p", "--pid", nargs="*", default=[], type=int, help="Stop after all these processes have finished. [Default: %(default)s]")
 
 
 class ThreadMaster(object):
@@ -111,9 +111,12 @@ class Terminator(ThreadMaster):
 	def signal_handler(self, signalnum, frame):
 		del frame
 		self._sig_caught += 1
+		self._logger.debug("Caught signal %d (%d/2)", signalnum, self._sig_caught)
 		if self._sig_caught == 1:
+			self._logger.debug("Stopping")
 			self._shutdown_all()
 		else:
+			self._logger.debug("Terminating")
 			os._exit(signalnum)
 
 	def _check_pids(self):
@@ -122,10 +125,11 @@ class Terminator(ThreadMaster):
 				try:
 					os.kill(pid, 0)
 				except OSError as err:
-					if err.errno is errno.EPERM:
+					if err.errno == errno.EPERM:
 						continue
-					if err.errno is errno.ESRCH:
+					if err.errno == errno.ESRCH:
 						self._pids[pid] = False
+						continue
 					raise
 		return not self._pids or any(self._pids.values())
 
@@ -260,9 +264,10 @@ if __name__ == "__main__":
 	provider.start()
 	merger.start()
 	terminator.start()
+	_logger = logging.getLogger('__main__')
 	try:
 		while not merger.join(5):
-			print  provider.report(), merger.report(), terminator.report()
+			_logger.debug('%s %s %s', provider.report(), merger.report(), terminator.report())
 	except KeyboardInterrupt:
 		print "interrupt..."
 		os._exit(1)
