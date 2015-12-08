@@ -107,33 +107,14 @@ def ZJet():
 
 	# Now the config .json is ready and we can run zjet
 	if options.batch:
+		config_path = options.work + "/" + options.out + ".conf"
 		if not options.resume:
 			prepare_wkdir_parent(options.work, options.out, options.clean)
 			writeDBS(conf["InputFiles"], options.out, options.work + "/files.dbs")
 			populate_workdir(artus_json=options.json, workdir_path=options.work)
-			outpath = createGridControlConfig(conf, options.work + "/" + options.out + ".conf", timestamp = options.timestamp, batch=options.batch, jobs=options.jobs, files_per_job=options.files_per_job)
-
-		outpath = options.work + "out/*.root"
-
-		print "go.py %s/%s.conf" % (options.work, options.out)
-		gctime = time.time()
-		try:
-			subprocess.check_call(['go.py', options.work + "/" + options.out + ".conf"])
-		except OSError:
-			print "Could not start grid-control! Do you have the grid-control directory in you PATH?"
-			sys.exit(1)
-		except KeyboardInterrupt:
-			sys.exit(0)
-		except subprocess.CalledProcessError:
-			print "grid-control run failed"
-			sys.exit(1)
-		gctime = time.time() - gctime
-
-		if glob.glob(outpath):
-			subprocess.call(['hadd', options.work + 'out.root'] + glob.glob(outpath))
-		else:
-			print "Batch job did not produce output %s. Exit." % outpath
-			sys.exit(1)
+			createGridControlConfig(conf, config_path, timestamp = options.timestamp, batch=options.batch, jobs=options.jobs, files_per_job=options.files_per_job)
+		output_glob = options.work + "out/*.root"
+		gctime = run_gc(config_path=config_path, output_glob=output_glob, workdir_path=options.work)
 
 		try:
 			print "Symlink to output file created: ", "%s/work/%s.root" % (getEnv(), options.out)
@@ -178,6 +159,39 @@ def ZJet():
 				"%s/%s.root" % (options.base, options.out)])
 		except:
 			pass
+	return gctime
+
+
+def run_gc(config_path, output_glob, workdir_path):
+	"""
+	Run a GC job and merge the output
+
+	:param config_path: path to GC config file
+	:type config_path: str
+	:param output_glob: glob for output files of jobs
+	:type output_glob: str
+	:param workdir_path: path to Artus workdir
+	:type workdir_path: str
+	"""
+	wrapper_logger.info("running: go.py %s", config_path)
+	gctime = time.time()
+	try:
+		subprocess.check_call(['go.py', config_path])
+	except OSError:
+		print "Could not start grid-control! Do you have the grid-control directory in $PATH?"
+		sys.exit(1)
+	except KeyboardInterrupt:
+		sys.exit(0)
+	except subprocess.CalledProcessError:
+		print "grid-control run failed"
+		sys.exit(1)
+	gctime = time.time() - gctime
+	if glob.glob(output_glob):
+		wrapper_logger.info("Merging output files")
+		subprocess.call(['hadd', workdir_path + 'out.root'] + glob.glob(output_glob))
+	else:
+		print "Batch job failed to produce any output (%s)" % output_glob
+		sys.exit(1)
 	return gctime
 
 
