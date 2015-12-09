@@ -34,13 +34,13 @@ def get_special_parser(args):
 	return known_args, args
 
 def response_extrapolation(args=None, additional_dictionary=None, inputtuple='datamc'):
-	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters. Requires an input tuple of data, mc."""
+	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters. Default is an input tuple of data, mc, also possible is datadata and mcmc."""
 	additional_dictionary = additional_dictionary.copy() if additional_dictionary else {}
 	input_files, other_args = get_input_files(args)
 	if input_files: # CLI is expected to overwrite script, do it explicitly
 		additional_dictionary['files'] = input_files
 		args = other_args
-	assert additional_dictionary['files'] >= 2, "extrapolation requires data, mc tuple as input"
+	assert additional_dictionary['files'] >= 2, "extrapolation requires 2 files as input"
 	# explicitly clone expansion parameters to position additional MC quantities
 	for key, default in (('files', None), ('corrections', ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']), ('algorithms', ['AK5PFJetsCHS'])):
 		if key in additional_dictionary:
@@ -250,7 +250,8 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 				'lines': [1.0],
 				'analysis_modules': ['Ratio'],
 				'filename': method + "_" + quantity.replace("(", "").replace(")", ""),
-				'y_subplot_lims': [0.751, 1.249],
+				'y_subplot_lims': [0.9, 1.1],
+				'legend': 'lower left',
 			}
 			if quantity == 'abs(jet1eta)':
 				d['zjetfolders'] = ["noetacuts"]
@@ -327,7 +328,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'x_expressions': [quantity],
 			'cutlabel': True,
 			'analysis_modules': ['Ratio'],
-			'y_subplot_lims': [0, 2],
+			'y_subplot_lims': [0.75, 1.25],
 			'y_log': quantity in ['jet1pt', 'zpt']
 		}
 		if quantity in x_dict:
@@ -353,6 +354,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'filename': quantity+"_shapeComparison",
 			'title': "Shape Comparison",
 			'legend': 'upper right',
+			'y_subplot_lims': [0.75, 1.25],
 		})
 		if channel=='em':
 			d2['y_label']= 'Electron Events'
@@ -384,6 +386,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 				d = {
 					'x_expressions': [x_expression],
 					'y_expressions': [y_expression],
+					#'y_lims':[0,30],
 					'analysis_modules': ['Ratio'],
 					'tree_draw_options': 'prof',
 					'cutlabel': True,
@@ -392,6 +395,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 					'x_bins': "25,0.5,25.5",
 					'legend': 'lower right',
 				}
+				if (x_expression=='npv' and y_expression=='rho'): d['y_lims']= [0,30]
 				plots.append(d)
 
 	if additional_dictionary != None:
@@ -718,7 +722,7 @@ def comparison_datamc_Zmm_run2(args=None):
 		'www_title': 'Comparison Data MC for Zmm, run2',
 		'www_text':'Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d, channel="m", inputtuple='datamc')
+	plotting_jobs += full_comparison(args, d, channel="m", inputtuple='datadata')#usually datamc
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
@@ -734,7 +738,7 @@ def comparison_datamc_Zee_run2(args=None):
 		'www_title': 'Comparison Data MC for Zee, run2',
 		'www_text':'Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root',
 	}
-	plotting_jobs += full_comparison(args, d, channel="e", inputtuple='datamc')
+	plotting_jobs += full_comparison(args, d, channel="e", inputtuple='datadata')#usually datamc
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
