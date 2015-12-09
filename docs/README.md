@@ -25,4 +25,6 @@ See [config_caches.md](config_caches.md)
 
 Travis runs automatic tests for every commit. This will validate whether the Artus and Excalibur build and run correctly.
 
+[![Build Status](https://travis-ci.org/artus-analysis/Excalibur.svg)](https://travis-ci.org/artus-analysis/Excalibur)
+
 See the [Travis Excalibur builds](https://travis-ci.org/artus-analysis/Excalibur/builds).
