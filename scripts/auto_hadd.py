@@ -15,6 +15,7 @@ import tempfile
 import signal
 import shutil
 import errno
+import atexit
 
 # don't ask, it was cold outside...
 EPILOGUES = pickle.loads(zlib.decompress(base64.b64decode("""eJyNVLtuwzAM3PMV2pIpRN9zp7ZDp04FBAjZiyBDRqLfXvKOdGjngdoQRZF3FEWb2vwc7lZf675v/Tj4tH/Ofd+P2lobNjSHL8yknIYWH3BJamHETBhJWuw5g2Q7xlAKPnWejb5frw73q50frh+RjScfiUHdQo48V4vDTQgSBan37mYB3XRkLIET2JWeCQ+2LWS4NTw2QWoEczMi2PPL2IXiIWQqBVytfUcKmVPv0wbhrBQPYQhWxVxVR5l6np4uXYKieq1kcKbPlgsQvsND+Q5eXeGJh+SatrRSqxi35HeUSlkGG9PmFUeNARg+7ecb1bhzDfxl2HP6Mmjd/jL71tlPbKvjI+sYzdquCTSMvjZV/XTx4eLNxbsLdxBiH/m6AMR+Evtbb0uk9jRvNchTc9WrI9tq2D8qbCOek60kdEX7GMkAouGRthnwhwsdYj5l2bx6FgT/r+kspsZl8JwZznNa5HjBERx0FSakTIgETtAs/gaQJLMpbkWeoBGV6bMLg+NAkFg/RVXIkVAZop2ijFqDUgSmh5uGF1Rsk94syctqt/0DkxWXvA==""")))
@@ -237,6 +238,7 @@ class FileMerger(ThreadMaster):
 		self.mergers = mergers
 		self.batch_size = batch_size
 		self.work_dir = tempfile.mkdtemp(prefix=work_dir_prefix)
+		atexit.register(shutil.rmtree, path=self.work_dir)
 		self._merge_procs = []
 		self.src_file_queue = collections.deque()
 		self.tmp_file_queue = collections.deque()
@@ -294,7 +296,6 @@ class FileMerger(ThreadMaster):
 			tmp_files = [self.tmp_file_queue.popleft() for _ in xrange(min(self.batch_size - len(src_files), len(self.tmp_file_queue)))]
 			self._dispatch_merge(src_files=src_files, tmp_files=tmp_files, out_file=tmp_file_name())
 		shutil.move(self.tmp_file_queue[0], self.out_file)
-		shutil.rmtree(self.work_dir)
 		self._logger.info("Merger state changed from %s to %s", ANSI_FINALIZING, ANSI_DONE)
 
 	def _dispatch_merge(self, src_files, tmp_files, out_file):
