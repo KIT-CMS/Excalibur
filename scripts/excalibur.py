@@ -114,7 +114,10 @@ def ZJet():
 			populate_workdir(artus_json=options.json, workdir_path=options.work)
 			createGridControlConfig(conf, config_path, timestamp = options.timestamp, batch=options.batch, jobs=options.jobs, files_per_job=options.files_per_job)
 		output_glob = options.work + "out/*.root"
-		gctime = run_gc(config_path=config_path, output_glob=output_glob, workdir_path=options.work)
+		if options.parallel_merge is None:
+			gctime = run_gc(config_path=config_path, output_glob=output_glob, workdir_path=options.work)
+		else:
+			gctime = run_gc_pmerge(config_path=config_path, output_glob=output_glob, workdir_path=options.work, mergers=options.parallel_merge)
 
 		try:
 			print "Symlink to output file created: ", "%s/work/%s.root" % (getEnv(), options.out)
@@ -192,6 +195,44 @@ def run_gc(config_path, output_glob, workdir_path):
 	else:
 		print "Batch job failed to produce any output (%s)" % output_glob
 		sys.exit(1)
+	return gctime
+
+
+def run_gc_pmerge(config_path, output_glob, workdir_path, mergers):
+	"""
+	Run a GC job and merge the output in parallel
+
+	:param config_path: path to GC config file
+	:type config_path: str
+	:param output_glob: glob for output files of jobs
+	:type output_glob: str
+	:param workdir_path: path to Artus workdir
+	:type workdir_path: str
+	:param mergers: number of parallel merge processes
+	:type mergers: int
+	"""
+	wrapper_logger.info("running: go.py %s", config_path)
+	gctime = time.time()
+	try:
+		gc_proc = subprocess.Popen(['go.py', config_path])
+	except OSError:
+		print "Could not start grid-control! Do you have the grid-control directory in $PATH?"
+		sys.exit(1)
+	try:
+		merge_proc = subprocess.Popen(['auto_hadd.py', workdir_path + 'out.root', '--file-globs', output_glob, '--pid', str(gc_proc.pid), '--mergers', str(mergers)])
+	except OSError:
+		print "Could not start merger! Do you have the scripts directory in $PATH?"
+		sys.exit(1)
+	# wait with interruption to allow breaking
+	while gc_proc.poll() is None:
+		time.sleep(0.5)
+	gctime = time.time() - gctime
+	if gc_proc.poll() > 0:
+		print "grid-control failed with %d", gc_proc.poll()
+		sys.exit(gc_proc.poll())
+	print "Waiting for merger to complete (PID:%d)" % merge_proc.pid
+	while merge_proc.poll() is None:
+		time.sleep(0.5)
 	return gctime
 
 
@@ -277,6 +318,8 @@ Have fun. ;)
 		help="set the number of jobs to use")
 	batch_parser.add_argument('--files-per-job', type=int, default=None,
 		help="set the number of files per job (overwrites -j|--jobs)")
+	batch_parser.add_argument('--parallel-merge', metavar='MERGE_THREADS', type=int, default=None, nargs='?', const=2,
+		help="Merge output in parallel while GC is running [Default: %(const)s threads]")
 
 	opt = parser.parse_args()
 
@@ -448,7 +491,6 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 		'$EXCALIBURPATH': getEnv(),
 		'$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
 	}
-
 	copyFile(original, filename, d)
 
 
