@@ -42,6 +42,27 @@ CLI_break.add_argument("-s", "--signal", nargs="*", default=["SIGQUIT", "SIGTERM
 CLI_break.add_argument("-p", "--pid", nargs="*", default=[], type=int, help="Stop after all these processes have finished. [Default: %(default)s]")
 
 
+# ANSI formatting escape sequences
+def getANSISGR(*nums):
+	return ( "\x1b[" + ("%d;"*len(nums))[:-1] + "m") % tuple(nums)
+
+ANSI_CLEAR = getANSISGR(0)
+ANSI_BOLD = getANSISGR(1)
+ANSI_FAINT = getANSISGR(2)
+# text colors
+ANSI_RED = getANSISGR(31)
+ANSI_GREEN = getANSISGR(32)
+ANSI_ORANGE = getANSISGR(33)
+ANSI_BLUE = getANSISGR(34)
+ANSI_MAGENTA = getANSISGR(35)
+ANSI_CYAN = getANSISGR(36)
+# derived symbols
+ANSI_COLLECTING = ANSI_BOLD + ANSI_CYAN + "COLLECTING" + ANSI_CLEAR
+ANSI_FINALIZING = ANSI_BOLD + ANSI_BLUE + "FINALIZING" + ANSI_CLEAR
+ANSI_DONE = ANSI_BOLD + ANSI_GREEN + "DONE" + ANSI_CLEAR
+ANSI_MERGING = ANSI_BOLD + ANSI_MAGENTA + "MERGING" + ANSI_CLEAR
+
+
 class ThreadMaster(object):
 	"""
 	Restartable, stopable thread
@@ -60,7 +81,12 @@ class ThreadMaster(object):
 		self._thread.start()
 
 	def stop(self):
+		"""Shutdown gracefully"""
 		self._shutdown.set()
+
+	def terminate(self):
+		"""Shutdown forcefully"""
+		self.stop()
 
 	def join(self, timeout=None):
 		if self._thread is None:
@@ -101,22 +127,24 @@ class Terminator(ThreadMaster):
 				self._logger.debug("Timout reached (%.1fs/%.1fs)", time.time() - self._start_time, self.timeout)
 				break
 			if self._file_count >= self.max_files:
-				self._logger.debug("All files processed (%d/%.0f)", self._file_count, self.max_files)
+				self._logger.debug("All files found (%d/%.0f)", self._file_count, self.max_files)
 				break
 			if not self._check_pids():
-				self._logger.debug("All parents finished")
+				self._logger.debug("All tracked processes finished")
 				break
-		self._shutdown_all()
+		self._logger.info("Merger state changed from %s to %s", ANSI_COLLECTING, ANSI_FINALIZING)
+		self._stop_all()
 
 	def signal_handler(self, signalnum, frame):
 		del frame
 		self._sig_caught += 1
-		self._logger.debug("Caught signal %d (%d/2)", signalnum, self._sig_caught)
+		self._logger.debug("Merger (PID %d): Caught signal %d (%d/2)", os.getgid(), signalnum, self._sig_caught)
 		if self._sig_caught == 1:
 			self._logger.debug("Stopping")
-			self._shutdown_all()
+			self._stop_all()
 		else:
 			self._logger.debug("Terminating")
+			self._terminate_all()
 			os._exit(signalnum)
 
 	def _check_pids(self):
@@ -133,10 +161,15 @@ class Terminator(ThreadMaster):
 					raise
 		return not self._pids or any(self._pids.values())
 
-	def _shutdown_all(self):
+	def _stop_all(self):
 		for slave in self._slaves:
 			slave.stop()
 		self.stop()
+
+	def _terminate_all(self):
+		for slave in self._slaves:
+			slave.terminate()
+		self.terminate()
 
 	def extend(self, elems):
 		self._file_count += len(elems)
@@ -167,12 +200,15 @@ class FileGlobProvider(ThreadMaster):
 	def _reap_files(self):
 		all_files = set().union(*[glob.glob(file_glob) for file_glob in self.file_globs])
 		new_files = all_files - self._files_found
+		if not new_files:
+			return
 		self._files_found.update(new_files)
 		self._files_queue.extend(new_files)
 		for subscriber in self._subscribers:
 			subscriber.extend(new_files)
+		self._logger.info("Add %d files for %s", len(new_files), ANSI_MERGING)
 		for new_file in new_files:
-			self._logger.info("Merging file '%s'", new_file)
+			self._logger.debug("Glob added file '%s'", os.path.basename(new_file))
 
 	def __iter__(self):
 		# yield a new file until we have to shutdown
@@ -196,7 +232,7 @@ class FileMerger(ThreadMaster):
 	def __init__(self, out_file, file_provider, mergers=1, batch_size=4, work_dir_prefix='/tmp/'):
 		ThreadMaster.__init__(self, daemon=False)
 		assert mergers >= 1, "Need at least one merger"
-		assert batch_size >= 2, "Must merge at least 2 files"
+		assert batch_size >= 2, "Must merge at least 2 files per step"
 		self.out_file = out_file
 		self.mergers = mergers
 		self.batch_size = batch_size
@@ -209,29 +245,57 @@ class FileMerger(ThreadMaster):
 	def report(self):
 		return "%s<src=%d, tmp=%d, procs=%d/%d>" % (self.__class__.__name__, len(self.src_file_queue), len(self.tmp_file_queue), len(self._merge_procs), self.mergers)
 
+	def terminate(self):
+		"""Shutdown forcefully"""
+		self.stop()
+		all_stopped = False
+		while not all_stopped:
+			all_stopped = True
+			for proc in self._merge_procs:
+				if proc.poll() is None:
+					all_stopped = False
+					try:
+						proc.kill()
+					except OSError as err:
+						if err.errno == errno.ESRCH:
+							continue
+						print(err)
+		for tmp_file in self.tmp_file_queue:
+			try:
+				os.unlink(tmp_file)
+			except OSError as err:
+				if err.errno == errno.ENOENT:
+					continue
+				print(err)
+
 	def run(self):
 		tmp_file_name = lambda: os.path.join(self.work_dir, "tmp_merge_%X_%X.root" % (time.time() * 1000000, random.getrandbits(64)))
 		# merge until there are no more outstanding files/procs
 		while not self._shutdown.wait(0.5) or self._merge_procs or self.src_file_queue or self.tmp_file_queue:
-			# merge in batches of new/temporary
-			if (len(self.src_file_queue) < self.batch_size and len(self.tmp_file_queue) < self.batch_size):
+			# merge in batches of new/temporary while data is comming in to avoid repeated merges
+			if len(self.src_file_queue) < self.batch_size and len(self.tmp_file_queue) < self.batch_size:
 				# still aggregating scr files, wait for more
 				if not self._shutdown.is_set():
 					continue
 				# all merge steps done, exit...
 				if not self.src_file_queue and not self._merge_procs and len(self.tmp_file_queue) == 1:
 					break
-				# enough tmp files incomming to reach batch size
-				if len(self.src_file_queue) + len(self.tmp_file_queue) + len(self._merge_procs) >= self.batch_size:
+				# merge src/tmp indiscriminately
+				if len(self.src_file_queue) + len(self.tmp_file_queue) >= self.batch_size:
+					pass
+				# enough tmp files incomming to reach batch size, delay until they are done
+				elif len(self.src_file_queue) + len(self.tmp_file_queue) + len(self._merge_procs) >= self.batch_size:
 					continue
-				# not enough files to merge right now
-				if len(self.src_file_queue) + len(self.tmp_file_queue) < 2:
+				# merge any leftover src and tmp files - accept 1 src in case of 1 input only
+				elif not self.src_file_queue and len(self.tmp_file_queue) < 2:
+					time.sleep(0.5)
 					continue
 			src_files = [self.src_file_queue.popleft() for _ in xrange(min(self.batch_size, len(self.src_file_queue)))]
 			tmp_files = [self.tmp_file_queue.popleft() for _ in xrange(min(self.batch_size - len(src_files), len(self.tmp_file_queue)))]
 			self._dispatch_merge(src_files=src_files, tmp_files=tmp_files, out_file=tmp_file_name())
 		shutil.move(self.tmp_file_queue[0], self.out_file)
 		shutil.rmtree(self.work_dir)
+		self._logger.info("Merger state changed from %s to %s", ANSI_FINALIZING, ANSI_DONE)
 
 	def _dispatch_merge(self, src_files, tmp_files, out_file):
 		while len(self._merge_procs) >= self.mergers:
@@ -251,8 +315,13 @@ class FileMerger(ThreadMaster):
 		self._logger.debug("Merged   ??? + ??? => '%s'", out_file)
 
 
-logging.basicConfig()
-logging.getLogger().level = logging.DEBUG
+gc_log_time = '%Y-%m-%d %H:%M:%S'
+gc_log_msg = '%(asctime)s - %(message)s'
+logging.basicConfig(
+	level=logging.INFO,
+	format=gc_log_msg,
+	datefmt=gc_log_time,
+)
 
 
 if __name__ == "__main__":
@@ -270,5 +339,6 @@ if __name__ == "__main__":
 			_logger.debug('%s %s %s', provider.report(), merger.report(), terminator.report())
 	except KeyboardInterrupt:
 		print "interrupt..."
+		terminator._terminate_all()
 		os._exit(1)
-	print "done", "(%.2fs)" % (time.time() - start_time)
+	_logger.info('Finished merging after %.1fs', time.time() - start_time)
