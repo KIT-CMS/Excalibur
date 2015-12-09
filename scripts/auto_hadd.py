@@ -61,6 +61,8 @@ ANSI_CYAN = getANSISGR(36)
 ANSI_COLLECTING = ANSI_BOLD + ANSI_CYAN + "COLLECTING" + ANSI_CLEAR
 ANSI_FINALIZING = ANSI_BOLD + ANSI_BLUE + "FINALIZING" + ANSI_CLEAR
 ANSI_DONE = ANSI_BOLD + ANSI_GREEN + "DONE" + ANSI_CLEAR
+ANSI_FAILED = ANSI_BOLD + ANSI_RED + "FAILED" + ANSI_CLEAR
+ANSI_ABORTED = ANSI_BOLD + ANSI_RED + "ABORTED" + ANSI_CLEAR
 ANSI_MERGING = ANSI_BOLD + ANSI_MAGENTA + "MERGING" + ANSI_CLEAR
 
 
@@ -279,6 +281,11 @@ class FileMerger(ThreadMaster):
 				# still aggregating scr files, wait for more
 				if not self._shutdown.is_set():
 					continue
+				# no work to do, run away
+				if not self.src_file_queue and not self._merge_procs and not self.tmp_file_queue:
+					self._logger.warning("Merger %s to find any files", ANSI_FAILED)
+					self._logger.info("Merger state changed from %s to %s", ANSI_FINALIZING, ANSI_ABORTED)
+					return
 				# all merge steps done, exit...
 				if not self.src_file_queue and not self._merge_procs and len(self.tmp_file_queue) == 1:
 					break
