@@ -1,7 +1,7 @@
 import configtools
-import data_ee
+import mc12_ee
 
 def config():
-	cfg = data_ee.config()
+	cfg = mc12_ee.config()
 	cfg['Electrons'] = 'electrons'
 	return cfg
