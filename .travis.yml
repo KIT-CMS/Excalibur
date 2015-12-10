@@ -35,11 +35,11 @@ install:
   - make check
   - make all
 script:
-  - wget http://www-ekp.physik.uni-karlsruhe.de/~mfischer/public/excalibur/excalibur-data.root
+  - wget http://www-ekp.physik.uni-karlsruhe.de/~mfischer/public/excalibur/excalibur-data12.root
   - wget http://www-ekp.physik.uni-karlsruhe.de/~mfischer/public/excalibur/excalibur-data15.root
   - wget http://www-ekp.physik.uni-karlsruhe.de/~mfischer/public/excalibur/excalibur-mc15.root
   - ls -l
-  - sed -i 's:/storage/.*root:excalibur-data.root:' test/data12.py.json
+  - sed -i 's:/storage/.*root:excalibur-data12.root:' test/data12.py.json
   - sed -i 's:/storage/.*root:excalibur-data15.root:' test/data15.py.json
   - sed -i 's:/storage/.*root:excalibur-mc15.root:' test/mc15.py.json
   - test_excalibur.sh data12
