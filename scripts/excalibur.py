@@ -230,7 +230,6 @@ def run_gc_pmerge(config_path, output_glob, workdir_path, mergers):
 	if gc_proc.poll() > 0:
 		print "grid-control failed with %d", gc_proc.poll()
 		sys.exit(gc_proc.poll())
-	print "Waiting for merger to complete (PID:%d)" % merge_proc.pid
 	while merge_proc.poll() is None:
 		time.sleep(0.5)
 	return gctime
