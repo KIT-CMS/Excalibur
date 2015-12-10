@@ -274,7 +274,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	x_dict = {
 		'alpha': ['40,0,1'],
 		'jet1area': ['40,0.3,0.9'],
-		'jet1eta': ['20,-1.3,1.3'],
+		'jet1eta': ['30,-1.5,1.5'],
 		'jet1phi': ['20,-3.1415,3.1415',],
 		'jet1pt': ['40,0,400'],
 		'jet2eta': ['20,-5,5'],
