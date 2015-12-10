@@ -219,7 +219,8 @@ class ZJetProduct : public KappaProduct
     KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
     {
         // Only L3 is corrected in TypeIMETProducer
-        if (std::string::npos != corrLevel.find("L3")) {
+        if ((std::string::npos != corrLevel.find("L3")) ||
+            (std::string::npos != corrLevel.find("Res"))) {
             return const_cast<KMET*>(&(m_corrMET.at(corrLevel)));
         } else {
             return event.m_met;
