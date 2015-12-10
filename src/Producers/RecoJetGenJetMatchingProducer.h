@@ -3,7 +3,7 @@
 
 #include "ZJetTypes.h"
 
-#include "KappaTools/RootTools/Matching.h"
+#include "KappaTools/RootTools/interface/Matching.h"
 
 /** Producer for reco jet gen jet matches
  *

@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "ZJetTypes.h"
@@ -8,7 +7,7 @@
 #include "JetMETObjects/interface/JetCorrectorParameters.h"
 
 #define USE_JEC
-#include "KappaTools/RootTools/JECTools.h"
+#include "KappaTools/RootTools/interface/JECTools.h"
 
 /**
    \brief Producer for tagged jet corrections (mainly JEC)
