@@ -17,7 +17,6 @@ def getBaseConfig(tagged=True, **kwargs):
 		'L1Correction': 'L1FastJet',
 		'RC': True,  # Also provide random cone offset JEC, and use for type-I
 		'FlavourCorrections': False,  # Calculate additional MC flavour corrections
-		'ProvideL2L3ResidualCorrections': False,
 		# ZProducer Settings
 		'ZMassRange': 20.,
 		# TypeIMETProducer Settings

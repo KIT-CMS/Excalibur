@@ -1988,7 +1988,7 @@
         "producer:HltProducer",
         "filter:HltFilter"
     ],
-    "ProvideResidualCorrections": true,
+    "ProvideL2L3ResidualCorrections": true,
     "RC": true,
     "TaggedJets": "ak4PFJetsCHS",
     "ValidJetsInput": "uncorrected",

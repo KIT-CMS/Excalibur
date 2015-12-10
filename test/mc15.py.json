@@ -2723,7 +2723,7 @@
         "producer:EventWeightProducer",
         "producer:RecoMuonGenParticleMatchingProducer"
     ],
-    "ProvideResidualCorrections": false,
+    "ProvideL2L3ResidualCorrections": false,
     "RC": true,
     "RecoMuonMatchingGenParticleStatus": 1,
     "TaggedJets": "ak4PFJetsCHS",
