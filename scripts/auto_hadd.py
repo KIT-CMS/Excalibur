@@ -29,7 +29,7 @@ CLI.add_argument("out_file", help="file to write final output to")
 
 CLI_input = CLI.add_argument_group("file merging", "which files to merge")
 CLI_input.add_argument("--file-globs", nargs="+", help="shell glob pattern(s) to check for files")
-CLI_input.add_argument("--glob-interval", default=2, type=float, help="Interval for checking for files via globs. [Default: %(default)s]")
+CLI_input.add_argument("--glob-interval", default=5, type=float, help="Interval for checking for files via globs. [Default: %(default)s]")
 
 CLI_merge = CLI.add_argument_group("merge settings", "how to merge files")
 CLI_merge.add_argument("-m", "--mergers", default=1, type=int, help="Maximum number of parallel merge process. [Default: %(default)s]")
@@ -196,6 +196,8 @@ class FileGlobProvider(ThreadMaster):
 	def run(self):
 		while not self._shutdown.wait(self.glob_interval):
 			self._reap_files()
+		# collect everything available at shutdown
+		self._reap_files()
 
 	def subscribe(self, recipient):
 		self._subscribers.append(recipient)
