@@ -107,8 +107,18 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
         jecParameters.clear();
     }
 
+    // L2Residual
+    if (settings.GetInputIsData() && settings.GetProvideL2ResidualCorrections()) {
+        LOG(INFO) << "\t -- " << settings.GetJec() << "_"
+                  << "L2Residual"
+                  << "_" << algoName << ".txt";
+        jecParameters.push_back(JetCorrectorParameters(settings.GetJec() + "_" + "L2Residual" +
+                                                       "_" + algoName + ".txt"));
+        m_l2res = new FactorizedJetCorrector(jecParameters);
+        jecParameters.clear();
+    }
     // L2L3Residual
-    if (settings.GetInputIsData() && settings.GetProvideResidualCorrections()) {
+    if (settings.GetInputIsData() && settings.GetProvideL2L3ResidualCorrections()) {
         LOG(INFO) << "\t -- " << settings.GetJec() << "_"
                   << "L2L3Residual"
                   << "_" << algoName << ".txt";
@@ -145,7 +155,10 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
         CorrectJetCollection("L1L2L3", "L1L2L3L5c", m_l5c, event, product, settings);
         CorrectJetCollection("L1L2L3", "L1L2L3L5b", m_l5b, event, product, settings);
     }
-    if (settings.GetInputIsData() && settings.GetProvideResidualCorrections()) {
+    if (settings.GetInputIsData() && settings.GetProvideL2ResidualCorrections()) {
+        CorrectJetCollection("L1L2L3", "L1L2Res", m_l2res, event, product, settings);
+    }
+    if (settings.GetInputIsData() && settings.GetProvideL2L3ResidualCorrections()) {
         CorrectJetCollection("L1L2L3", "L1L2L3Res", m_l2l3res, event, product, settings);
     }
 
@@ -156,7 +169,7 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
         if (settings.GetRC()) {
             product.jetpt_rc = product.m_correctedZJets["RC"][0]->p4.Pt();
         }
-        if (settings.GetProvideResidualCorrections()) {
+        if (settings.GetProvideL2L3ResidualCorrections()) {
             product.jetpt_l1l2l3res = product.m_correctedZJets["L1L2L3Res"][0]->p4.Pt();
         }
     }

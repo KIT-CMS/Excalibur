@@ -44,6 +44,7 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
         delete m_l5q;
         delete m_l5b;
         delete m_l5c;
+        delete m_l2res;
         delete m_l2l3res;
     }
 
@@ -69,6 +70,7 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
     FactorizedJetCorrector* m_l5q = nullptr;
     FactorizedJetCorrector* m_l5b = nullptr;
     FactorizedJetCorrector* m_l5c = nullptr;
+    FactorizedJetCorrector* m_l2res = nullptr;
     FactorizedJetCorrector* m_l2l3res = nullptr;
 
     JetCorrectionUncertainty* correctionUncertainty = nullptr;

@@ -17,7 +17,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'L1Correction': 'L1FastJet',
 		'RC': True,  # Also provide random cone offset JEC, and use for type-I
 		'FlavourCorrections': False,  # Calculate additional MC flavour corrections
-		'ProvideResidualCorrections': False,
+		'ProvideL2L3ResidualCorrections': False,
 		# ZProducer Settings
 		'ZMassRange': 20.,
 		# TypeIMETProducer Settings
@@ -93,7 +93,7 @@ def data(cfg, **kwargs):
 		'producer:HltProducer',
 		'filter:HltFilter',
 	]
-	cfg['ProvideResidualCorrections'] = True
+	cfg['ProvideL2L3ResidualCorrections'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
 
 
