@@ -125,7 +125,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'zphi': r'$\mathit{\phi}^{Z}$',
 			'zpt': '$\mathit{p}_{T}^{Z}$ / GeV',
 			'zpt/genzpt': '$\mathit{p}_{T}^{Z, Reco}$ / $\mathit{p}_{T}^{Z, Gen}$',
-			'zy': '$\mathit{y}_Z$',
+			'zy': '$\mathit{y}^Z$',
 
 			# ZJet specific
 			'alpha': '$\mathit{p}_{T}^{Jet 2}/\mathit{p}_{T}^{Z}$',
