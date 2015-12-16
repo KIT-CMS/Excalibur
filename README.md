@@ -9,6 +9,9 @@ The predecessor of this framework was also named excalibur and can be found [her
 
 Please also have a look at the documentation for [Artus](https://github.com/artus-analysis/Artus/blob/master/README.md "Artus Readme") and [HarryPlotter](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
 
+The preceeding implementation can be found at: https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur -
+many ideas were and can still be taken from there.
+
 ## Installation of the Excalibur Framework
 
 ### Requirements
@@ -33,6 +36,7 @@ cd ../..
 cp -r /portal/ekpcms5/home/berger/zjet/excalibur/external/OfflineCorrection/CondFormats ./
 ```
 Alternatively, all these requirements can also be installed independently or taken from the system.
+
 
 ### Installation
 The framework comes in 4 layers:
@@ -67,8 +71,18 @@ cd Excalibur
 make -j4 -B
 ```
 
-The preceeding implementation can be found at: https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur -
-many ideas were and can still be taken from there.
+##### Batch Functionality
+
+For the batch functionality of Excalibur, you need [grid-control](http://www-ekp.physik.uni-karlsruhe.de/~berger/gc/install.html "grid-control installation instructions")
+and the directory containing the `go.py` executable in your $PATH, e.g. with
+```
+export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
+```
+if you have Excalibur and grid-control installed in the same folder.
+
+Additionally, the EXCALIBUR\_WORK variable has to be set to an existing directory.
+By default, it is set to `/storage/a/$USER/zjet` by `ini_excalibur.sh` if this
+directory exists. Make sure it exists or set EXCALIBUR\_WORK to a different folder.
 
 
 ## Usage of the Excalibur Framework
@@ -137,7 +151,7 @@ gluon resp. b-quarks
 improvement studies)
 - *skimjet1(pt|eta|phi|validity)*: pT, pseudorapidity, phi, validity for leading jet in skim
 
-###### Data 
+###### Data
 - *run*: Run for this event
 - *event*: Lumi section for this event
 - *lumi*: Event number for this event
@@ -153,11 +167,11 @@ improvement studies)
 - *matchedgenmuon(\*)*: Quantities of the generator muon matched to a reconstructed muon
 - *matchedgenparton(\*)*: Quantities of the parton matched to a reconstructed jet
 - *puWeight*: Weight from pile-up-reweighting
-- *numberGeneratedEventsWeight*: 1/number\_of\_events\_in\_dataset 
+- *numberGeneratedEventsWeight*: 1/number\_of\_events\_in\_dataset
 - *crossSectionPerEventWeight*: cross-section
 - *ngenneutrinos": number of neutrinos
 
-###### Event Quantities 
+###### Event Quantities
 - *npv*: Number of reconstructed primary vertices
 - *rho*: Rho, the energy density per event
 - *met, metphi*: Size and phi-direction of the missing transverse energy (MET)
@@ -171,7 +185,7 @@ improvement studies)
 
 ### Plotting (merlin): python part
 This part derives most classes from HarryPlotter to implement ZJet-specific stuff.
-See 
+See
 - Plotting/python/, which contains the derived classes
 - scripts/, which contains an ini script and the 'merlin' plotting executable
 - Plotting/configs/, which contains plot configuration files
@@ -250,15 +264,15 @@ def existing_config(args):
         }
         plots.append(d)
     return [PlottingJob(plots=plots, args=args)]
-    
+
 def new_config(args):
     plotting_jobs = []
-    
+
     existing_jobs = existing_config(args)
     for plot in existing_jobs[0].plots:
         plot['y_lims'] = [0.9, 1.4]
     plotting_jobs += existing_jobs
-        
+
     return plotting_jobs
 ```
 
@@ -320,9 +334,8 @@ difference between the pipelines/folders?
 - Open the ntuple in one of the folders and examine the different variables. An
 explanation of the quantities is given above. What does e.g. 'mupluspt' mean?
 - Type `excalibur.py -h` and read the full list of command line arguments.
-- Execute excalibur with the data config in batch mode: `excalibur.py data -b`.
-(You will need [grid-control](http://www-ekp.physik.uni-karlsruhe.de/~berger/gc/install.html "grid-control installation instructions")
-and have the go.py executable in your $PATH)
+- Execute excalibur with the data config in batch mode: `excalibur.py data -b`
+ (make sure you have followed the instructions for the batch functionality).
 
 
 ### (2) Plotting with HarryPlotter/Merlin
@@ -346,8 +359,17 @@ and jet1pt for the -x and -y arguments.
 cutting out certain events, e.g. `-w "jet1pt>80&&zpt>100"`. Use this argument to
 create the 2D plots only with events with zpt>100 and jet1pt>80.
 - Create a profile plot by using `--tree-draw-options prof`.
-- The --live or --www arguments are handy to directly open plots or upload them
-to your webspace.
+- Create two histograms from the same file by specifying two weights, e.g.
+`-w "zpt<70" "zpt>120"`
+- Try `merlin.py --list-available-modules` and have a look at the available
+input/analysis/plot modules. Try to use the `Ratio` module by creating two distributions
+and adding a ratio subplot with `--analysis-module Ratio`.
+- In addition to the command line usage, Merlin also allows plotting a configuration
+from a python file. Have a look at the `Plotting/configs/tutorial.py` file and add
+the missing keys to recreate the previous plot with `merlin.py --py tutorial` (but
+don't commit your changes).
+- The `--live` (optionally with `--userpc`) or `--www` arguments are handy to
+directly open plots or upload them to your webspace.
 - Have a look at the full list of command line arguments: `merlin.py -h`
 
 Congratulations! You have completed the Excalibur tutorial! :clap: :+1:
