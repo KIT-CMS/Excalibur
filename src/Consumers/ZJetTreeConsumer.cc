@@ -397,7 +397,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "matchedgenparton1flavour", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
-            return (genParton != nullptr) ? static_cast<float>(genParton->pdgId())
+            return (genParton != nullptr) ? static_cast<float>(genParton->pdgId)
                                           : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(

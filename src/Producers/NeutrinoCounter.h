@@ -18,7 +18,7 @@ class NeutrinoCounter : public ZJetProducerBase
         for (KGenParticles::const_iterator part = event.m_genParticles->begin();
              part != event.m_genParticles->end(); ++part) {
             for (auto const& id : m_ids) {
-                if ((std::abs(part->pdgId()) == id) && (part->status() == m_status))
+                if ((std::abs(part->pdgId) == id) && (part->status() == m_status))
                     product.n_neutrinos += 1;
             }
         }
