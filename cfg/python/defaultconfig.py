@@ -125,6 +125,7 @@ def mc(cfg, **kwargs):
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',
 		'matchedgenjet1pt',
+		'matchedgenjet1eta',
 		'matchedgenjet2pt',
 		'genzpt',
 		'genzeta',

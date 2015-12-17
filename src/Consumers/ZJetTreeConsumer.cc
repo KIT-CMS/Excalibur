@@ -413,6 +413,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
+            return (genJet != nullptr) ? genJet->p4.Eta() : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
             return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedFloat;
