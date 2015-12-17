@@ -22,7 +22,7 @@ before_install:
   - cd ..
   - wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz
   - tar xzf CondFormats.tar.gz
-  - git clone --depth=10 https://github.com/KappaAnalysis/Kappa.git
+  - git clone --depth=100 https://github.com/KappaAnalysis/Kappa.git
   - cd Kappa
   - git checkout 5419864
   - cd ..
