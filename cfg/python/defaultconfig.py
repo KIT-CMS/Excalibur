@@ -21,7 +21,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'ZMassRange': 20.,
 		# TypeIMETProducer Settings
 		'Met' : 'met', # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
-		'JetPtMin': 10.,
+		'TypeIJetPtMin': 10.,
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [], # Please set this later depending on input type
 		# Valid Jet Selection
@@ -188,7 +188,7 @@ def _2015(cfg, **kwargs):
 	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
 	cfg['JetIDVersion'] = 2015
-	cfg['JetPtMin'] = 15.
+	cfg['TypeIJetPtMin'] = 15.
 	cfg['MinZllJetDeltaRVeto'] = 0.3
 	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
 	# create empty containers to allow using references prematurely

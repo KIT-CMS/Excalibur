@@ -9,7 +9,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, MinZllJetDeltaRVeto)
 
     // TypeIMETProducer
-    IMPL_SETTING_DEFAULT(float, JetPtMin, 10.0f)
+    IMPL_SETTING(float, TypeIJetPtMin)
     IMPL_SETTING_DEFAULT(bool, EnableMetPhiCorrection, false)
     IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
     IMPL_SETTING_DEFAULT(bool, MetAddMuons, false)
