@@ -76,15 +76,15 @@ def ZJet():
 	# always make json config unless we resume existing one
 	if not options.isjson and not options.resume:
 		conf = import_config(options.cfg, options.config_mods)
-		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
-		if conf["OutputPath"] == "out":
-			conf["OutputPath"] = options.out + '.root'
 		if options.skip:
 			conf['FirstEvent'] = options.skip
 		if options.nevents:
 			conf['ProcessNEvents'] = options.nevents
 		for key, value in options.set_opts:
 			conf[key] = value
+		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
+		if conf["OutputPath"] == "out":
+			conf["OutputPath"] = options.out + '.root'
 		writeJson(conf, options.json)
 		wrapper_logger.info("%d pipelines configured, written to %s", len(conf["Pipelines"]), options.json)
 	# get an existing one
