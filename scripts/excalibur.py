@@ -377,7 +377,7 @@ Have fun. ;)
 	for option, value in pair_iter(opt.set_opts):
 		try:
 			set_opts.append((option, ast.literal_eval(value)))
-		except ValueError:
+		except (ValueError, SyntaxError):
 			set_opts.append((option, value))
 	opt.set_opts = set_opts
 
