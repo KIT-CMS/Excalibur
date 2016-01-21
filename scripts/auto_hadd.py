@@ -167,6 +167,7 @@ class Terminator(ThreadMaster):
 	def _stop_all(self):
 		for slave in self._slaves:
 			slave.stop()
+			slave.join()
 		self.stop()
 
 	def _terminate_all(self):
@@ -196,6 +197,8 @@ class FileGlobProvider(ThreadMaster):
 	def run(self):
 		while not self._shutdown.wait(self.glob_interval):
 			self._reap_files()
+			if self._shutdown.is_set(): # explicitly shutdown for py_ver < 2.7
+				break
 		# collect everything available at shutdown
 		self._reap_files()
 
@@ -211,7 +214,7 @@ class FileGlobProvider(ThreadMaster):
 		self._files_queue.extend(new_files)
 		for subscriber in self._subscribers:
 			subscriber.extend(new_files)
-		self._logger.info("Add %d files for %s", len(new_files), ANSI_MERGING)
+		self._logger.info("Add %2d files for %s", len(new_files), ANSI_MERGING)
 		for new_file in new_files:
 			self._logger.debug("Glob added file '%s'", os.path.basename(new_file))
 
@@ -285,7 +288,7 @@ class FileMerger(ThreadMaster):
 					continue
 				# no work to do, run away
 				if not self.src_file_queue and not self._merge_procs and not self.tmp_file_queue:
-					self._logger.warning("Merger %s to find any files", ANSI_FAILED)
+					self._logger.warning("Merger %s to reap any files", ANSI_FAILED)
 					self._logger.info("Merger state changed from %s to %s", ANSI_FINALIZING, ANSI_ABORTED)
 					return
 				# all merge steps done, exit...
@@ -351,4 +354,4 @@ if __name__ == "__main__":
 		print "interrupt..."
 		terminator._terminate_all()
 		os._exit(1)
-	_logger.info('Finished merging after %.1fs', time.time() - start_time)
+	_logger.info('Finished merging %d files after %.1fs', len(provider), time.time() - start_time)
