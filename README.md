@@ -30,7 +30,7 @@ cmsrel CMSSW_7_4_0_pre9
 cd CMSSW_7_4_0_pre9/src
 cmsenv
 cd ../..
-wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz && tar xzf CondFormats.tar.gz && rm CondFormats.tar.gz
+wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz -O - | tar -xz
 ```
 Alternatively, all these requirements can also be installed independently or taken from the system.
 
