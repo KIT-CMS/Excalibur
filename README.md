@@ -24,16 +24,13 @@ This framework needs:
 All that is most easily provided by installing CMSSW alongside and taking the offline jet corrections from there (in CondFormats):
 ```
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/
-export SCRAM_ARCH=slc6_amd64_gcc481
+export SCRAM_ARCH=slc6_amd64_gcc491
 source $VO_CMS_SW_DIR/cmsset_default.sh
 cmsrel CMSSW_7_4_0_pre9
 cd CMSSW_7_4_0_pre9/src
 cmsenv
-#git cms-addpkg CondFormats/JetMETObjects
 cd ../..
-#ln -s CMSSW_7_4_0_pre9/src/CondFormats
-# temporary solution because 7x does not compile here:
-cp -r /portal/ekpcms5/home/berger/zjet/excalibur/external/OfflineCorrection/CondFormats ./
+wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz && tar xzf CondFormats.tar.gz && rm CondFormats.tar.gz
 ```
 Alternatively, all these requirements can also be installed independently or taken from the system.
 
@@ -48,7 +45,7 @@ The framework comes in 4 layers:
 
 To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
-git clone https://github.com/KappaAnalysis/Kappa.git
+git clone https://github.com/KappaAnalysis/Kappa.git && cd Kappa && git checkout 19696bf && cd -
 git clone https://github.com/KappaAnalysis/KappaTools.git
 git clone https://github.com/artus-analysis/Artus.git
 git clone https://github.com/artus-analysis/Excalibur.git
