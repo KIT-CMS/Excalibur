@@ -321,10 +321,10 @@ class FileMerger(ThreadMaster):
 
 	def _monitor_merge(self, merge_proc, tmp_files, out_file):
 		merge_proc.wait()
+		self.tmp_file_queue.append(out_file)
 		self._merge_procs.remove(merge_proc)
 		for tmp_file in tmp_files:
 			os.unlink(tmp_file)
-		self.tmp_file_queue.append(out_file)
 		self._logger.debug("Merged   ??? + ??? => '%s'", out_file)
 
 
