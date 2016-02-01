@@ -14,7 +14,7 @@ from dicts_z_ee import ejmexpress
 from dicts_z_ee import ejmlabel
 from dicts_z_ee import ejmbin
 
-#Features jet_muon_ee_comparison functions in first half, then same functions with Z instead of ee
+#Features ee_jet_muon_comparison functions in first half, then same functions with Z instead of ee
 
 ###########################
 def ee_jet_muon_comparison(args=None, additional_dictionary=None, run=2):
@@ -60,7 +60,7 @@ def ee_jet_muon_comparison(args=None, additional_dictionary=None, run=2):
 				'labels': [latex["eminus"],latex["jet1"],latex["muminus"]],
 				'colors': [color['e'], color['jet'],color['mu']],
 				'texts': '{}'.format(latex[selection]),
-				'title':'Reconstruction of {}'.format(latex[parameter]),
+				'title':'Reconstruction\n of {}'.format(latex[parameter]),
 		
 				#formatting
 				'filename': 'comparison_rel_recogen_{}_{}'.format(parameter, selection),
@@ -81,10 +81,10 @@ def ee_jet_muon_comparison(args=None, additional_dictionary=None, run=2):
 
 
 ############################################
-def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
+def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 	"""Comparison of jet, muon, e reconstruction depending on pt: Tree-plots of eminus/geneminus, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each. Additionally, plots of  statistical errors of said Tree-plots depending on pt.
 	"""
-	run = 2
+	
 	plots = []
 	parameterlist_jet1 = ['pt', 'phi', 'eta']
 
@@ -114,6 +114,7 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 			'x_expressions':["geneminuspt","genjet1pt","genmuminuspt"],
 			'y_expressions':[ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options': 'profs',
+			"x_ticks": [10,20,30,50,70,100,200,400,1000], 
 			'x_bins': bins[parameter],
 			'x_log': True,
 
@@ -142,10 +143,10 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 			#'zjetfolders':['zcuts'],
 
 			#binning
-			'x_expressions':["zpt","genmuminuspt","geneminuspt"],
+			'x_expressions':["geneminuspt","genjet1pt","genmuminuspt"],
 			'y_expressions':[ejmexpress["e{}".format(parameter)], ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options':  'profs',
-			"x_ticks": [30,50,70,100,200,400,1000], 
+			"x_ticks": [10,20,30,50,70,100,200,400,1000],
 			'x_bins': bins[parameter],
 			'x_log': True,
 			'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors',],
@@ -156,7 +157,7 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 			'nicks': ["e","jet1","mu"],
 			'labels': [latex["eminus"],latex["jet1"],latex["muminus"]],
 			'colors': [color['e'], color['jet'],color['mu']],
-			'x_label': "Z{}$/GeV$".format(latex["pt"]),
+			'x_label': "{}$/GeV$".format(latex["pt"]),
 			'y_label': "{} $resolution$".format(latex[parameter]),
 			'texts': '{} - $statistical$ $errors$'.format(latex[parameter]),
 			'title':'Resolution of {} \n depending on {}'.format(latex[parameter], latex['pt']),
@@ -180,7 +181,7 @@ def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 
 
 ############################################
-def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
+def ee_jet_muon_comp_npv_tree(args=None, additional_dictionary=None, run=2):
 	"""Comparison of jet, muon, e reconstruction depending on number of pileupevents (npv): Tree-plots of eminus/geneminus, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each. Additionally, plots of  statistical errors of said Tree-plots depending on npv.
 	"""
 
@@ -218,7 +219,7 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 			'x_expressions':["npv","npv","npv"],
 			'y_expressions':[ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options': 'profs',
-			'x_bins': bins[parameter],
+			#'x_bins': bins[parameter],
 			'x_log': True,
 
 			#formatting
@@ -288,7 +289,7 @@ def jet_muon_ee_comp_npv_tree(args=None, additional_dictionary=None):
 
 #From here on same functions as above, only with Z instead of e
 ##############################
-def jet_muon_z_comparison(args=None, additional_dictionary=None):
+def jet_muon_z_comparison(args=None, additional_dictionary=None, run=2):
 	"""9 plots: 1D-plots of Z/genZ, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each, with weights for pt>50, 50<pt<100, pt>100 
 	"""
 
@@ -349,7 +350,7 @@ def jet_muon_z_comparison(args=None, additional_dictionary=None):
 
 
 ############################
-def jet_muon_z_comparison_tree(args=None, additional_dictionary=None):
+def jet_muon_z_comparison_tree(args=None, additional_dictionary=None, run=2):
 	"""Comparison of jet, muon, z reconstruction quality depending on pT: Tree-plots of Z/genZ, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each 
 	"""
 	
@@ -482,7 +483,7 @@ def zmass_ee_mm(args=None, additional_dictionary=None, run=2):
 		'marker_fill_styles': ['none', 'none', 'none'],
 		'line_styles': ['-'],
 		'step':['True','True','True'],
-		'title':'Comparison of Zmass \n calculated from ee and mm',
+		'title':r'Zmass calculated \n from ee and $\\mu\\mu$',
 	}
 	plots.append(d_1)
 
