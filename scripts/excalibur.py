@@ -365,14 +365,14 @@ Have fun. ;)
 		paths.sort()
 		try:
 			opt.timestamp = paths[-1][-17:]
-		except:
+		except IndexError:
 			print "No existing output directory available!"
 			sys.exit(1)
 	opt.work += opt.timestamp + '/'
 
 	# transform overwrite options to python types
 	if not len(opt.set_opts) % 2 == 0:
-		raise ValueError('Overwrite options must be specified as pairs of OPTTION VALUE.')
+		raise ValueError('Overwrite options must be specified as pairs of OPTION VALUE.')
 	set_opts = []
 	for option, value in pair_iter(opt.set_opts):
 		try:
