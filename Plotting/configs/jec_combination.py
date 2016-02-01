@@ -167,6 +167,22 @@ def jec_combination(args=None, additional_dictionary=None):
 	harryinterface.harry_interface(root_plots, args + ['--max-processes', '1'])
 
 
+def jec_combination_zee(args=None, additional_dictionary=None):
+	"""Use Z->ee defaults for :py:func:`~.jec_combination`"""
+	additional_dictionary = additional_dictionary if additional_dictionary is not None else {}
+	additional_dictionary["algorithms"] = ["ak4PFJetsCHS"]
+	additional_dictionary["file_label"] = "Zee" + time.strftime("%Y%m%d")
+	return jec_combination(args=args, additional_dictionary=additional_dictionary)
+
+
+def jec_combination_zmm(args=None, additional_dictionary=None):
+	"""Use Z->mm defaults for :py:func:`~.jec_combination`"""
+	additional_dictionary = additional_dictionary if additional_dictionary is not None else {}
+	additional_dictionary["algorithms"] = ["ak4PFJetsCHS"]
+	additional_dictionary["file_label"] = "Zmm" + time.strftime("%Y%m%d")
+	return jec_combination(args=args, additional_dictionary=additional_dictionary)
+
+
 def jec_pu_combination(args=None, additional_dictionary=None):
 	"""Create combination info on pileup"""
 	mpl_plots = []
