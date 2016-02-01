@@ -76,15 +76,15 @@ def ZJet():
 	# always make json config unless we resume existing one
 	if not options.isjson and not options.resume:
 		conf = import_config(options.cfg, options.config_mods)
-		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
-		if conf["OutputPath"] == "out":
-			conf["OutputPath"] = options.out + '.root'
 		if options.skip:
 			conf['FirstEvent'] = options.skip
 		if options.nevents:
 			conf['ProcessNEvents'] = options.nevents
 		for key, value in options.set_opts:
 			conf[key] = value
+		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
+		if conf["OutputPath"] == "out":
+			conf["OutputPath"] = options.out + '.root'
 		writeJson(conf, options.json)
 		wrapper_logger.info("%d pipelines configured, written to %s", len(conf["Pipelines"]), options.json)
 	# get an existing one
@@ -365,19 +365,19 @@ Have fun. ;)
 		paths.sort()
 		try:
 			opt.timestamp = paths[-1][-17:]
-		except:
+		except IndexError:
 			print "No existing output directory available!"
 			sys.exit(1)
 	opt.work += opt.timestamp + '/'
 
 	# transform overwrite options to python types
 	if not len(opt.set_opts) % 2 == 0:
-		raise ValueError('Overwrite options must be specified as pairs of OPTTION VALUE.')
+		raise ValueError('Overwrite options must be specified as pairs of OPTION VALUE.')
 	set_opts = []
 	for option, value in pair_iter(opt.set_opts):
 		try:
 			set_opts.append((option, ast.literal_eval(value)))
-		except ValueError:
+		except (ValueError, SyntaxError):
 			set_opts.append((option, value))
 	opt.set_opts = set_opts
 

@@ -54,7 +54,7 @@ def apply_double_profile(plotDict, args=None):
 	# create new y vs <x> graphs
 	plotDict['analysis_modules'] = plotDict.get('analysis_modules', [])[:]
 	plotDict['analysis_modules'].insert(0, 'TGraphFromHistograms')
-	plotDict['tgraph_strip_empty'] = True
+	plotDict['tgraph_strip_empty'] = 'any'
 	plotDict['tgraph_y_nicks'] = plotDict['nicks'][:opt_n_length_max]
 	plotDict['tgraph_x_nicks'] = plotDict['nicks'][opt_n_length_max:]
 	plotDict['tgraph_result_nicks'] = ['%s_vs_x_prof' % nick for nick in plotDict['nicks'][:opt_n_length_max]]
@@ -159,12 +159,28 @@ def jec_combination(args=None, additional_dictionary=None):
 					d_root.update({
 						'plot_modules': ['ExportRoot'],
 						'filename': 'combination_ZJet_' + file_label + time.strftime("%Y-%m-%d", now),
-						'file_mode': 'RECREATE',
+						'file_mode': 'UPDATE',
 					})
 					mpl_plots.append(d_mpl)
 					root_plots.append(d_root)
 	harryinterface.harry_interface(mpl_plots, args)
 	harryinterface.harry_interface(root_plots, args + ['--max-processes', '1'])
+
+
+def jec_combination_zee(args=None, additional_dictionary=None):
+	"""Use Z->ee defaults for :py:func:`~.jec_combination`"""
+	additional_dictionary = additional_dictionary if additional_dictionary is not None else {}
+	additional_dictionary["algorithms"] = ["ak4PFJetsCHS"]
+	additional_dictionary["file_label"] = "Zee" + time.strftime("%Y%m%d")
+	return jec_combination(args=args, additional_dictionary=additional_dictionary)
+
+
+def jec_combination_zmm(args=None, additional_dictionary=None):
+	"""Use Z->mm defaults for :py:func:`~.jec_combination`"""
+	additional_dictionary = additional_dictionary if additional_dictionary is not None else {}
+	additional_dictionary["algorithms"] = ["ak4PFJetsCHS"]
+	additional_dictionary["file_label"] = "Zmm" + time.strftime("%Y%m%d")
+	return jec_combination(args=args, additional_dictionary=additional_dictionary)
 
 
 def jec_pu_combination(args=None, additional_dictionary=None):

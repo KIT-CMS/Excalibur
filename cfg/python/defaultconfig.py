@@ -125,6 +125,7 @@ def mc(cfg, **kwargs):
 		'matchedgenparton1flavour',
 		'matchedgenparton2pt',
 		'matchedgenjet1pt',
+		'matchedgenjet1eta',
 		'matchedgenjet2pt',
 		'genzpt',
 		'genzeta',
@@ -194,7 +195,7 @@ def _2015(cfg, **kwargs):
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt')
+		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
 
 # channel:
 
