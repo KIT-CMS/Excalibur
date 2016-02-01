@@ -54,84 +54,6 @@ def cutflow(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def fit_function(dictionary):
-	"""fits a distribution to the plot"""
-	dictionary.update({"function_fit": ["nick0", "nick1"],
-		"function_nicknames": ["nick0_fit", "nick1_fit"],
-#
-		#Gaussian function:
-		#"functions": ["[2]*exp(-0.5*((x-[0])/[1])**2)"],
-		#"function_parameters": ["91,5,200"],
-		#"function_display_result": 'true',
-		#"function_fit_parameter_names": ['mu', 'sigma', 'A'],
-#
-		#Cauchy/BreitWigner function:
-		#"functions": ['[2]*[1]/((x-[0])**2+[1]**2/4)'],
-		#"function_parameters": ["91,1,1000"],
-		#"function_display_result": 'true',
-		#"function-fit-parameter-names": ['mu', 'lambda', 'A'],
-#
-		#Voigt function:
-		#"functions": "([3]*TMath::Voigt(x-[0],[2],[1]))",
-		#"fit_text_npar": 3,
-		#"fit_text_parameter_names": ['zmass', 'sigma', 'width', 'A'],
-		#"functions": "([4]*TMath::Voigt(x-[0],2.4952,[1])+[2]*exp(-[3]*x))",		#fix width-parameter by value of PDG added drell yan exponential function
-		#"fit_text_npar": 4,
-		#"fit_text_parameter_names": ['zmass', 'sigma', 'k','A_exp','A_voigt'],
-		"functions": "([2]*TMath::Voigt(x-[0],2.4952,[1]))",		#fix width-parameter by value of PDG
-		"fit_text_npar": 2,
-		"fit_text_parameter_names": ['zmass', 'sigma', 'A_voigt'],
-		"function_parameters": "90,2.3,3100",
-#
-		"alphas": '0.5',
-		"colors":['darkred','darkblue','black','darkred','darkblue'],
-		'legend_cols': 1,
-		"plot_modules": ["PlotMplZJet", 'PlotFitText'],#,'PlotMplMean'],
-		"fit_text_nicks": ['nick0_fit', 'nick1_fit'],
-		"fit_text_colors": ['darkred', 'darkblue'],
-		"fit_text_position": [10, 10],
-		"fit_text_size":'12',
-		'legend':'center left',
-		'y_subplot_lims': [0.0, 2.0],
-		#"subplot_fraction": 40, 
-	})
-
-def fit_function_gen(dictionary):
-	"""fits a distribution to the plot"""
-	dictionary.update({"function_fit": ["nick0"],
-		"function_nicknames": ["nick0_fit"],
-#
-		#Gaussian function:
-		#"functions": ["[2]*exp(-0.5*((x-[0])/[1])**2)"],
-		#"function_parameters": ["91,5,200"],
-		#"function_display_result": 'true',
-		#"function_fit_parameter_names": ['mu', 'sigma', 'A'],
-#
-		#Cauchy/BreitWigner function:
-		#"functions": ['[2]*[1]/((x-[0])**2+[1]**2/4)'],
-		#"function_parameters": ["91,1,1000"],
-		#"function_display_result": 'true',
-		#"function-fit-parameter-names": ['mu', 'lambda', 'A'],
-#
-		#Lorentz function:
-		"functions": "[2]*(1/pi)*([1]/2)/((x-[0])*(x-[0]) + [1]*[1]/4)",
-		"function_parameters": "91,2.2,1500",
-		"fit_text_npar": 2,
-		"fit_text_parameter_names": ['zmass', 'width', 'A'],
-#
-		"alphas": '0.5',
-		"colors":['darkblue', 'darkblue'],
-		'legend_cols': 1,
-		"plot_modules": ["PlotMplZJet", 'PlotFitText'],#,'PlotMplMean'],
-		"fit_text_nicks": ['nick0_fit'],
-		"fit_text_colors": ['darkblue'],
-		"fit_text_position": [10, 10],
-		"fit_text_size":'12',
-		'legend':'center left',
-		'y_subplot_lims': [0.0, 2.0],
-		#"subplot_fraction": 40,
-	})
-
 def generate_dict(args=None, additional_dictionary=None, channel="m"):
 	# TODO move this to more general location
 	x_dict = {
@@ -179,7 +101,32 @@ def generate_dict(args=None, additional_dictionary=None, channel="m"):
 			x_dict[q] += ['best']
 	return x_dict
 
-def genzmass_fit(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, channel="m", inputtuple="datamc", subtract_hf=True):
+
+def fit_function_gen(dictionary):
+	"""fits a distribution to the plot"""
+	dictionary.update({"function_fit": ["nick0"],
+		"function_nicknames": ["nick0_fit"],
+#
+		#Lorentz function:
+		"functions": "[2]*(1/pi)*([1]/2)/((x-[0])*(x-[0]) + [1]*[1]/4)",
+		"function_parameters": "91,2.2,1500",
+		"fit_text_npar": 2,
+		"fit_text_parameter_names": ['zmass', 'width', 'A'],
+#
+		"alphas": '0.5',
+		"colors":['darkblue', 'darkblue'],
+		'legend_cols': 1,
+		"plot_modules": ["PlotMplZJet", 'PlotFitText'],#,'PlotMplMean'],
+		"fit_text_nicks": ['nick0_fit'],
+		"fit_text_colors": ['darkblue'],
+		"fit_text_position": [10, 10],
+		"fit_text_size":'12',
+		'legend':'center left',
+		'y_subplot_lims': [0.0, 2.0],
+		#"subplot_fraction": 40,
+	})
+
+def genzmass_fit(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
 	"""Comparison of: zmass, both absolute and normalized"""
 	plots = []
 	x_dict=generate_dict()
@@ -211,20 +158,14 @@ def genzmass_fit(args=None, additional_dictionary=None, data_quantities=True, on
 	fit_function_gen(d)
 	if channel=="m":
 		d.update({ "labels": [r"$\\mu_\\mathrm{MC}$", ""], #default format of labels ["MC", "MC_fit"]
-			"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
 		})
 	elif channel=="e":
 		d.update({ "labels": [r"$e_\\mathrm{MC}$", ""], #default format of labels ["MC", "MC_fit"]
-			"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{e e}$"],
-		})
- 	d.update({"texts_x": [0.03],
-		"texts_y": [0.90],
-		#"texts_size": [10],
 		})
 #	d.update({"texts": [d.get('texts'),r"$\\mathrm{\\Gamma_{Z,PDG} = 2.4952 \\pm 0.0023}$"],
 #		"texts_x": [d.get('texts_x'),0.55],
 #		"texts_y": [d.get('texts_y'),0.80],
-#	})
+#		})
 	plots.append(d)
 	d2={}
 	weight_name='error'
@@ -276,7 +217,43 @@ def genzmass_fit(args=None, additional_dictionary=None, data_quantities=True, on
 		plots.append(d2["{0}".format(det_part)])
 	return [PlottingJob(plots=plots, args=args)]
 
-def zmass_comparison(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, channel="m", inputtuple="datamc", subtract_hf=True):
+
+def fit_function(dictionary):
+	"""fits a distribution to the plot"""
+	dictionary.update({"function_fit": ["nick0", "nick1"],
+		"function_nicknames": ["nick0_fit", "nick1_fit"],
+#
+		#Voigt function:
+		#"functions": "([3]*TMath::Voigt(x-[0],[2],[1]))",
+		#"fit_text_npar": 3,
+		#"fit_text_parameter_names": ['zmass', 'sigma', 'width', 'A'],
+		"functions": "([4]*TMath::Voigt(x-[0],[1],2.4952)+[2]*x+[3])",	#fix width-parameter by value of PDG added background linear function
+		"fit_text_npar": 2,
+		"fit_text_parameter_names": ['zmass', 'sigma', 'm', 'c', 'A_voigt'],
+		"function_parameters": "90,2.3,0.,0.,3100",
+		#"functions": "([4]*TMath::Voigt(x-[0],[1],2.4952)+[2]*exp(-[3]*x))",	#fix width-parameter by value of PDG added drell yan exponential function
+		#"fit_text_npar": 4,
+		#"fit_text_parameter_names": ['zmass', 'sigma', 'k','A_exp','A_voigt'],
+		#"functions": "([2]*TMath::Voigt(x-[0],2.4952,[1]))",	#fix width-parameter by value of PDG
+		#"fit_text_npar": 2,
+		#"fit_text_parameter_names": ['zmass', 'sigma', 'A_voigt'],
+		#"function_parameters": "90,2.3,2500",
+#
+		"alphas": '0.5',
+		"colors":['darkred','darkblue','black','darkred','darkblue'],
+		'legend_cols': 1,
+		"plot_modules": ["PlotMplZJet", 'PlotFitText'],#,'PlotMplMean'],
+		"fit_text_nicks": ['nick0_fit', 'nick1_fit'],
+		"fit_text_colors": ['darkred', 'darkblue'],
+		"fit_text_position": [10, 10],
+		"fit_text_size":'12',
+		'legend':'center left',
+		'y_subplot_lims': [0.0, 2.0],
+		#"subplot_fraction": 40, 
+	})
+
+
+def zmass_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
 	"""Comparison of: zmass, both absolute and normalized"""
 	plots = []
 	x_dict=generate_dict()
@@ -284,7 +261,6 @@ def zmass_comparison(args=None, additional_dictionary=None, data_quantities=True
 	d = {
 		'x_expressions': [quantity],
 		'cutlabel': True,
-		'analysis_modules': ['Ratio'],
 		'y_subplot_lims': [0.75, 1.25],
 		'analysis_modules': ['NormalizeToFirstHisto', 'Ratio', 'FunctionPlot'],
 		'filename': quantity+'_fit',
@@ -306,18 +282,16 @@ def zmass_comparison(args=None, additional_dictionary=None, data_quantities=True
 	if additional_dictionary:
 		d.update(additional_dictionary)
 	fit_function(d)
-	if channel=="m":
-		d.update({ "labels": [r"$\\mu_\\mathrm{Data}$", r"$\\mu_\\mathrm{MC}$", "", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
-			"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
+	if channel == "m":
+		d.update({
+		#"function_parameters": "91,2.3,3100",
+		"function_parameters": "91,2.2,0.,0.,3500",
 		})
-	elif channel=="e":
-		d.update({ "labels": ["DATAe", "MCe", "", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
-			"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{e e}$"],
+	if channel == "e":
+		d.update({
+		#"function_parameters": "91,2.3,3100",
+		"function_parameters": "91,2.2,0.,0.,3100",
 		})
-	d.update({"texts_x": [0.03],
-		"texts_y": [0.90],
-		"texts_size": [10],
-	})
 	plots.append(d)
 	d2={}
 	weight_name='error'
@@ -335,31 +309,37 @@ def zmass_comparison(args=None, additional_dictionary=None, data_quantities=True
 			weight_name=minus_quantity+'>'+cut+'&&'+plus_quantity+'>'+cut
 			if channel == "m":
 				d2["{0}".format(det_part)].update({
-				"function_parameters": "91,2.3,3100",
+				#"function_parameters": "91,2.3,3100",
+				"function_parameters": "91,2.2,0.,0.,3100",
 				})
 			if channel == "e":
 				d2["{0}".format(det_part)].update({
-				"function_parameters": "91,2.3,3100",
+				#"function_parameters": "91,2.3,3100",
+				"function_parameters": "91,2.2,0.,0.,3100",
 				})
 		elif det_part=="EndCap-":
 			weight_name=minus_quantity+'<-'+cut+'&&'+plus_quantity+'<-'+cut
 			if channel == "m":
 				d2["{0}".format(det_part)].update({
-				"function_parameters": "91,2.3,3100",
+				#"function_parameters": "91,2.3,3100",
+				"function_parameters": "91,2.2,0.,0.,3100",
 				})
 			if channel == "e":
 				d2["{0}".format(det_part)].update({
-				"function_parameters": "91,2.3,3100",
+				#"function_parameters": "91,2.3,3100",
+				"function_parameters": "91,2.2,0.,0.,3100",
 				})
 		elif det_part=="Barrel":
 			weight_name='abs('+minus_quantity+')<'+cut+'&&abs('+plus_quantity+')<'+cut
 			if channel == "m":
 				d2["{0}".format(det_part)].update({
-				"function_parameters": "91,2.3,1000",
+				#"function_parameters": "91,2.3,1000",
+				"function_parameters": "91,2.2,0.,0.,1200",
 				})
 			if channel == "e":
 				d2["{0}".format(det_part)].update({
-				"function_parameters": "91,2.3,1000",
+				#"function_parameters": "91,2.3,1000",
+				"function_parameters": "91,2.2,0.,0.,1000",
 				})
 		d2["{0}".format(det_part)].update({
 			'filename': quantity+'_'+det_part+'_fit',
@@ -369,14 +349,14 @@ def zmass_comparison(args=None, additional_dictionary=None, data_quantities=True
 		plots.append(d2["{0}".format(det_part)])
 	return [PlottingJob(plots=plots, args=args)]
 
-def general_comparison(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, channel="m", inputtuple="datamc", subtract_hf=True):
-	"""Comparison of: zmass, both absolute and normalized"""
+
+def general_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
+	"""Comparison of: various quantities, both absolute and normalized"""
 	plots = []
 	x_dict=generate_dict()
-	print x_dict
-	quantity_list= ['zmass','zpt','zeta']
-	quantity_list_ee=[]
-	quantity_list_mm=[]
+	quantity_list= ['zpt','zeta','zphi']
+	quantity_list_ee=['epluseta','eminuseta']
+	quantity_list_mm=['mupluseta','muminuseta']
 	if channel=="m": quantity_list.extend(quantity_list_mm)
 	elif channel=="e": quantity_list.extend(quantity_list_ee)
 	for quantity in quantity_list:
@@ -386,7 +366,8 @@ def general_comparison(args=None, additional_dictionary=None, data_quantities=Tr
 			'cutlabel': True,
 			'analysis_modules': ['Ratio'],
 			'y_subplot_lims': [0.75, 1.25],
-			'y_log': quantity in ['jet1pt', 'zpt']
+			'y_log': quantity in ['jet1pt', 'zpt'],
+			"plot_modules": ["PlotMplZJet"],
 		}
 		if quantity in x_dict:
 			d["x_bins"] = [x_dict[quantity][0]]
@@ -411,6 +392,16 @@ def general_comparison(args=None, additional_dictionary=None, data_quantities=Tr
 			d["x_bins"] = [x_dict[quantity][0]]
 			d["x_lims"] = lims_from_binning(x_dict[quantity][0])
 
+		if quantity in ['zeta','mupluseta','muminuseta','epluseta','eminuseta']:
+			d["plot_modules"] = ["PlotMplZJet","PlotMplRectangle"]
+			if channel == 'm':
+				d["rectangle_x"] = [-6,-1.3,1.3,6]
+			elif channel == 'e':
+				d["rectangle_x"] = [-6,-1.479,1.479,6]
+			d["rectangle_alpha"] = [0.2]
+			d["rectangle_color"] = ["red"]
+
+
 		if not only_normalized:
 			plots.append(d)
 
@@ -428,7 +419,66 @@ def general_comparison(args=None, additional_dictionary=None, data_quantities=Tr
 		if additional_dictionary:
 			d2.update(additional_dictionary)
 		plots.append(d2)
+
+	return [PlottingJob(plots=plots, args=args)]
+
+def TwoDim_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
+	"""Comparison in 2D Plots"""
+	plots = []
+	x_dict=generate_dict()
+
+	#Plotting profile plots of various quantities:
+	quantity_2d_list= [['zeta','zmass'],['zpt','zmass'],]
+	if channel == 'm':
+		quantity_2d_list.extend([['muminuseta','zmass'],['mupluseta','zmass'],])
+	elif channel == 'e':
+		quantity_2d_list.extend([['eminuseta','zmass'],['epluseta','zmass'],])
+	x_dict.update({'zmass': ['40,90,92'],})
 	
+	for quantity_pair in quantity_2d_list:
+		d = {	'cutlabel': True,
+			'analysis_modules': ['Ratio'],
+			'tree_draw_options': 'prof',
+			"plot_modules": ["PlotMplZJet"],
+			'y_subplot_lims': [0.99, 1.01],
+		}
+		if additional_dictionary:
+			d.update(additional_dictionary)
+		d.update({'y_expressions':[quantity_pair[1]],
+			'x_expressions':[quantity_pair[0]],
+			"title": quantity_pair[0]+' vs. '+quantity_pair[1],
+			'filename':quantity_pair[0]+'_vs_'+quantity_pair[1],
+			'y_log': quantity_pair[1] in ['jet1pt', 'zpt'],
+			'x_log': quantity_pair[0] in ['jet1pt', 'zpt'],
+		})
+		if quantity_pair[1]=="zmass":
+			d['lines'] = ['91.1876']
+		if quantity_pair[0] in ['zeta','mupluseta','muminuseta','epluseta','eminuseta']:
+			d["plot_modules"] = ["PlotMplZJet","PlotMplRectangle"]
+			if channel == 'm':
+				d["rectangle_x"] = [-6,-1.3,1.3,6]
+			elif channel == 'e':
+				d["rectangle_x"] = [-6,-1.479,1.479,6]
+			d["rectangle_alpha"] = [0.2]
+			d["rectangle_color"] = ["red"]
+		if quantity_pair[0] in binningsZJet.BinningsDictZJet().binnings_dict:
+			x_bins=binningsZJet.BinningsDictZJet().binnings_dict[quantity_pair[0]]
+			x_lims=lims_from_binning(x_bins)
+			d["x_bins"] = [x_bins]
+			d["x_lims"] = x_lims
+		elif quantity_pair[0] in x_dict:
+			d["x_bins"] = [x_dict[quantity_pair[0]][0]]
+			d["x_lims"] = lims_from_binning(x_dict[quantity_pair[0]][0])
+		if quantity_pair[1] in binningsZJet.BinningsDictZJet().binnings_dict:
+			y_bins=binningsZJet.BinningsDictZJet().binnings_dict[quantity_pair[1]]
+			y_lims=lims_from_binning(x_bins)
+		#	d["y_bins"] = [y_bins]
+			d["y_lims"] = y_lims
+		elif quantity_pair[1] in x_dict:
+		#	d["y_bins"] = [x_dict[quantity_pair[1]][0]]
+			d["y_lims"] = lims_from_binning(x_dict[quantity_pair[1]][0])
+		plots.append(d)
+
 #	#2D-Plotting generated to reconstructed quantities:
 #	quantity_gen_reco_list= ['zmass','zpt']
 #	for quantity in quantity_gen_reco_list:
@@ -453,77 +503,8 @@ def general_comparison(args=None, additional_dictionary=None, data_quantities=Tr
 #		d3["y_lims"] = [lims_list]
 #		plots.append(d3)
 
-	#Plotting profile plots of various quantities:
-	quantity_2d_list= [['zeta','zmass'],['zpt','zmass'],]
-	if channel == 'm':
-		quantity_2d_list.extend([['muminuseta','zmass'],['mupluseta','zmass'],])
-	elif channel == 'e':
-		quantity_2d_list.extend([['eminuseta','zmass'],['epluseta','zmass'],])
-	x_dict.update({'zmass': ['40,86,96'],})
-
-	for quantity_pair in quantity_2d_list:
-		d4 = copy.deepcopy(d)
-		d4.update({'y_expressions':[quantity_pair[1]],
-			'x_expressions':[quantity_pair[0]],
-			'tree_draw_options': 'prof',
-			'cutlabel': True,
-			#'analysis_modules': ['FunctionPlot'],
-			"plot_modules": ["PlotMplZJet"],
-			"title": quantity_pair[0]+' vs. '+quantity_pair[1],
-			'y_log': quantity_pair[1] in ['jet1pt', 'zpt'],
-			'x_log': quantity_pair[0] in ['jet1pt', 'zpt'],
-		})
-		if quantity_pair[1]=="zmass":
-			d4['lines'] = ['91.1876']
-		if quantity_pair[0] in ['zeta','mupluseta','muminuseta','epluseta','eminuseta']:
-			d4["plot_modules"] = ["PlotMplZJet","PlotMplRectangle"]
-			if channel == 'm':
-				d4["rectangle_x"] = [-6,-1.3,1.3,6]
-			elif channel == 'e':
-				d4["rectangle_x"] = [-6,-1.479,1.479,6]
-			d4["rectangle_alpha"] = [0.2]
-			d4["rectangle_color"] = ["red"]
-		if quantity_pair[0] in binningsZJet.BinningsDictZJet().binnings_dict:
-			x_bins=binningsZJet.BinningsDictZJet().binnings_dict[quantity_pair[0]]
-			x_lims=lims_from_binning(x_bins)
-			d4["x_bins"] = [x_bins]
-			d4["x_lims"] = x_lims
-		elif quantity_pair[0] in x_dict:
-			d4["x_bins"] = [x_dict[quantity_pair[0]][0]]
-			d4["x_lims"] = lims_from_binning(x_dict[quantity_pair[0]][0])
-		if quantity_pair[1] in binningsZJet.BinningsDictZJet().binnings_dict:
-			y_bins=binningsZJet.BinningsDictZJet().binnings_dict[quantity_pair[1]]
-			y_lims=lims_from_binning(x_bins)
-		#	d4["y_bins"] = [y_bins]
-			d4["y_lims"] = y_lims
-		elif quantity_pair[1] in x_dict:
-		#	d4["y_bins"] = [x_dict[quantity_pair[1]][0]]
-			d4["y_lims"] = lims_from_binning(x_dict[quantity_pair[1]][0])
-		plots.append(d4)
-
-
 	return [PlottingJob(plots=plots, args=args)]
 
-
-def zmass_comparison_run2(args=None):
-	"""Comparison for run2 samples."""
-	plotting_jobs = []
-	d = {
-		'labels': ['Data L1L2L3Res','MC L1L2L3'],
-		'y_subplot_label' : "Data/MC",
-		'algorithms': ['ak4PFJetsCHS'],
-		'corrections': ['L1L2L3Res', 'L1L2L3'],
-	}
-	plotting_jobs += zmass_comparison(args, d, only_normalized=True)
-
-	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
-	#plotting_jobs += cutflow(args, d)
-	jec_factors.jec_factors(args, {
-		'files': ['work/mc15.root'],
-		'algorithms': ['ak4PFJetsCHS'],
-		'corrections': ['L1L2L3'],
-	}, rc=False, res=False)
-	return plotting_jobs
 
 def zmass_comparison_datamc_Zmm_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
@@ -537,13 +518,22 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 		'www': zjetfolder+'_zmass_comparison_datamc_Zmm_run2',
 		'www_title': 'Comparison Data MC for Zmm, run2, '+zjetfolder,
 		'www_text':'Run2: Zmass data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm',
-	}
-	d.update({'zjetfolders': [zjetfolder]})
-	plotting_jobs += zmass_comparison(args, d, channel="m", inputtuple='datadata')#usually datamc
+		'zjetfolders': [zjetfolder]
+		}
+	d.update({ "labels": [r"$\\mu_\\mathrm{Data}$", r"$\\mu_\\mathrm{MC}$", "", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
+		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
+	})
+	d.update({"texts_x": [0.03],
+		"texts_y": [0.90],
+		"texts_size": [10],
+	})
+	#plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
+	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=True)
+	plotting_jobs += TwoDim_comparison(args, d, channel="m")
 	d.update({'files': ['work/mc15_25ns.root'],
 		'labels': ['MCmu'],
 		'corrections': ['L1L2L3'],})
-	plotting_jobs += genzmass_fit(args, d, channel="m", inputtuple='datadata')
+	#plotting_jobs += genzmass_fit(args, d, channel="m")
 	#plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
@@ -559,15 +549,25 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 		'www': zjetfolder+'_zmass_comparison_datamc_Zee_run2',
 		'www_title': 'Comparison Data MC for Zee, run2, '+zjetfolder,
 		'www_text':'Run2: Zmass data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root',
-	}
-	d.update({'zjetfolders': [zjetfolder]})
-	plotting_jobs += zmass_comparison(args, d, channel="e", inputtuple='datadata')#usually datamc
+		'zjetfolders': [zjetfolder]
+		}
+	d.update({ "labels": ["DATAe", "MCe", "", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
+		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{e e}$"],
+	})
+	d.update({"texts_x": [0.03],
+		"texts_y": [0.90],
+		"texts_size": [10],
+	})
+	#plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
+	plotting_jobs += general_comparison(args, d, channel="e", only_normalized=True)
+	plotting_jobs += TwoDim_comparison(args, d, channel="e")
 	d.update({'files': ['work/mc15_25ns_ee.root'],
 		'labels': ['MCe'],
 		'corrections': ['L1L2L3'],})
-	plotting_jobs += genzmass_fit(args, d, channel="e", inputtuple='datadata')
+	#plotting_jobs += genzmass_fit(args, d, channel="e")
 	#plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 if __name__ == '__main__':
-	zmass_comparisons()
+	zmass_comparison_datamc_Zee_run2()
+	zmass_comparison_datamc_Zmm_run2()

@@ -84,7 +84,7 @@ def ee_jet_muon_comparison(args=None, additional_dictionary=None, run=2):
 def jet_muon_ee_comparison_tree(args=None, additional_dictionary=None):
 	"""Comparison of jet, muon, e reconstruction depending on pt: Tree-plots of eminus/geneminus, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each. Additionally, plots of  statistical errors of said Tree-plots depending on pt.
 	"""
-	
+	run = 2
 	plots = []
 	parameterlist_jet1 = ['pt', 'phi', 'eta']
 
