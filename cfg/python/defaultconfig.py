@@ -417,7 +417,8 @@ def data_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
 		cfg['Lumi'] = 0.04003
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		cfg['Jec'] = configtools.get_jec("Summer15_25nsV6_DATA")
+                cfg['ProvideL2L3ResidualCorrections'] = False
+		cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_DATA")
 		cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
@@ -450,7 +451,8 @@ def mc_2015(cfg, **kwargs):
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
 	elif kwargs['bunchcrossing'] == "25ns":
-		cfg['Jec'] = configtools.get_jec("Summer15_25nsV6_MC")
+		cfg['ProvideL2L3ResidualCorrections'] = False
+		cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_MC")
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
