@@ -354,9 +354,9 @@ def general_comparison(args=None, additional_dictionary=None, only_normalized=Fa
 	"""Comparison of: various quantities, both absolute and normalized"""
 	plots = []
 	x_dict=generate_dict()
-	quantity_list= ['zpt','zeta','zphi']
-	quantity_list_ee=['epluseta','eminuseta']
-	quantity_list_mm=['mupluseta','muminuseta']
+	quantity_list= ['zpt','zeta','zphi','zy','metphi','met']
+	quantity_list_ee=['epluseta','eminuseta','eminuspt','epluspt','eminusphi','eplusphi']
+	quantity_list_mm=['mupluseta','muminuseta','muminuspt','mupluspt','muminusphi','muplusphi']
 	if channel=="m": quantity_list.extend(quantity_list_mm)
 	elif channel=="e": quantity_list.extend(quantity_list_ee)
 	for quantity in quantity_list:
@@ -367,6 +367,7 @@ def general_comparison(args=None, additional_dictionary=None, only_normalized=Fa
 			'analysis_modules': ['Ratio'],
 			'y_subplot_lims': [0.75, 1.25],
 			'y_log': quantity in ['jet1pt', 'zpt'],
+			'x_log': quantity in ['jet1pt', 'zpt'],
 			"plot_modules": ["PlotMplZJet"],
 		}
 		if quantity in x_dict:
@@ -422,7 +423,7 @@ def general_comparison(args=None, additional_dictionary=None, only_normalized=Fa
 
 	return [PlottingJob(plots=plots, args=args)]
 
-def TwoDim_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
+def profplot_datamc_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
 	"""Comparison in 2D Plots"""
 	plots = []
 	x_dict=generate_dict()
@@ -479,29 +480,56 @@ def TwoDim_comparison(args=None, additional_dictionary=None, only_normalized=Fal
 			d["y_lims"] = lims_from_binning(x_dict[quantity_pair[1]][0])
 		plots.append(d)
 
-#	#2D-Plotting generated to reconstructed quantities:
-#	quantity_gen_reco_list= ['zmass','zpt']
-#	for quantity in quantity_gen_reco_list:
-#		genquantity='gen'+quantity
-#		d3 = copy.deepcopy(d)
-#		d3.update({'files':'work/mc15_25ns.root',
-#			'corrections':['L1L2L3','L1L2L3'],
-#			'y_expressions':genquantity,
-#			'x_expressions':quantity,
-#			'tree_draw_options': '',
-#			'cutlabel': True,
-#			'analysis_modules': ['NormalizeToFirstHisto'],
-#			'y_log': quantity in [''],
-#			'x_log': quantity in [''],
-#			#'y_log': quantity in ['jet1pt', 'zpt'],
-#			#'x_log': quantity in ['jet1pt', 'zpt'],
-#		})
-#		lims_list=lims_from_binning(x_dict[quantity][0])
-#		d3["x_bins"] = [x_dict[quantity][0]]
-#		d3["x_lims"] = [lims_list]
-#		d3["y_bins"] = [x_dict[quantity][0]]
-#		d3["y_lims"] = [lims_list]
-#		plots.append(d3)
+	return [PlottingJob(plots=plots, args=args)]
+
+def profplot_genreco_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
+	"""Comparison generated level to reconstructed level in 2D Plots"""
+	plots = []
+	x_dict=generate_dict()
+
+	#Plotting profile plots of various quantities:
+	quantity_2d_list= ['zpt','zeta',]
+	if channel == 'm':
+		quantity_2d_list.extend(['muminuseta','mupluseta',])
+	elif channel == 'e':
+		quantity_2d_list.extend(['eminuseta','epluseta',])
+	x_dict.update({'zmass': ['40,90,92'],})
+	
+	for quantity in quantity_2d_list:
+		genrecoquantity=quantity+'/gen'+quantity
+		d = {	'cutlabel': True,
+			#'analysis_modules': ['Ratio'],
+			'tree_draw_options': 'prof',
+			"plot_modules": ["PlotMplZJet"],
+			'y_subplot_lims': [0.99, 1.01],
+		}
+		if additional_dictionary:
+			d.update(additional_dictionary)
+		d.update({'y_expressions':genrecoquantity,
+			'x_expressions':quantity,
+			'weights':quantity,
+			"title":quantity+' gen/reco comparison',
+			'filename':quantity+'_gen_reco_comparison',
+			#'y_log': quantity in ['jet1pt', 'zpt'],
+			'x_log': quantity in ['jet1pt', 'zpt'],
+		})
+		if quantity in ['zeta','mupluseta','muminuseta','epluseta','eminuseta']:
+			d["plot_modules"] = ["PlotMplZJet","PlotMplRectangle"]
+			if channel == 'm':
+				d["rectangle_x"] = [-6,-1.3,1.3,6]
+			elif channel == 'e':
+				d["rectangle_x"] = [-6,-1.479,1.479,6]
+			d["rectangle_alpha"] = [0.2]
+			d["rectangle_color"] = ["red"]
+		if quantity in binningsZJet.BinningsDictZJet().binnings_dict:
+			x_bins=binningsZJet.BinningsDictZJet().binnings_dict[quantity]
+			x_lims=lims_from_binning(x_bins)
+			d["x_bins"] = [x_bins]
+			d["x_lims"] = x_lims
+		elif quantity in x_dict:
+			d["x_bins"] = [x_dict[quantity][0]]
+			d["x_lims"] = lims_from_binning(x_dict[quantity][0])
+		plots.append(d)
 
 	return [PlottingJob(plots=plots, args=args)]
 
@@ -524,17 +552,18 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
 	})
 	d.update({"texts_x": [0.03],
-		"texts_y": [0.90],
+		"texts_y": [0.70],
 		"texts_size": [10],
 	})
-	#plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
+	plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
 	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=True)
-	plotting_jobs += TwoDim_comparison(args, d, channel="m")
+	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
 	d.update({'files': ['work/mc15_25ns.root'],
 		'labels': ['MCmu'],
 		'corrections': ['L1L2L3'],})
-	#plotting_jobs += genzmass_fit(args, d, channel="m")
-	#plotting_jobs += cutflow(args, d)
+	plotting_jobs += genzmass_fit(args, d, channel="m")
+	#plotting_jobs += profplot_genreco_comparison(args, d, channel="m")
+#	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def zmass_comparison_datamc_Zee_run2(args=None):
@@ -555,17 +584,18 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{e e}$"],
 	})
 	d.update({"texts_x": [0.03],
-		"texts_y": [0.90],
+		"texts_y": [0.70],
 		"texts_size": [10],
 	})
-	#plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
+	plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
 	plotting_jobs += general_comparison(args, d, channel="e", only_normalized=True)
-	plotting_jobs += TwoDim_comparison(args, d, channel="e")
+	plotting_jobs += profplot_datamc_comparison(args, d, channel="e")
 	d.update({'files': ['work/mc15_25ns_ee.root'],
 		'labels': ['MCe'],
 		'corrections': ['L1L2L3'],})
-	#plotting_jobs += genzmass_fit(args, d, channel="e")
-	#plotting_jobs += cutflow(args, d)
+	plotting_jobs += genzmass_fit(args, d, channel="e")
+	#plotting_jobs += profplot_genreco_comparison(args, d, channel="e")
+#	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 if __name__ == '__main__':
