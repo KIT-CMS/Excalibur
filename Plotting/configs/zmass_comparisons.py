@@ -482,56 +482,56 @@ def profplot_datamc_comparison(args=None, additional_dictionary=None, only_norma
 
 	return [PlottingJob(plots=plots, args=args)]
 
-def profplot_genreco_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
-	"""Comparison generated level to reconstructed level in 2D Plots"""
-	plots = []
-	x_dict=generate_dict()
-
-	#Plotting profile plots of various quantities:
-	quantity_2d_list= ['zpt','zeta',]
-	if channel == 'm':
-		quantity_2d_list.extend(['muminuseta','mupluseta',])
-	elif channel == 'e':
-		quantity_2d_list.extend(['eminuseta','epluseta',])
-	x_dict.update({'zmass': ['40,90,92'],})
-	
-	for quantity in quantity_2d_list:
-		genrecoquantity=quantity+'/gen'+quantity
-		d = {	'cutlabel': True,
-			#'analysis_modules': ['Ratio'],
-			'tree_draw_options': 'prof',
-			"plot_modules": ["PlotMplZJet"],
-			'y_subplot_lims': [0.99, 1.01],
-		}
-		if additional_dictionary:
-			d.update(additional_dictionary)
-		d.update({'y_expressions':genrecoquantity,
-			'x_expressions':quantity,
-			'weights':quantity,
-			"title":quantity+' gen/reco comparison',
-			'filename':quantity+'_gen_reco_comparison',
-			#'y_log': quantity in ['jet1pt', 'zpt'],
-			'x_log': quantity in ['jet1pt', 'zpt'],
-		})
-		if quantity in ['zeta','mupluseta','muminuseta','epluseta','eminuseta']:
-			d["plot_modules"] = ["PlotMplZJet","PlotMplRectangle"]
-			if channel == 'm':
-				d["rectangle_x"] = [-6,-1.3,1.3,6]
-			elif channel == 'e':
-				d["rectangle_x"] = [-6,-1.479,1.479,6]
-			d["rectangle_alpha"] = [0.2]
-			d["rectangle_color"] = ["red"]
-		if quantity in binningsZJet.BinningsDictZJet().binnings_dict:
-			x_bins=binningsZJet.BinningsDictZJet().binnings_dict[quantity]
-			x_lims=lims_from_binning(x_bins)
-			d["x_bins"] = [x_bins]
-			d["x_lims"] = x_lims
-		elif quantity in x_dict:
-			d["x_bins"] = [x_dict[quantity][0]]
-			d["x_lims"] = lims_from_binning(x_dict[quantity][0])
-		plots.append(d)
-
-	return [PlottingJob(plots=plots, args=args)]
+#def profplot_genreco_comparison(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
+#	"""Comparison generated level to reconstructed level in 2D Plots"""
+#	plots = []
+#	x_dict=generate_dict()
+#
+#	#Plotting profile plots of various quantities:
+#	quantity_2d_list= ['zpt','zeta',]
+#	if channel == 'm':
+#		quantity_2d_list.extend(['muminuseta','mupluseta',])
+#	elif channel == 'e':
+#		quantity_2d_list.extend(['eminuseta','epluseta',])
+#	x_dict.update({'zmass': ['40,90,92'],})
+#	
+#	for quantity in quantity_2d_list:
+#		genrecoquantity=quantity+'/gen'+quantity
+#		d = {	'cutlabel': True,
+#			#'analysis_modules': ['Ratio'],
+#			'tree_draw_options': 'prof',
+#			"plot_modules": ["PlotMplZJet"],
+#			'y_subplot_lims': [0.99, 1.01],
+#		}
+#		if additional_dictionary:
+#			d.update(additional_dictionary)
+#		d.update({'y_expressions':genrecoquantity,
+#			'x_expressions':quantity,
+#			'weights':quantity,
+#			"title":quantity+' gen/reco comparison',
+#			'filename':quantity+'_gen_reco_comparison',
+#			#'y_log': quantity in ['jet1pt', 'zpt'],
+#			'x_log': quantity in ['jet1pt', 'zpt'],
+#		})
+#		if quantity in ['zeta','mupluseta','muminuseta','epluseta','eminuseta']:
+#			d["plot_modules"] = ["PlotMplZJet","PlotMplRectangle"]
+#			if channel == 'm':
+#				d["rectangle_x"] = [-6,-1.3,1.3,6]
+#			elif channel == 'e':
+#				d["rectangle_x"] = [-6,-1.479,1.479,6]
+#			d["rectangle_alpha"] = [0.2]
+#			d["rectangle_color"] = ["red"]
+#		if quantity in binningsZJet.BinningsDictZJet().binnings_dict:
+#			x_bins=binningsZJet.BinningsDictZJet().binnings_dict[quantity]
+#			x_lims=lims_from_binning(x_bins)
+#			d["x_bins"] = [x_bins]
+#			d["x_lims"] = x_lims
+#		elif quantity in x_dict:
+#			d["x_bins"] = [x_dict[quantity][0]]
+#			d["x_lims"] = lims_from_binning(x_dict[quantity][0])
+#		plots.append(d)
+#
+#	return [PlottingJob(plots=plots, args=args)]
 
 
 def zmass_comparison_datamc_Zmm_run2(args=None):
