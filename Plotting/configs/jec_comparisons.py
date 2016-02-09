@@ -716,7 +716,7 @@ def comparison_datamc_Zmm_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
 	plotting_jobs = []
 	d = {
-		'files': ['work/data15_25ns.root', 'work/mc15_25ns.root'],
+		'files': ['work/data15_25ns_oldRes.root', 'work/mc15_25ns.root'],
 		'labels': ['DATAmu', 'MCmu'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
@@ -732,7 +732,7 @@ def comparison_datamc_Zee_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root"""
 	plotting_jobs = []
 	d = {
-		'files': ['work/data15_25ns_ee.root', 'work/mc15_25ns_ee.root'],
+		'files': ['work/data15_25ns_ee_oldRes.root', 'work/mc15_25ns_ee.root'],
 		'labels': ['DATAe', 'MCe'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
