@@ -9,4 +9,6 @@ def config():
 	)
 	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2L3Res'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1ptl1l2l3', 'jet1res', 'jet1rc', "e1mvanontrig", "e1mvatrig", "e2mvanontrig", "e2mvatrig"])
+	cfg['ProvideL2L3ResidualCorrections'] = True
+	cfg['Jec'] = configtools.get_jec("Summer15_25nsV6_DATA")
 	return cfg
