@@ -29,13 +29,25 @@ cd -
 
 # Run analysis with config from worker node tmp dir
 echo "#### Starting Artus..."
+_TME_FILE='artus.tme'
 if [[ $(which time) ]]; then
 	# GNU time allows for extended format - use IEEE POSIX.2 as base
-	$(which time) -f 'real %e\nuser %U\nsys %S\nrss %M\nmajor_pfault %F\nmajor_pfault%R\nwaits %w' @WORKPATH@/artus @ARTUS_CONFIG@
+	$(which time) -o ${_TME_FILE} -f 'real %e\nuser %U\nsys %S\nrss %M\nmajor_pfault %F\nmajor_pfault%R\nwaits %w' @WORKPATH@/artus @ARTUS_CONFIG@
 elif [[ $(type time) ]]; then
-	# use bash's time in POSIX.2 mode
-	time -p @WORKPATH@/artus @ARTUS_CONFIG@
+	# use bash's time in POSIX.2 mode, clone pipes to separate streams
+	exec 3>&1
+	exec 4>&2
+	{ time -p @WORKPATH@/artus @ARTUS_CONFIG@ 1>&3 2>&4;} 1>${_TME_FILE} 2>&1
 else
 	echo "# no 'time' found" 1>&2
 	@WORKPATH@/artus @ARTUS_CONFIG@
+fi
+
+echo "#### Artus Performance"
+if [[ -f ${_TME_FILE} ]]; then
+	cat ${_TME_FILE}
+else
+	echo 'real -1'
+	echo 'user -1'
+	echo 'sys -1'
 fi
