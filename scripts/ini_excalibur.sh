@@ -26,7 +26,7 @@ export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 # This function creates a folder with links to python directories, like SCRAM
 # TODO enable merlin standalone usage without reinventing SCRAM ...
 standalone_merlin(){
-    for j in Artus Excalibur; do
+    for j in Artus Excalibur Kappa; do
         # base dirs
         mkdir -p $PYTHONLINKDIR/$j
         touch $PYTHONLINKDIR/$j/__init__.py
