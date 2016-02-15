@@ -192,8 +192,6 @@ class RunJSON(object):
 
 	def resolve(self):
 		"""Path to the JSON file"""
-		if len(self._base_jsons) == 1 and not self._run_ranges:
-			return self._base_jsons[0]
 		return cached_query(
 			func=self._make_dynamic_json,
 			dependency_files=self._base_jsons + [self._get_store_path(self._dynamic_basename())],
@@ -214,6 +212,8 @@ class RunJSON(object):
 		for json_path in self._base_jsons:
 			with open(json_path) as json_source:
 				new_json_data = json.load(json_source)
+			if not self._run_ranges:
+				json_data.update(new_json_data)
 			for run in new_json_data:
 				for min_run, max_run in self._run_ranges:
 					if min_run <= int(run) <= max_run:
@@ -230,6 +230,8 @@ class RunJSON(object):
 
 	def _dynamic_basename(self):
 		"""Basename of dynamically created file"""
+		if len(self._base_jsons) == 1 and not self._run_ranges:
+			return os.path.basename(self._base_jsons[0])
 		basename = "runjson_"
 		basename += "_".join([os.path.splitext(os.path.basename(json_path))[0] for json_path in self._base_jsons])
 		basename += "_runs" + "_".join(["%.0f-%.0f" % run_range for run_range in self._run_ranges])
