@@ -292,38 +292,32 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'zpt': ['40,0,400'],
 		'zy': ['25,-2.5,2.5'],
 	}
-	x_dict_ee={
-		'e1phi': ['20,-3.1415,3.1415',],
-		'e1pt': ['20,0,150'],
-		'e2pt': ['20,0,150'],
-		'eminuspt': ['20,0,150'],
-		'epluspt': ['20,0,150'],
+	x_dict_zl={
+		'%s1phi': ['20,-3.1415,3.1415',],
+		'%s1pt': ['20,0,150'],
+		'%s2pt': ['20,0,150'],
+		'%sminuspt': ['20,0,150'],
+		'%spluspt': ['20,0,150'],
 	}
-	x_dict_mm={
-		'mu1phi': ['20,-3.1415,3.1415',],
-		'mu1pt': ['20,0,150'],
-		'mu2pt': ['20,0,150'],
-		'muminuspt': ['20,0,150'],
-		'mupluspt': ['20,0,150'],
-	}
-	if channel=="mm":
-		x_dict.update(x_dict_mm)
-	elif channel=="ee":
-		x_dict.update(x_dict_ee)
-
-	for q in x_dict:
-		if len(x_dict[q]) == 1:
-			x_dict[q] += ['best']
 
 	quantity_list= ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
 			 'npv', 'npumean', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
 			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',]
-	quantity_list_ee=['e1pt', 'e1eta', 'e1phi', 'e2pt', 'e2eta', 'e2phi','eminusphi', 'eminuseta', 'eminuspt', 'eplusphi', 'epluseta', 'epluspt']
-	quantity_list_mm=['mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi','muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt']
+	quantity_list_zl=['%s1pt', '%s1eta', '%s1phi', '%s2pt', '%s2eta', '%s2phi','%sminusphi', '%sminuseta', '%sminuspt', '%splusphi', '%spluseta', '%spluspt']
+	# apply channel specific settings
 	if channel=="mm":
-		quantity_list.extend(quantity_list_mm)
+		zl_basename = "mu"
 	elif channel=="ee":
-		quantity_list.extend(quantity_list_ee)
+		zl_basename = "e"
+	else:
+		raise ValueError("Z channel %r not supported" % channel)
+	quantity_list.extend(quantity % zl_basename for quantity in quantity_list_zl)
+	for key in x_dict_zl:
+		x_dict[key % zl_basename] = x_dict_zl[key]
+
+	for q in x_dict:
+		if len(x_dict[q]) == 1:
+			x_dict[q] += ['best']
 
 	for quantity in quantity_list \
 			 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
