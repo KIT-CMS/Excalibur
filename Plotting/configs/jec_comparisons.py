@@ -629,11 +629,11 @@ def muon_2d(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=[d], args=args)]
 
 def comparison_datamc_Zmm(args=None):
-	"""full data mc comparisons for work/data.root and work/mc.root for Zmm"""
+	"""full data mc comparisons for Zmm. Defaults to work/data.root and work/mc.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/mc.root'],
-		'labels': ['DATA', 'MC'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'www_title': 'Comparison Data MC for Zmm',
 		'www_text':'Run1: full data mc comparisons for work/data.root and work/mc.root for Zmm',
@@ -644,11 +644,11 @@ def comparison_datamc_Zmm(args=None):
 	return plotting_jobs
 
 def comparison_datamc_Zee(args=None):
-	"""full data mc comparisons for work/data_ee.root and work/mc_ee.root for Zee"""
+	"""full data mc comparisons for Zee. Defaults to work/data_ee.root and work/mc_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data_ee.root', 'work/mc_ee.root'],
-		'labels': ['DATA', 'MC'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'www_title': 'Comparison Data MC for Zee',
 		'www_text':'Run1: full data mc comparisons for work/data_ee.root and work/mc_ee.root for Zee',
@@ -659,11 +659,11 @@ def comparison_datamc_Zee(args=None):
 	return plotting_jobs
 
 def comparison_mmee_data(args=None):
-	"""full mm ee comparisons for work/data.root and work/data_ee.root"""
+	"""full Zmm/Zee (data) comparisons. Defaults to work/data.root and work/data_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/data_ee.root'],
-		'labels': ['DATAmu', 'DATAe'],
+		'labels': ['mm (Data)', 'ee (Data)'],
 		'corrections': ['L1L2L3Res', 'L1L2L3Res'],
 		'www_title': 'Comparison mm ee for Data',
 		'www_text':'Run1: full Zmm Zee comparisons for work/data.root and work/data_ee.root for Zmm',
@@ -674,11 +674,11 @@ def comparison_mmee_data(args=None):
 	return plotting_jobs
 
 def comparison_mmee_mc(args=None):
-	"""full mm ee comparisons for work/mc_ee.root and work/mc_ee.root"""
+	"""full Zmm/Zee (mc) comparisons. Defaults to work/mc_ee.root and work/mc_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/mc.root', 'work/mc_ee.root'],
-		'labels': ['MCmu', 'MCe'],
+		'labels': ['mm (MC)', 'ee (MC)'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
 		'www_title': 'Comparison mm ee for MC',
 		'www_text':'Run1: full Zmm Zee comparisons for work/mc.root and work/mc_ee.root for Zmm',
