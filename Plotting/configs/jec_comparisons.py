@@ -227,7 +227,6 @@ def response_bin_comparisons(args=None, additional_dictionary=None, data_quantit
 
 def response_comparisons(args2=None, additional_dictionary=None, data_quantities=True):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
-
 	known_args, args = get_special_parser(args2)
 
 	plots = []
@@ -378,24 +377,22 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'markers': ['o', 'd'],
 		}
 		plots.append(d)
-
-		for x_expression in ['npv', 'npumean']:
-			for y_expression in ['rho', 'npv']:
-				d = {
-					'x_expressions': [x_expression],
-					'y_expressions': [y_expression],
-					#'y_lims':[0,30],
-					'analysis_modules': ['Ratio'],
-					'tree_draw_options': 'prof',
-					'cutlabel': True,
-					'markers': ['o', 'd'],
-					'y_subplot_lims': [0.5, 1.5],
-					'x_bins': "25,0.5,25.5",
-					'legend': 'lower right',
-				}
-				if (x_expression=='npv' and y_expression=='rho'): d['y_lims']= [0,30]
-				plots.append(d)
-
+	for x_expression in ['npv', 'npumean']:
+		for y_expression in ['rho', 'npv']:
+			d = {
+				'x_expressions': [x_expression],
+				'y_expressions': [y_expression],
+				#'y_lims':[0,30],
+				'analysis_modules': ['Ratio'],
+				'tree_draw_options': 'prof',
+				'cutlabel': True,
+				'markers': ['o', 'd'],
+				'y_subplot_lims': [0.5, 1.5],
+				'x_bins': "25,0.5,25.5",
+				'legend': 'lower right',
+			}
+			if (x_expression=='npv' and y_expression=='rho'): d['y_lims']= [0,30]
+			plots.append(d)
 	if additional_dictionary != None:
 		for plot in plots:
 			plot.update(additional_dictionary)
