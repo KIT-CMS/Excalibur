@@ -372,10 +372,22 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'cutlabel': True,
 			'y_subplot_lims': [0.99, 1.01],
 			'x_log': True,
-			'y_lims': [90.19, 92.19],
 			'x_bins': "zpt",
 			'markers': ['o', 'd'],
 		}
+		if yquantity == 'zmass':
+			z_mass_pdg = 91.1876
+			z_width_pdg = 2.4952
+			z_peak = 0.01
+			z_window = 5
+			d['y_lims'] =  [z_mass_pdg - z_window, z_mass_pdg + z_window],
+			d['plot_modules'] = ["PlotMplZJet", "PlotMplRectangle"]
+			d["rectangle_y"] = [
+				z_mass_pdg-z_width_pdg, z_mass_pdg+z_width_pdg,
+				z_mass_pdg-z_peak, z_mass_pdg+z_peak,
+			]
+			d["rectangle_alpha"] = [0.2, 0.5]
+			d["rectangle_color"] = ["blue", "green"]
 		plots.append(d)
 	for x_expression in ['npv', 'npumean']:
 		for y_expression in ['rho', 'npv']:
