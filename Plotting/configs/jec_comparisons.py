@@ -225,6 +225,35 @@ def response_bin_comparisons(args=None, additional_dictionary=None, data_quantit
 				plots.append(d)
 	return [PlottingJob(plots=plots, args=args)]
 
+def response_nevents(args=None, additional_dictionary=None, data_quantities=True):
+	"""Number of Events per Response bin"""
+	known_args, args = get_special_parser(args)
+	plots = []
+	# TODO put these default binning values somewhere more globally
+	for quantity, bins in zip(*get_list_slice([
+		['zpt', 'npv', 'abs(jet1eta)'],
+		['zpt', 'npv','abseta']
+	], known_args.no_quantities)):
+		d = {
+			'x_expressions': [quantity],
+			'x_bins': bins,
+			'lines': [1.0],
+			'analysis_modules': ['Ratio'],
+			'filename': "NEvents_" + quantity.replace("(", "").replace(")", ""),
+			'y_subplot_lims': [0.0, 2.0],
+			'legend': 'upper right',
+			'no_weight': True,
+		}
+		if quantity == 'abs(jet1eta)':
+			d['zjetfolders'] = ["noetacuts"]
+		if quantity == 'zpt':
+			d['x_log'] = True
+			d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
+
 def response_comparisons(args2=None, additional_dictionary=None, data_quantities=True):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
 	known_args, args = get_special_parser(args2)
@@ -610,6 +639,7 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
 	plotting_jobs += basic_profile_comparisons(args, d)
 	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
+	plotting_jobs += response_nevents(args, d, data_quantities)
 	plotting_jobs += response_comparisons(args, d, data_quantities)
 	plotting_jobs += response_extrapolation(args, d, inputtuple)
 	plotting_jobs += jet_resolution(args, additional_dictionary=d)
