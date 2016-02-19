@@ -78,6 +78,8 @@ elif [ $USER = "mfischer" ]; then
         export EXCALIBUR_WORK=/nfs/dust/cms/user/mfischer/calib/gc-work/excalibur/
         export EXCALIBURBRILSSH="mafische@lxplus.cern.ch"
     fi
+elif [ $USER = "cheidecker" ]; then
+    export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
 fi
 alias test_merlin='merlin.py -i ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root --corr L1L2L3 --live evince --userpc --formats pdf -x zpt'
 
