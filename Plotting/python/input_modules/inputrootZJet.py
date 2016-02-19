@@ -53,6 +53,14 @@ class InputRootZJet(inputroot.InputRoot):
 
 		super(InputRootZJet, self).prepare_args(parser, plotData)
 
+		# get int. lumi from input dicts
+		if plotData.plotdict['lumis'] is None:
+			lumis = [input_json_dict.get('Lumi', None) for input_json_dict in plotData.input_json_dicts if input_json_dict.get('Lumi', None) is not None]
+			if len(set(lumis)) == 1:
+				plotData.plotdict['lumis'] = lumis
+		else:
+			lumis = plotData.plotdict['lumis']
+
 		# add 'weight' by default to weights
 		if not plotData.plotdict['no_weight'] and not any(bool(json) is False for json in plotData.input_json_dicts):
 			plotData.plotdict['weights'] = [
@@ -61,16 +69,9 @@ class InputRootZJet(inputroot.InputRoot):
 				else weight
 				for weight in plotData.plotdict['weights']]
 
-		# get int. lumi from input dicts
-		if plotData.plotdict['lumis'] is None:
-			lumis = [input_json_dict.get('Lumi', None) for input_json_dict in plotData.input_json_dicts if input_json_dict.get('Lumi', None) is not None]
-		else:
-			lumis = plotData.plotdict['lumis']
-
-		if len(set(lumis)) == 1:
-			plotData.plotdict['lumis'] = lumis
-			# add lumi as weight for mc files:
-			for i, rootfile in enumerate(plotData.plotdict['files']):
-				if plotData.input_json_dicts[i] is not None and not plotData.input_json_dicts[i].get('InputIsData', True):
-					log.info("Scaling sample {0} by lumi: {1}".format(rootfile[0], plotData.plotdict['lumis'][0]))
-					plotData.plotdict['weights'][i] = "(({1}) * ({0}))".format(plotData.plotdict['weights'][i], plotData.plotdict['lumis'][0])
+			# add lumi as weight for mc files if feasible
+			if len(set(lumis)) == 1:
+				for i, rootfile in enumerate(plotData.plotdict['files']):
+					if plotData.input_json_dicts[i] is not None and not plotData.input_json_dicts[i].get('InputIsData', True):
+						log.info("Scaling sample {0} by lumi: {1}".format(rootfile[0], plotData.plotdict['lumis'][0]))
+						plotData.plotdict['weights'][i] = "(({1}) * ({0}))".format(plotData.plotdict['weights'][i], plotData.plotdict['lumis'][0])
