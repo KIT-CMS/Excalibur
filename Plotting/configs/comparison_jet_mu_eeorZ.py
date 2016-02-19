@@ -84,14 +84,12 @@ def ee_jet_muon_comparison(args=None, additional_dictionary=None, run=2):
 def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 	"""Comparison of jet, muon, e reconstruction depending on pt: Tree-plots of eminus/geneminus, muminus/genmuminus and jet1/genjet1 together in one diagram for pt, phi, eta each. Additionally, plots of  statistical errors of said Tree-plots depending on pt.
 	"""
-
-	run=2
 	
 	plots = []
 	parameterlist_jet1 = ['pt', 'phi', 'eta']
 
 	bins = {
-		"pt" : ['20 30 40 50 60 70 95 150 275 400 700'],
+		"pt" : ['10 20 30 40 50 60 70 80 90 100 150 200 300 500 700'],
 		"phi" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
 		"eta" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
 	}
@@ -116,7 +114,7 @@ def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 			'x_expressions':["geneminuspt","genjet1pt","genmuminuspt"],
 			'y_expressions':[ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options': 'profs',
-			"x_ticks": [20,30,50,70,100,200,400,700], 
+			"x_ticks": [10,20,30,50,70,100,200,400,1000], 
 			'x_bins': bins[parameter],
 			'x_log': True,
 
@@ -148,7 +146,7 @@ def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 			'x_expressions':["geneminuspt","genjet1pt","genmuminuspt"],
 			'y_expressions':[ejmexpress["e{}".format(parameter)], ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options':  'profs',
-			"x_ticks": [20,30,50,70,100,200,400,700],
+			"x_ticks": [10,20,30,50,70,100,200,400,1000],
 			'x_bins': bins[parameter],
 			'x_log': True,
 			'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors',],
