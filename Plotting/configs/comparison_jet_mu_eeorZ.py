@@ -89,9 +89,9 @@ def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 	parameterlist_jet1 = ['pt', 'phi', 'eta']
 
 	bins = {
-		"pt" : ['10 20 30 40 50 60 70 80 90 100 150 200 300 500 700'],
-		"phi" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
-		"eta" : ['10 20 30 40 50 60 70 80 90 100 150 200 250 300 400 500 700'],
+		"pt" : ['20 30 40 50 60 70 95 150 280 400 700'],
+		"phi" : ['20 30 40 50 60 70 95 150 280 400 700'],
+		"eta" : ['20 30 40 50 60 70 95 150 280 400 700'],
 	}
 	if run==2: 
 		files=['work/mc15_25ns_ee.root','work/mc15_25ns.root', 'work/mc15_25ns.root'],
@@ -114,7 +114,7 @@ def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 			'x_expressions':["geneminuspt","genjet1pt","genmuminuspt"],
 			'y_expressions':[ejmexpress["e{}".format(parameter)],ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options': 'profs',
-			"x_ticks": [10,20,30,50,70,100,200,400,1000], 
+			"x_ticks": [20,30,50,70,100,200,400,700], 
 			'x_bins': bins[parameter],
 			'x_log': True,
 
@@ -125,7 +125,7 @@ def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 			'texts': '{} - $error$ $bars$ $show$ $standard$ $deviation$'.format(latex[parameter]),
 			'x_label': "{}$/GeV$".format(latex["pt"]),
 			'y_label': ejmlabel['{}'.format(parameter)],
-			'title':'Reconstruction of {} \n depending on {}'.format(latex[parameter], latex['pt']),
+			#'title':'Reconstruction of {} \n depending on {}'.format(latex[parameter], latex['pt']),
 			'markers': ['_', '4', '3'],
 			'marker_fill_styles': ['none', 'none', 'none'],
 			'line_styles': ['-'],
@@ -146,7 +146,7 @@ def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 			'x_expressions':["geneminuspt","genjet1pt","genmuminuspt"],
 			'y_expressions':[ejmexpress["e{}".format(parameter)], ejmexpress["jet{}".format(parameter)],ejmexpress["mu{}".format(parameter)]],
 			'tree_draw_options':  'profs',
-			"x_ticks": [10,20,30,50,70,100,200,400,1000],
+			"x_ticks": [20,30,50,70,100,200,400,700],
 			'x_bins': bins[parameter],
 			'x_log': True,
 			'analysis_modules': ['ConvertToHistogram', 'StatisticalErrors',],
@@ -160,7 +160,7 @@ def ee_jet_muon_comparison_tree(args=None, additional_dictionary=None, run=2):
 			'x_label': "{}$/GeV$".format(latex["pt"]),
 			'y_label': "{} $resolution$".format(latex[parameter]),
 			'texts': '{} - $statistical$ $errors$'.format(latex[parameter]),
-			'title':'Resolution of {} \n depending on {}'.format(latex[parameter], latex['pt']),
+			#'title':'Resolution of {} \n depending on {}'.format(latex[parameter], latex['pt']),
 			'y_errors': 'none',
 			'markers': ['.', '.', '.'],
 			'marker_fill_styles': ['full', 'full', 'full'],
