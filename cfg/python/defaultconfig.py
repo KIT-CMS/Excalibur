@@ -417,9 +417,7 @@ def data_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
 		cfg['Lumi'] = 0.04003
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		# use WIP corrections until full tarballs are available again -- MF@20160215
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1M1_DATA/Fall15_25nsV1_DATA'
-		# cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_DATA")
+		cfg['Jec'] = configtools.get_jec("Fall15_25nsV2_DATA")
 		cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
