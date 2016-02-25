@@ -116,7 +116,7 @@ def genzmass_fit(args=None, additional_dictionary=None, only_normalized=False, c
 		'y_subplot_lims': [0.75, 1.25],
 		'analysis_modules': ['FunctionPlot'],
 		'filename': quantity+'_fit',
-		'title': r'$\\mathrm{M_{Z,gen}}$',
+		'title': 'Work in Progress',#r'$\\mathrm{M_{Z,gen}}$',
 		'legend': 'upper right',
 		'y_subplot_lims': [0.75, 1.25],
 		"markers": ["fill"],
@@ -150,7 +150,7 @@ def genzmass_fit(args=None, additional_dictionary=None, only_normalized=False, c
 	plots.append(d)
 	d2={}
 	weight_name='error'
-	for det_part in ['Barrel','EndCap+','EndCap-','Barrel&EndCap+','Barrel&EndCap-','EndCap+&EndCap-']:
+	for det_part in ['Barrel','EndCap+','EndCap-']:#,'Barrel&EndCap+','Barrel&EndCap-','EndCap+&EndCap-']:
 		d2["{0}".format(det_part)] = copy.deepcopy(d)
 		if channel=="m": 
 			cut='1.3'
@@ -225,7 +225,7 @@ def genzmass_fit(args=None, additional_dictionary=None, only_normalized=False, c
 #				})
 		d2["{0}".format(det_part)].update({
 			'filename': quantity+'_'+det_part+'_fit',
-			'title':  r'$M\\mathrm{_{Z}}'+'('+det_part+')$',
+			'title':  'Work in Progress',#r'$M\\mathrm{_{Z}}'+'('+det_part+')$',
 			'weights': weight_name,
 			})
 		plots.append(d2["{0}".format(det_part)])
@@ -276,9 +276,9 @@ def zmass_comparison(args=None, additional_dictionary=None, only_normalized=Fals
 		'x_expressions': [quantity],
 		'cutlabel': True,
 		'y_subplot_lims': [0.75, 1.25],
-		'analysis_modules': ['Ratio', 'FunctionPlot'],
+		'analysis_modules': ['NormalizeToFirstHisto','Ratio', 'FunctionPlot'],
 		'filename': quantity+'_fit',
-		'title': r'$\\mathrm{M_{Z}}$',
+		'title': 'Work in Progress',#r'$\\mathrm{M_{Z}}$',
 		'legend': 'upper right',
 		'y_subplot_lims': [0.75, 1.25],
 	}
@@ -357,7 +357,7 @@ def zmass_comparison(args=None, additional_dictionary=None, only_normalized=Fals
 				})
 		d2["{0}".format(det_part)].update({
 			'filename': quantity+'_'+det_part+'_fit',
-			'title':  r'$M\\mathrm{_{Z}}'+'('+det_part+')$',
+			'title':  'Work in Progress',#r'$M\\mathrm{_{Z}}'+'('+det_part+')$',
 			'weights': weight_name,
 			})
 		plots.append(d2["{0}".format(det_part)])
@@ -480,7 +480,7 @@ def general_comparison(args=None, additional_dictionary=None, only_normalized=Fa
 		d2.update({
 			'analysis_modules': ['NormalizeToFirstHisto', 'Ratio'],
 			'filename': quantity+"_shapeComparison",
-			'title': "Shape Comparison",
+			'title': 'Work in Progress',#"Shape Comparison",
 			'legend': 'upper right',
 			'y_subplot_lims': [0.75, 1.25],
 		})
@@ -516,7 +516,7 @@ def profplot_datamc_comparison(args=None, additional_dictionary=None, only_norma
 			d.update(additional_dictionary)
 		d.update({'y_expressions':[quantity_pair[1]],
 			'x_expressions':[quantity_pair[0]],
-			"title": quantity_pair[0]+' vs. '+quantity_pair[1],
+			"title": 'Work in Progress',#quantity_pair[0]+' vs. '+quantity_pair[1],
 			'filename':quantity_pair[0]+'_vs_'+quantity_pair[1],
 			'y_log': quantity_pair[1] in ['jet1pt', 'zpt'],
 			'x_log': quantity_pair[0] in ['jet1pt', 'zpt'],
@@ -579,7 +579,7 @@ def twodimplot_datamc_comparison(args=None, additional_dictionary=None, only_nor
 			d.update({'y_expressions':[quantity_pair[1]],
 				'x_expressions':[quantity_pair[0]],
 				'labels': label,
-				"title": quantity_pair[0]+' vs. '+quantity_pair[1],
+				"title": 'Work in Progress',#quantity_pair[0]+' vs. '+quantity_pair[1],
 				'filename':quantity_pair[0]+'_vs_'+quantity_pair[1]+'_'+nick,
 				#'y_log': quantity_pair[1] in ['jet1pt', 'zpt'],
 				#'x_log': quantity_pair[0] in ['jet1pt', 'zpt'],
@@ -672,85 +672,82 @@ def twodimplot_datamc_comparison(args=None, additional_dictionary=None, only_nor
 #	return [PlottingJob(plots=plots, args=args)]
 
 def fit_zmass_profplot_datamc(args=None, additional_dictionary=None, only_normalized=False, channel="m"):
-	"""Profile Plot of fitted Zmasses in Zpt bins"""
+	"""Profile Plot of fitted Zmasses in bins of any quantity"""
 	plots = []
-	zjetfolder='finalcuts'
+	bins=[]
 	x_dict=generate_dict()
-	cut_quantity=['zpt','zeta']
+	cut_quantities=['zpt','zeta']
+	cut_binnings=['30 40 50 60 85 105 130 175 275 500','-5.191 -2.964 -2.5 -1.93 -1.305 -0.783 0 0.783 1.305 1.93 2.5 2.964 5.191']
+	for cut_index,cut_quantity in enumerate(cut_quantities):
+		cut_binning=cut_binnings[cut_index].split()
+		fit_quantity='zmass'
+		d = {
+			'x_expressions': fit_quantity,
+			'cutlabel': True,
+			'analysis_modules': ['FunctionPlot', 'HistogramFromFitValues','Ratio'],
+			'filename': fit_quantity+'_vs_'+cut_quantity+'_fit_profplot',
+			'title': 'Work in Progress',#r'$\\mathrm{M_{Z}}$',
+			'legend': 'upper right',
+		}
+		if additional_dictionary:
+			d.update(additional_dictionary)
+		copyfiles=d['files']
+		weights=[]
+		nicks=[]
+		files=[]
+		labels=[]
+		corrections=[]
+		fit_hist_nicks=[]
+		fit_function_nicks=[]
+		x_bins=[]
 
-	zpt_bins=[30,40,50,60,75,95,125,180,300,1000]
-	fit_quantity='zmass'
-	d = {
-		'x_expressions': fit_quantity,
-		'cutlabel': True,
-		'analysis_modules': ['FunctionPlot', 'HistogramFromFitValues','Ratio'],
-		'filename': fit_quantity+'_fit_profplot',
-		'title': r'$\\mathrm{M_{Z}}$',
-		'legend': 'upper right',
-	}
-	if additional_dictionary:
-		d.update(additional_dictionary)
-	copyfiles=d['files']
-	print copyfiles[0]
+		for dataset in ['Data','MC']:
+			fit_nicks=[]
+			x_values=[]
+			for index in range(len(cut_binning)-1):
+				weights+=[str(cut_binning[index])+'<'+cut_quantity+'&&'+cut_quantity+'<'+str(cut_binning[index+1])]
+				nicks+=['nick_'+str(cut_quantity)+'_'+str(dataset)+'_'+str(index)]
+				fit_nicks+=['nick_'+str(cut_quantity)+'_'+str(dataset)+'_'+str(index)+'_fit']
+				if dataset=='Data':
+					files+=[copyfiles[0]]
+					labels+=['DATA']
+				elif dataset=='MC':
+					files+=[copyfiles[1]]
+					labels+=['MC']
+				corrections+=['L1L2L3']
+			fit_function_nicks+=fit_nicks
+			fit_hist_nicks+=[" ".join(fit_nicks)]
+			x_bins+=[" ".join(map(str,cut_binning))]
 
-	weights=[]
-	nicks=[]
-	files=[]
-	labels=[]
-	corrections=[]
-	fit_hist_nicks=[]
-	fit_function_nicks=[]
-	x_bins=[]
+		d.update({
+			'nicks':nicks,
+			'files': files,
+			'corrections': corrections,
+			"function_fit": nicks,
+			"function_nicknames": fit_function_nicks,
+			#Voigt function:
+			"functions": ['([4]*TMath::Voigt(x-[0],[1],2.4952)+[2]*x+[3])'],	#fix width-parameter by value of PDG added background linear function
+			"function_parameters": ["91,2.3,0.,0.,2500"],
+			'weights': weights,
+			'nicks_whitelist': ['fit_data_values','fit_mc_values'],
+			'histogram_from_fit_nicks': fit_hist_nicks,
+			'histogram_from_fit_newnick': ['fit_data_values','fit_mc_values'],
+			'histogram_from_fit_x_values': x_bins,
+			'y_lims': [86,96],
+			'y_label': 'zmass',
+			#'x_lims': [min(cut_binning),max(cut_binning)],
+			'x_log':  cut_quantity in ['jet1pt', 'zpt'],
+			'x_label': cut_quantity,
+			'markers': ['d','o', 'd'],
+			"colors":['black', 'black', 'blue'],
+			'labels':['Data','Ratio','MC'],
+			'lines': [91.1876],
+			'ratio_numerator_nicks': 'fit_data_values',
+			'ratio_denominator_nicks': 'fit_mc_values',
+			'y_subplot_lims': [0.99, 1.01],
+			})
 
-	for dataset in ['Data','MC']:
-		fit_nicks=[]
-		x_values=[]
-		for index in range(9):
-			weights+=[str(zpt_bins[index])+'<zpt && zpt<'+str(zpt_bins[index+1])]
-			nicks+=['nick_'+str(dataset)+'_'+str(index)]
-			fit_nicks+=['nick_'+str(dataset)+'_'+str(index)+'_fit']
-			if dataset=='Data':
-				files+=[copyfiles[0]]
-				labels+=['DATA']
-			elif dataset=='MC':
-				files+=[copyfiles[1]]
-				labels+=['MC']
-			corrections+=['L1L2L3']
-		fit_function_nicks+=fit_nicks
-		fit_hist_nicks+=[" ".join(fit_nicks)]
-		x_bins+=[" ".join(map(str,zpt_bins))]
-
-	#print nicks
-
-	d.update({
-		'nicks':nicks,
-		'files': files,
-		'corrections': corrections,
-		"function_fit": nicks,
-		"function_nicknames": fit_function_nicks,
-		#Voigt function:
-		"functions": ['([4]*TMath::Voigt(x-[0],[1],2.4952)+[2]*x+[3])'],	#fix width-parameter by value of PDG added background linear function
-		"function_parameters": ["91,2.3,0.,0.,3100"],
-		'weights': weights,
-		'nicks_whitelist': ['fit_data_values','fit_mc_values'],
-		'histogram_from_fit_nicks': fit_hist_nicks,
-		'histogram_from_fit_newnick': ['fit_data_values','fit_mc_values'],
-		'histogram_from_fit_x_values': x_bins,
-		'y_lims': [86,96],
-		'y_label': 'zmass',
-		'x_lims': [30,1000],
-		'x_log': True,
-		'x_label': 'zpt',
-		'markers': ['d','o', 'd'],
-		"colors":['black', 'black', 'darkblue'],
-		'labels':['Data','Ratio','MC'],
-		'lines': [91.1876],
-		'ratio_numerator_nicks': 'fit_data_values',
-		'ratio_denominator_nicks': 'fit_mc_values',
-		'y_subplot_lims': [0.99, 1.01],
-		})
-
-	plots.append(d)
+		plots.append(d)
 	
 	return [PlottingJob(plots=plots, args=args)]
 
@@ -778,15 +775,15 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 		"texts_size": [10],
 	})
 	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="m")
-	#plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
+	plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
 	#plotting_jobs += general_comparison(args, d, channel="m", only_normalized=False)
-	#plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
+	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="m")
 	d.update({'files': ['work/mc15_25ns_2015D.root'],
 		'labels': ['MCmu'],
 		'corrections': ['L1L2L3'],})
 	#plotting_jobs += general_mc_comparison(args, d, channel="m")
-	#plotting_jobs += genzmass_fit(args, d, channel="m")
+	plotting_jobs += genzmass_fit(args, d, channel="m")
 #	plotting_jobs += profplot_genreco_comparison(args, d, channel="m")
 #	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
@@ -814,15 +811,15 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 		"texts_size": [10],
 	})
 	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="e")
-	#plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
+	plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
 	#plotting_jobs += general_comparison(args, d, channel="e", only_normalized=False)
-	#plotting_jobs += profplot_datamc_comparison(args, d, channel="e")
+	plotting_jobs += profplot_datamc_comparison(args, d, channel="e")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="e")
 	d.update({'files': ['work/mc15_25ns_ee_2015D.root'],
 		'labels': ['MCe'],
 		'corrections': ['L1L2L3'],})
 	#plotting_jobs += general_mc_comparison(args, d, channel="e")
-	#plotting_jobs += genzmass_fit(args, d, channel="e")
+	plotting_jobs += genzmass_fit(args, d, channel="e")
 #	plotting_jobs += profplot_genreco_comparison(args, d, channel="e")
 #	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
