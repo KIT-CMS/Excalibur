@@ -343,10 +343,14 @@ Have fun. ;)
 	if not opt.out:
 		opt.out = get_config_nick(opt.cfg, opt.config_mods)
 	# derive json config file name
+	# opt.cfg  : short config name, e.g. data15
+	# opt.json : json file name, e.g. data15.py.json
 	opt.isjson = (opt.cfg[-8:] == '.py.json')
-	opt.json = os.path.join(os.path.dirname(opt.cfg), opt.out + '.py.json')
 	if opt.isjson:
+		opt.json = opt.cfg
 		opt.cfg = opt.cfg[:-8]
+	else:
+		opt.json = opt.cfg.rstrip('.json').rstrip('.py') + '.py.json'
 
 	# derive omitted values for fast and skip
 	if opt.fast == []:
