@@ -45,17 +45,14 @@ class HistogramFromFitValues(analysisbase.AnalysisBase):
 		for hist_id in xrange(max(len(plotData.plotdict['histogram_from_fit_newnick']), len(plotData.plotdict['histogram_from_fit_nicks']))):
 
 			nicks=plotData.plotdict['histogram_from_fit_nicks'][hist_id].split()
-			print nicks
 			x_values = map(float,plotData.plotdict['histogram_from_fit_x_values'][hist_id].split())
-			print x_values
 			hist = ROOT.TH1D(self.__class__.__name__, self.__class__.__name__, len(nicks), array('d',x_values))
 
 			for index, nick in enumerate(map(str,nicks)):
-				print nick
 				fit_function = plotData.plotdict["root_objects"][nick]
 				hist.SetBinContent(index+1,  fit_function.GetParameter(0))
 				hist.SetBinError(index+1,  fit_function.GetParError(0))
-				print 'Set Bin: '+str(x_values[index])+' '+str(fit_function.GetParameter(0))+'+/-'+str(fit_function.GetParError(0))
+				print  nick+' - set Bin: '+str(index)+' '+str(fit_function.GetParameter(0))+'+/-'+str(fit_function.GetParError(0))
 			nick = plotData.plotdict['histogram_from_fit_newnick'][hist_id]
 			plotData.plotdict['nicks'].append(nick)
 			plotData.plotdict['root_objects'][nick] = hist
