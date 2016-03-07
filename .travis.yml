@@ -27,7 +27,7 @@ before_install:
   - git clone --depth=100 https://github.com/artus-analysis/Artus.git
   - cd Artus
   - git fetch
-  - git checkout Kappa_2_1
+  - git checkout c428b5
   - cd ..
   - cd Excalibur
 install:
