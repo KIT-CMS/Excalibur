@@ -24,7 +24,10 @@ before_install:
   - tar xzf CondFormats.tar.gz
   - git clone --depth=10 https://github.com/KappaAnalysis/Kappa.git
   - git clone --depth=10 https://github.com/KappaAnalysis/KappaTools.git
-  - git clone --depth=200 https://github.com/artus-analysis/Artus.git -b Kappa_2_1
+  - git clone --depth=100 https://github.com/artus-analysis/Artus.git -b Kappa_2_1
+  - cd Artus
+  - git checkout 89e9dfc
+  - cd ..
   - cd Excalibur
 install:
   - sed -i 's/\ -j[0-9]*/\ -j2/' Makefile
