@@ -59,10 +59,9 @@ class PlotFitText(plotbase.PlotBase):
 				texts.append("$\mathit{"+parameter_names[i]+"}$ = %.4f $\pm$ %.4f" % (fit_function.GetParameter(i), fit_function.GetParError(i)))
 				yposs.append(0.95-(size*i/250.))
 			for text, ypos in zip(texts,yposs):
-				#print len(text)*size
 				# x/y coords are chosen depending on font size to put the text in the upper right corner
 				ax.text(1.-(size*0.036),
-						ypos-(size*i*index/250+size*(index+0)*0.012),
+						ypos-(size*(i+1.)*(index)/250),
 						text,
 						color=color,
 						size=size,

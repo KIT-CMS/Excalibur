@@ -58,7 +58,13 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 
 FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 {
-    if (id == MuonPtCut().GetFilterId())
+    if (id == MinNLeptonsCut().GetFilterId())
+        return new MinNLeptonsCut();
+    else if (id == MaxNLeptonsCut().GetFilterId())
+        return new MaxNLeptonsCut();
+    else if (id == LeadingLeptonPtCut().GetFilterId())
+        return new LeadingLeptonPtCut();
+    else if (id == MuonPtCut().GetFilterId())
         return new MuonPtCut();
     else if (id == MuonEtaCut().GetFilterId())
         return new MuonEtaCut();
