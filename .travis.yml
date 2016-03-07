@@ -26,6 +26,7 @@ before_install:
   - git clone --depth=10 https://github.com/KappaAnalysis/KappaTools.git
   - git clone --depth=100 https://github.com/artus-analysis/Artus.git
   - cd Artus
+  - git fetch
   - git checkout Kappa_2_1
   - cd ..
   - cd Excalibur
