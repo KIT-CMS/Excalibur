@@ -760,7 +760,7 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	d = {
 		'files': ['work/data15_25ns_2015D.root', 'work/mc15_25ns_2015D.root'],
 		'labels': ['DATAmu', 'MCmu'],
-		'corrections': ['L1L2L3', 'L1L2L3'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'www': zjetfolder+'_zmass_comparison_datamc_Zmm_run2',
 		'www_title': 'Comparison Data MC for Zmm, run2, '+zjetfolder,
@@ -776,7 +776,7 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	})
 	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="m")
 	plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
-	#plotting_jobs += general_comparison(args, d, channel="m", only_normalized=False)
+	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=False)
 	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="m")
 	d.update({'files': ['work/mc15_25ns_2015D.root'],
@@ -795,7 +795,7 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 	d = {
 		'files': ['work/data15_25ns_ee_2015D.root', 'work/mc15_25ns_ee_2015D.root'],
 		'labels': ['DATAe', 'MCe'],
-		'corrections': ['L1L2L3', 'L1L2L3'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'www': zjetfolder+'_zmass_comparison_datamc_Zee_run2',
 		'www_title': 'Comparison Data MC for Zee, run2, '+zjetfolder,
@@ -812,7 +812,7 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 	})
 	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="e")
 	plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
-	#plotting_jobs += general_comparison(args, d, channel="e", only_normalized=False)
+	plotting_jobs += general_comparison(args, d, channel="e", only_normalized=False)
 	plotting_jobs += profplot_datamc_comparison(args, d, channel="e")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="e")
 	d.update({'files': ['work/mc15_25ns_ee_2015D.root'],
