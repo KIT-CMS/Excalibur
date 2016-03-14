@@ -198,6 +198,73 @@ def _2015(cfg, **kwargs):
 		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
 
 # channel:
+def emmm(cfg, **kwargs):
+	cfg['Muons'] = 'muons'
+	cfg['Electrons'] = 'electrons'
+	cfg['ElectronMetadata'] = 'electronMetadata'
+	# The order of these producers is important!
+	cfg['Processors'] = [
+		'producer:ValidMuonsProducer',
+		#'producer:ZJetValidElectronsProducer',
+		'producer:ValidElectronsProducer',
+		'filter:MinNLeptonsCut',
+		'filter:MaxNLeptonsCut',
+		'producer:ZmmProducer',
+		'filter:ZFilter',
+		'producer:ValidTaggedJetsProducer',
+		'producer:ValidZllJetsProducer',
+		'filter:ValidJetsFilter',
+		'producer:ZJetCorrectionsProducer',
+		'producer:TypeIMETProducer',
+		'producer:JetSorter',
+		'producer:RadiationJetProducer',
+	]
+	cfg['Pipelines']['default']['Processors'] = [
+		'filter:LeadingLeptonPtCut',
+		'filter:LeadingJetPtCut',
+		'filter:LeadingJetEtaCut',
+		'filter:BetaCut',
+		'filter:AlphaCut',
+		'filter:ZPtCut',
+		'filter:BackToBackCut',
+	]
+	cfg['Pipelines']['default']['Consumers'] += [
+		'KappaMuonsConsumer',
+	]
+
+	# ValidMuonsProducer
+	cfg['MuonID'] = 'tight'
+	cfg['MuonIso'] = 'tight'
+	cfg['MuonIsoType'] = 'pf'
+	
+	cfg['ElectronID'] = 'vbft95_tight'
+	cfg['ElectronIsoType'] = 'none'
+	cfg['ElectronIso'] = 'none'
+	cfg['ElectronReco'] = 'none'
+	
+
+	cfg['Pipelines']['default']['Quantities'] += [
+		'mupluspt', 'mupluseta', 'muplusphi', 'muplusiso',
+		'muminuspt', 'muminuseta', 'muminusphi', 'muminusiso',
+		'mu1pt', 'mu1eta', 'mu1phi',
+		'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
+		'mu2pt', 'mu2eta', 'mu2phi',
+		'nmuons',
+		'radiationjet1pt', 'radiationjet1phi', 'radiationjet1eta',
+		'radiationjet1index', 'nradiationjets'
+	]
+	cfg['CutNLeptonsMin'] = 2
+	cfg['CutNLeptonsMax'] = 3
+
+	cfg['CutLeadingLeptonPtMin'] = 20.0
+	cfg['CutMuonEtaMax'] = 2.3
+	cfg['CutLeadingJetPtMin'] = 12.0
+	cfg['CutLeadingJetEtaMax'] = 1.3
+	cfg['CutZPtMin'] = 30.0
+	cfg['CutBackToBack'] = 0.34
+	cfg['CutAlphaMax'] = 0.2
+  
+
 
 def ee(cfg, **kwargs):
 	cfg['Electrons'] = 'electrons'
@@ -417,7 +484,7 @@ def data_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
 		cfg['Lumi'] = 0.04003
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		cfg['Jec'] = configtools.get_jec("Summer15_25nsV6_DATA")
+		cfg['Jec'] = configtools.get_jec("Fall15_25nsV2_DATA")
 		cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
@@ -450,7 +517,9 @@ def mc_2015(cfg, **kwargs):
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
 	elif kwargs['bunchcrossing'] == "25ns":
-		cfg['Jec'] = configtools.get_jec("Summer15_25nsV6_MC")
+		# use WIP corrections until full tarballs are available again -- MF@20160215
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1_MC/Fall15_25nsV1_MC'
+		# cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_MC")
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
@@ -566,7 +635,7 @@ def data_2012em(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL', 'HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
 
 def data_2015ee(cfg, **kwargs):
-	cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL'] 
+	cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL']
 	cfg['Electrons']= 'electrons'
 
 def mc_2015ee(cfg, **kwargs):
@@ -574,5 +643,5 @@ def mc_2015ee(cfg, **kwargs):
 	# pair with status 1 in each event, so take this number for now
 	# see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
 	cfg['RecoElectronMatchingGenParticleStatus'] = 1
-	cfg['GenElectronStatus'] = 1
+	cfg[''] = 1
 

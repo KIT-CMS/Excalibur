@@ -121,6 +121,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'xfx': '$\mathit{x} \cdot f(\mathit{x})$',
 			'xfxQ': '$\mathit{x} \cdot f(\mathit{x}, \mathit{Q})$',
 			'xfxQ2': '$\mathit{x} \cdot f(\mathit{x}, \mathit{Q}^2)$',
+			'zeta': '$\mathit{\eta}^Z$',
 			'zmass': '$\mathit{m}^{Z}$ / GeV',
 			'zphi': r'$\mathit{\phi}^{Z}$',
 			'zpt': '$\mathit{p}_{T}^{Z}$ / GeV',

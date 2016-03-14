@@ -71,6 +71,7 @@ def jec_combination(args=None, additional_dictionary=None):
 		'ptbalance': 'PtBal',
 		'mpf': 'MPF',
 		'rawmpf': 'MPF-notypeI',
+		'zmass': 'ZMass',
 		'npumean': 'Mu',
 		'rho': 'Rho',
 		'npv': 'NPV',
@@ -95,7 +96,18 @@ def jec_combination(args=None, additional_dictionary=None):
 		file_label = ""
 
 	now = time.localtime()
-	first = True
+	def mpl_to_root(mpl_plot_dict):
+		"""Create root plot dict from mpl plot dict"""
+		root_plot_dict = mpl_plot_dict.copy()
+		root_plot_dict.update({
+			'plot_modules': ['ExportRoot'],
+			'filename': 'combination_ZJet_' + file_label + time.strftime("%Y-%m-%d", now),
+			'file_mode': ('RECREATE' if mpl_to_root.first else 'UPDATE'),
+		})
+		mpl_to_root.first = False
+		return root_plot_dict
+	mpl_to_root.first = False
+
 	for alphacut, alphastring in zip(alpha_cuts, alpha_strings):
 		for etacut, etastring in zip(eta_cuts, eta_strings):
 			for correction in ['L1L2L3']: # no L1L2L3Res available atm
@@ -111,8 +123,25 @@ def jec_combination(args=None, additional_dictionary=None):
 					'ratio_numerator_nicks':['data'],
 					'ratio_denominator_nicks':['mc'],
 				}
-				# responses
-				for method in ['mpf', 'ptbalance', 'rawmpf']:
+				# histograms - event counts
+				labelsuffix = '_'.join(['NEvents', 'CHS', alphastring, etastring, correction])
+				d_mpl = {
+					'x_expressions': ['zpt'],
+					'x_bins': 'zpt',
+					'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
+					'filename': labelsuffix + file_label,
+					'no_weight': True,
+				}
+				d_mpl.update(base_plot)
+				del d_mpl['tree_draw_options']
+				d_root = mpl_to_root(d_mpl)
+				# make plots comparable to jec_comparison
+				d_mpl['x_log'] = True
+				d_mpl['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+				mpl_plots.append(d_mpl)
+				root_plots.append(d_root)
+				# profiles - responses
+				for method in ['mpf', 'ptbalance', 'rawmpf', 'zmass']:
 					labelsuffix = '_'.join([label_dict[method], 'CHS', alphastring, etastring, correction])
 					d_mpl = {
 						'x_expressions': ['zpt'],
@@ -126,13 +155,7 @@ def jec_combination(args=None, additional_dictionary=None):
 					if additional_dictionary is not None:
 						d_mpl.update(additional_dictionary)
 					apply_double_profile(d_mpl, args)
-					d_root = d_mpl.copy()
-					d_root.update({
-						'plot_modules': ['ExportRoot'],
-						'filename': 'combination_ZJet_' + file_label + time.strftime("%Y-%m-%d", now),
-						'file_mode': ('RECREATE' if first else 'UPDATE'),
-					})
-					first = False
+					d_root = mpl_to_root(d_mpl)
 					# make plots comparable to jec_comparison
 					d_mpl['x_log'] = True
 					d_mpl['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
@@ -155,16 +178,27 @@ def jec_combination(args=None, additional_dictionary=None):
 					if additional_dictionary is not None:
 						d_mpl.update(additional_dictionary)
 					apply_double_profile(d_mpl, args)
-					d_root = d_mpl.copy()
-					d_root.update({
-						'plot_modules': ['ExportRoot'],
-						'filename': 'combination_ZJet_' + file_label + time.strftime("%Y-%m-%d", now),
-						'file_mode': 'UPDATE',
-					})
+					d_root = mpl_to_root(d_mpl)
 					mpl_plots.append(d_mpl)
 					root_plots.append(d_root)
 	harryinterface.harry_interface(mpl_plots, args)
 	harryinterface.harry_interface(root_plots, args + ['--max-processes', '1'])
+
+
+def jec_combination_zee(args=None, additional_dictionary=None):
+	"""Use Z->ee defaults for :py:func:`~.jec_combination`"""
+	additional_dictionary = additional_dictionary if additional_dictionary is not None else {}
+	additional_dictionary["algorithms"] = ["ak4PFJetsCHS"]
+	additional_dictionary["file_label"] = "Zee" + time.strftime("%Y%m%d")
+	return jec_combination(args=args, additional_dictionary=additional_dictionary)
+
+
+def jec_combination_zmm(args=None, additional_dictionary=None):
+	"""Use Z->mm defaults for :py:func:`~.jec_combination`"""
+	additional_dictionary = additional_dictionary if additional_dictionary is not None else {}
+	additional_dictionary["algorithms"] = ["ak4PFJetsCHS"]
+	additional_dictionary["file_label"] = "Zmm" + time.strftime("%Y%m%d")
+	return jec_combination(args=args, additional_dictionary=additional_dictionary)
 
 
 def jec_pu_combination(args=None, additional_dictionary=None):

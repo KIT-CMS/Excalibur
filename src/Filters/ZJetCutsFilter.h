@@ -7,18 +7,105 @@
 /**
  * Filter class with cuts for ZJet analysis.
  *
- * min nmuons
- * max nmuons
- * muon pt
- * muon eta
- * electron pt
- * electron eta
+ * min nleptons (el + mu) 
+ * max nleptons (el + mu)
+ * leadinglep pt 
+ * min nmuons    ***Not needed anymore [stefan wayand]
+ * max nmuons    ***Not needed anymore [stefan wayand]
+ * muon pt       ***Not needed anymore [stefan wayand]
+ * muon eta      ***Not needed anymore [stefan wayand]
+ * electron pt   ***Not needed anymore [stefan wayand]
+ * electron eta  ***Not needed anymore [stefan wayand]
  * leading jet pt
  * leading jet eta
  * z pt
  * back to back
  * alpha (second jet pt to z pt)
  */
+////////////////
+// Min nLeptons //
+////////////////
+class MinNLeptonsCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "MinNLeptonsCut"; }
+
+    MinNLeptonsCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        nLeptonsMin = settings.GetCutNLeptonsMin();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return ( (product.m_validMuons.size() + product.m_validElectrons.size()) >= nLeptonsMin);
+    }
+
+  private:
+    unsigned long nLeptonsMin = 0;
+};
+
+////////////////
+// Max nLeptons //
+////////////////
+class MaxNLeptonsCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "MaxNLeptonsCut"; }
+
+    MaxNLeptonsCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        nLeptonsMax = settings.GetCutNLeptonsMax();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return ( (product.m_validMuons.size() + product.m_validElectrons.size()) <= nLeptonsMax);
+    }
+
+  private:
+    unsigned long nLeptonsMax = 0;
+};
+
+
+///////////////////////
+// leading lepton Pt //
+///////////////////////
+class LeadingLeptonPtCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "LeadingLeptonPtCut"; }
+
+    LeadingLeptonPtCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+       leadingLeptonPtMin = settings.GetCutLeadingLeptonPtMin();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        // Only the first two muons need to pass this cut
+	if (product.m_validMuons.size() > 0 && product.m_validMuons[0]->p4.Pt() > leadingLeptonPtMin) return true;
+        if (product.m_validElectrons.size() > 0 && product.m_validElectrons[0]->p4.Pt() > leadingLeptonPtMin) return true;  
+        return false;
+    }
+
+  private:
+    float leadingLeptonPtMin = 0;
+};
 
 ////////////////
 // Min nMuons //

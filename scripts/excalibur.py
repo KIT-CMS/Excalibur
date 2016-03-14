@@ -343,10 +343,14 @@ Have fun. ;)
 	if not opt.out:
 		opt.out = get_config_nick(opt.cfg, opt.config_mods)
 	# derive json config file name
+	# opt.cfg  : short config name, e.g. data15
+	# opt.json : json file name, e.g. data15.py.json
 	opt.isjson = (opt.cfg[-8:] == '.py.json')
-	opt.json = os.path.join(os.path.dirname(opt.cfg), opt.out + '.py.json')
 	if opt.isjson:
+		opt.json = opt.cfg
 		opt.cfg = opt.cfg[:-8]
+	else:
+		opt.json = opt.cfg.rstrip('.json').rstrip('.py') + '.py.json'
 
 	# derive omitted values for fast and skip
 	if opt.fast == []:
@@ -365,14 +369,14 @@ Have fun. ;)
 		paths.sort()
 		try:
 			opt.timestamp = paths[-1][-17:]
-		except:
+		except IndexError:
 			print "No existing output directory available!"
 			sys.exit(1)
 	opt.work += opt.timestamp + '/'
 
 	# transform overwrite options to python types
 	if not len(opt.set_opts) % 2 == 0:
-		raise ValueError('Overwrite options must be specified as pairs of OPTTION VALUE.')
+		raise ValueError('Overwrite options must be specified as pairs of OPTION VALUE.')
 	set_opts = []
 	for option, value in pair_iter(opt.set_opts):
 		try:

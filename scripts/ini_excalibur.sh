@@ -26,7 +26,7 @@ export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 # This function creates a folder with links to python directories, like SCRAM
 # TODO enable merlin standalone usage without reinventing SCRAM ...
 standalone_merlin(){
-    for j in Artus Excalibur; do
+    for j in Artus Excalibur Kappa; do
         # base dirs
         mkdir -p $PYTHONLINKDIR/$j
         touch $PYTHONLINKDIR/$j/__init__.py
@@ -78,6 +78,15 @@ elif [ $USER = "mfischer" ]; then
         export EXCALIBUR_WORK=/nfs/dust/cms/user/mfischer/calib/gc-work/excalibur/
         export EXCALIBURBRILSSH="mafische@lxplus.cern.ch"
     fi
+elif [ $USER = "cheidecker" ]; then
+    export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
+elif [ $USER = "wayand" ]; then
+    echo "Hallo Stefan, schoen dich zu sehen "
+    export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
+    export EXCALIBUR_WORK=/storage/8/wayand/zjets/
+    export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
+
+
 fi
 alias test_merlin='merlin.py -i ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root --corr L1L2L3 --live evince --userpc --formats pdf -x zpt'
 

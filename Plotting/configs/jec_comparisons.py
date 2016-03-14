@@ -45,7 +45,7 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 	for key, default in (('files', None), ('corrections', ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3', 'L1L2L3']), ('algorithms', ['AK5PFJetsCHS'])):
 		if key in additional_dictionary:
 			if len(additional_dictionary[key]) > 1:
-				additional_dictionary[key] = list(additional_dictionary[key][:2]) * 2 
+				additional_dictionary[key] = list(additional_dictionary[key][:2]) * 2
 				if inputtuple== 'datamc': additional_dictionary[key] += [additional_dictionary[key][1]]
 				elif inputtuple== 'mcmc': additional_dictionary[key] += [additional_dictionary[key][0]] + [additional_dictionary[key][1]]
 		else:
@@ -225,9 +225,37 @@ def response_bin_comparisons(args=None, additional_dictionary=None, data_quantit
 				plots.append(d)
 	return [PlottingJob(plots=plots, args=args)]
 
+def response_nevents(args=None, additional_dictionary=None, data_quantities=True):
+	"""Number of Events per Response bin"""
+	known_args, args = get_special_parser(args)
+	plots = []
+	# TODO put these default binning values somewhere more globally
+	for quantity, bins in zip(*get_list_slice([
+		['zpt', 'npv', 'abs(jet1eta)'],
+		['zpt', 'npv','abseta']
+	], known_args.no_quantities)):
+		d = {
+			'x_expressions': [quantity],
+			'x_bins': bins,
+			'lines': [1.0],
+			'analysis_modules': ['Ratio'],
+			'filename': "NEvents_" + quantity.replace("(", "").replace(")", ""),
+			'y_subplot_lims': [0.0, 2.0],
+			'legend': 'upper right',
+			'no_weight': True,
+		}
+		if quantity == 'abs(jet1eta)':
+			d['zjetfolders'] = ["noetacuts"]
+		if quantity == 'zpt':
+			d['x_log'] = True
+			d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+		if additional_dictionary != None:
+			d.update(additional_dictionary)
+		plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
+
 def response_comparisons(args2=None, additional_dictionary=None, data_quantities=True):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
-
 	known_args, args = get_special_parser(args2)
 
 	plots = []
@@ -245,7 +273,6 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 				'x_errors': [1],
 				'tree_draw_options': 'prof',
 				'markers': ['.', '*'],
-				'legend': 'best',
 				'cutlabel': True,
 				'lines': [1.0],
 				'analysis_modules': ['Ratio'],
@@ -267,7 +294,7 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, channel="m"):
+def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, channel="mm"):
 	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
 	plots = []
 	# TODO move this to more general location
@@ -293,34 +320,32 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'zpt': ['40,0,400'],
 		'zy': ['25,-2.5,2.5'],
 	}
-	x_dict_ee={
-		'e1phi': ['20,-3.1415,3.1415',],
-		'e1pt': ['20,0,150'],
-		'e2pt': ['20,0,150'],
-		'eminuspt': ['20,0,150'],
-		'epluspt': ['20,0,150'],
+	x_dict_zl={
+		'%s1phi': ['20,-3.1415,3.1415',],
+		'%s1pt': ['20,0,150'],
+		'%s2pt': ['20,0,150'],
+		'%sminuspt': ['20,0,150'],
+		'%spluspt': ['20,0,150'],
 	}
-	x_dict_mm={
-		'mu1phi': ['20,-3.1415,3.1415',],
-		'mu1pt': ['20,0,150'],
-		'mu2pt': ['20,0,150'],
-		'muminuspt': ['20,0,150'],
-		'mupluspt': ['20,0,150'],
-	}
-	if channel=="m": x_dict.update(x_dict_mm)
-	elif channel=="e": x_dict.update(x_dict_ee)
-
-	for q in x_dict:
-		if len(x_dict[q]) == 1:
-			x_dict[q] += ['best']
 
 	quantity_list= ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
 			 'npv', 'npumean', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
 			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',]
-	quantity_list_ee=['e1pt', 'e1eta', 'e1phi', 'e2pt', 'e2eta', 'e2phi','eminusphi', 'eminuseta', 'eminuspt', 'eplusphi', 'epluseta', 'epluspt']
-	quantity_list_mm=['mu1pt', 'mu1eta', 'mu1phi', 'mu2pt', 'mu2eta', 'mu2phi','muminusphi', 'muminuseta', 'muminuspt', 'muplusphi', 'mupluseta', 'mupluspt']
-	if channel=="m": quantity_list.extend(quantity_list_mm)
-	elif channel=="e": quantity_list.extend(quantity_list_ee)
+	quantity_list_zl=['%s1pt', '%s1eta', '%s1phi', '%s2pt', '%s2eta', '%s2phi','%sminusphi', '%sminuseta', '%sminuspt', '%splusphi', '%spluseta', '%spluspt']
+	# apply channel specific settings
+	zl_basenames = []
+	if "mm" in channel:
+		zl_basenames += ["mu"]
+	if "ee" in channel:
+		zl_basenames += ["e"]
+	for zl_basename in zl_basenames:
+		quantity_list.extend(quantity % zl_basename for quantity in quantity_list_zl)
+		for key in x_dict_zl:
+			x_dict[key % zl_basename] = x_dict_zl[key]
+
+	for q in x_dict:
+		if len(x_dict[q]) == 1:
+			x_dict[q] += ['best']
 
 	for quantity in quantity_list \
 			 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
@@ -357,7 +382,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			'legend': 'upper right',
 			'y_subplot_lims': [0.75, 1.25],
 		})
-		if channel=='em':
+		if channel in ("eemm", "mmee"):
 			d2['y_label']= 'Electron Events'
 		if additional_dictionary:
 			d2.update(additional_dictionary)
@@ -376,29 +401,39 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 			'cutlabel': True,
 			'y_subplot_lims': [0.99, 1.01],
 			'x_log': True,
-			'y_lims': [90.19, 92.19],
 			'x_bins': "zpt",
 			'markers': ['o', 'd'],
 		}
+		if yquantity == 'zmass':
+			z_mass_pdg = 91.1876
+			z_width_pdg = 2.4952
+			z_peak = 0.01
+			z_window = 5
+			d['y_lims'] =  [z_mass_pdg - z_window, z_mass_pdg + z_window],
+			d['plot_modules'] = ["PlotMplZJet", "PlotMplRectangle"]
+			d["rectangle_y"] = [
+				z_mass_pdg-z_width_pdg, z_mass_pdg+z_width_pdg,
+				z_mass_pdg-z_peak, z_mass_pdg+z_peak,
+			]
+			d["rectangle_alpha"] = [0.2, 0.5]
+			d["rectangle_color"] = ["blue", "green"]
 		plots.append(d)
-
-		for x_expression in ['npv', 'npumean']:
-			for y_expression in ['rho', 'npv']:
-				d = {
-					'x_expressions': [x_expression],
-					'y_expressions': [y_expression],
-					#'y_lims':[0,30],
-					'analysis_modules': ['Ratio'],
-					'tree_draw_options': 'prof',
-					'cutlabel': True,
-					'markers': ['o', 'd'],
-					'y_subplot_lims': [0.5, 1.5],
-					'x_bins': "25,0.5,25.5",
-					'legend': 'lower right',
-				}
-				if (x_expression=='npv' and y_expression=='rho'): d['y_lims']= [0,30]
-				plots.append(d)
-
+	for x_expression in ['npv', 'npumean']:
+		for y_expression in ['rho', 'npv']:
+			d = {
+				'x_expressions': [x_expression],
+				'y_expressions': [y_expression],
+				#'y_lims':[0,30],
+				'analysis_modules': ['Ratio'],
+				'tree_draw_options': 'prof',
+				'cutlabel': True,
+				'markers': ['o', 'd'],
+				'y_subplot_lims': [0.5, 1.5],
+				'x_bins': "25,0.5,25.5",
+				'legend': 'lower right',
+			}
+			if (x_expression=='npv' and y_expression=='rho'): d['y_lims']= [0,30]
+			plots.append(d)
 	if additional_dictionary != None:
 		for plot in plots:
 			plot.update(additional_dictionary)
@@ -598,12 +633,13 @@ def cutflow(args=None, additional_dictionary=None):
 
 
 def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False,
-	                channel="m", inputtuple="datamc", subtract_hf=True):
+	                channel="mm", inputtuple="datamc", subtract_hf=True):
 	""" Do all comparison plots"""
 	plotting_jobs = []
 	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
 	plotting_jobs += basic_profile_comparisons(args, d)
 	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
+	plotting_jobs += response_nevents(args, d, data_quantities)
 	plotting_jobs += response_comparisons(args, d, data_quantities)
 	plotting_jobs += response_extrapolation(args, d, inputtuple)
 	plotting_jobs += jet_resolution(args, additional_dictionary=d)
@@ -632,61 +668,61 @@ def muon_2d(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=[d], args=args)]
 
 def comparison_datamc_Zmm(args=None):
-	"""full data mc comparisons for work/data.root and work/mc.root for Zmm"""
+	"""full data mc comparisons for Zmm. Defaults to work/data.root and work/mc.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/mc.root'],
-		'labels': ['DATA', 'MC'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'www_title': 'Comparison Data MC for Zmm',
 		'www_text':'Run1: full data mc comparisons for work/data.root and work/mc.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d, channel="m", inputtuple='datamc')
+	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datamc')
 	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3Res', 'finalcuts_ak5PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_datamc_Zee(args=None):
-	"""full data mc comparisons for work/data_ee.root and work/mc_ee.root for Zee"""
+	"""full data mc comparisons for Zee. Defaults to work/data_ee.root and work/mc_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data_ee.root', 'work/mc_ee.root'],
-		'labels': ['DATA', 'MC'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'www_title': 'Comparison Data MC for Zee',
 		'www_text':'Run1: full data mc comparisons for work/data_ee.root and work/mc_ee.root for Zee',
 	}
-	plotting_jobs += full_comparison(args, d, channel="e", inputtuple='datamc')
+	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datamc')
 	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3Res', 'finalcuts_ak5PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_mmee_data(args=None):
-	"""full mm ee comparisons for work/data.root and work/data_ee.root"""
+	"""full Zmm/Zee (data) comparisons. Defaults to work/data.root and work/data_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data.root', 'work/data_ee.root'],
-		'labels': ['DATAmu', 'DATAe'],
+		'labels': ['mm (Data)', 'ee (Data)'],
 		'corrections': ['L1L2L3Res', 'L1L2L3Res'],
 		'www_title': 'Comparison mm ee for Data',
 		'www_text':'Run1: full Zmm Zee comparisons for work/data.root and work/data_ee.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d, channel="em", inputtuple='datadata')
+	plotting_jobs += full_comparison(args, d, channel="eemm", inputtuple='datadata')
 	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3Res', 'finalcuts_ak5PFJetsCHSL1L2L3Res']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_mmee_mc(args=None):
-	"""full mm ee comparisons for work/mc_ee.root and work/mc_ee.root"""
+	"""full Zmm/Zee (mc) comparisons. Defaults to work/mc_ee.root and work/mc_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/mc.root', 'work/mc_ee.root'],
-		'labels': ['MCmu', 'MCe'],
+		'labels': ['mm (MC)', 'ee (MC)'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
 		'www_title': 'Comparison mm ee for MC',
 		'www_text':'Run1: full Zmm Zee comparisons for work/mc.root and work/mc_ee.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="em", inputtuple='mcmc')
+	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="eemm", inputtuple='mcmc')
 	d.update({'folders': ['finalcuts_ak5PFJetsCHSL1L2L3', 'finalcuts_ak5PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
@@ -716,14 +752,14 @@ def comparison_datamc_Zmm_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
 	plotting_jobs = []
 	d = {
-		'files': ['work/data15_25ns.root', 'work/mc15_25ns.root'],
-		'labels': ['DATAmu', 'MCmu'],
+		'files': ['work/data15_25ns_oldRes.root', 'work/mc15_25ns.root'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'www_title': 'Comparison Data MC for Zmm, run2',
 		'www_text':'Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm',
 	}
-	plotting_jobs += full_comparison(args, d, channel="m", inputtuple='datadata')#usually datamc
+	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datadata')  # usually datamc
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
@@ -732,36 +768,36 @@ def comparison_datamc_Zee_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root"""
 	plotting_jobs = []
 	d = {
-		'files': ['work/data15_25ns_ee.root', 'work/mc15_25ns_ee.root'],
-		'labels': ['DATAe', 'MCe'],
+		'files': ['work/data15_25ns_ee_oldRes.root', 'work/mc15_25ns_ee.root'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'www_title': 'Comparison Data MC for Zee, run2',
 		'www_text':'Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root',
 	}
-	plotting_jobs += full_comparison(args, d, channel="e", inputtuple='datadata')#usually datamc
+	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datadata')  # usually datamc
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_mmee_data_run2(args=None):
-	"""Run2: full mm ee comparisons for work/data15_25ns.root and work/data15_25ns_ee.root"""
+	"""Run2: full ee mm comparisons for work/data15_25ns.root and work/data15_25ns_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/data15_25ns_ee.root', 'work/data15_25ns.root'],
-		'labels': ['DATAe','DATAmu'],
+		'labels': ['ee (Data)','mm(data)'],
 		'corrections': ['L1L2L3Res', 'L1L2L3Res'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'www_title': 'Comparison Zmm Zee for Data, run2',
 		'www_text':'Run2: full mm ee comparisons for work/data15_25ns_ee.root and work/data15_25ns.root',
 	}
-	plotting_jobs += full_comparison(args, d, channel="em", inputtuple='datadata')
+	plotting_jobs += full_comparison(args, d, channel="eemm", inputtuple='datadata')
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3Res', 'finalcuts_ak4PFJetsCHSL1L2L3Res']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_mmee_mc_run2(args=None):
-	"""Run2: full mm ee comparisons for work/mc15_25ns.root and work/mc15_25ns_ee.root"""
+	"""Run2: full ee mm comparisons for work/mc15_25ns.root and work/mc15_25ns_ee.root"""
 	plotting_jobs = []
 	d = {
 		'files': ['work/mc15_25ns_ee.root', 'work/mc15_25ns.root'],
@@ -771,7 +807,7 @@ def comparison_mmee_mc_run2(args=None):
 		'www_title': 'Comparison Zmm Zee for MC, run2',
 		'www_text':'Run2: full mm ee comparisons for work/mc15_25ns_ee.root and work/mc15_25ns.root',
 	}
-	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="em", inputtuple='mcmc')
+	plotting_jobs += full_comparison(args, d, data_quantities=False, channel="eemm", inputtuple='mcmc')
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3', 'finalcuts_ak4PFJetsCHSL1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
