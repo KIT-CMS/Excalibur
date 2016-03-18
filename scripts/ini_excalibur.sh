@@ -80,6 +80,7 @@ elif [ $USER = "mfischer" ]; then
     fi
 elif [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
+    export EXCALIBUR_WORK=/storage/a/cheidecker/zjets/
 elif [ $USER = "wayand" ]; then
     echo "Hallo Stefan, schoen dich zu sehen "
     export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
