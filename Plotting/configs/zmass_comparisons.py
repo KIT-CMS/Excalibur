@@ -276,7 +276,8 @@ def zmass_comparison(args=None, additional_dictionary=None, only_normalized=Fals
 		'x_expressions': [quantity],
 		'cutlabel': True,
 		'y_subplot_lims': [0.75, 1.25],
-		'analysis_modules': ['NormalizeToFirstHisto','Ratio', 'FunctionPlot'],
+		#'analysis_modules': ['NormalizeToFirstHisto','Ratio', 'FunctionPlot'],
+		'analysis_modules': ['Ratio', 'FunctionPlot'],
 		'filename': quantity+'_fit',
 		'title': 'Work in Progress',#r'$\\mathrm{M_{Z}}$',
 		'legend': 'upper right',
@@ -758,7 +759,7 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	zjetfolder='finalcuts'
 	plotting_jobs = []
 	d = {
-		'files': ['work/data15_25ns_2015D.root', 'work/mc15_25ns_2015D.root'],
+		'files': ['work/data15_25ns.root', 'work/mc15_25ns.root'],
 		'labels': ['DATAmu', 'MCmu'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
@@ -779,7 +780,7 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=False)
 	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="m")
-	d.update({'files': ['work/mc15_25ns_2015D.root'],
+	d.update({'files': ['work/mc15_25ns.root'],
 		'labels': ['MCmu'],
 		'corrections': ['L1L2L3'],})
 	#plotting_jobs += general_mc_comparison(args, d, channel="m")
@@ -793,7 +794,7 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 	zjetfolder='finalcuts'
 	plotting_jobs = []
 	d = {
-		'files': ['work/data15_25ns_ee_2015D.root', 'work/mc15_25ns_ee_2015D.root'],
+		'files': ['work/data15_25ns_ee.root', 'work/mc15_25ns_ee.root'],
 		'labels': ['DATAe', 'MCe'],
 		'corrections': ['L1L2L3Res', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
@@ -815,7 +816,7 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 	plotting_jobs += general_comparison(args, d, channel="e", only_normalized=False)
 	plotting_jobs += profplot_datamc_comparison(args, d, channel="e")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="e")
-	d.update({'files': ['work/mc15_25ns_ee_2015D.root'],
+	d.update({'files': ['work/mc15_25ns_ee.root'],
 		'labels': ['MCe'],
 		'corrections': ['L1L2L3'],})
 	#plotting_jobs += general_mc_comparison(args, d, channel="e")
