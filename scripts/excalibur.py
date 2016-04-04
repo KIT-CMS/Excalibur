@@ -481,14 +481,14 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 		if jobs is None and batch == 'ekpsg':
 			n_free_slots = get_n_free_slots_ekpsg()
 			if n_free_slots >= 32:  # If enough slots available, use all of them. If not, its wiser to use the default number and queue them
-				jobs = ( n_free_slots / 8) * 8  # use multiples-of-X for stable job counts (caching)
+				jobs = ( n_free_slots / 8) * 8 * 8  # use multiples-of-X for stable job counts (caching)
 				print "%d free slots on ekpsg -> submit %d jobs" % (n_free_slots, jobs)
 
 		jobdict = {False: 80, True: 40} # is_data => files per job
 		n_jobs = (jobs if jobs is not None else jobdict.get(settings['InputIsData'], 70))
 		files_per_job = max((len(settings['InputFiles']) / n_jobs) + 1, min_files_per_job)
 	d = {
-		'files per job = 100': 'files per job = %d' % files_per_job,
+		'@FilesPerJob@': '%d' % files_per_job,
 		'@NICK@': settings["OutputPath"][:-5],
 		'@TIMESTAMP@': timestamp,
 		'$EXCALIBURPATH': getEnv(),
