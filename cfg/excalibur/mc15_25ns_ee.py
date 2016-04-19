@@ -4,8 +4,9 @@ import configtools
 def config():
 	cfg = configtools.getConfig('mc', 2015, 'ee', bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
-		ekppath="/storage/8/wayand/gc_zjets/full_lep_v5/crab_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_ext4_25ns/results/*.root",
-#old mc@nlo		ekppath="/storage/a/mfischer/skims/zjet/2016-01-19/Zee_Zee_DYJetsToLL_M-50_amcatnloFXFX-pythia8_HCALDebug_25ns/*.root",
+#failed		ekppath="/storage/8/wayand/gc_zjets/full_lep_v5/crab_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_ext4_25ns/results/*.root",
+#old mc@nlo
+		ekppath="/storage/a/mfischer/skims/zjet/2016-01-19/Zee_Zee_DYJetsToLL_M-50_amcatnloFXFX-pythia8_HCALDebug_25ns/*.root",
 #old mc@nlo		nafpath="/pnfs/desy.de/cms/tier2/store/user/mafische/skims/MF_Zll_run2/2016-01-19/Zee_Zee_DYJetsToLL_M-50_amcatnloFXFX-pythia8_HCALDebug_25ns/*.root"
 #old madgraph		ekppath="/storage/a/mfischer/skims/zjet/2016-01-19/Zee_Zee_DYJetsToLL_M-50_madgraphMLM-pythia8_25ns/*.root",
 #old madgraph		nafpath="/pnfs/desy.de/cms/tier2/store/user/mafische/skims/MF_Zll_run2/2016-01-19/Zee_Zee_DYJetsToLL_M-50_madgraphMLM-pythia8_25ns/*.root"
