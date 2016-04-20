@@ -86,6 +86,9 @@ elif [ $USER = "wayand" ]; then
     export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
     export EXCALIBUR_WORK=/storage/8/wayand/zjets/
     export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
+elif [ $USER = "afriedel" ]; then
+    export EXCALIBURBRILSSH="afriedel@lxplus.cern.ch"
+    export EXCALIBUR_WORK=/storage/a/afriedel/zjets/
 
 
 fi
