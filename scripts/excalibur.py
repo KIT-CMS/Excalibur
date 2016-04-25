@@ -627,7 +627,7 @@ def prepare_wkdir_parent(work_path, out_name, clean=False):
 def get_n_free_slots_ekpsg():
 	"""Get number of free slots on sg machines."""
 	condor = subprocess.Popen(('condor_status'), stdout=subprocess.PIPE)
-	output = subprocess.Popen(('egrep', 'ekpsg.*Unclaimed'), stdin=condor.stdout, stdout=subprocess.PIPE)
+	output = subprocess.Popen(('egrep', 'ekpsg.*Owner'), stdin=condor.stdout, stdout=subprocess.PIPE)
 	return int(subprocess.check_output(('wc', '-l'), stdin=output.stdout))
 
 def format_time(seconds):
