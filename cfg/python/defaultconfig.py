@@ -518,7 +518,9 @@ def mc_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
 	elif kwargs['bunchcrossing'] == "25ns":
 		# use WIP corrections until full tarballs are available again -- MF@20160215
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1_MC/Fall15_25nsV1_MC'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV2_MC/Fall15_25nsV2_MC'
+		#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
+		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1_MC/Fall15_25nsV1_MC'
 		# cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_MC")
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
