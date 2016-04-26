@@ -50,4 +50,4 @@ class InputJEC(inputfile.InputFile):
 		plotData.plotdict["nicks"].pop(0)
 
 		if add_rho_area_label:
-			plotData.plotdict['texts'] = [r'$\mathit{\rho}$' + ': {0}\nJet Area: {1}'.format(plotData.plotdict['rho'], plotData.plotdict['area'])]
+			plotData.plotdict['texts'] = [r'$\mathit{\rho}$' + ': {0} GeV\nJet Area: {1}'.format(plotData.plotdict['rho'], plotData.plotdict['area'])]
