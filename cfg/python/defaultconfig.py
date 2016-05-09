@@ -54,7 +54,7 @@ def getBaseConfig(tagged=True, **kwargs):
 					'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
 					'jet1area',
 					'jet1l1', 'jet1rc', 'jet1l2',
-					'jet1ptraw', 'jet1ptl1',
+					'jet1ptraw', 'jet1ptl1', 
 					#'jet1unc',  # Leading jet uncertainty
 					# Second jet
 					'jet2pt', 'jet2eta', 'jet2phi',
@@ -73,7 +73,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
 	}
 	if tagged:
-		cfg['Pipelines']['default']['Quantities'] += ['jet1btag', 'jet1qgtag']
+		cfg['Pipelines']['default']['Quantities'] += ['jet1btag', 'jet1qgtag', 'jet1puidraw','jet1puidtight','jet1puidmedium', 'jet1puidloose', 'jet2puidraw', 'jet2puidtight','jet2puidmedium', 'jet2puidloose']
 	return cfg
 
 
@@ -518,8 +518,8 @@ def mc_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_MC/Summer15_50nsV5_MC'
 	elif kwargs['bunchcrossing'] == "25ns":
 		# use WIP corrections until full tarballs are available again -- MF@20160215
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV2_MC/Fall15_25nsV2_MC'
-		#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
+		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV2_MC/Fall15_25nsV2_MC'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
 		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1_MC/Fall15_25nsV1_MC'
 		# cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_MC")
 	else:
