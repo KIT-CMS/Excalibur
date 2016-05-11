@@ -360,6 +360,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return product.CountValidJetsAbovePt(settings, event, 10.0);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "njets20", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.CountValidJetsAbovePt(settings, event, 20.0);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "njets30", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.CountValidJetsAbovePt(settings, event, 30.0);
         });
