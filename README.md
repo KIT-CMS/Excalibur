@@ -61,7 +61,7 @@ As an alternative to this command, you can also compile all four
 repositories by hand:
 ```
 make -B -C Kappa/DataFormats/test
-cd KappaTools; cmake . ; make -j4 -B
+cd KappaTools; cmake . ; make -j4 -B  ; cd ..
 cd Artus ; cmake . ; make -B -j4 ; cd ..
 cd Excalibur
 . scripts/ini_excalibur.sh
