@@ -11,7 +11,7 @@ void NPUProducer::Init(ZJetSettings const& settings)
     ZJetProducerBase::Init(settings);
 
     LOG(INFO) << "Loading pile-up truth from " << file;
-    ifstream f(file.c_str(), std::ios::in);
+    std::ifstream f(file.c_str(), std::ios::in);
     if (!f.is_open())
         LOG(FATAL) << "Error in NPUProducer: Could not open luminosity file: " << file;
 
