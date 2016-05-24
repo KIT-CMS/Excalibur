@@ -8,7 +8,7 @@ def config():
 	cfg['InputFiles'] = mc15Cfg['InputFiles']
 	cfg['TaggedJets'] = 'ak4PFJetsPuppi'
 
-	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts', 'betacuts'], ['None', 'L1', 'L1L2L3'])
+	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
 	configtools.remove_quantities(cfg, ['jet1btag','jet1qgtag', 'jet1rc'])
 
 	cfg['JetMatchingAlgorithm'] = 'algorithmic'

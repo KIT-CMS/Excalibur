@@ -77,8 +77,6 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new MaxNMuonsCut();
     else if (id == AlphaCut().GetFilterId())
         return new AlphaCut();
-    else if (id == BetaCut().GetFilterId())
-        return new BetaCut();
     else
         return KappaFactory::createFilter(id);
 }

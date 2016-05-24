@@ -227,7 +227,6 @@ def eemm(cfg, **kwargs):
 		'filter:LeadingLeptonPtCut',
 		'filter:LeadingJetPtCut',
 		'filter:LeadingJetEtaCut',
-		'filter:BetaCut',
 		'filter:AlphaCut',
 		'filter:ZPtCut',
 		'filter:BackToBackCut',
@@ -319,7 +318,6 @@ def ee(cfg, **kwargs):
 		'filter:ElectronEtaCut',
 		'filter:LeadingJetPtCut',
 		'filter:LeadingJetEtaCut',
-		'filter:BetaCut',
 		'filter:AlphaCut',
 		'filter:ZPtCut',
 		'filter:BackToBackCut',
@@ -390,7 +388,6 @@ def em(cfg, **kwargs):
 		'filter:ElectronEtaCut',
 		'filter:LeadingJetPtCut',
 		'filter:LeadingJetEtaCut',
-		'filter:BetaCut',
 		'filter:AlphaCut',
 		'filter:ZPtCut',
 		'filter:BackToBackCut',
@@ -422,7 +419,6 @@ def mm(cfg, **kwargs):
 		'filter:MuonEtaCut',
 		'filter:LeadingJetPtCut',
 		'filter:LeadingJetEtaCut',
-		'filter:BetaCut',
 		'filter:AlphaCut',
 		'filter:ZPtCut',
 		'filter:BackToBackCut',
@@ -505,7 +501,6 @@ def mc_2012(cfg, **kwargs):
 def mc_2015(cfg, **kwargs):
 	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['CutAlphaMax'] = 0.3
-	cfg['CutBetaMax'] = 0.1
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
 	cfg['GenParticleStatus'] = 22  # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
 	# insert Generator producer before EventWeightProducer:

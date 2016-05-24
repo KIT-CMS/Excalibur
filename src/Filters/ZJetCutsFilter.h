@@ -435,34 +435,3 @@ class AlphaCut : public ZJetFilterBase
   private:
     float alphaMax = 0;
 };
-
-///////////
-// Beta  //
-///////////
-class BetaCut : public ZJetFilterBase
-{
-  public:
-    std::string GetFilterId() const override { return "BetaCut"; }
-
-    BetaCut() : ZJetFilterBase() {}
-
-    void Init(ZJetSettings const& settings) override
-    {
-        ZJetFilterBase::Init(settings);
-        betaMax = settings.GetCutBetaMax();
-    }
-
-    bool DoesEventPass(ZJetEvent const& event,
-                       ZJetProduct const& product,
-                       ZJetSettings const& settings) const override
-    {
-        // Always true if there is no radiation jet in the event
-        return (product.GetRadiationJetCount(settings, event) > 0)
-                   ? (product.GetRadiationJet(settings, event, 0)->p4.Pt() <
-                      betaMax * product.m_z.p4.Pt())
-                   : true;
-    }
-
-  private:
-    float betaMax = 0;
-};

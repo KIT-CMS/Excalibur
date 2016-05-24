@@ -59,5 +59,4 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, CutZPtMin)
     IMPL_SETTING(float, CutBackToBack)
     IMPL_SETTING(float, CutAlphaMax)
-    IMPL_SETTING_DEFAULT(float, CutBetaMax, 1.0f)
 };

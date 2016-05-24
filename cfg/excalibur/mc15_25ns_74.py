@@ -9,7 +9,7 @@ def config():
 #old madgraph		ekppath="/storage/a/mfischer/skims/zjet/2016-01-19/Zmm_Zmm_DYJetsToLL_M-50_madgraphMLM-pythia8_25ns/*.root",
 #old madgraph		nafpath="/pnfs/desy.de/cms/tier2/store/user/mafische/skims/MF_Zll_run2/2016-01-19/Zmm_Zmm_DYJetsToLL_M-50_madgraphMLM-pythia8_25ns/*.root",
 	)
-	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts', 'betacuts'], ['None', 'L1', 'L1L2L3'])
+	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc'])
 #	cfg['NumberGeneratedEvents'] = 9056998 #for: Zmm_Zmm_DYJetsToLL_M-50_madgraphMLM-pythia8_25ns
 #	cfg['NumberGeneratedEvents'] = 29193937 #for: Zmm_Zmm_DYJetsToLL_M-50_amcatnloFXFX-pythia8_HCALDebug_25ns
