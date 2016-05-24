@@ -18,6 +18,7 @@ work.*
 *__init__.py
 *.formatted
 *.root
+!data/pileup/*.root
 !ntuples/*.root
 !test/*.root
 logs/
