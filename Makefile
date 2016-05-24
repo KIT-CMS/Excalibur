@@ -33,7 +33,6 @@ OBJECTS = $(patsubst %.cc,%.o,$(wildcard src/*.cc src/*/*.cc))
 HEADERS = $(wildcard src/*.h src/*/*.h)
 
 $(EXECUTABLE): $(OBJECTS) $(HEADERS)
-	@echo `git branch | sed -n '/\* /s///p'` &> version.log
 	@echo "Linking" $(EXECUTABLE)":"
 	@echo $(CXX) $(OBJECTS) $(LDFLAGS)
 	@$(CXX) -o scripts/$@ $(OBJECTS) $(LDFLAGS)
