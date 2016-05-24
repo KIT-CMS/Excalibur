@@ -38,12 +38,6 @@ class ZJetSettings : public KappaSettings
     // ZJetValidElectronsProducer
     IMPL_SETTING_DEFAULT(bool, ExcludeECALGap, false)
 
-    // MuonCorrector
-    IMPL_SETTING(std::string, MuonCorrectionParameters)
-    IMPL_SETTING_DEFAULT(std::string, MuonCorrectionParametersRunD, "None")
-    IMPL_SETTING_DEFAULT(bool, MuonRadiationCorrection, false)
-    IMPL_SETTING_DEFAULT(bool, MuonSmearing, false)
-
     // ZJetCutsFilter
     IMPL_SETTING(unsigned, CutNLeptonsMin)
     IMPL_SETTING(unsigned, CutNLeptonsMax)

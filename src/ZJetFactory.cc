@@ -10,7 +10,6 @@
 #include "Producers/NPUProducer.h"
 #include "Producers/ZJetNumberGeneratedEventsWeightProducer.h"
 #include "Producers/ZJetValidElectronsProducer.h"
-#include "Producers/MuonCorrector.h"
 #include "Producers/NeutrinoCounter.h"
 
 // filters
@@ -39,8 +38,6 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new ZJetNumberGeneratedEventsWeightProducer();
     else if (id == ZJetValidElectronsProducer().GetProducerId())
         return new ZJetValidElectronsProducer();
-    else if (id == MuonCorrector().GetProducerId())
-        return new MuonCorrector();
     else if (id == NeutrinoCounter().GetProducerId())
         return new NeutrinoCounter();
     else
