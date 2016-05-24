@@ -45,7 +45,7 @@ The framework comes in 4 layers:
 
 To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
-git clone https://github.com/KappaAnalysis/Kappa.git && cd Kappa && git checkout CMSSW_7_6_X && cd -
+git clone https://github.com/KappaAnalysis/Kappa.git
 git clone https://github.com/KappaAnalysis/KappaTools.git
 git clone https://github.com/artus-analysis/Artus.git 
 git clone https://github.com/artus-analysis/Excalibur.git 
