@@ -36,8 +36,8 @@ def get_special_parser(args):
 def response_extrapolation(args=None, additional_dictionary=None, inputtuple='datamc'):
 	"""Do the extrapolation plot for balance and MPF, add Ratio, display fit parameters. Default is an input tuple of data, mc, also possible is datadata and mcmc."""
 	ad = copy.deepcopy(additional_dictionary) if additional_dictionary else {}
-	for quantity in ["files", "corrections", "algorithms", "zjetfolders"]:
-		ad[quantity].extend(ad[quantity])
+	for quantity in ["files", "corrections", "algorithms", "zjetfolders"]: #Copy everything to print pt_balance and mpf in same plot
+		ad[quantity].extend(ad[quantity]) 
 	
 	try:
 		labels = ["({0})".format(name) for name in ad.pop('labels')]
@@ -46,7 +46,7 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 			labels = ["({0})".format(name) for name in ad.pop('nicks')]
 		except KeyError:
 			labels = ['Data', 'MC']
-	labellist = [
+	labellist = [ #Print response method in front of normal labels
 			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[0]),
 			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[1]),
 			r"$\\mathit{p}_T$ balance" + " {0}".format(labels[2]),
@@ -111,7 +111,7 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 		'line_styles': linelist[inputtuple],
 		'line_widths': ['1'],
 		'tree_draw_options': 'prof',
-		'analysis_modules': ['FunctionPlot'],
+		'analysis_modules': ['FunctionPlot'], #Fit for extrapolation
 		#'ratio_denominator_no_errors': False,
 		'plot_modules': ['PlotMplZJet'],
 		#'extrapolation_text_nicks': ['ptbalance_ratio_fit', 'mpf_ratio_fit'],
@@ -136,43 +136,57 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 		d['zjetfolders'] = ['noalphacuts'],
 	return [PlottingJob(plots=[d], args=args)]
 def alpha_efficiency(args=None, additional_dictionary=None):
+	'''Calculate the fraction of passed events and matched 2nd jets in dependance of the height of the alpha cut'''
 	plots = []
-	ad = {"files" : [], "corrections": [], "algorithms": [], "zjetfolders" : [], 'labels': []}
-	d = {
-		'cutlabel': True,
-		'x_expressions': [],
-		'weights' : [],
-		'filename' : 'alpha_efficiency',
-		'zjetfolders' : 'noalphacuts',
-		'nicks' : ['puppi', 'chs', 'chspuidtight', 'chspuidmedium','puppia', 'chsa', 'chspuidtighta', 'chspuidmediuma'],
-		'divide_denominator_nicks' : ['puppi', 'chs', 'chspuidtight', 'chspuidmedium'],
-		"divide_numerator_nicks" : ['puppia', 'chsa', 'chspuidtighta', 'chspuidmediuma'],
-		"divide_result_nicks" : ['puppi_eff', 'chs_eff', 'chspuidtight_eff', 'chspuidmedium_eff'],
-		'nicks_whitelist': ['puppi_eff', 'chs_eff', 'chspuidtight_eff', 'chspuidmedium_eff'],
-		'analysis_modules': ['Divide', 'ConvertToTGraphErrors'],
-		'colors' : ['black','red','blue', 'green'],
-		'x_bins' : ['0.025 0.075 0.125 0.175 0.225 0.275 0.325'],
-		'x_label': r"$\\alpha_\\mathrm{max}$",
-		'texts': [r"MC $\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
-		'texts_x': [0.4],
-		'texts_y': [1.07],
-		'texts_size': [16],
-		'x_lims' : [0.025,0.325],
-		'y_lims' : [0,1],
-		'y_label' : 'Cut Efficiency'
-	}
-	for amax in range(5, 35, 5):
-		d['x_expressions'] += [(str(amax/100.))]*8
-		d['weights'] += ['1']*4
-		d['weights'] += ['alpha<'+str(amax/100.)]*4
-		for quantity in ["files", "corrections", "algorithms", "zjetfolders", "labels"]:
-			ad[quantity]+=(additional_dictionary[quantity])*2
-		
-	if ad != None:
-		d.update(ad)
-	d['www'] = additional_dictionary['www']
-	d['zjetfolders'] = ['noalphacuts'],
-	return [PlottingJob(plots=[d], args=args)]
+	ad = {"files" : [], "corrections": [], "algorithms": [], 'labels': []}
+	
+	for quant in ['events', 'matched']: #2 plots: passed events, and matched 2nd jets
+		d = {
+			'cutlabel': True,
+			'x_expressions': [],
+			'weights' : [],
+			'filename' : 'alpha_efficiency'+quant,
+			'zjetfolders' : 'noalphacuts',
+			'nicks' : ['puppi', 'chs', 'chspuidtight', 'chspuidmedium','puppia', 'chsa', 'chspuidtighta', 'chspuidmediuma'],
+			'divide_denominator_nicks' : ['puppi', 'chs', 'chspuidtight', 'chspuidmedium'],
+			"divide_numerator_nicks" : ['puppia', 'chsa', 'chspuidtighta', 'chspuidmediuma'],
+			"divide_result_nicks" : ['puppi_eff', 'chs_eff', 'chspuidtight_eff', 'chspuidmedium_eff'],
+			'nicks_whitelist': ['puppi_eff', 'chs_eff', 'chspuidtight_eff', 'chspuidmedium_eff'],
+			'analysis_modules': ['Divide', 'ConvertToTGraphErrors'],
+			'colors' : ['black','red','blue', 'green'],
+			'x_bins' : ['0.025 0.075 0.125 0.175 0.225 0.275 0.325'],
+			'x_label': r"$\\alpha_\\mathrm{max}$",
+			'texts': [r"MC $\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
+			'texts_x': [0.4],
+			'texts_y': [1.06],
+			'texts_size': [16],
+			'www' : additional_dictionary['www'],
+			'zjetfolders' : 'noalphacuts',
+			'x_lims' : [0.025,0.325],
+			'y_lims' : [0,1],
+			
+		}
+		d2 = copy.deepcopy(d)
+		for amax in range(5, 35, 5): # Steps of alpha, where fractions are calculated 
+			d['x_expressions'] += [(str(amax/100.))]*8
+			d2['x_expressions'] += [(str(amax/100.))]*8
+			for quantity in ["files", "corrections", "algorithms", "labels"]: #Copy everything for each step
+				ad[quantity]+=(additional_dictionary[quantity])
+			d.update(ad)
+			d2.update(ad)
+			if quant == 'events':
+				d['weights'] += ['1']*4 #Denominator: All events
+				d['weights'] += ['alpha<'+str(amax/100.)]*4 #Numerator: Events that pass
+				d['y_label'] = 'Fraction of passed events'
+			elif quant == 'matched':
+				d2['weights'] += ['alpha<'+str(amax/100.)]*4 #Denominator: All events that pass				
+				d2['weights'] += ['alpha<'+str(amax/100.)+'&matchedgenjet2pt>0']*4 #Numerator: Events that pass and have matched 2nd jet
+				d2['y_label'] = 'Fraction of matched 2nd jets'
+		if quant == 'events':
+			plots.append(d)
+		else:
+			plots.append(d2)
+	return [PlottingJob(plots=plots, args=args)]
 def fake_events(args=None, additional_dictionary=None):
 	plots = []
 	ad = copy.deepcopy(additional_dictionary) if additional_dictionary else {}
@@ -181,16 +195,16 @@ def fake_events(args=None, additional_dictionary=None):
 		'filename': 'fakes',
 		'x_bins': ['0.5 1.5 2.5 3.5 4.5'],
 		'x_lims': [0,5],
-		'weights':['jet2eta<2.5','jet2eta<2.5','jet2eta<2.5','jet2eta<2.5','jet2eta<2.5&matchedgenjet2pt>0','jet2eta<2.5&matchedgenjet2pt>0','jet2eta<2.5&matchedgenjet2pt>0','jet2eta<2.5&matchedgenjet2pt>0'],	
+		'weights':['jet2eta<2.5','jet2eta<2.5','jet2eta<2.5','jet2eta<2.5','jet2eta<2.5&matchedgenjet2pt>0','jet2eta<2.5&matchedgenjet2pt>0','jet2eta<2.5&matchedgenjet2pt>0','jet2eta<2.5&matchedgenjet2pt>0'], # Plot all files first with all events in central eta region, and another time only matched 2nd jet events	
 		'analysis_modules': ['Ratio'],
 		'markers' : ['bar','bar','bar','bar','bar','bar','bar', 'bar','o','o','o', 'o'],
-		'colors': ['red', 'red', 'red', 'red','green', 'green', 'green','green', 'black','black','black', 'black'],
+		'colors': ['red', 'red', 'red', 'red','green', 'green', 'green','green', 'black','black','black', 'black'], #Red vor all events, green for matched, black for ratios
 		'nicks' : ['puppi', 'chs', 'chspuidtight', 'chspuidmedium','puppimatched', 'chsmatched', 'chspuidtightmatched', 'chspuidmediummatched'],
 		'ratio_numerator_nicks' : ['puppimatched', 'chsmatched', 'chspuidtightmatched', 'chspuidmediummatched'],
 		'ratio_denominator_nicks': ['puppi', 'chs', 'chspuidtight', 'chspuidmedium'],
 		'ratio_result_nicks': ['puppi_ratio', 'chs_ratio', 'chspuidtight_ratio', 'chspuidmedium_ratio'],
 		'y_subplot_lims' : [0.5,0.75],
-		'x_expressions': ['1','2','3','4','1','2','3','4'],
+		'x_expressions': ['1','2','3','4','1','2','3','4'], #Get different bins for each file, same bin for all events and matched
 		'x_label': 'Jet 2 matching',
 		'x_ticks': [1,2,3,4],
 		'x_tick_labels': ['Puppi', 'CHS', 'PuIDtight','PuIDmed'],
@@ -201,17 +215,17 @@ def fake_events(args=None, additional_dictionary=None):
 	
 	if ad != None:
 		d.update(ad)
-	d['texts'] += r"|$\\mathit{\\eta}^{\\mathrm{jet2}}$|$<2.5$"
-	d['texts_x'] += 0.03
-	d['texts_y'] += 0.79
-	d['texts_size'] += 'large'
+	d['texts'] += [r"|$\\mathit{\\eta}^{\\mathrm{jet2}}$|$<2.5$"] #Additional label for the jet2eta cut taken because puppi takes it in general
+	d['texts_x'] += [0.03]
+	d['texts_y'] += [0.79]
+	d['texts_size'] += ['large']
 	d['labels'] = ['Fakes','Fakes','Fakes','Fakes','Matched','Matched','Matched','Matched']
 	plots.append(d)
 	return [PlottingJob(plots=plots, args=args)]
 			
 
 def basic_comparisons(args=None, additional_dictionary=None, data_quantities=True, only_normalized=False, channel="mm"):
-	"""Comparison of: zpt zy zmass zphi jet1pt jet1eta jet1phi npv, both absolute and normalized"""
+	"""Comparison of some quantities both absolute and normalized"""
 	plots = []
 	ad = copy.deepcopy(additional_dictionary) if additional_dictionary else {}
 	for quantity in ["files", "corrections", "algorithms", "zjetfolders"]:
@@ -378,7 +392,7 @@ def basic_profile_comparisons(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 def genjet_profile_comparisons(args=None, additional_dictionary=None):
-	""" Some basic profile plots. """
+	""" Some profile plots showing differences of matched genjets and recojets. """
 	plots = []
 	jet1_quantities = ['jet1pt-matchedgenjet1pt']#'abs(jet1eta-matchedgenjet1eta)', 'abs(jet1phi-matchedgenjet1phi)','sqrt((jet1eta-matchedgenjet1eta)^2+(jet1phi-matchedgenjet1phi)^2)']
 	jet2_quantities = ['jet2pt-matchedgenjet2pt']#,'abs(jet2eta-matchedgenjet2eta)', 'abs(jet2phi-matchedgenjet2phi)','sqrt((jet2eta-matchedgenjet2eta)^2+(jet2phi-matchedgenjet2phi)^2)']
@@ -394,12 +408,12 @@ def genjet_profile_comparisons(args=None, additional_dictionary=None):
 		'sqrt((jet2eta-matchedgenjet2eta)^2+(jet2phi-matchedgenjet2phi)^2)': ['jet2delta_R',r"$\\Delta R(jet2,genjet2)$",[0,5]],
 	}
 		
-	for xquantity in ('matchedgenjet1pt','matchedgenjet2pt'):
+	for xquantity in ('matchedgenjet1pt','matchedgenjet2pt'): #Plot jet1 y-properties over jet1pt, same for jet2
 		d = {
 			'x_expressions': [xquantity],
 			'cutlabel': True,
 			'analysis_modules': ['ConvertToTGraphErrors'],
-			'weights' : 'jet1pt>0&jet2pt>0&matchedgenjet1pt>0&matchedgenjet2pt>0',
+			'weights' : 'jet1pt>0&jet2pt>0&matchedgenjet1pt>0&matchedgenjet2pt>0', #Take only matched jets for this analysis
 			'tree_draw_options': 'prof',
 			'colors' : ['black','red','blue','green','green','blue','black'],
 			'markers': ['o', 'd', '^','s','s','^', 'o'],
@@ -412,7 +426,7 @@ def genjet_profile_comparisons(args=None, additional_dictionary=None):
 		}
 		if xquantity == 'matchedgenjet1pt':
 
-			for yquantity in jet1_quantities:
+			for yquantity in jet1_quantities: #Jet1
 				d1 = copy.deepcopy(d)
 				d1["x_bins"] = ['12,30,150']
 				d1['y_expressions'] = yquantity
@@ -420,7 +434,7 @@ def genjet_profile_comparisons(args=None, additional_dictionary=None):
 				d1['y_label'] = y_dict[yquantity][1]
 				d1['y_lims'] = y_dict[yquantity][2]
 				plots.append(d1)
-		elif xquantity == 'matchedgenjet2pt':
+		elif xquantity == 'matchedgenjet2pt': #Jet2
 			d["x_bins"] = ['14.0,70']
 			for yquantity in jet2_quantities:
 				d2 = copy.deepcopy(d)
@@ -495,11 +509,11 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	""" Do all comparison plots"""
 	plotting_jobs = []
 	#plotting_jobs += response_extrapolation(args, d, inputtuple)
-	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
+	#plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
 	#plotting_jobs += basic_profile_comparisons(args, d)
-	plotting_jobs += genjet_profile_comparisons(args, d)
-	#plotting_jobs += fake_events(args,d)
-	#plotting_jobs += alpha_efficiency(args,d)
+	#plotting_jobs += genjet_profile_comparisons(args, d)
+	plotting_jobs += fake_events(args,d)
+	plotting_jobs += alpha_efficiency(args,d)
 	#plotting_jobs += jet_resolution(args, additional_dictionary=d)
 	return plotting_jobs
 
