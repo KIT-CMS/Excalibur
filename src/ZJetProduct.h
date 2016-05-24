@@ -38,10 +38,6 @@ class ZJetProduct : public KappaProduct
     // Added by RecoJetGenJetMatchingProducer
     boost::ptr_map<std::string, std::vector<int>> m_matchedGenJets;
 
-    // Added by RadiationJetsProducer
-    std::map<std::string, std::vector<KJet*>> m_radiationJets;
-    std::map<std::string, std::vector<unsigned long>> m_radiationJetsIndex;
-
     // Added by NPUProducer
     float npumean_data = -1.0;
 
@@ -131,68 +127,6 @@ class ZJetProduct : public KappaProduct
             }
         }
         return count;
-    }
-
-    // Access to radiation jets
-    unsigned long GetRadiationJetCount(ZJetSettings const& settings,
-                                       ZJetEvent const& event,
-                                       std::string corrLevel) const
-    {
-        // Gen jets are always radiation jets
-        if (corrLevel == "Gen") {
-            return (event.m_genJets->size() - 1);
-        } else {
-            return SafeMap::Get(m_radiationJets, corrLevel).size();
-        }
-    }
-
-    unsigned long GetRadiationJetCount(ZJetSettings const& settings, ZJetEvent const& event) const
-    {
-        return GetRadiationJetCount(settings, event, settings.GetCorrectionLevel());
-    }
-
-    unsigned long GetRadiationJetIndex(ZJetSettings const& settings,
-                                       ZJetEvent const& event,
-                                       unsigned long index,
-                                       std::string corrLevel) const
-    {
-        assert(GetRadiationJetCount(settings, event, corrLevel) > index);
-
-        // Gen jets are always radiation jets
-        if (corrLevel == "Gen") {
-            return index;
-        } else {
-            return SafeMap::Get(m_radiationJetsIndex, corrLevel)[index];
-        }
-    }
-
-    unsigned long GetRadiationJetIndex(ZJetSettings const& settings,
-                                       ZJetEvent const& event,
-                                       unsigned long index) const
-    {
-        return GetRadiationJetIndex(settings, event, index, settings.GetCorrectionLevel());
-    }
-
-    KLV* GetRadiationJet(ZJetSettings const& settings,
-                         ZJetEvent const& event,
-                         unsigned long index,
-                         std::string corrLevel) const
-    {
-        assert(GetRadiationJetCount(settings, event, corrLevel) > index);
-
-        // Gen jets
-        if (corrLevel == "Gen") {
-            return &(event.m_genJets->at(index));
-        } else {
-            return (SafeMap::Get(m_radiationJets, corrLevel)[index]);
-        }
-    }
-
-    KLV* GetRadiationJet(ZJetSettings const& settings,
-                         ZJetEvent const& event,
-                         unsigned long index) const
-    {
-        return GetRadiationJet(settings, event, index, settings.GetCorrectionLevel());
     }
 
     // Access to invalid jets

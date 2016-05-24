@@ -144,8 +144,6 @@ the pT for the intermediate correction levels is sometimes also needed.
 - *jet1(l1|l2|rc|res)*: Jet energy correction factors for the different levels
 - *jet1(btag|qgtag)*: Multivariate discriminators for identification of jets from
 gluon resp. b-quarks
-- *radiation(\*)*: Jet radiated from the leading jet (Used in event-selection
-improvement studies)
 - *skimjet1(pt|eta|phi|validity)*: pT, pseudorapidity, phi, validity for leading jet in skim
 
 ###### Data

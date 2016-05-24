@@ -367,35 +367,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "njets30", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.CountValidJetsAbovePt(settings, event, 30.0);
         });
-    // Radiation Jets
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "radiationjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.GetRadiationJetCount(settings, event) > 0)
-                       ? product.GetRadiationJet(settings, event, 0)->p4.Pt()
-                       : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "radiationjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.GetRadiationJetCount(settings, event) > 0)
-                       ? product.GetRadiationJet(settings, event, 0)->p4.Phi()
-                       : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "radiationjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.GetRadiationJetCount(settings, event) > 0)
-                       ? product.GetRadiationJet(settings, event, 0)->p4.Eta()
-                       : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
-        "radiationjet1index", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.GetRadiationJetCount(settings, event) > 0)
-                       ? static_cast<int>(product.GetRadiationJetIndex(settings, event, 0))
-                       : DefaultValues::UndefinedInt;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
-        "nradiationjets", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return product.GetRadiationJetCount(settings, event);
-        });
 
     // Gen jets
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(

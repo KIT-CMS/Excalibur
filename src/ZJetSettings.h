@@ -26,9 +26,6 @@ class ZJetSettings : public KappaSettings
     // RecoJetGenJetMatchingProducer
     IMPL_SETTING_DEFAULT(double, DeltaRMatchingRecoJetGenJet, 0.25)
 
-    // RadiationJetProducer
-    IMPL_SETTING_DEFAULT(double, DeltaRRadiationJet, 1.0)
-
     // ZJetNumberGeneratedEventsWeightProducer (sample reweighting)
     IMPL_SETTING_DEFAULT(bool, SampleReweighting, false)
     IMPL_SETTING_DOUBLELIST(SampleReweightingCrossSections)
@@ -37,14 +34,6 @@ class ZJetSettings : public KappaSettings
     // NPUProducer (insert npu from external file)
     IMPL_SETTING(std::string, NPUFile)  // pileup JSON reformatted as csv
     IMPL_SETTING(float, Minbxsec)       // MinBias Cross Section in mb
-
-    // ElectronSFProducer
-    IMPL_SETTING(std::string, ElectronSFRootfilePath)
-    IMPL_SETTING_DEFAULT(std::string, ElectronSFVariation, "None")
-
-    // ElectronPtVariationProducer
-    IMPL_SETTING(std::string, ElectronPtVariationFile)
-    IMPL_SETTING_DEFAULT(std::string, ElectronPtVariation, "None")
 
     // ZJetValidElectronsProducer
     IMPL_SETTING_DEFAULT(bool, ExcludeECALGap, false)

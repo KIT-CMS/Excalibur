@@ -222,7 +222,6 @@ def eemm(cfg, **kwargs):
 		'producer:ZJetCorrectionsProducer',
 		'producer:TypeIMETProducer',
 		'producer:JetSorter',
-		'producer:RadiationJetProducer',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
 		'filter:LeadingLeptonPtCut',
@@ -255,8 +254,6 @@ def eemm(cfg, **kwargs):
 		'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
 		'mu2pt', 'mu2eta', 'mu2phi',
 		'nmuons',
-		'radiationjet1pt', 'radiationjet1phi', 'radiationjet1eta',
-		'radiationjet1index', 'nradiationjets'
 	]
 	cfg['CutNLeptonsMin'] = 2
 	cfg['CutNLeptonsMax'] = 3
@@ -419,7 +416,6 @@ def mm(cfg, **kwargs):
 		'producer:ZJetCorrectionsProducer',
 		'producer:TypeIMETProducer',
 		'producer:JetSorter',
-		'producer:RadiationJetProducer',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
 		'filter:MuonPtCut',
@@ -447,8 +443,6 @@ def mm(cfg, **kwargs):
 		'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
 		'mu2pt', 'mu2eta', 'mu2phi',
 		'nmuons',
-		'radiationjet1pt', 'radiationjet1phi', 'radiationjet1eta',
-		'radiationjet1index', 'nradiationjets'
 	]
 	cfg['CutNMuonsMin'] = 2
 	cfg['CutNMuonsMax'] = 3
@@ -510,7 +504,6 @@ def mc_2012(cfg, **kwargs):
 
 def mc_2015(cfg, **kwargs):
 	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
-	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
@@ -591,14 +584,6 @@ def _2012ee(cfg, **kwargs):
 	cfg['Electrons']='correlectrons'
 	cfg['HltPaths'] = ['HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
 	cfg['ExcludeECALGap'] = True
-	if cfg['ElectronID'] is not 'none':
-		if 'producer:EventWeightProducer' in cfg['Processors']:
-			cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:ElectronSFProducer')
-		else:
-			cfg['Processors'] += ['producer:ElectronSFProducer', 'producer:EventWeightProducer']
-			cfg['EventWeight'] = 'weight'
-		cfg['ElectronSFRootfilePath'] = configtools.getPath() + "/data/electron_scalefactors/"
-		cfg['Pipelines']['default']['Quantities'] += ['electronSFWeight']
 
 def _2015mm(cfg, **kwargs):
 	cfg['MuonID'] = 'tight'

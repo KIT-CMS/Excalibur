@@ -7,14 +7,11 @@
 #include "Producers/JetSorter.h"
 #include "Producers/RecoJetGenPartonMatchingProducer.h"
 #include "Producers/RecoJetGenJetMatchingProducer.h"
-#include "Producers/RadiationJetProducer.h"
 #include "Producers/NPUProducer.h"
 #include "Producers/ZJetNumberGeneratedEventsWeightProducer.h"
-#include "Producers/ElectronSFProducer.h"
 #include "Producers/ZJetValidElectronsProducer.h"
 #include "Producers/MuonCorrector.h"
 #include "Producers/NeutrinoCounter.h"
-#include "Producers/ElectronPtVariator.h"
 
 // filters
 #include "Filters/ZJetCutsFilter.h"
@@ -36,22 +33,16 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new RecoJetGenPartonMatchingProducer();
     else if (id == RecoJetGenJetMatchingProducer().GetProducerId())
         return new RecoJetGenJetMatchingProducer();
-    else if (id == RadiationJetProducer().GetProducerId())
-        return new RadiationJetProducer();
     else if (id == NPUProducer().GetProducerId())
         return new NPUProducer();
     else if (id == ZJetNumberGeneratedEventsWeightProducer().GetProducerId())
         return new ZJetNumberGeneratedEventsWeightProducer();
-    else if (id == ElectronSFProducer().GetProducerId())
-        return new ElectronSFProducer();
     else if (id == ZJetValidElectronsProducer().GetProducerId())
         return new ZJetValidElectronsProducer();
     else if (id == MuonCorrector().GetProducerId())
         return new MuonCorrector();
     else if (id == NeutrinoCounter().GetProducerId())
         return new NeutrinoCounter();
-    else if (id == ElectronPtVariator().GetProducerId())
-        return new ElectronPtVariator();
     else
         return KappaFactory::createProducer(id);
 }
