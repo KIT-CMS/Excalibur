@@ -4,8 +4,6 @@ import configtools
 def config():
 	cfg = configtools.getConfig('data', 2015, 'mm', bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
-#failed		ekppath="/storage/8/wayand/gc_zjets/full_lep_v4/crab_Zll_DoMuRun2015D-16Dec2015-v1/results//*.root",
-#old
 		ekppath="/storage/a/mfischer/skims/zjet/2016-01-19/Zmm_Zmm_Run2015D-16Dec2015-v1/*.root",
 #old		nafpath="/pnfs/desy.de/cms/tier2/store/user/mafische/skims/MF_Zll_run2/2016-01-19/Zmm_Zmm_Run2015D-16Dec2015-v1/*.root",
 	)
