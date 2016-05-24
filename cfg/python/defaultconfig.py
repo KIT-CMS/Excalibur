@@ -8,7 +8,7 @@ def getBaseConfig(tagged=True, **kwargs):
 	cfg = {
 		# Artus General Settings
 		'ProcessNEvents': -1,
-		'FirstEvent': 0,
+		'FirsEvent': 0,
 		'Processors': [],
 		'InputFiles': [],  # Overwritten by (data/mc).py, excalibur.py, json_modifier.py (if run in batch mode)
 		'OutputPath': 'out', # Overwritten by excalibur.py
@@ -27,6 +27,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		# Valid Jet Selection
 		'ValidJetsInput': 'uncorrected',
 		'JetID' : 'loose',
+		#'PuJetIDs' : ['2:puJetIDFullTight'],
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak5PFJetsCHS',
 		# PU
@@ -66,7 +67,7 @@ def getBaseConfig(tagged=True, **kwargs):
 				],
 			},
 		},
-
+		
 		# Wire Kappa objects
 		'EventMetadata' : 'eventInfo',
 		'LumiMetadata' : 'lumiInfo',
@@ -74,8 +75,11 @@ def getBaseConfig(tagged=True, **kwargs):
 	}
 	if tagged:
 		cfg['Pipelines']['default']['Quantities'] += ['jet1btag', 'jet1qgtag', 'jet1puidraw','jet1puidtight','jet1puidmedium', 'jet1puidloose', 'jet2puidraw', 'jet2puidtight','jet2puidmedium', 'jet2puidloose']
+	pujetids = []
+	for x in range(2,100):
+		pujetids.append(str(x)+':puJetIDFullMedium')	
+	cfg['PuJetIDs'] = pujetids
 	return cfg
-
 
 ###
 # config fragments for single categories (data/MC, year, channel)
