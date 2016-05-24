@@ -18,7 +18,7 @@ class BinningsDictZJet(BinningsDict):
 		absetabins = "0 0.783 1.305 1.93 2.5 2.964 3.139 5.191"
 		self.binnings_dict.update({
 			'zpt': "30 40 50 60 85 105 130 175 230 300 400 500 700 1000 1500",
-			'npv':"-0.5 4.5 6.5 8.5 10.5 12.5 21.5",
+		#	'npv':"-0.5 4.5 6.5 8.5 10.5 12.5 21.5",
 			'eta':" ".join([str(y) for y in [-i for i in [float(x) for x in absetabins.split(" ")][7:0:-1]]+[float(x) for x in absetabins.split(" ")]]),
 			'abseta': absetabins,
 			'jet1abseta': absetabins,
