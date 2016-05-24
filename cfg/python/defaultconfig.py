@@ -202,7 +202,7 @@ def _2015(cfg, **kwargs):
 		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
 
 # channel:
-def emmm(cfg, **kwargs):
+def eemm(cfg, **kwargs):
 	cfg['Muons'] = 'muons'
 	cfg['Electrons'] = 'electrons'
 	cfg['ElectronMetadata'] = 'electronMetadata'
@@ -211,6 +211,7 @@ def emmm(cfg, **kwargs):
 		'producer:ValidMuonsProducer',
 		#'producer:ZJetValidElectronsProducer',
 		'producer:ValidElectronsProducer',
+		#'producer:ValidLeptonsProducer'
 		'filter:MinNLeptonsCut',
 		'filter:MaxNLeptonsCut',
 		'producer:ZmmProducer',
