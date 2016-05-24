@@ -677,13 +677,13 @@ def fit_zmass_profplot_datamc(args=None, additional_dictionary=None, only_normal
 	plots = []
 	bins=[]
 	x_dict=generate_dict()
-	cut_quantities=['zpt','zeta']
-	cut_binnings=['30 40 50 60 85 105 130 175 275 500','-5.191 -2.964 -2.5 -1.93 -1.305 -0.783 0 0.783 1.305 1.93 2.5 2.964 5.191']
+	cut_quantities=['zpt','zeta'] #x_quantity on the plot
+	cut_binnings=['30 40 50 60 85 105 130 175 275 500','-5.191 -2.964 -2.5 -1.93 -1.305 -0.783 0 0.783 1.305 1.93 2.5 2.964 5.191'] # x_bins in plot
 	for cut_index,cut_quantity in enumerate(cut_quantities):
 		cut_binning=cut_binnings[cut_index].split()
 		fit_quantity='zmass'
 		d = {
-			'x_expressions': fit_quantity,
+			'x_expressions': fit_quantity, #y_expression in the plot
 			'cutlabel': True,
 			'analysis_modules': ['FunctionPlot', 'HistogramFromFitValues','Ratio'],
 			'filename': fit_quantity+'_vs_'+cut_quantity+'_fit_profplot',
@@ -706,11 +706,11 @@ def fit_zmass_profplot_datamc(args=None, additional_dictionary=None, only_normal
 			fit_nicks=[]
 			x_values=[]
 			for index in range(len(cut_binning)-1):
-				weights+=[str(cut_binning[index])+'<'+cut_quantity+'&&'+cut_quantity+'<'+str(cut_binning[index+1])]
-				nicks+=['nick_'+str(cut_quantity)+'_'+str(dataset)+'_'+str(index)]
+				weights+=[str(cut_binning[index])+'<'+cut_quantity+'&&'+cut_quantity+'<'+str(cut_binning[index+1])] # cut out one bin in each loop
+				nicks+=['nick_'+str(cut_quantity)+'_'+str(dataset)+'_'+str(index)] #Get nicks for each bin and each file
 				fit_nicks+=['nick_'+str(cut_quantity)+'_'+str(dataset)+'_'+str(index)+'_fit']
 				if dataset=='Data':
-					files+=[copyfiles[0]]
+					files+=[copyfiles[0]] 
 					labels+=['DATA']
 				elif dataset=='MC':
 					files+=[copyfiles[1]]
@@ -719,7 +719,7 @@ def fit_zmass_profplot_datamc(args=None, additional_dictionary=None, only_normal
 			fit_function_nicks+=fit_nicks
 			fit_hist_nicks+=[" ".join(fit_nicks)]
 			x_bins+=[" ".join(map(str,cut_binning))]
-
+		#Now fit the entrys of each bin and each file seperately with a Voigt function
 		d.update({
 			'nicks':nicks,
 			'files': files,
@@ -752,6 +752,97 @@ def fit_zmass_profplot_datamc(args=None, additional_dictionary=None, only_normal
 	
 	return [PlottingJob(plots=plots, args=args)]
 
+def fit_zmass_lepton_part(args=None, additional_dictionary=None, channels=['e','m']):
+	"""Profile Plot of fitted Zmasses in dependance of the region where the leptons where detected"""
+	plots = []
+	bins=[]
+	electron_part = '2*(-1.4<e1eta&e1eta<1.4&-1.4<e2eta&e2eta<1.4)+1*(e1eta<-1.4&e2eta<-1.4)+3*(e1eta>1.4&e2eta>1.4)' # Get different values in dependence of the electron region
+	muon_part = '2.2*(-1.4<mu1eta&mu1eta<1.4&-1.4<mu2eta&mu2eta<1.4)+1.2*(mu1eta<-1.4&mu2eta<-1.4)+3.2*(mu1eta>1.4&mu2eta>1.4)' # Get different values in dependence of the muon region
+	x_dict=generate_dict()
+	cut_quantities_e = electron_part
+	cut_quantities_m = muon_part
+	cut_binnings_e=['0.5 1.5 2.5 3.5'] #Create binning so that each region gets another bin
+	cut_binning_e=cut_binnings_e[0].split()
+	cut_binnings_m=['0.7 1.7 2.7 3.7']
+	cut_binning_m=cut_binnings_m[0].split()
+	d = ({
+		'x_expressions': 'zmass', #y value in fit
+		'cutlabel': True,
+		'analysis_modules': ['FunctionPlot', 'HistogramFromFitValues','Ratio'],
+		'ratio_denominator_no_errors' : False,
+		'filename': 'zmass_electrons_in_barrel_or_endcaps',
+		'legend': 'upper right',
+		'nicks' : ['Data', 'MC','Ratio']
+	})
+	if additional_dictionary:
+		d.update(additional_dictionary)
+	copyfiles=d['files']
+	weights=[]
+	nicks=[]
+	files=[]
+	labels=[]
+	corrections=[]
+	fit_hist_nicks=[]
+	fit_function_nicks=[]
+	x_bins=[]
+	for dataset in ['Data','MC']:
+		for channel in channels:
+			fit_nicks=[]
+			x_values=[]
+			x_bins=[]
+			for index in range(3):#Get each bin and each file seperatly to perform the Voigt fit for each region
+				if channel == 'e': 
+					weights+=[str(cut_binning_e[index])+'<'+cut_quantities_e+'&&'+cut_quantities_e+'<'+str(cut_binning_e[index+1])]
+					nicks+=['nick_'+'e'+'_'+str(dataset)+'_'+str(index)]
+					fit_nicks+=['nick_'+'e'+'_'+str(dataset)+'_'+str(index)+'_fit']
+					if dataset=='Data':
+						files+=[copyfiles[0]]
+					elif dataset=='MC':
+						files+=[copyfiles[1]]
+					x_bins.extend([cut_binnings_e, cut_binnings_e])
+				if channel == 'm':
+					weights+=[str(cut_binning_m[index])+'<'+cut_quantities_m+'&&'+cut_quantities_m+'<'+str(cut_binning_m[index+1])]
+					nicks+=['nick_'+'m'+'_'+str(dataset)+'_'+str(index)]
+					fit_nicks+=['nick_'+'m'+'_'+str(dataset)+'_'+str(index)+'_fit']
+					if dataset=='Data':
+						files+=[copyfiles[2]]
+					elif dataset=='MC':
+						files+=[copyfiles[3]]
+					x_bins.extend([cut_binnings_m, cut_binnings_m])
+			corrections+=['L1L2L3']	
+			fit_function_nicks+=fit_nicks
+			fit_hist_nicks+=[" ".join(fit_nicks)]
+	#Do the Voigt fit and plot the results
+	d.update({
+		'nicks':nicks,
+		'files': files,
+		'corrections': corrections,
+		"function_fit": nicks,
+		"function_nicknames": fit_function_nicks,
+			#Voigt function:
+		"functions": ['([4]*TMath::Voigt(x-[0],[1],2.4952)+[2]*x+[3])'],#fix width-parameter by value of PDG added background linear function					
+		"function_parameters": ["91,2.3,0.,0.,2500"],
+		'weights': weights,
+		'nicks_whitelist': ['fit_data_values','fit_mc_values'],
+		'histogram_from_fit_nicks': fit_hist_nicks,
+		'histogram_from_fit_newnick': ['fit_data_values_ee','fit_mc_values_ee','fit_data_values','fit_mc_values'],
+		'histogram_from_fit_x_values': x_bins,
+		'labels' : ['Data_e','Data_m','Ratio_m','Ratio_e','MC_e','MC_m'],
+		'y_lims': [88,95],
+		'y_label': 'zmass',
+		'markers': ['o', 'd','o','o','o', 'd'],
+		"colors":['black', 'black', 'black', 'black', 'red', 'red'],
+		'lines': [91.1876],
+		'ratio_numerator_nicks': ['fit_data_values','fit_data_values_ee'],
+		'ratio_denominator_nicks': ['fit_mc_values','fit_mc_values_ee'],
+		'y_subplot_lims': [0.99, 1.01],
+		'x_ticks' : [1.1, 2.1, 3.1],
+		'x_label' : ' both leptons in',
+		'x_tick_labels' : ['endcap-', 'barrel', 'endcap+'],
+			
+	})
+	plots.append(d)
+	return [PlottingJob(plots=plots, args=args)]
 #######################################################################################################################################################################
 
 def zmass_comparison_datamc_Zmm_run2(args=None):
@@ -825,6 +916,22 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 #	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
+def zmass_comparison_datamc_Zll_run2(args=None):
+	"""Run2: full data mc comparisons for electron + muon channels"""
+	zjetfolder='finalcuts'
+	plotting_jobs = []
+	channels={'e','m'} #Channels should be in order as files are
+	d = {
+		'files': ['work/data15_ee.root', 'work/mc15_ee.root', 'work/data15_25ns.root', 'work/mc15_25ns.root'],
+		
+		'corrections': ['L1L2L3Res', 'L1L2L3', 'L1L2L3Res', 'L1L2L3'],
+		'algorithms': ['ak4PFJetsCHS'],
+		'zjetfolders': [zjetfolder],
+		'www': zjetfolder+'_zmass_comparison_datamc_Zll_run2',
+	}
+	plotting_jobs += fit_zmass_lepton_part(args, d, channels) 
+	
+	return plotting_jobs
 if __name__ == '__main__':
 	zmass_comparison_datamc_Zee_run2()
 	zmass_comparison_datamc_Zmm_run2()
