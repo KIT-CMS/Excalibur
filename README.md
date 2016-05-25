@@ -21,7 +21,7 @@ This framework needs:
 - ROOT == 5.34
 - GCC compiler >= 4.8
 
-All that is most easily provided by installing CMSSW alongside and taking the offline jet corrections from there (in CondFormats):
+All that is most easily provided by installing CMSSW:
 ```
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/
 export SCRAM_ARCH=slc6_amd64_gcc491
@@ -30,7 +30,6 @@ cmsrel CMSSW_7_4_0_pre9
 cd CMSSW_7_4_0_pre9/src
 cmsenv
 cd ../..
-wget https://github.com/artus-analysis/Excalibur/blob/master/data/CondFormats.tar.gz?raw=true -O - | tar -xz
 ```
 Alternatively, all these requirements can also be installed independently or taken from the system.
 
@@ -42,13 +41,15 @@ The framework comes in 4 layers:
 2. The basic interaction toolkit for this format: [KappaTools](https://github.com/KappaAnalysis/KappaTools "KappaTools")
 3. The basic analysis framework to analyse the data: [Artus](https://github.com/artus-analysis/Artus "Artus")
 4. The analysis specific program to do a Z+Jet(s) or calibration analysis: Excalibur
+5. The offline jet corrections in CondFormats
 
 To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
 git clone https://github.com/KappaAnalysis/Kappa.git
 git clone https://github.com/KappaAnalysis/KappaTools.git
-git clone https://github.com/artus-analysis/Artus.git 
-git clone https://github.com/artus-analysis/Excalibur.git 
+git clone https://github.com/artus-analysis/Artus.git
+git clone https://github.com/artus-analysis/Excalibur.git
+tar -xzf Excalibur/data/CondFormats.tar.gz
 ```
 
 In a next step you need to compile all those packages:
