@@ -20,7 +20,7 @@ before_install:
   - python2.7 --version
   - root-config --cflags --ldflags
   - cd ..
-  - wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz
+  - wget https://github.com/artus-analysis/Excalibur/blob/master/data/CondFormats.tar.gz?raw=true -O CondFormats.tar.gz
   - tar xzf CondFormats.tar.gz
   - git clone --depth=10 https://github.com/KappaAnalysis/Kappa.git
   - git clone --depth=10 https://github.com/KappaAnalysis/KappaTools.git

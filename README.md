@@ -30,7 +30,7 @@ cmsrel CMSSW_7_4_0_pre9
 cd CMSSW_7_4_0_pre9/src
 cmsenv
 cd ../..
-wget http://www-ekp.physik.uni-karlsruhe.de/~sieber/CondFormats.tar.gz -O - | tar -xz
+wget https://github.com/artus-analysis/Excalibur/blob/master/data/CondFormats.tar.gz?raw=true -O - | tar -xz
 ```
 Alternatively, all these requirements can also be installed independently or taken from the system.
 
