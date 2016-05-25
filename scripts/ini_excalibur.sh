@@ -63,15 +63,6 @@ if [ $USER = "dhaitz" ]; then
     if [[ $HOSTNAME == *"naf"* ]]; then
         export EXCALIBUR_WORK=/afs/desy.de/user/d/dhaitz/nfs/zjet
     fi
-elif [ $USER = "berger" ]; then
-    export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
-    export EXCALIBUR_WORK=/storage/8/berger/excalibur/
-    alias merlin='merlin.py'
-    alias merlinp='merlin.py --python'
-    alias merlinw='merlin.py --www'
-    alias merlinl='merlin.py --live evince'
-    alias merlinlp='merlin.py --live evince --python'
-    alias merlinlx='merlin.py --live evince -x'
 elif [ $USER = "mfischer" ]; then
     if [[ $HOSTNAME == *"naf"* ]]; then
         export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control

@@ -1,5 +1,0 @@
-#!/bin/bash
-PATH=/opt/ogs/bin/linux-x64:/wlcg/sw/git/current/bin:/usr/users/berger/bin:/usr/users/berger/scripts:/usr/sue/bin:/usr/local/bin:/usr/local/bin/X11:/usr/bin:/bin:/usr/bin/X11:/cern/pro/bin:/usr/kerberos/bin
-LD_LIBRARY_PATH=/opt/ogs/lib/linux-x64
-PYTHONPATH=""
-meld <(git show HEAD:$1) $1
