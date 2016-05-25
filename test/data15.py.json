@@ -17,7 +17,7 @@
         "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ"
     ],
     "InputFiles": [
-        "/storage/a/mfischer/skims/MF_AnyMu_2015_746/2015-07-24/DoubleMu_Run2015B_Jul2015_13TeV/kappa_noPfIso_DoubleMu_Run2015B_Jul2015_13TeV_67.root"
+        "/storage/a/mfischer/skims/MF_AnyMu_2015_746/2015-07-24/DoubleMu_Run2015B_Jul2015_13TeV/kappa_noPfIso_DoubleMu_Run2015B_Jul2015_13TeV_35.root"
     ],
     "InputIsData": true,
     "Jec": "data/jec/Summer15_50nsV4_DATA/Summer15_50nsV4_DATA",
@@ -1870,6 +1870,7 @@
     "ProvideL2L3ResidualCorrections": true,
     "RC": true,
     "TaggedJets": "ak4PFJetsCHS",
+    "TypeIJetPtMin": 10.0,
     "ValidJetsInput": "uncorrected",
     "VertexSummary": "goodOfflinePrimaryVerticesSummary",
     "Year": 2015,

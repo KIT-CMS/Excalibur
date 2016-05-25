@@ -2251,6 +2251,7 @@
     "RC": true,
     "RecoMuonMatchingGenParticleStatus": 1,
     "TaggedJets": "ak4PFJetsCHS",
+    "TypeIJetPtMin": 10.0,
     "ValidJetsInput": "uncorrected",
     "VertexSummary": "goodOfflinePrimaryVerticesSummary",
     "Year": 2015,
