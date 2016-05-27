@@ -15,8 +15,7 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
         jetName = "TaggedJets";
     std::vector<std::string> algoNameAndType = KappaTools::split(settings.GetTaggedJets(), jetName);
     std::string algoType = KappaTools::tolower(algoNameAndType[1]);
-    if (KappaTools::tolower(algoNameAndType[1]) == "puppi" ||
-        KappaTools::tolower(algoNameAndType[1]) == "puppinomu") {
+    if (KappaTools::tolower(algoNameAndType[1]) == "puppi") {
         algoType = "Puppi";
     }
     std::string algoName = KappaTools::toupper(algoNameAndType[0].substr(0, 2)) +

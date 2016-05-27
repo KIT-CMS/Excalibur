@@ -12,7 +12,6 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, TypeIJetPtMin)
     IMPL_SETTING_DEFAULT(bool, EnableMetPhiCorrection, false)
     IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
-    IMPL_SETTING_DEFAULT(bool, MetAddMuons, false)
 
     // ZJetCorrectionsProducer
     IMPL_SETTING_DEFAULT(std::string, CorrectionLevel, "None")
