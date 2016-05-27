@@ -59,11 +59,7 @@ if [ -d "/storage/a/$USER/zjet" ]; then
 fi
 
 # Set some user specific variables
-if [ $USER = "dhaitz" ]; then
-    if [[ $HOSTNAME == *"naf"* ]]; then
-        export EXCALIBUR_WORK=/afs/desy.de/user/d/dhaitz/nfs/zjet
-    fi
-elif [ $USER = "mfischer" ]; then
+if [ $USER = "mfischer" ]; then
     if [[ $HOSTNAME == *"naf"* ]]; then
         export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control
         export EXCALIBUR_WORK=/nfs/dust/cms/user/mfischer/calib/gc-work/excalibur/
@@ -80,17 +76,4 @@ elif [ $USER = "wayand" ]; then
 elif [ $USER = "afriedel" ]; then
     export EXCALIBURBRILSSH="afriedel@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/a/afriedel/zjets/
-
-
 fi
-alias test_merlin='merlin.py -i ntuples/MC_RD1_8TeV_53X_E2_50ns_2015-06-17.root --corr L1L2L3 --live evince --userpc --formats pdf -x zpt'
-
-# get the weights for a simple reweighting in npv. weight string is printed as output
-# Usage: get_weights data.root mc.root
-# NOTE: This is only for a rough estimate
-get_weights(){
-	ALGO=ak4PFJetsCHS
-	QUANTITY=npv
-	BINNING="30,0.5,30.5"
-	echo "(npv=="`merlin.py -x $QUANTITY -i $1 $2 --zjetf nocuts --corr L1L2L3 --algo $ALGO --analy NormalizeToFirstHisto Ratio --nicks-white ratio --log-l debug --x-bins $BINNING --y-lims 0 1 | grep fSumw | cut -d "=" -f 2 | cut -d "," -f 1 | while read i; do echo ")*${i}+(npv=="; done | nl | sed 's/ //g' | sed 's/\t//g' ` | sed 's/ //g' | sed 's/.\{7\}$//'
-}
