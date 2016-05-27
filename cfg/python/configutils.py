@@ -298,6 +298,7 @@ class PUWeights(object):
 			func=self._make_pu_weights,
 			dependency_files=[str(self.npu_data_source), self._output_path()] + glob.glob(str(self.npu_mc_source)),
 			cache_key=self._nickname(),
+			cache_dir=self._store_path
 		)
 
 	@property
