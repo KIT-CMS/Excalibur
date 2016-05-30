@@ -70,7 +70,7 @@ class InputRootZJet(inputroot.InputRoot):
 				for weight in plotData.plotdict['weights']]
 
 			# add lumi as weight for mc files if feasible
-			if len(set(lumis)) == 1:
+			if len(set(lumis)) == 1 and lumis[0] > 0:
 				for i, rootfile in enumerate(plotData.plotdict['files']):
 					if plotData.input_json_dicts[i] is not None and not plotData.input_json_dicts[i].get('InputIsData', True):
 						log.info("Scaling sample {0} by lumi: {1}".format(rootfile[0], plotData.plotdict['lumis'][0]))
