@@ -74,11 +74,11 @@ def getBaseConfig(tagged=True, **kwargs):
 		'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
 	}
 	if tagged:
-		cfg['Pipelines']['default']['Quantities'] += ['jet1btag', 'jet1qgtag', 'jet1puidraw','jet1puidtight','jet1puidmedium', 'jet1puidloose', 'jet2puidraw', 'jet2puidtight','jet2puidmedium', 'jet2puidloose']
-	pujetids = []
-	for x in range(2,100):
-		pujetids.append(str(x)+':puJetIDFullMedium')	
-	cfg['PuJetIDs'] = pujetids
+		cfg['Pipelines']['default']['Quantities'] += ['jet1btag', 'jet1qgtag']#, 'jet1puidraw','jet1puidtight','jet1puidmedium', 'jet1puidloose', 'jet2puidraw', 'jet2puidtight','jet2puidmedium', 'jet2puidloose']
+#	pujetids = []
+#	for x in range(2,100):
+#		pujetids.append(str(x)+':puJetIDFullMedium')	
+#	cfg['PuJetIDs'] = pujetids
 	return cfg
 
 ###
@@ -199,7 +199,25 @@ def _2015(cfg, **kwargs):
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
+		#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
+		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt')
+
+def _2016(cfg, **kwargs):
+	cfg['Year'] = 2016
+	cfg['Energy'] = 13
+	cfg['TaggedJets'] = 'ak4PFJetsCHS'
+	cfg['PileupDensity'] = 'pileupDensity'
+	cfg['JetIDVersion'] = 2015
+	cfg['JetPtMin'] = 15.
+	cfg['MinZllJetDeltaRVeto'] = 0.3
+	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
+	# create empty containers to allow using references prematurely
+	cfg["InputFiles"] = configtools.InputFiles()
+	# data settings also used to derive values for mc
+	cfg['Minbxsec'] = 69.0
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
+	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt')
+
 
 # channel:
 def eemm(cfg, **kwargs):
@@ -308,9 +326,9 @@ def ee(cfg, **kwargs):
 		'epluspt', 'epluseta', 'eplusphi', 'eplusiso',
 		'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
 		'e1pt', 'e1eta', 'e1phi', 'e1looseid', 'e1mediumid', 'e1tightid', 'e1vetoid',
-		'e1looseid95', 'e1mediumid95', 'e1tightid95', 'e1mvanontrig', 'e1mvatrig',
+		'e1looseid95', 'e1mediumid95', 'e1tightid95',# 'e1mvanontrig', 'e1mvatrig',
 		'e2pt', 'e2eta', 'e2phi', 'e2looseid', 'e2mediumid', 'e2tightid', 'e2vetoid',
-		'e2looseid95', 'e2mediumid95', 'e2tightid95', 'e2mvanontrig', 'e2mvatrig',
+		'e2looseid95', 'e2mediumid95', 'e2tightid95',# 'e2mvanontrig', 'e2mvatrig',
 		'nelectrons',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
@@ -484,6 +502,13 @@ def data_2015(cfg, **kwargs):
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
+def data_2016(cfg, **kwargs):
+	cfg['Processors'] += ['producer:NPUProducer']
+	cfg['Pipelines']['default']['Quantities'] += ['npumean']
+	cfg['CutAlphaMax'] = 0.3
+	cfg['Jec'] = configtools.get_jec("Spring16_25nsV2_DATA")
+	cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
+	
 def mc_2011(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
 	pass
@@ -512,11 +537,26 @@ def mc_2015(cfg, **kwargs):
 	elif kwargs['bunchcrossing'] == "25ns":
 		# use WIP corrections until full tarballs are available again -- MF@20160215
 		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV2_MC/Fall15_25nsV2_MC'
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV2_MC/Spring16_25nsV2_MC'
 		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1_MC/Fall15_25nsV1_MC'
 		# cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_MC")
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
+
+def mc_2016(cfg, **kwargs):
+	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
+	cfg['DeltaRRadiationJet'] = 1
+	cfg['CutAlphaMax'] = 0.3
+	cfg['CutBetaMax'] = 0.1
+	cfg['GenJets'] = 'ak4GenJetsNoNu'
+	cfg['GenParticleStatus'] = 22  # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
+	# insert Generator producer before EventWeightProducer:
+	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
+	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
+	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
+	# use WIP corrections until full tarballs are available again -- MF@20160215
+	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV2_MC/Spring16_25nsV2_MC'
+	#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
 
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
@@ -583,6 +623,8 @@ def _2012ee(cfg, **kwargs):
 def _2015mm(cfg, **kwargs):
 	cfg['MuonID'] = 'tight'
 
+def _2016mm(cfg, **kwargs):
+	cfg['MuonID'] = 'tight'
 
 ###
 # config fragments for combinations of three categories (data/MC+year+channel)
@@ -618,6 +660,9 @@ def data_2012mm(cfg, **kwargs):
 def data_2015mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
 
+def data_2016mm(cfg, **kwargs):
+	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
+
 def data_2012em(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL', 'HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL']
 
@@ -626,6 +671,17 @@ def data_2015ee(cfg, **kwargs):
 	cfg['Electrons']= 'electrons'
 
 def mc_2015ee(cfg, **kwargs):
+	# not sure about the status codes in aMCatNLO/MG5. theres usually an e+/e-
+	# pair with status 1 in each event, so take this number for now
+	# see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
+	cfg['RecoElectronMatchingGenParticleStatus'] = 1
+	cfg[''] = 1
+
+def data_2016ee(cfg, **kwargs):
+	cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL']
+	cfg['Electrons']= 'electrons'
+
+def mc_2016ee(cfg, **kwargs):
 	# not sure about the status codes in aMCatNLO/MG5. theres usually an e+/e-
 	# pair with status 1 in each event, so take this number for now
 	# see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
