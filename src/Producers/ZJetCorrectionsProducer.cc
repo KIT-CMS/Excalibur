@@ -13,15 +13,21 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
     if (settings.GetTaggedJets().find("Tagged") !=
         std::string::npos)  // to be removed after transition phase
         jetName = "TaggedJets";
+    std::string algoName;
     std::vector<std::string> algoNameAndType = KappaTools::split(settings.GetTaggedJets(), jetName);
-    std::string algoType = KappaTools::tolower(algoNameAndType[1]);
-    if (KappaTools::tolower(algoNameAndType[1]) == "puppi") {
-        algoType = "Puppi";
+    if (algoNameAndType[0] == "ak4Calo"){ //CaloJets don"t follow this naming convention
+        algoName = "AK4Calo";
     }
-    std::string algoName = KappaTools::toupper(algoNameAndType[0].substr(0, 2)) +
+    else{
+    	std::string algoType = KappaTools::tolower(algoNameAndType[1]);
+    	if (KappaTools::tolower(algoNameAndType[1]) == "puppi") {
+        	algoType = "Puppi";
+    	}
+    	algoName = KappaTools::toupper(algoNameAndType[0].substr(0, 2)) +
                            algoNameAndType[0].substr(2, std::string::npos) + algoType;
+    	}
     LOG(INFO) << "\t -- Jet corrections enabled for " << algoName
-              << " jets using the following JEC files:";
+       	      << " jets using the following JEC files:";
 
     // JEC initialization
     std::vector<JetCorrectorParameters> jecParameters;
