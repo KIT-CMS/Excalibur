@@ -1,21 +1,21 @@
 
 void nevents(){
+	//ROOT macro for calculating the number of events in several ROOT mc files from kappa. Needs a .txt file with paths to the files
 	double integral = 0;
 	std::vector<std::string> files;
 	int n;
 	ifstream inf("filelist.txt");
          while (inf){
-        // read stuff from the file into a string and print it
+        // read paths from the file into a vector
         	std::string strInput;
         	inf >> strInput;
 		files.push_back(strInput);
     	}
+	//get histogram out of the TFiles and calculate the events
 	for (int i = 0; i < files.size()-1; i++){
 		TFile* f = new TFile(files[i].c_str());
-		//TFile* f = new TFile("/storage/a/cheidecker/cmssw807_calo_noPUJetID/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7_job_995_skim80.root");
-		//std::cout << files[i] << std::endl;
 		TTree *tree = (TTree*)f->Get("Lumis");
-		tree->Draw("nEventsTotal>>histo","", "goff");
+		tree->Draw("nEventsTotal>>histo","", "goff"); //Creates histogram in gDirectory
 		TH1F *histo = (TH1F*)gDirectory->Get("histo");
 		n = histo->GetNbinsX();
 		for (int j = 0; j < n; j++)
@@ -26,4 +26,4 @@ void nevents(){
 	std::cout.setf(ios::fixed);
 	std::cout << setprecision(0) << integral << std::endl;
 }
-//"/storage/a/cheidecker/cmssw807_calo_noPUJetID/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7_job_995_skim80.root"
+
