@@ -15,7 +15,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		# ZJetCorrectionsProducer Settings
 		'Jec': '', # Path for JEC data, please set this later depending on input type
 		'L1Correction': 'L1FastJet',
-		'RC': True,  # Also provide random cone offset JEC, and use for type-I
+		'RC': False,  # Also provide random cone offset JEC, and use for type-I
 		'FlavourCorrections': False,  # Calculate additional MC flavour corrections
 		# ZProducer Settings
 		'ZMassRange': 20.,
@@ -200,7 +200,7 @@ def _2015(cfg, **kwargs):
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
 		#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
-		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt')
+		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt')
 
 def _2016(cfg, **kwargs):
 	cfg['Year'] = 2016
