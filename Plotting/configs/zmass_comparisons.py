@@ -34,7 +34,7 @@ def generate_dict(args=None, additional_dictionary=None, channel_dict="m"):
 	x_dict = {
 		'alpha': ['40,0,1'],
 		'jet1area': ['40,0.3,0.9'],
-		'jet1eta': ['30,-1.5,1.5'],
+		'jet1eta': ['20,-1.5,1.5'],
 		'jet1phi': ['20,-3.1415,3.1415',],
 		'jet1pt': ['40,0,250'],
 		'jet2eta': ['20,-5,5'],
@@ -72,6 +72,8 @@ def generate_dict(args=None, additional_dictionary=None, channel_dict="m"):
 		'mu2pt': ['20,0,150'],
 		'muminuspt': ['20,0,150'],
 		'mupluspt': ['20,0,150'],
+		'muminuseta': ['20,-2.4,2.4'],
+		'mupluseta': ['20,-2.4,2.4'],
 	}
 	print channel_dict
 	if channel_dict=="m": x_dict.update(x_dict_mm)
@@ -852,8 +854,8 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	zjetfolder='nocuts'
 	plotting_jobs = []
 	d = {
-		'files': ['work/mc15_25ns_76.root', 'work/mc15_25ns_80.root'],
-		'labels': ['MC76mu', 'MC80mu'],
+		'files': ['work/data16_25ns_DCSOnly.root', 'work/out.root'],
+		'labels': ['Data16runB_mu', 'MC80X_mu'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'www': zjetfolder+'_zmass_comparison_datamc_Zmm_run2',
@@ -861,7 +863,7 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 		'www_text':'Run2: Zmass data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm',
 		'zjetfolders': [zjetfolder],
 		}
-	d.update({ "labels": [r"$\\mu_\\mathrm{MC76}$", r"$\\mu_\\mathrm{MC80}$", "", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
+	d.update({ "labels": [r"$\\mu_\\mathrm{Data16runB}$", r"$\\mu_\\mathrm{MC80X}$", "Ratio", "Data_fit", "MC_fit"], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
 		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
 	})
 	d.update({"texts_x": [0.03],
@@ -870,10 +872,10 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	})
 	#plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="m")
 	#plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
-	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=False)
-	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
+	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=True)
+#	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="m")
-	d.update({'files': ['work/mc15_25ns.root'],
+	d.update({'files': ['work/out.root'],
 		'labels': ['MCmu'],
 		'corrections': ['L1L2L3'],})
 	#plotting_jobs += general_mc_comparison(args, d, channel="m")
@@ -887,8 +889,8 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 	zjetfolder='nocuts'
 	plotting_jobs = []
 	d = {
-		'files': ['work/mc15_25ns_ee_76.root', 'work/mc15_25ns_ee_80.root'],
-		'labels': ['MC76e', 'MC80e'],
+		'files': ['work/data16_25ns_ee_DCSOnly.root', 'work/out_ee.root'],
+		'labels': ['Data16runB_ee', 'MC80X_ee'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
 		'www': zjetfolder+'_zmass_comparison_datamc_Zee_run2',
@@ -897,7 +899,7 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 		'zjetfolders': [zjetfolder],
 		}
 
-	d.update({ "labels": ["MC76e", "MC80e", "", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
+	d.update({ "labels": ["Data16runB", "MC80X", "Ratio", "Data16runB", "MC80X"], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
 		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{e e}$"],
 	})
 	d.update({"texts_x": [0.03],
@@ -906,7 +908,7 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 	})
 #	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="e")
 #	plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
-	plotting_jobs += general_comparison(args, d, channel="e", only_normalized=False)
+	plotting_jobs += general_comparison(args, d, channel="e", only_normalized=True)
 	plotting_jobs += profplot_datamc_comparison(args, d, channel="e")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="e")
 	d.update({'files': ['work/mc15_25ns_ee.root'],
