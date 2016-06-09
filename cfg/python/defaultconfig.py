@@ -497,7 +497,7 @@ def data_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
 		cfg['Lumi'] = 0.04003
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		cfg['Jec'] = configtools.get_jec("Spring16_25nsV2_DATA")
+		cfg['Jec'] = configtools.get_jec("Spring16_25nsV3_DATA")
 		cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
@@ -506,7 +506,7 @@ def data_2016(cfg, **kwargs):
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['Pipelines']['default']['Quantities'] += ['npumean']
 	cfg['CutAlphaMax'] = 0.3
-	cfg['Jec'] = configtools.get_jec("Spring16_25nsV2_DATA")
+	cfg['Jec'] = configtools.get_jec("Spring16_25nsV3_DATA")
 	cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
 	
 def mc_2011(cfg, **kwargs):
@@ -537,7 +537,7 @@ def mc_2015(cfg, **kwargs):
 	elif kwargs['bunchcrossing'] == "25ns":
 		# use WIP corrections until full tarballs are available again -- MF@20160215
 		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV2_MC/Fall15_25nsV2_MC'
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV2_MC/Spring16_25nsV2_MC'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV3_MC/Spring16_25nsV3_MC'
 		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1_MC/Fall15_25nsV1_MC'
 		# cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_MC")
 	else:
@@ -555,7 +555,7 @@ def mc_2016(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 	# use WIP corrections until full tarballs are available again -- MF@20160215
-	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV2_MC/Spring16_25nsV2_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV3_MC/Spring16_25nsV3_MC'
 	#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
 
 def mcee(cfg, **kwargs):
