@@ -63,7 +63,7 @@ def apply_double_profile(plotDict, args=None):
 	return plotDict
 
 
-def jec_combination(args=None, additional_dictionary=None):
+def jec_combination(args=None, additional_dictionary=None, algo = 'CHS'):
 	"""function to create the root combination file for the jec group."""
 	mpl_plots = []
 	root_plots = []
@@ -122,9 +122,10 @@ def jec_combination(args=None, additional_dictionary=None):
 					'analysis_modules': ['Ratio'],
 					'ratio_numerator_nicks':['data'],
 					'ratio_denominator_nicks':['mc'],
+					'ratio_denominator_no_errors': False,
 				}
 				# histograms - event counts
-				labelsuffix = '_'.join(['NEvents', 'CHS', alphastring, etastring, correction])
+				labelsuffix = '_'.join(['NEvents', algo, alphastring, etastring, correction])
 				d_mpl = {
 					'x_expressions': ['zpt'],
 					'x_bins': 'zpt',
@@ -142,7 +143,7 @@ def jec_combination(args=None, additional_dictionary=None):
 				root_plots.append(d_root)
 				# profiles - responses
 				for method in ['mpf', 'ptbalance', 'rawmpf', 'zmass']:
-					labelsuffix = '_'.join([label_dict[method], 'CHS', alphastring, etastring, correction])
+					labelsuffix = '_'.join([label_dict[method], algo, alphastring, etastring, correction])
 					d_mpl = {
 						'x_expressions': ['zpt'],
 						'y_expressions': [method],
@@ -163,7 +164,7 @@ def jec_combination(args=None, additional_dictionary=None):
 					root_plots.append(d_root)
 				# pileup info
 				for x_expression, y_expression in [("npumean", "rho"), ("npumean", "npv")]:
-					labelsuffix = "_".join((y_expression, "vs", x_expression, 'CHS', alphastring, etastring, correction))
+					labelsuffix = "_".join((y_expression, "vs", x_expression, algo, alphastring, etastring, correction))
 					d_mpl = {
 						'x_expressions': [x_expression],
 						'y_expressions': [y_expression],
@@ -201,7 +202,7 @@ def jec_combination_zmm(args=None, additional_dictionary=None):
 	return jec_combination(args=args, additional_dictionary=additional_dictionary)
 
 
-def jec_pu_combination(args=None, additional_dictionary=None):
+def jec_pu_combination(args=None, additional_dictionary=None, algo='CHS'):
 	"""Create combination info on pileup"""
 	mpl_plots = []
 	root_plots = []
@@ -213,7 +214,7 @@ def jec_pu_combination(args=None, additional_dictionary=None):
 	create_file = True
 	for x_expression, y_expression in [("npumean", "rho"), ("npv", "rho"), ("npumean", "npv")]:
 		for correction in ['L1L2L3']: # no L1L2L3Res available atm
-			labelsuffix = "_".join((x_expression, "vs", y_expression, 'CHS', correction))
+			labelsuffix = "_".join((x_expression, "vs", y_expression, algo, correction))
 			d_mpl = {
 				'x_expressions': [x_expression],
 				'y_expressions': [y_expression],
@@ -326,3 +327,23 @@ def jec_combination_20151204_Zee(args=None):
 		"algorithms": ["ak4PFJetsCHS",],
 	}
 	jec_combination(args, d)
+
+def jec_combination_20160607_Zmm(args=None):
+	d = {
+		'files': [
+			'work/data16Puppi_new_JSON.root',
+			'work/mc15Puppi_25ns_80.root',
+		],
+		"algorithms": ["ak4PFJetsPuppi"],
+	}
+	jec_combination(args, d, 'Puppi')
+
+def jec_combination_20160607_Zee(args=None):
+	d = {
+		'files': [
+			'work/data16Puppi_new_JSON_ee.root',
+			'work/mc15Puppi_25ns_ee_80.root',
+		],
+		"algorithms": ["ak4PFJetsPuppi"],
+	}
+	jec_combination(args, d, 'Puppi')
