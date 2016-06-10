@@ -29,6 +29,7 @@ def apply_double_profile(plotDict, args=None):
 	#   we thus must replicate all settings for their position to match
 	# settings we need to replicate in a controlled fashion
 	input_root_opts = ['nicks', 'x_expressions', 'y_expressions', 'z_expressions', 'x_bins', 'y_bins', 'z_bins', 'scale_factors', 'files', 'directories', 'folders', 'weights', 'friend_trees', 'tree_draw_options']
+	
 	if not plotDict.get('files'):
 		plotDict['files'] = get_input_files(args)[0]
 	# make sure all n-length (non-0,1) objects have the same size
@@ -125,7 +126,7 @@ def jec_combination(args=None, additional_dictionary=None, algo = 'CHS'):
 					'ratio_denominator_no_errors': False,
 				}
 				# histograms - event counts
-				labelsuffix = '_'.join(['NEvents', algo, alphastring, etastring, correction])
+				'''labelsuffix = '_'.join(['NEvents', algo, alphastring, etastring, correction])
 				d_mpl = {
 					'x_expressions': ['zpt'],
 					'x_bins': 'zpt',
@@ -139,8 +140,10 @@ def jec_combination(args=None, additional_dictionary=None, algo = 'CHS'):
 				# make plots comparable to jec_comparison
 				d_mpl['x_log'] = True
 				d_mpl['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+				if additional_dictionary is not None:
+					d_mpl.update(additional_dictionary)
 				mpl_plots.append(d_mpl)
-				root_plots.append(d_root)
+				root_plots.append(d_root)'''
 				# profiles - responses
 				for method in ['mpf', 'ptbalance', 'rawmpf', 'zmass']:
 					labelsuffix = '_'.join([label_dict[method], algo, alphastring, etastring, correction])
@@ -352,8 +355,8 @@ def jec_combination_20160607_CHS_Zmm(args=None):
 	#for run2 2016 CHS jec combination files using jec Spring16_25nsV3
 	d = {
 		'files': [
-			'work/data16_25ns.root',
-			'work/mc16_25ns.root',
+			'/home/cheidecker/Excalibur/work/data16_25ns.root',
+			'/home/cheidecker/Excalibur/work/mc16_25ns.root',
 		],
 		"algorithms": ["ak4PFJetsCHS"],
 		"www": 'jec_combination_20160607_CHS_Zmm',
