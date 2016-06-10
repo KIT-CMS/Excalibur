@@ -194,7 +194,7 @@ def _2015(cfg, **kwargs):
 	# create empty containers to allow using references prematurely
 	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
-	cfg['Minbxsec'] = 69.0
+	cfg['Minbxsec'] = 66.5
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
