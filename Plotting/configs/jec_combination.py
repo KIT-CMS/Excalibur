@@ -328,7 +328,7 @@ def jec_combination_20151204_Zee(args=None):
 	}
 	jec_combination(args, d)
 
-def jec_combination_20160607_Zmm(args=None):
+def jec_combination_20160607_PUPPI_Zmm(args=None):
 	d = {
 		'files': [
 			'work/data16Puppi_new_JSON.root',
@@ -338,7 +338,7 @@ def jec_combination_20160607_Zmm(args=None):
 	}
 	jec_combination(args, d, 'Puppi')
 
-def jec_combination_20160607_Zee(args=None):
+def jec_combination_20160607_PUPPI_Zee(args=None):
 	d = {
 		'files': [
 			'work/data16Puppi_new_JSON_ee.root',
@@ -347,3 +347,27 @@ def jec_combination_20160607_Zee(args=None):
 		"algorithms": ["ak4PFJetsPuppi"],
 	}
 	jec_combination(args, d, 'Puppi')
+
+def jec_combination_20160607_CHS_Zmm(args=None):
+	#for run2 2016 CHS jec combination files using jec Spring16_25nsV3
+	d = {
+		'files': [
+			'work/data16_25ns.root',
+			'work/mc16_25ns.root',
+		],
+		"algorithms": ["ak4PFJetsCHS"],
+		"www": 'jec_combination_20160607_CHS_Zmm',
+	}
+	jec_combination(args, d, 'CHS')
+
+def jec_combination_20160607_CHS_Zee(args=None):
+	#for run2 2016 CHS jec combination files using jec Spring16_25nsV3
+	d = {
+		'files': [
+			'work/data16_25ns_ee.root',
+			'work/mc16_25ns_ee.root',
+		],
+		"algorithms": ["ak4PFJetsCHS"],
+		"www": 'jec_combination_20160607_CHS_Zee',
+	}
+	jec_combination(args, d, 'CHS')
