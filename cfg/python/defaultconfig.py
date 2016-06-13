@@ -173,11 +173,6 @@ def mc(cfg, **kwargs):
 
 ## year:
 
-def _2011(cfg, **kwargs):
-	cfg['Year'] = 2011
-	cfg['Energy'] = 7
-
-
 def _2012(cfg, **kwargs):
 	cfg['Year'] = 2012
 	cfg['Energy'] = 8
@@ -477,9 +472,6 @@ def mm(cfg, **kwargs):
 # config fragments for combinations of two categories (data/MC+year, year+channel, ...)
 ###
 
-def data_2011(cfg, **kwargs):
-	pass
-
 def data_2012(cfg, **kwargs):
 	cfg['Jec'] = configtools.getPath() + '/data/jec/Winter14_V8/Winter14_V8_DATA'
 	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt']
@@ -511,10 +503,6 @@ def data_2016(cfg, **kwargs):
 	cfg['CutAlphaMax'] = 0.3
 	cfg['Jec'] = configtools.get_jec("Spring16_25nsV3_DATA")
 	cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
-	
-def mc_2011(cfg, **kwargs):
-	cfg['GenJets'] = 'AK5GenJetsNoNu'
-	pass
 
 def mc_2012(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
@@ -611,9 +599,6 @@ def mcmm(cfg, **kwargs):
 	cfg['AddGenMatchedTaus'] = False
 	cfg['AddGenMatchedTauJets'] = False
 
-def _2011mm(cfg, **kwargs):
-	pass
-
 def _2012mm(cfg, **kwargs):
 	pass
 
@@ -633,9 +618,6 @@ def _2016mm(cfg, **kwargs):
 # config fragments for combinations of three categories (data/MC+year+channel)
 ###
 
-def mc_2011mm(cfg, **kwargs):
-	pass
-
 def mc_2012ee(cfg, **kwargs):
 	cfg['Processors'] += ['producer:HltProducer']
 	cfg['Pipelines']['default']['Quantities'] += ['hlt']
@@ -647,9 +629,6 @@ def mc_2012mm(cfg, **kwargs):
 	#cfg["MuonSmearing"] = True
 	#cfg["MuonRadiationCorrection"] = False
 	#cfg["MuonCorrectionParameters"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012_MC_53X_smearReReco.txt"
-
-def data_2011mm(cfg, **kwargs):
-	pass
 
 def data_2012mm(cfg, **kwargs):
 	cfg['HltPaths'] = ['HLT_Mu17_Mu8']
