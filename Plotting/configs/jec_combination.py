@@ -125,14 +125,14 @@ def jec_combination(args=None, additional_dictionary=None, algo = 'CHS'):
 					'ratio_denominator_nicks':['mc'],
 					'ratio_denominator_no_errors': False,
 				}
-				# histograms - event counts
-				labelsuffix = '_'.join(['NEvents', algo, alphastring, etastring, correction])
+				# histograms - raw event counts
+				labelsuffix = '_'.join(['RawNEvents', algo, alphastring, etastring, correction])
 				d_mpl = {
 					'x_expressions': ['zpt'],
 					'x_bins': 'zpt',
 					'labels': ['_'.join([item, labelsuffix]) for item in ['Data', 'MC', 'Ratio']],
 					'filename': labelsuffix + file_label,
-					'no_weight': True,
+					'no_weight': True, #Remove reweights in MC
 				}
 				d_mpl.update(base_plot)
 				if additional_dictionary is not None:
