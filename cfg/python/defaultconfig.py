@@ -139,6 +139,9 @@ def mc(cfg, **kwargs):
 		'genzmass',
 		'deltarzgenz',
 		'ngenneutrinos',
+		'x1',
+		'x2',
+		'qScale',
 	]
 
 	# RecoJetGenPartonMatchingProducer Settings
