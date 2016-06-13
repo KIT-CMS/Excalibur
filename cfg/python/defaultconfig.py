@@ -29,7 +29,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'JetID' : 'loose',
 		#'PuJetIDs' : ['2:puJetIDFullTight'],
 		'JetMetadata' : 'jetMetadata',
-		'TaggedJets' : 'ak5PFJetsCHS',
+		'TaggedJets' : 'ak4PFJetsCHS',
 		# PU
 		'PileupDensity' : 'pileupDensity',
 		# Pipelines
@@ -178,6 +178,7 @@ def _2011(cfg, **kwargs):
 def _2012(cfg, **kwargs):
 	cfg['Year'] = 2012
 	cfg['Energy'] = 8
+	cfg['TaggedJets'] = 'ak5PFJetsCHS'
 	cfg['JetIDVersion'] = 2014
 	cfg['MinZllJetDeltaRVeto'] = 0.3
 	cfg['JetLeptonLowerDeltaRCut'] = 0.3
@@ -185,7 +186,6 @@ def _2012(cfg, **kwargs):
 def _2015(cfg, **kwargs):
 	cfg['Year'] = 2015
 	cfg['Energy'] = 13
-	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
 	cfg['JetIDVersion'] = 2015
 	cfg['TypeIJetPtMin'] = 15.

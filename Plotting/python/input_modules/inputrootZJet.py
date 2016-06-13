@@ -30,7 +30,7 @@ class InputRootZJet(inputroot.InputRoot):
 		self.zjet_input_options = parser.add_argument_group("ZJet input options")
 		self.zjet_input_options.add_argument("--zjetfolders", type=str, nargs='*', default=['finalcuts'],
 		                                help="'zjetfolders'/cutlevels for the input folder names (nocuts, finalcuts....) [Default: %(default)s]")
-		self.zjet_input_options.add_argument("--algorithms", type=str, nargs='*', default=["ak5PFJetsCHS"],
+		self.zjet_input_options.add_argument("--algorithms", type=str, nargs='*', default=["ak4PFJetsCHS"],
 		                                help="Jet algorithms for the input folder names. [Default: %(default)s]")
 		self.zjet_input_options.add_argument("--corrections", type=str, nargs='*', default=["L1L2L3Res"],
 		                                help="correction levels for the input folder names. [Default: %(default)s]")
