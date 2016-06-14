@@ -854,7 +854,7 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	zjetfolder='nocuts'
 	plotting_jobs = []
 	d = {
-		'files': ['work/data16_25ns_DCSOnly.root', 'work/out.root'],
+		'files': ['work/data16_25ns.root', 'work/mc16_25ns.root'],
 		'labels': ['Data16runB_mu', 'MC80X_mu'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
@@ -873,7 +873,7 @@ def zmass_comparison_datamc_Zmm_run2(args=None):
 	#plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="m")
 	#plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
 	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=True)
-#	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
+	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
 	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="m")
 	d.update({'files': ['work/out.root'],
 		'labels': ['MCmu'],
@@ -889,7 +889,7 @@ def zmass_comparison_datamc_Zee_run2(args=None):
 	zjetfolder='nocuts'
 	plotting_jobs = []
 	d = {
-		'files': ['work/data16_25ns_ee_DCSOnly.root', 'work/out_ee.root'],
+		'files': ['work/data16_25ns_ee.root', 'work/mc16_25ns_ee.root'],
 		'labels': ['Data16runB_ee', 'MC80X_ee'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
 		'algorithms': ['ak4PFJetsCHS'],
