@@ -10,7 +10,7 @@ class LabelsDictZJet(labels.LabelsDict):
 	def __init__(self, additional_labels=None):
 		super(LabelsDictZJet, self).__init__(additional_labels)
 
-#Our own layout
+		#Our own layout
 		self.labels_dict.update({
 			#more general stuff. maybe move to Artus?
 			'abs(jet1eta)': '|$\mathit{\eta}^{Jet1}$|',
@@ -149,7 +149,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'deltarjet1jet2': '$\Delta R(\mathrm{Jet1},\mathrm{Jet2})$',
 		})
 
-"""
+		"""
 # for CMS Preliminary style:
 		self.labels_dict.update({
 			'abs(jet1eta)': '|$\mathit{\eta}^{Jet1}$|',
@@ -287,7 +287,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'deltaphijet1jet2': '$\Delta\phi(\mathrm{Jet1},\mathrm{Jet2})$',
 			'deltarjet1jet2': '$\Delta R(\mathrm{Jet1},\mathrm{Jet2})$',
 		})
-"""
+		"""
 		self.labels_dict['abszy'] = self.labels_dict['abs(zy)']
 		if additional_labels != None:
 			self.labels_dict.update(additional_labels)
