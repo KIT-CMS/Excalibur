@@ -198,14 +198,15 @@ def _2015(cfg, **kwargs):
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
 		#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
-		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt')
+		#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt')
+		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt')
 
 def _2016(cfg, **kwargs):
 	cfg['Year'] = 2016
 	cfg['Energy'] = 13
 	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
-	cfg['JetIDVersion'] = 2015
+	cfg['JetIDVersion'] = 2016
 	cfg['JetPtMin'] = 15.
 	cfg['MinZllJetDeltaRVeto'] = 0.3
 	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
@@ -214,7 +215,8 @@ def _2016(cfg, **kwargs):
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 69.0
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
-	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt')
+	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt')
+	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt')
 
 
 # channel:
