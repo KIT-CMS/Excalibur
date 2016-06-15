@@ -17,7 +17,7 @@ CLI = argparse.ArgumentParser(
 CLI.add_argument(
 	"-j",
 	"--pileup_json",
-	default="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt",
+	default="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt",
 	help="JSON file containing pileup information",
 )
 CLI.add_argument(
