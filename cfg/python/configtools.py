@@ -94,13 +94,12 @@ def expand(config, cutModes, corrLevels, default="default"):
 				pipelines[cutMode]['Processors'].remove(cut)
 	# remove template pipeline
 	pipelines.pop(default)
-	# copy pipelines with different correction levels, naming scheme: cut_AlgoName + CorrectionLevel
+	# copy pipelines with different correction levels, naming scheme: cut + _CorrectionLevel
 	for name, p in pipelines.items():
 		for corrLevel in corrLevels:
-			pipelinename = name + "_" + config['TaggedJets'].replace('Tagged', '').replace('AK', 'ak') + ('' if corrLevel == 'None' else corrLevel)
+			pipelinename = name + ('' if corrLevel == 'None' else "_" + corrLevel)
 			pipelines[pipelinename] = copy.deepcopy(p)
 			pipelines[pipelinename]['CorrectionLevel'] = corrLevel
-		del pipelines[name]
 	return config
 
 
