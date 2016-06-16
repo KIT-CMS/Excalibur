@@ -76,4 +76,8 @@ elif [ $USER = "wayand" ]; then
 elif [ $USER = "afriedel" ]; then
     export EXCALIBURBRILSSH="afriedel@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/a/afriedel/zjets/
+elif [ $USER = "tberger" ]; then
+    export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
+    export EXCALIBUR_WORK=/storage/jbod/tberger/zjets/
+fi
 fi
