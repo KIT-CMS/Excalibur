@@ -16,7 +16,7 @@ addons:
 before_install:
   - python --version
   - sudo apt-get -y install libboost1.54-all-dev root-system libroot-bindings-python5.34 cmake python2.7
-  - sudo pip install numpy
+  - sudo pip install numpy -vvv
   - ls /usr/lib/python2.7/dist-packages
   - export PYTHONPATH=/usr/lib/python2.7/dist-packages:$PYTHONPATH
   - echo $PYTHONPATH
