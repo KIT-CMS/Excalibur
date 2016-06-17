@@ -19,8 +19,8 @@ before_install:
   - sudo pip install --upgrade pip
   - sudo pip install numpy
   - sudo pip show numpy
-  - ls /usr/lib/python2.7/dist-packages
-  - export PYTHONPATH=/usr/lib/python2.7/dist-packages:$PYTHONPATH
+  - ls /usr/local/lib/python2.7/dist-packages
+  - export PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
   - echo $PYTHONPATH
   - ls /usr/include/root /usr/lib/*/root5.34
   - python --version
