@@ -80,4 +80,3 @@ elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/jbod/tberger/zjets/
 fi
-fi
