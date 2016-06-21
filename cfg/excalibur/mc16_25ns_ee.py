@@ -8,7 +8,7 @@ def config():
 	)
 	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc']) #, "e1mvanontrig", "e1mvatrig", "e2mvanontrig", "e2mvatrig"
-	cfg['NumberGeneratedEvents'] = 28874658 #for: Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7
+	cfg['NumberGeneratedEvents'] = 28846018 #for: Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7
 	cfg['GeneratorWeight'] =  0.661211 #for: Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7
 	cfg['CrossSection'] = 6025.2  # https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat13TeV
 	return cfg
