@@ -184,6 +184,7 @@ def _2012(cfg, **kwargs):
 def _2015(cfg, **kwargs):
 	cfg['Year'] = 2015
 	cfg['Energy'] = 13
+	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
 	cfg['JetIDVersion'] = 2015
 	cfg['TypeIJetPtMin'] = 15.
@@ -192,31 +193,29 @@ def _2015(cfg, **kwargs):
 	# create empty containers to allow using references prematurely
 	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
-	cfg['Minbxsec'] = 66.5
+	cfg['Minbxsec'] = 69.0
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
-		#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt')
-		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt')
+		cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt')
+
 
 def _2016(cfg, **kwargs):
 	cfg['Year'] = 2016
 	cfg['Energy'] = 13
 	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
-	cfg['JetIDVersion'] = 2016
+	cfg['JetIDVersion'] = 2015
 	cfg['JetPtMin'] = 15.
 	cfg['MinZllJetDeltaRVeto'] = 0.3
 	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
 	# create empty containers to allow using references prematurely
 	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
-	cfg['Minbxsec'] = 69.0
+	cfg['Minbxsec'] = 71.3
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
-	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt')
-	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt')
+	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt')
 
 
 # channel:
@@ -494,8 +493,8 @@ def data_2015(cfg, **kwargs):
 		cfg['Jec'] = configtools.getPath() + '/data/jec/Summer15_50nsV5_DATA/Summer15_50nsV5_DATA'
 		cfg['Lumi'] = 0.04003
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
-		cfg['Jec'] = configtools.get_jec("Spring16_25nsV3_DATA")
-		cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
+		cfg['Jec'] = configtools.get_jec("Fall15_25nsV2_DATA")
+		cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'],normtag='/afs/cern.ch/user/c/cmsbril/public/normtag_json/OfflineNormtagV1.json')
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
@@ -503,8 +502,8 @@ def data_2016(cfg, **kwargs):
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['Pipelines']['default']['Quantities'] += ['npumean']
 	cfg['CutAlphaMax'] = 0.3
-	cfg['Jec'] = configtools.get_jec("Spring16_25nsV3_DATA")
-	cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'])
+	cfg['Jec'] = configtools.get_jec("Spring16_25nsV4_DATA")
+	cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'], normtag='')
 
 def mc_2012(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
@@ -517,7 +516,7 @@ def mc_2012(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 
 def mc_2015(cfg, **kwargs):
-	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
+	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['CutAlphaMax'] = 0.3
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
 	cfg['GenParticleStatus'] = 22  # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
@@ -530,14 +529,14 @@ def mc_2015(cfg, **kwargs):
 	elif kwargs['bunchcrossing'] == "25ns":
 		# use WIP corrections until full tarballs are available again -- MF@20160215
 		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV2_MC/Fall15_25nsV2_MC'
-		cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV3_MC/Spring16_25nsV3_MC'
+		cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV2_MC/Fall15_25nsV2_MC'
 		#cfg['Jec'] = configtools.getPath() + '/data/jec/Fall15_25nsV1_MC/Fall15_25nsV1_MC'
 		# cfg['Jec'] = configtools.get_jec("Fall15_25nsV1_MC")
 	else:
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
 def mc_2016(cfg, **kwargs):
-	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
+	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'],  cfg['InputFiles'],pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
@@ -548,7 +547,7 @@ def mc_2016(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 	# use WIP corrections until full tarballs are available again -- MF@20160215
-	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV3_MC/Spring16_25nsV3_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV4_MC/Spring16_25nsV4_MC'
 	#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
 
 def mcee(cfg, **kwargs):
