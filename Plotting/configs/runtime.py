@@ -3,7 +3,8 @@
 
 import sys
 
-from Artus.HarryPlotter.utility.tfilecontextmanager import TFileContextManager
+from Artus.Utility.tfilecontextmanager import TFileContextManager
+
 import Excalibur.Plotting.harryinterface as harryinterface
 
 
