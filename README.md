@@ -71,9 +71,12 @@ make -j4 -B
 
 ##### Batch Functionality
 
-For the batch functionality of Excalibur, you need [grid-control](http://www-ekp.physik.uni-karlsruhe.de/~berger/gc/install.html "grid-control installation instructions")
-and the directory containing the `go.py` executable in your $PATH, e.g. with
+For the batch functionality of Excalibur, you need grid-control:
 ```
+git clone https://github.com/grid-control/grid-control.git
+```
+and the directory containing the `go.py` executable in your $PATH, e.g. with
+
 export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
 ```
 if you have Excalibur and grid-control installed in the same folder.
