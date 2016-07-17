@@ -71,15 +71,12 @@ make -j4 -B
 
 ##### Batch Functionality
 
-For the batch functionality of Excalibur, you need grid-control:
+For the batch functionality of Excalibur, you need [grid-control](https://github.com/grid-control/grid-control.git) and the directory containing the `go.py` executable in your `$PATH`. 
+For example, this can be setup in the following way:
 ```
-git clone https://github.com/grid-control/grid-control.git
-```
-and the directory containing the `go.py` executable in your $PATH, e.g. with
-
+git clone https://github.com/grid-control/grid-control.git $EXCALIBURPATH/../grid-control
 export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
 ```
-if you have Excalibur and grid-control installed in the same folder.
 
 Additionally, the EXCALIBUR\_WORK variable has to be set to an existing directory.
 By default, it is set to `/storage/a/$USER/zjet` by `ini_excalibur.sh` if this
