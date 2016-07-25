@@ -358,7 +358,7 @@ def jec_combination_20160607_CHS_Zmm(args=None):
 			'/home/cheidecker/Excalibur/work/data16_25ns.root',
 			'/home/cheidecker/Excalibur/work/mc16_25ns.root',
 		],
-		"algorithms": ["ak4PFJetsCHS"],
+		#"algorithms": ["ak4PFJetsCHS"],
 		"www": 'jec_combination_20160607_CHS_Zmm',
 	}
 	jec_combination(args, d, 'CHS')
@@ -370,7 +370,7 @@ def jec_combination_20160607_CHS_Zee(args=None):
 			'work/data16_25ns_ee.root',
 			'work/mc16_25ns_ee.root',
 		],
-		"algorithms": ["ak4PFJetsCHS"],
+		#"algorithms": ["ak4PFJetsCHS"],
 		"www": 'jec_combination_20160607_CHS_Zee',
 	}
 	jec_combination(args, d, 'CHS')

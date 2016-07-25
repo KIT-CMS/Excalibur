@@ -144,7 +144,7 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 		'ratio_denominator_nicks': ['ptbalance_mc', 'mpf_mc'],
 		'ratio_result_nicks': ['ptbalance_ratio', 'mpf_ratio'],
 		#'y_subplot_lims': [0.966, 1.034], #for Zmm
-		'y_subplot_lims': [0.95, 1.1], #for Zee
+		'y_subplot_lims': [0.93, 1.1], #for Zee
 		'extrapolation_text_position': [0.18, 1.025],
 		'y_subplot_label': '{} / {}'.format(labels[0], labels[1]).replace('(','').replace(')',''),
 		'subplot_fraction': 40,
@@ -640,10 +640,10 @@ def full_comparison(args=None, d=None, data_quantities=True, only_normalized=Fal
 	plotting_jobs = []
 #	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
 #	plotting_jobs += basic_profile_comparisons(args, d)
-#	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
+	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
 #	plotting_jobs += response_nevents(args, d, data_quantities)
-	plotting_jobs += response_comparisons(args, d, data_quantities)
-	plotting_jobs += response_extrapolation(args, d, inputtuple)
+#	plotting_jobs += response_comparisons(args, d, data_quantities)
+#	plotting_jobs += response_extrapolation(args, d, inputtuple)
 #	plotting_jobs += jet_resolution(args, additional_dictionary=d)
 	return plotting_jobs
 
@@ -767,8 +767,8 @@ def comparison_datamc_Zmm_run2(args=None):
 		'texts_size': [20],
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
 		'y_subplot_label' : "Data/MC",
-		'formats': ['pdf'],
-		'lumis': [0.804],
+#		'formats': ['pdf'],
+		'lumis': [2],
 	}
 	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datadata')  # usually datamc
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3', 'finalcuts_ak4PFJetsCHSL1L2L3']})
@@ -792,7 +792,7 @@ def comparison_datamc_Zmm_run2_v3(args=None):
 		'texts_size': [20],
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
 		'y_subplot_label' : "Data/MC",
-		'formats': ['pdf'],
+#		'formats': ['pdf'],
 		'lumis': [0.804],
 	}
 	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datadata')  # usually datamc
@@ -817,8 +817,8 @@ def comparison_datamc_Zee_run2(args=None):
 		'texts_size': [20],
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
 		'y_subplot_label' : "Data/MC",
-		'formats': ['pdf'],
-		'lumis': [0.804],
+#		'formats': ['pdf'],
+		'lumis': [2],
 	}
 	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datadata')  # usually datamc
 	d.update({'folders': ['finalcuts_ak4PFJetsCHSL1L2L3', 'finalcuts_ak4PFJetsCHSL1L2L3']})
@@ -842,7 +842,7 @@ def comparison_datamc_Zee_run2_v3(args=None):
 		'texts_size': [20],
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
 		'y_subplot_label' : "Data/MC",
-		'formats': ['pdf'],
+#		'formats': ['pdf'],
 		'lumis': [0.804],
 	}
 	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datadata')  # usually datamc
