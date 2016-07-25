@@ -2,7 +2,7 @@ import configtools
 
 
 def config():
-	cfg = configtools.getConfig('data', 2015, 'mm', bunchcrossing='25ns')
+	cfg = configtools.getConfig('data', 2016, 'mm', bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
 #		ekppath="/storage/a/cheidecker/cmssw807_calo_freiburg/Zll_DoMuRun2016B-PromptReco-v1/*.root",
 #		ekppath="/storage/a/cheidecker/cmssw807_calo_naf/Zll_DoMuRun2016B-PromptReco-v1/*.root",
