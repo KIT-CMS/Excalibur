@@ -2,9 +2,10 @@ import configtools
 
 
 def config():
-	cfg = configtools.getConfig('mc', 2015, 'mm', bunchcrossing='25ns')
+	cfg = configtools.getConfig('mc', 2016, 'mm', bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
-		ekppath="/storage/a/cheidecker/cmssw807_calo_noPUJetID/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7/*.root",
+		#ekppath="/storage/a/cheidecker/cmssw807_calo_noPUJetID/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7/*.root",
+		ekppath="/storage/jbod/tberger/Skimming/results-mc8014/cmssw8014_calo_noPUJetID/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25ns_v7/*.root",
 	)
 	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc'])
