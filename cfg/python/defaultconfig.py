@@ -317,7 +317,6 @@ def ee(cfg, **kwargs):
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
 	cfg['CutAlphaMax'] = 0.2
-	cfg['ZMassRange'] = 20
 
 	cfg['Pipelines']['default']['Quantities'] += [
 		'epluspt', 'epluseta', 'eplusphi', 'eplusiso',
