@@ -143,6 +143,7 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 		'ratio_numerator_nicks': ['ptbalance_data', 'mpf_data'],
 		'ratio_denominator_nicks': ['ptbalance_mc', 'mpf_mc'],
 		'ratio_result_nicks': ['ptbalance_ratio', 'mpf_ratio'],
+		'ratio_denominator_no_errors': False,
 		#'y_subplot_lims': [0.966, 1.034], #for Zmm
 		'y_subplot_lims': [0.93, 1.1], #for Zee
 		'extrapolation_text_position': [0.18, 1.025],
@@ -278,6 +279,7 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 				'cutlabel': True,
 				'lines': [1.0],
 				'analysis_modules': ['Ratio'],
+				'ratio_denominator_no_errors': False,
 				'filename': method + "_" + quantity.replace("(", "").replace(")", ""),
 				'y_subplot_lims': [0.9, 1.1],
 				'legend': 'lower left',
@@ -515,6 +517,7 @@ def pf_fractions(args=None, additional_dictionary=None, subtract_hf=True):
 				"analysis_modules": ["Ratio"],
 				"ratio_numerator_nicks": nicks[::2],
 				"ratio_denominator_nicks": nicks[1::2],
+				'ratio_denominator_no_errors': False,
 				# formatting
 				"colors":[
 					'blue',
@@ -534,9 +537,9 @@ def pf_fractions(args=None, additional_dictionary=None, subtract_hf=True):
 					'purple',
 				],
 				"labels": plotlabels,
-				"markers": ["o", "fill"]*len(pftypes) + ["o"]*len(pftypes),
+				"markers": ["o","fill"]*len(pftypes) + ["o"]*len(pftypes),
 				"y_label": "Leading Jet PF Energy Fraction",
-				"y_lims": [0.0, 1.0],
+				"y_lims": [0.0, 10.0],
 				'y_subplot_lims' : [0, 2],
 				'legend': "None",
 				"legend_cols": 2,
@@ -634,7 +637,7 @@ def cutflow(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False,
+def full_comparison(args=None, d=None, data_quantities=True, only_normalized=True,
 	                channel="mm", inputtuple="datamc", subtract_hf=True):
 	""" Do all comparison plots"""
 	plotting_jobs = []
@@ -752,15 +755,16 @@ def comparison_run2(args=None):
 
 def comparison_datamc_Zmm_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
+	Res=True # disable/enable residual corrrections
 	plotting_jobs = []
 	d = {
 		'files': ['work/data16_25ns.root', 'work/mc16_25ns.root'],
 		'labels': ['Data', 'MC'],
-		'corrections': ['L1L2L3Res', 'L1L2L3'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'] if not Res==False else ['L1L2L3', 'L1L2L3'],
 		#'algorithms': ['ak4PFJetsCHS'],
 		'www_title': 'Comparison Data MC for Zmm, run2',
 		'www_text':'Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm',
-		'www': 'comparison_datamc_Zmm_run2',
+		'www': 'comparison_datamc_Zmm_run2' if not Res == False else 'comparison_datamc_Zmm_run2_noRes',
 		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"],
 		'texts_x': [0.84],
 		'texts_y': [0.93],
@@ -771,21 +775,22 @@ def comparison_datamc_Zmm_run2(args=None):
 		'lumis': [12.9],
 	}
 	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datadata')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3']})
+	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def comparison_datamc_Zee_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root"""
+	Res=True # disable/enable residual corrrections
 	plotting_jobs = []
 	d = {
 		'files': ['work/data16_25ns_ee.root', 'work/mc16_25ns_ee.root'],
 		'labels': ['Data', 'MC'],
-		'corrections': ['L1L2L3', 'L1L2L3'],
+		'corrections': ['L1L2L3Res', 'L1L2L3'] if not Res==False else ['L1L2L3', 'L1L2L3'],
 		#'algorithms': ['ak4PFJetsCHS'],
 		'www_title': 'Comparison Data MC for Zee, run2',
 		'www_text':'Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root',
-		'www': 'comparison_datamc_Zee_run2',
+		'www': 'comparison_datamc_Zee_run2' if not Res == False else 'comparison_datamc_Zee_run2_noRes',
 		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
 		'texts_x': [0.84],
 		'texts_y': [0.93],
@@ -796,7 +801,7 @@ def comparison_datamc_Zee_run2(args=None):
 		'lumis': [12.9],
 	}
 	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datadata')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
+	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
 	plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
