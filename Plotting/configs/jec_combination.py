@@ -77,6 +77,7 @@ def jec_combination(args=None, additional_dictionary=None, algo = 'CHS'):
 		'rho': 'Rho',
 		'npv': 'NPV',
 	}
+#	alpha_limits = [0.4]
 	alpha_limits = [0.1, 0.15, 0.2, 0.3, 0.4]
 	alpha_cuts = ['(alpha<{})'.format(limit) for limit in alpha_limits]
 	alpha_strings = ['a'+str(int(100*limit)) for limit in alpha_limits]
@@ -351,26 +352,26 @@ def jec_combination_20160607_PUPPI_Zee(args=None):
 	}
 	jec_combination(args, d, 'Puppi')
 
-def jec_combination_20160607_CHS_Zmm(args=None):
+def jec_combination_CHS_Zmm(args=None):
 	#for run2 2016 CHS jec combination files using jec Spring16_25nsV3
 	d = {
 		'files': [
-			'/home/cheidecker/Excalibur/work/data16_25ns.root',
-			'/home/cheidecker/Excalibur/work/mc16_25ns.root',
+			'/portal/ekpcms6/home/cheidecker/Excalibur/work/data16_25ns.root',
+			'/portal/ekpcms6/home/cheidecker/Excalibur/work/mc16_25ns.root',
 		],
 		#"algorithms": ["ak4PFJetsCHS"],
-		"www": 'jec_combination_20160607_CHS_Zmm',
+		"www": 'jec_combination_CHS_Zmm_fullalpha',
 	}
 	jec_combination(args, d, 'CHS')
 
-def jec_combination_20160607_CHS_Zee(args=None):
+def jec_combination_CHS_Zee(args=None):
 	#for run2 2016 CHS jec combination files using jec Spring16_25nsV3
 	d = {
 		'files': [
-			'work/data16_25ns_ee.root',
-			'work/mc16_25ns_ee.root',
+			'/portal/ekpcms6/home/cheidecker/Excalibur/work/data16_25ns_ee.root',
+			'/portal/ekpcms6/home/cheidecker/Excalibur/work/mc16_25ns_ee.root',
 		],
 		#"algorithms": ["ak4PFJetsCHS"],
-		"www": 'jec_combination_20160607_CHS_Zee',
+		"www": 'jec_combination_CHS_Zee_fullalpha',
 	}
 	jec_combination(args, d, 'CHS')
