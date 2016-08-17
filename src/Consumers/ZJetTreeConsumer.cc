@@ -212,6 +212,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                              ->getTag("puJetIDFullDiscriminant", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
+    
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet1puidtight", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
@@ -231,6 +232,13 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (product.GetValidJetCount(settings, event) > 0)
                        ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
                              ->getId("puJetIDFullLoose", event.m_jetMetadata)
+                       : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet1btag", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.GetValidJetCount(settings, event) > 0)
+                       ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
+                             ->getTag("pfCombinedInclusiveSecondaryVertexV2BJetTags", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
     // correction factors
