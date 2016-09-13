@@ -15,13 +15,13 @@ import sys
 class ExcaliburAnalysisWrapper(kappaanalysiswrapper.KappaAnalysisWrapper):
 
 	def __init__(self):
-		super(ExcaliburAnalysisWrapper, self).__init__("HiggsToTauTauAnalysis")
+		super(ExcaliburAnalysisWrapper, self).__init__("excalibur")
 
 	def _initArgumentParser(self, userArgParsers=None):
 		super(ExcaliburAnalysisWrapper, self)._initArgumentParser(userArgParsers)	  
 	  
         def run(self):
-	  return super(HiggsToTauTauAnalysisWrapper, self).run()
+	  return super(ExcaliburAnalysisWrapper, self).run()
 	
 	
 if __name__ == "__main__":
