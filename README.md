@@ -55,6 +55,7 @@ git clone https://github.com/KappaAnalysis/KappaTools.git
 git clone https://github.com/artus-analysis/Artus.git
 git clone https://github.com/artus-analysis/Excalibur.git
 tar -xzf Excalibur/data/CondFormats.tar.gz
+svn co https://ekptrac.physik.uni-karlsruhe.de/svn/grid-control/trunk/grid-control $CMSSW_BASE/../grid-control
 ```
 In a next step you need to compile all those packages:
 ```
@@ -79,12 +80,7 @@ make -j4 -B
 
 ##### Batch Functionality
 
-For the batch functionality of Excalibur, you need [grid-control](https://github.com/grid-control/grid-control.git) and the directory containing the `go.py` executable in your `$PATH`. 
-For example, this can be setup in the following way:
-```
-svn co https://ekptrac.physik.uni-karlsruhe.de/svn/grid-control/trunk/grid-control $CMSSW_BASE/../grid-control
-export PATH=$PATH:$CMSSW_BASE/../grid-control:$CMSSW_BASE/../grid-control/scripts
-```
+For the batch functionality of Excalibur, you need [grid-control](https://github.com/grid-control/grid-control.git) and the directory containing the `go.py` executable in your `$PATH`. (now install by default)
 
 Additionally, the EXCALIBUR\_WORK variable has to be set to an existing directory.
 By default, it is set to `/storage/a/$USER/zjet` by `ini_excalibur.sh` if this
