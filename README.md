@@ -29,7 +29,7 @@ This framework needs:
 All that is most easily provided by installing CMSSW:
 ```
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/
-export SCRAM_ARCH=slc6_amd64_gcc453
+export SCRAM_ARCH=slc6_amd64_gcc530
 source $VO_CMS_SW_DIR/cmsset_default.sh
 cmsrel CMSSW_8_0_18
 cd CMSSW_8_0_18/src
