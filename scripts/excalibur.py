@@ -141,7 +141,7 @@ def ZJet():
 			except KeyboardInterrupt:
 				sys.exit(0)
 		try:
-			child = subprocess.Popen(["artus", options.json] + (["--log-level", options.artus_log_level] if options.artus_log_level is not None else []))
+			child = subprocess.Popen(["excalibur", options.json] + (["--log-level", options.artus_log_level] if options.artus_log_level is not None else []))
 			streamdata = child.communicate()[0]
 			artus_returncode = child.returncode
 		except KeyboardInterrupt:
@@ -532,26 +532,12 @@ def populate_workdir(workdir_path, artus_json):
 	create_runfile(artus_json, workdir_path + "/run-excalibur.sh", workpath = workdir_path)
 	shutil.copy(artus_json, workdir_path)
 	# files to transfer: wkdir_subdir => basedir => relpaths
+	
 	transfer_dict = {
 		"": {
 			getEnv(): [
 				"cfg/gc/json_modifier.py", "cfg/gc/gc_base.conf",
-				"scripts/ini_excalibur.sh", "scripts/artus"
-			],
-		},
-		"lib": {
-			getEnv('ARTUSPATH'): [
-				"libartus_configuration.so", "libartus_consumer.so",
-				"libartus_core.so", "libartus_externalcorr.so",
-				"libartus_filter.so", "libartus_kappaanalysis.so",
-				"libartus_provider.so", "libartus_utility.so",
-				# these should probably be read from a 'KAPPAPATH' - MF@20151016
-				"../Kappa/lib/libKappa.so", "../KappaTools/lib/libKPlotTools.so",
-				"../KappaTools/lib/libKRootTools.so", "../KappaTools/lib/libKToolbox.so"
-			],
-			getEnv('BOOSTPATH'): [
-				"libboost_regex.so." + getEnv('BOOSTVER').split('-')[0],
-				"libboost_program_options.so." + getEnv('BOOSTVER').split('-')[0]
+				"scripts/ini_excalibur.sh"  #, "scripts/artus"
 			],
 		}
 	}
@@ -561,6 +547,7 @@ def populate_workdir(workdir_path, artus_json):
 		for source_basedir in transfer_dict[wkdir_subdir]:
 			for relpath in transfer_dict[wkdir_subdir][source_basedir]:
 				shutil.copy(os.path.join(source_basedir, relpath), os.path.join(workdir_path, wkdir_subdir))
+	
 
 
 def showMessage(title, message, fail=False):
