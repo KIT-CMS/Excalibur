@@ -15,6 +15,11 @@ many ideas were and can still be taken from there.
 ## Installation of the Excalibur Framework
 
 ### Requirements
+This framwork needs;
+-CMSSW > 76X
+
+
+### Also Possible to use Requirements
 This framework needs:
 - python >= 2.6
 - boost >= 1.50
@@ -24,12 +29,12 @@ This framework needs:
 All that is most easily provided by installing CMSSW:
 ```
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/
-export SCRAM_ARCH=slc6_amd64_gcc491
+export SCRAM_ARCH=slc6_amd64_gcc453
 source $VO_CMS_SW_DIR/cmsset_default.sh
-cmsrel CMSSW_7_4_0_pre9
-cd CMSSW_7_4_0_pre9/src
+cmsrel CMSSW_8_0_18
+cd CMSSW_8_0_18/src
 cmsenv
-cd ../..
+
 ```
 Alternatively, all these requirements can also be installed independently or taken from the system.
 
@@ -51,22 +56,25 @@ git clone https://github.com/artus-analysis/Artus.git
 git clone https://github.com/artus-analysis/Excalibur.git
 tar -xzf Excalibur/data/CondFormats.tar.gz
 ```
-
 In a next step you need to compile all those packages:
+```
+scramv1 b -j12
+```
+In a next step you need to initialize all packages by:
 ```
 cd Excalibur
 . scripts/ini_excalibur.sh
-make all
 ```
-As an alternative to this command, you can also compile all four
-repositories by hand:
+
+
+As an alternative to this you can also compile all four repositories by hand (not up to date):
 ```
 make -B -C Kappa/DataFormats/test
 cd KappaTools; cmake . ; make -j4 -B  ; cd ..
 cd Artus ; cmake . ; make -B -j4 ; cd ..
 cd Excalibur
 . scripts/ini_excalibur.sh
-make -j4 -B
+make -j4 -B 
 ```
 
 ##### Batch Functionality
