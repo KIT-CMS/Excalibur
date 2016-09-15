@@ -6,6 +6,7 @@ export EXCALIBURCONFIGS=$EXCALIBURPATH/cfg/excalibur
 export ARTUSPATH=$EXCALIBURPATH/../Artus
 export PLOTCONFIGS=$EXCALIBURPATH/Plotting/configs
 export PYTHONLINKDIR=$EXCALIBURPATH/../python-links
+export PATH=$PATH:$CMSSW_BASE/../grid-control:$CMSSW_BASE/../grid-control/scripts
 
 # source Artus ini script
 source $ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh
@@ -61,7 +62,6 @@ fi
 # Set some user specific variables
 if [ $USER = "mfischer" ]; then
     if [[ $HOSTNAME == *"naf"* ]]; then
-        export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control
         export EXCALIBUR_WORK=/nfs/dust/cms/user/mfischer/calib/gc-work/excalibur/
         export EXCALIBURBRILSSH="mafische@lxplus.cern.ch"
     fi
@@ -70,7 +70,6 @@ elif [ $USER = "cheidecker" ]; then
     export EXCALIBUR_WORK=/storage/a/cheidecker/zjets/
 elif [ $USER = "wayand" ]; then
     echo "Hallo Stefan, schoen dich zu sehen "
-    export PATH=$PATH:$EXCALIBURPATH/../grid-control:$EXCALIBURPATH/../grid-control/scripts
     export EXCALIBUR_WORK=/storage/8/wayand/zjets/
     export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
 elif [ $USER = "afriedel" ]; then
