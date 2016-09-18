@@ -61,12 +61,7 @@ if [ -d "/storage/a/$USER/zjet" ]; then
 fi
 
 # Set some user specific variables
-if [ $USER = "mfischer" ]; then
-    if [[ $HOSTNAME == *"naf"* ]]; then
-        export EXCALIBUR_WORK=/nfs/dust/cms/user/mfischer/calib/gc-work/excalibur/
-        export EXCALIBURBRILSSH="mafische@lxplus.cern.ch"
-    fi
-elif [ $USER = "cheidecker" ]; then
+if [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/a/cheidecker/zjets/
 elif [ $USER = "wayand" ]; then

@@ -214,7 +214,7 @@ def _2016(cfg, **kwargs):
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 71.3
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
-	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt')#12.9/fb
+	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt')#/fb
 
 # channel:
 def eemm(cfg, **kwargs):
