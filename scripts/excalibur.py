@@ -110,10 +110,19 @@ def ZJet():
 		config_path = options.work + "/" + options.out + ".conf"
 		if not options.resume:
 			prepare_wkdir_parent(options.work, options.out, options.clean)
-			writeDBS(conf["InputFiles"], options.out, options.work + "/files.dbs")
+			lfn_modi = writeDBS(conf["InputFiles"], options.out, options.work + "/files.dbs")
 			populate_workdir(artus_json=options.json, workdir_path=options.work)
-			createGridControlConfig(conf, config_path, timestamp = options.timestamp, batch=options.batch, jobs=options.jobs, files_per_job=options.files_per_job)
-		output_glob = options.work + "out/*.root"
+			createGridControlConfig(conf, config_path, 
+						 timestamp = options.timestamp, 
+						 batch=options.batch, 
+						 jobs=options.jobs, 
+						 files_per_job=options.files_per_job,
+						 partition_lfn_modifier=lfn_modi,
+						 excalibur_json = os.path.basename(options.json),
+						 workdir_path=options.work
+						 )
+		#output_glob = options.work + "out/*.root"
+		output_glob = options.work + "out/"
 		if options.parallel_merge is None:
 			gctime = run_gc(config_path=config_path, output_glob=output_glob, workdir_path=options.work)
 		else:
@@ -188,10 +197,21 @@ def run_gc(config_path, output_glob, workdir_path):
 	except subprocess.CalledProcessError:
 		print "grid-control run failed"
 		sys.exit(1)
+	try: 
+		subprocess.check_call(['downloadFromSE.py', config_path,'-o',output_glob])
+	except KeyboardInterrupt:
+		sys.exit(0)
+	except subprocess.CalledProcessError:
+		print "downloadFromSE.py failed"
+		sys.exit(1)	
+	
 	gctime = time.time() - gctime
+	print output_glob
+	print glob.glob(output_glob+"*.root")
+	
 	if glob.glob(output_glob):
 		wrapper_logger.info("Merging output files")
-		subprocess.call(['hadd', workdir_path + 'out.root'] + glob.glob(output_glob))
+		subprocess.call(['hadd', workdir_path + 'out.root'] + glob.glob(output_glob+"*.root"))
 	else:
 		print "Batch job failed to produce any output (%s)" % output_glob
 		sys.exit(1)
@@ -459,18 +479,24 @@ def writeDBS(input_files, nickname, dbsfile_name):
 	:param dbsfile_name: name (and path) to write DBS information to
 	:type dbsfile_name: str
 	"""
+	lfn_modi = ''
 	file_prefix = os.path.dirname(os.path.commonprefix(input_files))
+	short_file_prefix = file_prefix
+	if file_prefix.split(':')[0] == 'srm':
+	  short_file_prefix = file_prefix[file_prefix.find("/store/"):]
+	  lfn_modi = file_prefix[:file_prefix.find("store/")]
 	# ordering is important in the .dbs file format
 	with open(dbsfile_name, 'wb') as f:
 		f.write("[" + nickname + "]\n")
 		f.write("nickname = " + nickname + "\n")
 		f.write("events = " + str(-len(input_files)) + "\n")
-		f.write("prefix = " + file_prefix + "\n")
+		f.write("prefix = " + short_file_prefix + "\n")
 		for input_file in input_files:
 			f.write(os.path.relpath(input_file, file_prefix) + " = -1\n")
+	return lfn_modi
 
 
-def createGridControlConfig(settings, filename, original=None, timestamp='', batch="", jobs=None, files_per_job=None):
+def createGridControlConfig(settings, filename, original=None, timestamp='', batch="", jobs=None, files_per_job=None, partition_lfn_modifier='', excalibur_json="", workdir_path=None):
 	if original is None:
 		original = getEnv() + '/cfg/gc/gc_{}.conf'.format(batch)
 	# guess best job number
@@ -489,10 +515,13 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 		files_per_job = max((len(settings['InputFiles']) / n_jobs) + 1, min_files_per_job)
 	d = {
 		'@FilesPerJob@': '%d' % files_per_job,
+		'@PartitionLfnModifier@': "partition lfn modifier = %s " %partition_lfn_modifier,
 		'@NICK@': settings["OutputPath"][:-5],
 		'@TIMESTAMP@': timestamp,
-		'$EXCALIBURPATH': getEnv(),
-		'$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
+		'@EXCALIBURJSON@' : excalibur_json,
+		'@WORKPATH@' : workdir_path,
+		'$EXCALIBURPATH': getEnv('EXCALIBURPATH'),
+	#	'$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
 	}
 	copyFile(original, filename, d)
 
@@ -564,15 +593,29 @@ def showMessage(title, message, fail=False):
 
 def createFileList(files, fast=False):
 	files = getattr(files, "artus_value", files)
-	if type(files) == str:
-		if "*.root" in files:
-			print "Creating file list from", files
-			files = glob.glob(files)
-			# Direct access to /pnfs is buggy, prepend dcap to file paths
-			if 'naf' in socket.gethostname():
-				files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
+	if type(files) != str:
+		print "Not posilbe to resolve inputfiles format ",type(files)," must be a str"
+	        sys.exit(1)
+	if "*.root" in files:
+		print "Creating file list from", files
+		if files.split(':')[0] == 'srm':
+		  print "Use grid ls tools (gfal2)"
+		  gridpath = files.replace("*.root","")
+		  import gfal2
+		  ctxt = gfal2.creat_context()
+		  listdir = ctxt.listdir(gridpath)
+		  files = []
+		  for f in listdir:
+		    if f.endswith('.root'):
+		      files.append(gridpath + f)
 		else:
-			files = [files]
+		  files = glob.glob(files)
+		  # Direct access to /pnfs is buggy, prepend dcap to file paths
+		  if 'naf' in socket.gethostname():
+			  files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
+	else:
+		files = [files]
+
 	if not files:
 		print "No input files found."
 		sys.exit(1)
