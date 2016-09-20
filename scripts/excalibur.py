@@ -197,13 +197,13 @@ def run_gc(config_path, output_glob, workdir_path):
 	except subprocess.CalledProcessError:
 		print "grid-control run failed"
 		sys.exit(1)
-	try: 
-		subprocess.check_call(['downloadFromSE.py', config_path,'-o',output_glob])
-	except KeyboardInterrupt:
-		sys.exit(0)
-	except subprocess.CalledProcessError:
-		print "downloadFromSE.py failed"
-		sys.exit(1)	
+	#try: 
+	#	subprocess.check_call(['downloadFromSE.py', config_path,'-o',output_glob,'-s'])
+	#except KeyboardInterrupt:
+	#	sys.exit(0)
+	#except subprocess.CalledProcessError:
+	#	print "downloadFromSE.py failed"
+	#	sys.exit(1)	
 	
 	gctime = time.time() - gctime
 	print output_glob
@@ -521,7 +521,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 		'@EXCALIBURJSON@' : excalibur_json,
 		'@WORKPATH@' : workdir_path,
 		'$EXCALIBURPATH': getEnv('EXCALIBURPATH'),
-	#	'$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
+		'$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
 	}
 	copyFile(original, filename, d)
 
