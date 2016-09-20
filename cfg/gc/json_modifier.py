@@ -19,7 +19,7 @@ def ModifyJSON(jsonConfig, newPath, oldexcaliburpath=None):
           with open(jsonConfig, "r") as jsonFile:
                 conf = json.load(jsonFile)
                 
-	conf["InputFiles"] = [ f.split('//')[-1].strip().strip('"') for f in os.environ['FILE_NAMES'].replace(',',' ').split(' ')]
+	conf["InputFiles"] = [ f.split('//')[-1].strip().strip('"') for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
 	with open(newPath + '/' + os.path.basename(jsonConfig), 'w') as newJSON:
 		json.dump(conf, newJSON, sort_keys=True, indent=1, separators=(',', ':'))
 	print conf["InputFiles"]
