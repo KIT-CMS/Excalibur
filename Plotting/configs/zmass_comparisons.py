@@ -280,8 +280,8 @@ def zmass_comparison(args=None, additional_dictionary=None, only_normalized=Fals
 		'x_expressions': [quantity],
 		'cutlabel': True,
 		'y_subplot_lims': [0.75, 1.25],
-		#'analysis_modules': ['NormalizeToFirstHisto','Ratio', 'FunctionPlot'],
-		'analysis_modules': ['Ratio', 'FunctionPlot'],
+		'analysis_modules': ['NormalizeToFirstHisto','Ratio', 'FunctionPlot'],
+		#'analysis_modules': ['Ratio', 'FunctionPlot'],
 		'filename': quantity+'_fit',
 		'title': 'Work in Progress',#r'$\\mathrm{M_{Z}}$',
 		'legend': 'upper right',
@@ -851,73 +851,112 @@ def fit_zmass_lepton_part(args=None, additional_dictionary=None, channels=['e','
 
 def zmass_comparison_datamc_Zmm_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
-	zjetfolder='nocuts'
+	miniAOD=False
+        PUPPI=False
+	zjetfolder='finalcuts'
 	plotting_jobs = []
 	d = {
 		'files': ['work/data16_25ns.root', 'work/mc16_25ns.root'],
-		'labels': ['Data16runB_mu', 'MC80X_mu'],
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
-		'algorithms': ['ak4PFJetsCHS'],
-		'www': zjetfolder+'_zmass_comparison_datamc_Zmm_run2',
-		'www_title': 'Comparison Data MC for Zmm, run2, '+zjetfolder,
-		'www_text':'Run2: Zmass data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm',
+	#	'algorithms': ['ak4PFJetsCHS'],
+		'www': zjetfolder+'_zmass_comparison_datamc_Zmm_run2_AOD_CHS',
+		'www_title': 'Comparison Data MC for Zmm, run2, '+zjetfolder+', AOD, CHS',
+		'www_text':'Run2: Zmass data mc comparisons for Zmm AOD CHS samples',
 		'zjetfolders': [zjetfolder],
+		'formats': ['pdf'],
 		}
-	d.update({ "labels": [r"$\\mu_\\mathrm{Data16runB}$", r"$\\mu_\\mathrm{MC80X}$", "Ratio", "Data_fit", "MC_fit"], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
+
+        if miniAOD==True and PUPPI==False:
+                d.update({
+                'files': ['work/AN/excalibur_data16_25ns_mm.root', 'work/mc16_25ns.root'],
+                'www': zjetfolder+'_zmass_comparison_datamc_Zmm_run2_miniAOD_CHS',
+                'www_title': 'Comparison Data MC for Zmm, run2, '+zjetfolder+', miniAOD, CHS',
+                'www_text':'Run2: Zmass data mc comparisons for Zmm miniAOD CHS samples',
+                })
+
+        if miniAOD==True and PUPPI==True:
+                d.update({
+                'files': ['work/AN/excalibur_data16_25ns_puppi_mm.root', 'work/mc16_25ns_mm.root'],
+                'www': zjetfolder+'_zmass_comparison_datamc_Zmm_run2_miniAOD_PUPPI',
+                'www_title': 'Comparison Data MC for Zmm, run2, '+zjetfolder+', miniAOD, PUPPI',
+                'www_text':'Run2: Zmass data mc comparisons for Zmm miniAOD PUPPI samples',
+                })
+
+	d.update({ "labels": ["Data", "MC", "Ratio", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
 		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"],
 	})
 	d.update({"texts_x": [0.03],
 		"texts_y": [0.70],
 	#	"texts_size": [10],
 	})
-	#plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="m")
-	#plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
+	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="m")
+	plotting_jobs += zmass_comparison(args, d, channel="m")#usually datamc
 	plotting_jobs += general_comparison(args, d, channel="m", only_normalized=True)
 	plotting_jobs += profplot_datamc_comparison(args, d, channel="m")
-	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="m")
-	d.update({'files': ['work/out.root'],
+	plotting_jobs += twodimplot_datamc_comparison(args, d, channel="m")
+	d.update({'files': ['work/mc16_25ns.root'],
 		'labels': ['MCmu'],
 		'corrections': ['L1L2L3'],})
 	#plotting_jobs += general_mc_comparison(args, d, channel="m")
-#	plotting_jobs += genzmass_fit(args, d, channel="m")
-#	plotting_jobs += profplot_genreco_comparison(args, d, channel="m")
-#	plotting_jobs += cutflow(args, d)
+	#plotting_jobs += genzmass_fit(args, d, channel="m")
+	#plotting_jobs += profplot_genreco_comparison(args, d, channel="m")
+	#plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def zmass_comparison_datamc_Zee_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root"""
-	zjetfolder='nocuts'
+	miniAOD=True
+	PUPPI=False
+	zjetfolder='finalcuts'
 	plotting_jobs = []
 	d = {
-		'files': ['work/data16_25ns_ee.root', 'work/mc16_25ns_ee.root'],
-		'labels': ['Data16runB_ee', 'MC80X_ee'],
+		'files': ['work/data16_25ns_ee.root', 'work/mc16_25ns_ee.root'] ,
+		'labels': ['Data', 'MC'],
 		'corrections': ['L1L2L3', 'L1L2L3'],
-		'algorithms': ['ak4PFJetsCHS'],
-		'www': zjetfolder+'_zmass_comparison_datamc_Zee_run2',
-		'www_title': 'Comparison Data MC for Zee, run2, '+zjetfolder,
-		'www_text':'Run2: Zmass data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root',
+	#	'algorithms': ['ak4PFJetsCHS'],
+		'www': zjetfolder+'_zmass_comparison_datamc_Zee_run2_AOD_CHS',
+		'www_title': 'Comparison Data MC for Zee, run2, '+zjetfolder+', AOD, CHS',
+		'www_text':'Run2: Zmass data mc comparisons for Zee AOD CHS samples',
 		'zjetfolders': [zjetfolder],
+		'formats': ['pdf'],
 		}
 
-	d.update({ "labels": ["Data16runB", "MC80X", "Ratio", "Data16runB", "MC80X"], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
+	if miniAOD==True and PUPPI==False:
+		d.update({
+		'files': ['work/AN/excalibur_data16_25ns_ee.root', 'work/mc16_25ns_ee.root'],
+		'www': zjetfolder+'_zmass_comparison_datamc_Zee_run2_miniAOD_CHS',
+                'www_title': 'Comparison Data MC for Zee, run2, '+zjetfolder+', miniAOD, CHS',
+                'www_text':'Run2: Zmass data mc comparisons for Zee miniAOD CHS samples',
+		})
+
+        if miniAOD==True and PUPPI==True:
+                d.update({
+                'files': ['work/AN/excalibur_data16_25ns_puppi_ee.root', 'work/mc16_25ns_ee.root'],
+                'www': zjetfolder+'_zmass_comparison_datamc_Zee_run2_miniAOD_PUPPI',
+                'www_title': 'Comparison Data MC for Zee, run2, '+zjetfolder+', miniAOD, PUPPI',
+                'www_text':'Run2: Zmass data mc comparisons for Zee miniAOD PUPPI samples',
+                })
+
+	d.update({ "labels": ["Data", "MC", "Ratio", "", ""], #default format of labels ["DATA", "MC", "Ratio", "DATA_fit", "MC_fit"]
 		"texts": [r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{e e}$"],
 	})
 	d.update({"texts_x": [0.03],
 		"texts_y": [0.70],
 		"texts_size": [10],
 	})
-#	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="e")
-#	plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
+	plotting_jobs += fit_zmass_profplot_datamc(args, d, channel="e")
+	plotting_jobs += zmass_comparison(args, d, channel="e")#usually datamc
 	plotting_jobs += general_comparison(args, d, channel="e", only_normalized=True)
 	plotting_jobs += profplot_datamc_comparison(args, d, channel="e")
-	#plotting_jobs += twodimplot_datamc_comparison(args, d, channel="e")
+	plotting_jobs += twodimplot_datamc_comparison(args, d, channel="e")
 	d.update({'files': ['work/mc15_25ns_ee.root'],
-		'labels': ['MCe'],
+		'labels': ['MC'],
 		'corrections': ['L1L2L3'],})
 	#plotting_jobs += general_mc_comparison(args, d, channel="e")
-#	plotting_jobs += genzmass_fit(args, d, channel="e")
-#	plotting_jobs += profplot_genreco_comparison(args, d, channel="e")
-#	plotting_jobs += cutflow(args, d)
+	#plotting_jobs += genzmass_fit(args, d, channel="e")
+	#plotting_jobs += profplot_genreco_comparison(args, d, channel="e")
+	#plotting_jobs += cutflow(args, d)
 	return plotting_jobs
 
 def zmass_comparison_datamc_Zll_run2(args=None):

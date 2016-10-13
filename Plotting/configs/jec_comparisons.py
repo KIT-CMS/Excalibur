@@ -332,7 +332,7 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'%spluspt': ['20,0,150'],
 	}
 
-	quantity_list= ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
+	quantity_list= ['zeta', 'zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
 			 'npv', 'npumean', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
 			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',]
 	quantity_list_zl=['%s1pt', '%s1eta', '%s1phi', '%s2pt', '%s2eta', '%s2phi','%sminusphi', '%sminuseta', '%sminuspt', '%splusphi', '%spluseta', '%spluspt']
@@ -637,13 +637,13 @@ def cutflow(args=None, additional_dictionary=None):
 	return [PlottingJob(plots=plots, args=args)]
 
 
-def full_comparison(args=None, d=None, data_quantities=True, only_normalized=True,
+def full_comparison(args=None, d=None, data_quantities=True, only_normalized=False,
 	                channel="mm", inputtuple="datamc", subtract_hf=True):
 	""" Do all comparison plots"""
 	plotting_jobs = []
-#	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
-#	plotting_jobs += basic_profile_comparisons(args, d)
-#	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
+	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
+	plotting_jobs += basic_profile_comparisons(args, d)
+	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
 #	plotting_jobs += response_nevents(args, d, data_quantities)
 	plotting_jobs += response_comparisons(args, d, data_quantities)
 	plotting_jobs += response_extrapolation(args, d, inputtuple)
@@ -755,7 +755,7 @@ def comparison_run2(args=None):
 
 def comparison_datamc_Zmm_run2(args=None):
 	"""Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
-	Res=True # disable/enable residual corrrections
+	Res=False # disable/enable residual corrrections
 	plotting_jobs = []
 	d = {
 		'files': ['work/data16_25ns.root', 'work/mc16_25ns.root'],
@@ -767,12 +767,12 @@ def comparison_datamc_Zmm_run2(args=None):
 		'www': 'comparison_datamc_Zmm_run2' if not Res == False else 'comparison_datamc_Zmm_run2_noRes',
 		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"],
 		'texts_x': [0.84],
-		'texts_y': [0.93],
+		'texts_y': [0.80],
 		'texts_size': [20],
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
 		'y_subplot_label' : "Data/MC",
-#		'formats': ['pdf'],
-		'lumis': [12.9],
+		'formats': ['pdf'],
+		'lumis': [22.88],
 	}
 	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datadata')  # usually datamc
 	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
@@ -793,12 +793,12 @@ def comparison_datamc_Zee_run2(args=None):
 		'www': 'comparison_datamc_Zee_run2' if not Res == False else 'comparison_datamc_Zee_run2_noRes',
 		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
 		'texts_x': [0.84],
-		'texts_y': [0.93],
+		'texts_y': [0.80],
 		'texts_size': [20],
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
 		'y_subplot_label' : "Data/MC",
-#		'formats': ['pdf'],
-		'lumis': [12.9],
+		'formats': ['pdf'],
+		'lumis': [22.88],
 	}
 	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datadata')  # usually datamc
 	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
