@@ -214,7 +214,9 @@ def _2016(cfg, **kwargs):
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 71.3
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
-	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt')#/fb
+	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt')#12.9/fb
+	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt')#/fb
+	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt')#27.22/fb
 
 # channel:
 def eemm(cfg, **kwargs):
@@ -501,7 +503,7 @@ def data_2016(cfg, **kwargs):
 	cfg['CutAlphaMax'] = 0.3
 	cfg['Jec'] = configtools.get_jec("Spring16_25nsV6_DATA")
 	#cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'], normtag='')
-	cfg['Lumi'] = 12.9
+	#cfg['Lumi'] = 27.22
 
 def mc_2012(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
