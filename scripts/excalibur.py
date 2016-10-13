@@ -16,6 +16,7 @@ import socket
 import logging
 import itertools
 import ast
+import shlex
 
 wrapper_logger = logging.getLogger("CORE")
 
@@ -506,8 +507,9 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 		# guess for condor
 		if jobs is None and batch == 'ekpsg':
 			n_free_slots = get_n_free_slots_ekpsg()
+			print n_free_slots
 			if n_free_slots >= 32:  # If enough slots available, use all of them. If not, its wiser to use the default number and queue them
-				jobs = ( n_free_slots / 8) * 8 * 8  # use multiples-of-X for stable job counts (caching)
+				jobs = n_free_slots  # use multiples-of-X for stable job counts (caching)
 				print "%d free slots on ekpsg -> submit %d jobs" % (n_free_slots, jobs)
 
 		jobdict = {False: 80, True: 40} # is_data => files per job
@@ -656,9 +658,10 @@ def prepare_wkdir_parent(work_path, out_name, clean=False):
 
 def get_n_free_slots_ekpsg():
 	"""Get number of free slots on sg machines."""
-	condor = subprocess.Popen(('condor_status'), stdout=subprocess.PIPE)
-	output = subprocess.Popen(('egrep', 'ekpsg.*Owner'), stdin=condor.stdout, stdout=subprocess.PIPE)
-	return int(subprocess.check_output(('wc', '-l'), stdin=output.stdout))
+	condor_constraint = 'CloudSite == "ekpsupermachines"'
+	constraint = "condor_status -constraint '%s' -af TotalSlots" % condor_constraint
+	condor = subprocess.Popen(shlex.split(constraint), stdout=subprocess.PIPE)
+	return int(subprocess.check_output(('wc', '-l'), stdin=condor.stdout))
 
 def format_time(seconds):
 	# TODO is there already a built-in python function for this sort of thing?
