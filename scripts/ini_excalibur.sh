@@ -63,7 +63,7 @@ fi
 # Set some user specific variables
 if [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
-    export EXCALIBUR_WORK=/storage/a/cheidecker/zjets/
+    export EXCALIBUR_WORK=/portal/ekpbms1/home/cheidecker/zjets/
 elif [ $USER = "wayand" ]; then
     echo "Hallo Stefan, schoen dich zu sehen "
     #export EXCALIBUR_WORK=/storage/8/wayand/zjets/
