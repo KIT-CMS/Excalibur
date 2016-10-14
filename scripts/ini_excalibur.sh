@@ -76,3 +76,6 @@ elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/jbod/tberger/working/
 fi
+
+alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
+
