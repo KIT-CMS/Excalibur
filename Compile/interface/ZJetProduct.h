@@ -2,7 +2,7 @@
 
 #include "Artus/KappaAnalysis/interface/KappaProduct.h"
 #include "Artus/Utility/interface/SafeMap.h"
-
+#include <math.h>
 #include <boost/ptr_container/ptr_map.hpp>
 
 /**
@@ -164,6 +164,49 @@ class ZJetProduct : public KappaProduct
     KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event) const
     {
         return GetMet(settings, event, settings.GetCorrectionLevel());
+    }
+
+    //Calculate Phi* eta
+    double GetPhiStarEta(ZJetEvent const& event) const
+    {
+	KLepton* muplus;
+	KLepton* muminus;
+	if (m_zLeptons.first->charge()>0)
+	{
+		muplus = m_zLeptons.first;
+		muminus = m_zLeptons.second;
+	}
+	else 
+	{
+		muplus = m_zLeptons.second;
+		muminus = m_zLeptons.first;
+	}
+	return(CalcPhiStarEta<KLepton*>(muplus, muminus));
+    }
+    double GetGenPhiStarEta(ZJetEvent const& event) const
+    {
+	KGenParticle* muplus;
+	KGenParticle* muminus;
+	if (m_genzLeptons.first->charge()>0)
+	{
+		muplus = m_genzLeptons.first;
+		muminus = m_genzLeptons.second;
+	}
+	else 
+	{
+		muplus = m_genzLeptons.second;
+		muminus = m_genzLeptons.first;
+	}
+	return(CalcPhiStarEta<KGenParticle*>(muplus, muminus));
+    }
+
+    template <class TParticle>
+    double CalcPhiStarEta(TParticle muplus, TParticle muminus) const
+    {
+	double pi = 3.1415926535;
+	double phiacop = pi - std::min(fabs(muminus->p4.Phi()-muplus->p4.Phi()),2*pi-fabs(muminus->p4.Phi()-muplus->p4.Phi()));
+	double thetastar = acos(tanh((muminus->p4.Eta()-muplus->p4.Eta())/2));
+	return(tan(phiacop/2)*sin(thetastar));
     }
 
     // Calculate MPF

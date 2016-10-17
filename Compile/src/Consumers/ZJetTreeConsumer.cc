@@ -644,7 +644,19 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? kleptonflavour_to_pdgid(product.m_zLeptons.first->flavour())
                        : kleptonflavour_to_pdgid(product.m_zLeptons.second->flavour());
         });
-
+    LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
+       "genphistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
+    	    if (!product.m_genzValid)
+                return DefaultValues::UndefinedDouble;
+            return product.GetGenPhiStarEta(event);
+		 
+    	});
+    LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
+        "phistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
+	     if (!product.m_zValid)
+                return DefaultValues::UndefinedDouble;
+            return product.GetPhiStarEta(event);
+        });
     ///////////
     // MUONS //
     ///////////
