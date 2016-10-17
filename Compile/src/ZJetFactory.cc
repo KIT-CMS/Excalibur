@@ -11,7 +11,7 @@
 #include "Excalibur/Compile/interface/Producers/ZJetNumberGeneratedEventsWeightProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetValidElectronsProducer.h"
 #include "Excalibur/Compile/interface/Producers/NeutrinoCounter.h"
-
+#include "Excalibur/Compile/interface/Producers/LeptonSFProducer.h"
 // filters
 #include "Excalibur/Compile/interface/Filters/ZJetCutsFilter.h"
 
@@ -40,6 +40,10 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new ZJetValidElectronsProducer();
     else if (id == NeutrinoCounter().GetProducerId())
         return new NeutrinoCounter();
+    else if (id == LeptonSFProducer().GetProducerId())
+        return new LeptonSFProducer();
+    else if (id == LeptonTriggerSFProducer().GetProducerId())
+        return new LeptonTriggerSFProducer();
     else
         return KappaFactory::createProducer(id);
 }
