@@ -19,6 +19,7 @@ work.*
 *.formatted
 *.root
 !data/pileup/*.root
+!data/scalefactors/*/*.root
 !ntuples/*.root
 !test/*.root
 logs/
