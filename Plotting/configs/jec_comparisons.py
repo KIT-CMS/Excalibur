@@ -756,11 +756,11 @@ def comparison_run2(args=None):
 def comparison_datamc_Zmm_run2(args=None):
   """Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
   Res=False # disable/enable residual corrrections
-        miniAOD=False
-        PUPPI=False
+  miniAOD=False
+  PUPPI=False
   plotting_jobs = []
   d = {
-    'files': ['/portal/ekpbms1/home/cheidecker/Excalibur/work/AN/excalibur_data16_25ns_mm_AOD_CHS.root', '/portal/ekpbms1/home/cheidecker/Excalibur/work/AN/excalibur_MC16_25ns_mm_AOD_CHS.root'],
+    'files': ['/portal/ekpbms2/home/cheidecker/CMSSW_8_0_18/src/Excalibur/work/AN/excalibur_data16_25ns_mm_AOD_CHS.root', '/portal/ekpbms2/home/cheidecker/CMSSW_8_0_18/src/Excalibur/work/AN/excalibur_MC16_25ns_mm_AOD_CHS.root'],
     'labels': ['Data', 'MC'],
     'corrections': ['L1L2L3Res', 'L1L2L3'] if not Res==False else ['L1L2L3', 'L1L2L3'],
     #'algorithms': ['ak4PFJetsCHS'],
@@ -798,6 +798,8 @@ def comparison_datamc_Zmm_run2(args=None):
 def comparison_datamc_Zee_run2(args=None):
   """Run2: full data mc comparisons for work/data15_25ns_ee.root and work/mc15_25ns_ee.root"""
   Res=True # disable/enable residual corrrections
+  miniAOD=False
+  PUPPI=False
   plotting_jobs = []
   d = {
     'files': ['/portal/ekpbms1/home/cheidecker/Excalibur/work/AN/excalibur_data16_25ns_ee_AOD_CHS.root', '/portal/ekpbms1/home/cheidecker/Excalibur/work/AN/excalibur_MC16_25ns_ee_AOD_CHS.root'],

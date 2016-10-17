@@ -852,7 +852,7 @@ def fit_zmass_lepton_part(args=None, additional_dictionary=None, channels=['e','
 def zmass_comparison_datamc_Zmm_run2(args=None):
   """Run2: full data mc comparisons for work/data15_25ns.root and work/mc15_25ns.root for Zmm"""
   miniAOD=False
-        PUPPI=False
+  PUPPI=False
   zjetfolder='finalcuts'
   plotting_jobs = []
   d = {
