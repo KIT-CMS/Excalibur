@@ -187,15 +187,15 @@ class ZJetProduct : public KappaProduct
     {
 	KGenParticle* muplus;
 	KGenParticle* muminus;
-	if (m_genzLeptons.first->charge()>0)
+	if (m_genLeptonsFromBosonDecay[0]->charge()>0)
 	{
-		muplus = m_genzLeptons.first;
-		muminus = m_genzLeptons.second;
+		muplus = m_genLeptonsFromBosonDecay[0];
+		muminus = m_genLeptonsFromBosonDecay[1];
 	}
 	else 
 	{
-		muplus = m_genzLeptons.second;
-		muminus = m_genzLeptons.first;
+		muplus = m_genLeptonsFromBosonDecay[1];
+		muminus = m_genLeptonsFromBosonDecay[0];
 	}
 	return(CalcPhiStarEta<KGenParticle*>(muplus, muminus));
     }

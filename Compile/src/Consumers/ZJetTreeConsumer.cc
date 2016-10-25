@@ -646,7 +646,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
        "genphistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
-    	    if (!product.m_genzValid)
+    	    if (!product.m_genBosonLVFound)
                 return DefaultValues::UndefinedDouble;
             return product.GetGenPhiStarEta(event);
 		 
