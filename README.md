@@ -54,6 +54,7 @@ git clone https://github.com/KappaAnalysis/Kappa.git
 git clone https://github.com/KappaAnalysis/KappaTools.git
 git clone https://github.com/artus-analysis/Artus.git
 git clone https://github.com/artus-analysis/Excalibur.git
+git clone https://github.com/artus-analysis/TauRefit.git VertexRefit/TauRefit
 tar -xzf Excalibur/data/CondFormats.tar.gz
 svn co https://ekptrac.physik.uni-karlsruhe.de/svn/grid-control/trunk/grid-control $CMSSW_BASE/../grid-control
 ```
