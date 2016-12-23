@@ -8,7 +8,6 @@
 #include "Artus/Core/interface/Pipeline.h"
 #include "Artus/Core/interface/PipelineRunner.h"
 
-#include "Artus/KappaAnalysis/interface/KappaPipelineInitializer.h"
 
 #include "Excalibur/Compile/interface/ZJetSettings.h"
 #include "Excalibur/Compile/interface/ZJetEvent.h"
@@ -35,4 +34,4 @@ typedef Pipeline<ZJetTypes> ZJetPipeline;
 
 // Setup our custom pipeline runner and initializer
 typedef PipelineRunner<ZJetPipeline, ZJetTypes> ZJetPipelineRunner;
-typedef KappaPipelineInitializer<ZJetTypes> ZJetPipelineInitializer;
+typedef PipelineInitilizerBase<ZJetTypes> ZJetPipelineInitializer;

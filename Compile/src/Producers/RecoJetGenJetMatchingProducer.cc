@@ -44,9 +44,7 @@ void RecoJetGenJetMatchingProducer::MatchCollection(ZJetEvent const& event,
     }
 
     // Make use of KappaTools matcher
-    std::vector<int> matchResult = matchSort_Matrix<KLV, KJet>(
-        *(event.m_genJets), event.m_genJets->size(), recoJets, recoJets.size(), deltaR);
-
+    std::vector<int> matchResult = matchSort_Matrix<KGenJet, KJet>(*(event.m_genJets), event.m_genJets->size(), recoJets, recoJets.size(), deltaR);
     // Store result in product
     product.m_matchedGenJets[corrLevel] = matchResult;
 }
