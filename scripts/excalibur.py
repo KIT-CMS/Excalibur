@@ -593,12 +593,14 @@ def showMessage(title, message, fail=False):
 	print message
 
 
-def createFileList(files, fast=False):
-	files = getattr(files, "artus_value", files)
-	if type(files) != str:
-		print "Not posilbe to resolve inputfiles format ",type(files)," must be a str"
+def createFileList(infiles, fast=False):
+	files_list = getattr(infiles, "artus_value", infiles)
+	out_files = []	
+	if type(files_list) != list:
+		print "Not posilbe to resolve inputfiles format ",str(type(files_list))," must be a str"
 	        sys.exit(1)
-	if "*.root" in files:
+	for files in files_list:
+	  if "*.root" in files:
 		print "Creating file list from", files
 		if files.split(':')[0] == 'srm':
 		  print "Use grid ls tools (gfal2)"
@@ -606,24 +608,26 @@ def createFileList(files, fast=False):
 		  import gfal2
 		  ctxt = gfal2.creat_context()
 		  listdir = ctxt.listdir(gridpath)
-		  files = []
 		  for f in listdir:
 		    if f.endswith('.root'):
-		      files.append(gridpath + f)
+		      out_files.append(gridpath + f)
 		else:
-		  files = glob.glob(files)
+		  out_files = glob.glob(files)
 		  # Direct access to /pnfs is buggy, prepend dcap to file paths
+		  prefix_path = ""
 		  if 'naf' in socket.gethostname():
-			  files = ["dcap://dcache-cms-dcap.desy.de/" + f for f in files]
-	else:
-		files = [files]
+		    prefix_path = "dcap://dcache-cms-dcap.desy.de/"
+		  for add_file in glob.glob(files):
+		    out_files.append(prefix_path+add_file)
+	  else:
+		out_files = [files]
 
-	if not files:
+	if not out_files:
 		print "No input files found."
 		sys.exit(1)
 	if fast:
-		files = files[fast[0]:fast[1]]
-	return files
+		out_files = out_files[fast[0]:fast[1]]
+	return out_files
 
 
 def prepare_wkdir_parent(work_path, out_name, clean=False):

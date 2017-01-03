@@ -69,6 +69,10 @@ elif [ $USER = "wayand" ]; then
     #export EXCALIBUR_WORK=/storage/8/wayand/zjets/
     export EXCALIBUR_WORK=/portal/ekpbms1/home/wayand/JEC/
     export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
+elif [ $USER = "swayand" ]; then
+    echo "Hallo Stefan, schoen dich auf der NAF zu sehen "
+    export EXCALIBUR_WORK=/nfs/dust/cms/user/swayand/JEC/
+    export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
 elif [ $USER = "afriedel" ]; then
     export EXCALIBURBRILSSH="afriedel@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/a/afriedel/zjets/

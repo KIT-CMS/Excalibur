@@ -350,7 +350,8 @@ class InputFiles(object):
 	def set_input(self, **kwargs):
 		"""Overwrite the input for specific domains"""
 		for domain in kwargs:
-			self.inputs[domain[:3].lower()] = kwargs[domain]
+			self.inputs.setdefault(domain[:3].lower(), []).append(kwargs[domain])
+			#self.inputs[domain[:3].lower()]   = kwargs[domain]
 
 	def __str__(self):
 		return self.resolve()
