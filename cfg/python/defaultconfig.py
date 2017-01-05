@@ -507,6 +507,7 @@ def data_2016(cfg, **kwargs):
 
 def mc_2012(cfg, **kwargs):
 	cfg['GenJets'] = 'AK5GenJetsNoNu'
+	cfg['useKLVGenJets'] = True
 	cfg['Jec'] = configtools.getPath() + '/data/jec/Winter14_V8/Winter14_V8_MC'
 	cfg['MetPhiCorrectionParameters'] = [0.1166, 0.0200, 0.2764, -0.1280]
 	# insert PU weight producer before EventWeightProducer:
@@ -519,6 +520,7 @@ def mc_2015(cfg, **kwargs):
 	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'], cfg['InputFiles'], pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['CutAlphaMax'] = 0.3
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
+	cfg['useKLVGenJets'] = True
 	cfg['GenParticleStatus'] = 22  # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
@@ -540,6 +542,7 @@ def mc_2016(cfg, **kwargs):
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
 	cfg['GenJets'] = 'ak4GenJetsNoNu'
+	cfg['useKLVGenJets'] = True
 	cfg['GenParticleStatus'] = 22  # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')

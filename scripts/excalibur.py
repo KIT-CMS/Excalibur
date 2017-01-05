@@ -526,7 +526,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 		'$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
 	}
 	copyFile(original, filename, d)
-
+	copyFile("cfg/gc/gc_base.conf", os.path.join(os.path.dirname(filename),"gc_base.conf"), d)
 
 def create_runfile(configjson, filename='test.sh', original=None, workpath=None):
 	"""
@@ -567,7 +567,7 @@ def populate_workdir(workdir_path, artus_json):
 	transfer_dict = {
 		"": {
 			getEnv(): [
-				"cfg/gc/json_modifier.py", "cfg/gc/gc_base.conf",
+				"cfg/gc/json_modifier.py", "cfg/gc/gc_base_usermod.conf", ## usermod will die after all batch scripts have been updated
 				"scripts/ini_excalibur.sh"  #, "scripts/artus"
 			],
 		}
@@ -612,15 +612,9 @@ def createFileList(infiles, fast=False):
 		    if f.endswith('.root'):
 		      out_files.append(gridpath + f)
 		else:
-		  out_files = glob.glob(files)
-		  # Direct access to /pnfs is buggy, prepend dcap to file paths
-		  prefix_path = ""
-		  if 'naf' in socket.gethostname():
-		    prefix_path = "dcap://dcache-cms-dcap.desy.de/"
-		  for add_file in glob.glob(files):
-		    out_files.append(prefix_path+add_file)
+		  out_files.extend(glob.glob(files))
 	  else:
-		out_files = [files]
+		out_files.attend(files)
 
 	if not out_files:
 		print "No input files found."

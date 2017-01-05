@@ -354,7 +354,7 @@ class InputFiles(object):
 			#self.inputs[domain[:3].lower()]   = kwargs[domain]
 
 	def __str__(self):
-		return self.resolve()
+		return self.resolve()[0]
 
 	def __repr__(self):
 		return "%s(host=%s,inputs=%s)" % (self.__class__.__name__, self.host, self.inputs)

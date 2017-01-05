@@ -11,7 +11,6 @@ source /cvmfs/grid.cern.ch/emi3ui-latest/etc/profile.d/setup-ui-example.sh
 
 # source Artus ini script
 source $ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh
-source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 export PATH=$ARTUSPATH/Utility/scripts:$PATH
 
 # set the environment
@@ -73,6 +72,8 @@ elif [ $USER = "swayand" ]; then
     echo "Hallo Stefan, schoen dich auf der NAF zu sehen "
     export EXCALIBUR_WORK=/nfs/dust/cms/user/swayand/JEC/
     export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
+    export HARRY_REMOTE_USER="wayand"
+    export HARRY_USERPC="ekplx23.physik.uni-karlsruhe.de"
 elif [ $USER = "afriedel" ]; then
     export EXCALIBURBRILSSH="afriedel@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/a/afriedel/zjets/
@@ -80,6 +81,6 @@ elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/jbod/tberger/working/
 fi
-
+source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
 
