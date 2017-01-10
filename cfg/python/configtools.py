@@ -69,20 +69,24 @@ def changeNamingScheme(cfg, old=True):
 	cfg['PileupDensity'] = 'KT6Area' if old else 'pileupDensity'
 
 
-def expand(config, cutModes, corrLevels, default="default"):
+def expand(config, cutModes, corrLevels, sfmodes = False, default="default"):
 	"""create pipelines for each cut mode and correction level"""
 	pipelines = config['Pipelines']
 	p = config['Pipelines'][default]
 	# define cut variations and copy default pipeline for different cut variations
 	# ATTENTION: the modes dictionary contains the cuts which are REMOVED for a certain pipeline
 	modes = {
-		'nocuts': ['ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha'],
-		'leptoncuts': ['ZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
-		'zcuts': ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
-		'noalphanoetacuts': ['LeadingJetEta', 'Alpha'],
-		'noalphacuts': ['Alpha'],
-		'noetacuts': ['LeadingJetEta'],
-		'finalcuts': [],
+		'nocuts': ['ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'leptoncuts': ['ZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'zcuts': ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'genzcuts' : ['ValidZ', 'ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha','MinNMuons','MaxNMuons'],
+		'genleptoncuts' : ['ValidZ', 'ZPt','GenZPt','MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha','MinNMuons','MaxNMuons'],
+		'noalphanoetacuts': ['LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'noalphacuts': ['Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'noetacuts': ['LeadingJetEta', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'finalcuts': ['GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'allleptoncuts' : ['ZPt', 'GenZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'], 
+		'allzcuts' : ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
 	}
 	for cutMode in cutModes:
 		if cutMode not in modes:
@@ -92,6 +96,7 @@ def expand(config, cutModes, corrLevels, default="default"):
 		for cut in ["filter:%sCut" % m for m in modes[cutMode]]:
 			if cut in pipelines[cutMode]['Processors']:
 				pipelines[cutMode]['Processors'].remove(cut)
+		
 	# remove template pipeline
 	pipelines.pop(default)
 	# copy pipelines with different correction levels, naming scheme: cut + _CorrectionLevel
@@ -100,6 +105,14 @@ def expand(config, cutModes, corrLevels, default="default"):
 			pipelinename = name + ('' if corrLevel == 'None' else "_" + corrLevel)
 			pipelines[pipelinename] = copy.deepcopy(p)
 			pipelines[pipelinename]['CorrectionLevel'] = corrLevel
+			
+	if sfmodes:
+		for name, p in pipelines.items():
+			for addname, ID, Trigger in zip(['mean', 'IDup','IDdown', 'Triggerup', 'Triggerdown'], ['none', 'up', 'down', 'none', 'none'],['none',  'none', 'none','up', 'down']):		
+				pipelinename = name+'_'+addname	
+				pipelines[pipelinename] = copy.deepcopy(p)
+				pipelines[pipelinename]['LeptonSFVariation'] = ID	
+				pipelines[pipelinename]['LeptonTriggerSFVariation'] = Trigger
 	return config
 
 
