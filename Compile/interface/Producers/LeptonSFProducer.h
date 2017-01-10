@@ -16,17 +16,18 @@ class LeptonSFProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   protected:
-    float m_sf[12][12] = {};
+    float m_sf[12][12][12] = {};
     std::vector<float> m_xbins = {};
     std::vector<float> m_ybins = {};
     std::vector<float>* m_etabins = {};
     std::vector<float>* m_ptbins = {};
     std::string m_sffile;
     std::string m_id;
+    std::vector<int> runs;
     bool m_reversed_axes = false;
     bool m_absoluteeta = false;
 
-    virtual float GetScaleFactor(KLV const& lepton) const
+    virtual float GetScaleFactor(int run_index, KLV const& lepton) const
     {
         for (unsigned int index_eta = 0; index_eta < m_etabins->size() - 1; ++index_eta) {
             if (GetEta(lepton) >= m_etabins->at(index_eta) &&
@@ -35,13 +36,18 @@ class LeptonSFProducer : public ZJetProducerBase
                     if ((lepton.p4.Pt()) >= m_ptbins->at(index_pt) &&
                         (lepton.p4.Pt()) < m_ptbins->at(index_pt + 1)) {
                         if (m_reversed_axes) {
-                            return m_sf[index_pt][index_eta];
+                            return m_sf[run_index][index_pt][index_eta];
                         } else {
-                            return m_sf[index_eta][index_pt];
+                            return m_sf[run_index][index_eta][index_pt];
                         }
                     }
                 }
-                return 1.0f;  // not in pt bins
+		if (m_reversed_axes) {
+		    return m_sf[run_index][m_ptbins->size()-2][index_eta];
+                } 
+                else {
+		    return m_sf[run_index][index_eta][m_ptbins->size()-2];
+                }
             }
         }
         return 1.0f;

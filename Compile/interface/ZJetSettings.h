@@ -56,6 +56,7 @@ class ZJetSettings : public KappaSettings
        // LeptonSFProducer
     IMPL_SETTING(std::string, LeptonSFRootfile)
     IMPL_SETTING(std::string, LeptonTriggerSFRootfile)
+    IMPL_SETTING_INTLIST(TriggerSFRuns)   
     IMPL_SETTING_DEFAULT(std::string, LeptonSFVariation, "None")
     IMPL_SETTING_DEFAULT(std::string, LeptonTriggerSFVariation, "None")
     IMPL_SETTING_DEFAULT(std::string, Channel, "mm")
