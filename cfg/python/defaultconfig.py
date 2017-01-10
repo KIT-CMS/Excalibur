@@ -537,7 +537,7 @@ def mc_2015(cfg, **kwargs):
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
 def mc_2016(cfg, **kwargs):
-	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'],  cfg['InputFiles'],pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
+	#cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'],  cfg['InputFiles'],pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
@@ -547,7 +547,7 @@ def mc_2016(cfg, **kwargs):
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
-	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
+	#cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 	# use WIP corrections until full tarballs are available again -- MF@20160215
 	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV6_MC/Spring16_25nsV6_MC'
 	#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
@@ -566,7 +566,7 @@ def mcee(cfg, **kwargs):
 		'genParticleMatchDeltaR',
 	]
 	# reco-gen electron matching producer
-	cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
+	cfg['Processors'] += ['producer:GenZeeProducer', 'producer:RecoElectronGenParticleMatchingProducer']
 	cfg['RecoElectronMatchingGenParticleStatus'] = 3
 	cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.3
 	cfg["RecoElectronMatchingGenParticlePdgIds"] = [11, -11]
@@ -590,7 +590,7 @@ def mcmm(cfg, **kwargs):
 		'genmuminuseta',
 		'genmuminusphi',
 	]
-	cfg['Processors'] += ['producer:RecoMuonGenParticleMatchingProducer']
+	cfg['Processors'] += ['producer:GenZmmProducer', 'producer:RecoMuonGenParticleMatchingProducer']
 	cfg['RecoMuonMatchingGenParticleStatus'] = 1
 	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
 

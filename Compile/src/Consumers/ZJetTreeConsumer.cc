@@ -48,60 +48,58 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zpt",
-        [](ZJetEvent const& event, ZJetProduct const& product) { return product.m_z.p4.Pt(); });
+        [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Pt(): DefaultValues::UndefinedFloat);
+	});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zeta",
-        [](ZJetEvent const& event, ZJetProduct const& product) { return product.m_z.p4.Eta(); });
+        [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Eta(): DefaultValues::UndefinedFloat);
+    	});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zphi",
-        [](ZJetEvent const& event, ZJetProduct const& product) { return product.m_z.p4.Phi(); });
+        [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Phi(): DefaultValues::UndefinedFloat);
+    	});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zeta",
-        [](ZJetEvent const& event, ZJetProduct const& product) { return product.m_z.p4.Eta(); });
+        [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Eta(): DefaultValues::UndefinedFloat);
+	});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zy", [](ZJetEvent const& event, ZJetProduct const& product) {
-            return product.m_z.p4.Rapidity();
+            return (product.m_zValid ? product.m_z.p4.Rapidity(): DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zmass",
-        [](ZJetEvent const& event, ZJetProduct const& product) { return product.m_z.p4.mass(); });
-
+        [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.mass(): DefaultValues::UndefinedFloat);
+	});
     // Gen Z
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "genzpt", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KGenParticle* genZ = product.GetGenZ();
-            return (genZ != nullptr) ? genZ->p4.Pt() : DefaultValues::UndefinedFloat;
-        });
+        "genzpt",
+        [](ZJetEvent const& event, ZJetProduct const& product) { 
+	     return(product.m_genBosonLVFound ? product.m_genBosonLV.Pt() : DefaultValues::UndefinedFloat); 
+	});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "genzeta", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KGenParticle* genZ = product.GetGenZ();
-            return (genZ != nullptr) ? genZ->p4.Eta() : DefaultValues::UndefinedFloat;
-        });
+        "genzeta",
+        [](ZJetEvent const& event, ZJetProduct const& product) { 
+	     return(product.m_genBosonLVFound ? product.m_genBosonLV.Eta() : DefaultValues::UndefinedFloat); 
+	});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "genzphi", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KGenParticle* genZ = product.GetGenZ();
-            return (genZ != nullptr) ? genZ->p4.Phi() : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "genzeta", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KGenParticle* genZ = product.GetGenZ();
-            return (genZ != nullptr) ? genZ->p4.Eta() : DefaultValues::UndefinedFloat;
-        });
+        "genzphi",
+        [](ZJetEvent const& event, ZJetProduct const& product) { 
+	     return(product.m_genBosonLVFound ? product.m_genBosonLV.Phi() : DefaultValues::UndefinedFloat); 
+	});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzy", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KGenParticle* genZ = product.GetGenZ();
-            return (genZ != nullptr) ? genZ->p4.Rapidity() : DefaultValues::UndefinedFloat;
+            return(product.m_genBosonLVFound ? product.m_genBosonLV.Rapidity() : DefaultValues::UndefinedFloat); 
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "genzmass", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KGenParticle* genZ = product.GetGenZ();
-            return (genZ != nullptr) ? genZ->p4.mass() : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzmass",
+        [](ZJetEvent const& event, ZJetProduct const& product) { 
+	    return(product.m_genBosonLVFound ? product.m_genBosonLV.mass() : DefaultValues::UndefinedFloat); 
+	});
+    
+LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarzgenz", [](ZJetEvent const& event, ZJetProduct const& product) {
-            KGenParticle* genZ = product.GetGenZ();
-            return (genZ != nullptr) ? ROOT::Math::VectorUtil::DeltaR(genZ->p4, product.m_z.p4)
-                                     : DefaultValues::UndefinedFloat;
+            return (product.m_genBosonLVFound ? ROOT::Math::VectorUtil::DeltaR(product.m_genBosonLV, product.m_z.p4)
+                                     : DefaultValues::UndefinedFloat);
         });
 
     //////////
@@ -533,7 +531,13 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     ///////////////
     // Z LEPTONS //
     ///////////////
-
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "validz", [](event_type const& event, product_type const& product) {
+            if (product.m_zValid)
+                return 1;
+	    else
+		return 0;
+        });
     // leading Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl1pt", [](event_type const& event, product_type const& product) {
@@ -822,6 +826,67 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "ngenmuons", [](ZJetEvent const& event, ZJetProduct const& product) {
             return product.m_genMuons.size();
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzlepton1pt", [](event_type const& event, product_type const& product) {
+            return product.m_genLeptonsFromBosonDecay.size() >= 1 ? product.m_genLeptonsFromBosonDecay[0]->p4.Pt()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzlepton2pt", [](event_type const& event, product_type const& product) {
+            return product.m_genLeptonsFromBosonDecay.size() >= 2 ? product.m_genLeptonsFromBosonDecay[1]->p4.Pt()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzlepton1eta", [](event_type const& event, product_type const& product) {
+            return product.m_genLeptonsFromBosonDecay.size() >= 1 ? product.m_genLeptonsFromBosonDecay[0]->p4.Eta()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzlepton2eta", [](event_type const& event, product_type const& product) {
+            return product.m_genLeptonsFromBosonDecay.size() >= 2 ? product.m_genLeptonsFromBosonDecay[1]->p4.Eta()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzlepton1phi", [](event_type const& event, product_type const& product) {
+            return product.m_genLeptonsFromBosonDecay.size() >= 1 ? product.m_genLeptonsFromBosonDecay[0]->p4.Phi()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzlepton2phi", [](event_type const& event, product_type const& product) {
+            return product.m_genLeptonsFromBosonDecay.size() >= 2 ? product.m_genLeptonsFromBosonDecay[1]->p4.Phi()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+    
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genmu1pt", [](event_type const& event, product_type const& product) {
+            return product.m_genMuons.size() >= 1 ? product.m_genMuons[0]->p4.Pt()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genmu2pt", [](event_type const& event, product_type const& product) {
+            return product.m_genMuons.size() >= 2 ? product.m_genMuons[1]->p4.Pt()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genmu1eta", [](event_type const& event, product_type const& product) {
+            return product.m_genMuons.size() >= 1 ? product.m_genMuons[0]->p4.Eta()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genmu2eta", [](event_type const& event, product_type const& product) {
+            return product.m_genMuons.size() >= 2 ? product.m_genMuons[1]->p4.Eta()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genmu1phi", [](event_type const& event, product_type const& product) {
+            return product.m_genMuons.size() >= 1 ? product.m_genMuons[0]->p4.Phi()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genmu2phi", [](event_type const& event, product_type const& product) {
+            return product.m_genMuons.size() >= 2 ? product.m_genMuons[1]->p4.Phi()
+                                                    : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genmupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
