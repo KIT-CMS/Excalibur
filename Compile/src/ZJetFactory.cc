@@ -12,6 +12,8 @@
 #include "Excalibur/Compile/interface/Producers/ZJetValidElectronsProducer.h"
 #include "Excalibur/Compile/interface/Producers/NeutrinoCounter.h"
 #include "Excalibur/Compile/interface/Producers/LeptonSFProducer.h"
+#include "Excalibur/Compile/interface/Producers/ZProducer.h"
+#include "Excalibur/Compile/interface/Producers/ZJetGenParticleProducer.h"
 // filters
 #include "Excalibur/Compile/interface/Filters/ZJetCutsFilter.h"
 
@@ -44,6 +46,24 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new LeptonSFProducer();
     else if (id == LeptonTriggerSFProducer().GetProducerId())
         return new LeptonTriggerSFProducer();
+    else if(id == RecoZmmProducer().GetProducerId())
+	return new RecoZmmProducer();
+    else if(id == RecoZeeProducer().GetProducerId())
+	return new RecoZeeProducer();
+    else if(id == RecoZemProducer().GetProducerId())
+	return new RecoZemProducer();
+    else if(id == RecoZeemmProducer().GetProducerId())
+	return new RecoZeemmProducer();
+    else if(id == GenZmmProducer().GetProducerId())
+	return new GenZmmProducer();	
+    else if(id == GenZeeProducer().GetProducerId())
+	return new GenZeeProducer();
+    else if(id == GenZemProducer().GetProducerId())
+	return new GenZemProducer();
+    else if(id == GenZeemmProducer().GetProducerId())
+	return new GenZeemmProducer();
+    else if(id == ZJetGenParticleProducer().GetProducerId())
+	return new ZJetGenParticleProducer();
     else
         return KappaFactory::createProducer(id);
 }
@@ -60,6 +80,10 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new MuonPtCut();
     else if (id == MuonEtaCut().GetFilterId())
         return new MuonEtaCut();
+    else if (id == GenMuonPtCut().GetFilterId())
+        return new GenMuonPtCut();
+    else if (id == GenMuonEtaCut().GetFilterId())
+        return new GenMuonEtaCut();
     else if (id == ElectronPtCut().GetFilterId())
         return new ElectronPtCut();
     else if (id == ElectronEtaCut().GetFilterId())
@@ -70,14 +94,24 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new LeadingJetEtaCut();
     else if (id == ZPtCut().GetFilterId())
         return new ZPtCut();
+    else if (id == GenZPtCut().GetFilterId())
+        return new GenZPtCut();
     else if (id == BackToBackCut().GetFilterId())
         return new BackToBackCut();
     else if (id == MinNMuonsCut().GetFilterId())
         return new MinNMuonsCut();
     else if (id == MaxNMuonsCut().GetFilterId())
         return new MaxNMuonsCut();
+    else if (id == MinNGenMuonsCut().GetFilterId())
+        return new MinNGenMuonsCut();
+    else if (id == MaxNGenMuonsCut().GetFilterId())
+        return new MaxNGenMuonsCut();
     else if (id == AlphaCut().GetFilterId())
         return new AlphaCut();
+    else if (id == ValidZCut().GetFilterId())
+        return new ValidZCut();
+    else if (id == ValidGenZCut().GetFilterId())
+        return new ValidGenZCut();
     else
         return KappaFactory::createFilter(id);
 }
