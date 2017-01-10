@@ -71,12 +71,14 @@ elif [ $USER = "wayand" ]; then
 elif [ $USER = "swayand" ]; then
     echo "Hallo Stefan, schoen dich auf der NAF zu sehen "
     export EXCALIBUR_WORK=/nfs/dust/cms/user/swayand/JEC/
+    export EXCALIBUR_SE="srm://dgridsrm-fzk.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/dcms/disk-only/store/user/swayand/excalibur/"
     export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
     export HARRY_REMOTE_USER="wayand"
     export HARRY_USERPC="ekplx23.physik.uni-karlsruhe.de"
 elif [ $USER = "afriedel" ]; then
     export EXCALIBURBRILSSH="afriedel@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/a/afriedel/zjets/
+    export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/afriedel/Excalibur"
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     export EXCALIBUR_WORK=/storage/jbod/tberger/working/
