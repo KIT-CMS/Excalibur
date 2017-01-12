@@ -268,7 +268,7 @@ class GenZProducer : public ZProducerBase<KGenParticle, KGenParticle, KGenPartic
         }    
 };
 
-class GenZmmProducer : public GenZProducer
+class GenZmmProducer : public GenZProducer //Find Z from status 1 muons
 {
   public:
 	std::string GetProducerId() const override { return "GenZmmProducer"; };
@@ -276,6 +276,27 @@ class GenZmmProducer : public GenZProducer
 		: GenZProducer(&KappaProduct::m_genMuons)
 	{
 	}
+	void setZ(KappaProduct& product, KGenParticle* const lep1, KGenParticle* const lep2) const override
+        {
+		GenZProducer::setZ(product, lep1, lep2);
+		product.m_genzfound = true;
+		std::cout << "FoundZ with Mass: " << product.m_genBosonLV.M() << std::endl;
+        }   
+};
+class ValidGenZmmProducer : public GenZProducer //Find Z from original muons
+{
+  public:
+	std::string GetProducerId() const override { return "ValidGenZmmProducer"; };
+	ValidGenZmmProducer()
+		: GenZProducer(&KappaProduct::m_genMuons)
+	{
+	}
+	void setZ(KappaProduct& product, KGenParticle* const lep1, KGenParticle* const lep2) const override
+        {
+		GenZProducer::setZ(product, lep1, lep2);
+		product.m_validgenzfound = true;
+		std::cout << "FoundValidZ with Mass: " << product.m_genBosonLV.M() << std::endl;
+        }    
 };
 class GenZeeProducer : public GenZProducer
 {

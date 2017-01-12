@@ -631,8 +631,8 @@ class ValidGenZCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-	double mass_diff = std::fabs(product.m_genBosonLV.mass() - settings.GetZMass());
-        return (product.m_genBosonLVFound && (mass_diff<settings.GetZMassRange()));
+	//double mass_diff = std::fabs(product.m_genBosonLV.mass() - settings.GetZMass());
+        return (product.m_genBosonLVFound);
     }
 };
 

@@ -538,6 +538,20 @@ LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
 	    else
 		return 0;
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genzfound", [](event_type const& event, product_type const& product) {
+            if (product.m_genzfound)
+                return 1;
+	    else
+		return 0;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "validgenzfound", [](event_type const& event, product_type const& product) {
+            if (product.m_validgenzfound)
+                return 1;
+	    else
+		return 0;
+        });
     // leading Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl1pt", [](event_type const& event, product_type const& product) {
@@ -826,6 +840,10 @@ LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "ngenmuons", [](ZJetEvent const& event, ZJetProduct const& product) {
             return product.m_genMuons.size();
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "nvalidgenmuons", [](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.m_validGenMuons.size();
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzlepton1pt", [](event_type const& event, product_type const& product) {

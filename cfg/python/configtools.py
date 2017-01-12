@@ -76,7 +76,7 @@ def expand(config, cutModes, corrLevels, sfmodes = False, default="default"):
 	# define cut variations and copy default pipeline for different cut variations
 	# ATTENTION: the modes dictionary contains the cuts which are REMOVED for a certain pipeline
 	modes = {
-		'nocuts': ['ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'nocuts': ['ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ','ValidZ'],
 		'leptoncuts': ['ZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'zcuts': ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'genzcuts' : ['ValidZ', 'ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha','MinNMuons','MaxNMuons'],

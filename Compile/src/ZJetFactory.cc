@@ -55,15 +55,17 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
     else if(id == RecoZeemmProducer().GetProducerId())
 	return new RecoZeemmProducer();
     else if(id == GenZmmProducer().GetProducerId())
-	return new GenZmmProducer();	
+	return new GenZmmProducer();
+    else if(id == ValidGenZmmProducer().GetProducerId())
+	return new ValidGenZmmProducer();	
     else if(id == GenZeeProducer().GetProducerId())
 	return new GenZeeProducer();
     else if(id == GenZemProducer().GetProducerId())
 	return new GenZemProducer();
     else if(id == GenZeemmProducer().GetProducerId())
 	return new GenZeemmProducer();
-    else if(id == ZJetGenParticleProducer().GetProducerId())
-	return new ZJetGenParticleProducer();
+    else if(id == ZJetGenMuonProducer().GetProducerId())
+	return new ZJetGenMuonProducer();
     else
         return KappaFactory::createProducer(id);
 }
