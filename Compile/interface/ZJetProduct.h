@@ -204,7 +204,7 @@ class ZJetProduct : public KappaProduct
     double CalcPhiStarEta(TParticle muplus, TParticle muminus) const
     {
 	double pi = 3.1415926535;
-	double phiacop = pi - std::min(fabs(muminus->p4.Phi()-muplus->p4.Phi()),2*pi-fabs(muminus->p4.Phi()-muplus->p4.Phi()));
+	double phiacop = pi - std::min<double>(fabs(muminus->p4.Phi()-muplus->p4.Phi()),2*pi-fabs(muminus->p4.Phi()-muplus->p4.Phi()));
 	double thetastar = acos(tanh((muminus->p4.Eta()-muplus->p4.Eta())/2));
 	return(tan(phiacop/2)*sin(thetastar));
     }

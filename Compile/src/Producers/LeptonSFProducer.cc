@@ -143,7 +143,7 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
                                  ZJetSettings const& settings) const
 {
     bool foundrun = false;
-    int run_index;
+    int run_index = 0;
     if (runs.empty())
 	run_index = 0;
     else{
