@@ -19,7 +19,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'FlavourCorrections': False,  # Calculate additional MC flavour corrections
 		# ZProducer Settings
 		'ZMassRange': 20.,
-		#'VetoMultipleZs' : False,
+		'VetoMultipleZs' : False,
 		# TypeIMETProducer Settings
 		'Met' : 'met', # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
 		'TypeIJetPtMin': 10.,
@@ -139,6 +139,8 @@ def mc(cfg, **kwargs):
 		'genzeta',
 		'genzy',
 		'genzmass',
+		'genzfound',
+		'validgenzfound',
 		'genzlepton1pt',
 		'genzlepton2pt',
 		'genzlepton1eta',
@@ -404,7 +406,7 @@ def em(cfg, **kwargs):
 		'njets30',
 		'mu1pt', 'mu1eta', 'mu1phi',
 		'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
-		'nmuons', 'ngenmuons'
+		'nmuons', 'ngenmuons', 'nvalidgenmuons'
 	]
 
 	cfg['Pipelines']['default']['Processors'] = [
@@ -441,9 +443,9 @@ def mm(cfg, **kwargs):
 		'filter:GenZPtCut',
 		'filter:ValidZCut',
 		#'filter:MinNMuonsCut',
-		'filter:MaxNMuonsCut',
-		#'filter:MuonPtCut',
-		#'filter:MuonEtaCut',
+		#'filter:MaxNMuonsCut',
+		'filter:MuonPtCut',
+		'filter:MuonEtaCut',
 		'filter:ZPtCut',
 		#'filter:LeadingJetPtCut',
 		#'filter:LeadingJetEtaCut',
@@ -474,6 +476,8 @@ def mm(cfg, **kwargs):
 	cfg['CutNMuonsMax'] = 3
 
 	cfg['CutMuonPtMin'] = 22.0
+	cfg['GenMuonLowerPtCuts'] = ['22']
+	cfg['GenMuonUpperAbsEtaCuts'] = ['2.3']
 	cfg['MuonLowerPtCuts'] = ['22']
 	cfg['MuonUpperAbsEtaCuts'] = ['2.3']
 	cfg['CutMuonEtaMax'] = 2.3
@@ -618,8 +622,9 @@ def mcmm(cfg, **kwargs):
 		'genmu2phi',
 	]
 	cfg['Processors'] += [
-			'producer:ZJetGenParticleProducer', 
-			'producer:GenZmmProducer', 
+			'producer:ZJetGenMuonProducer', 
+			'producer:GenZmmProducer', #Use this for Status 1 muons
+			#'producer:ValidGenZmmProducer', #Use this for original muons
 		      	'producer:RecoMuonGenParticleMatchingProducer'
 			]
 	cfg['RecoMuonMatchingGenParticleStatus'] = 1
