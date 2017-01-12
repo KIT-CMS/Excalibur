@@ -285,7 +285,7 @@ class ValidGenZmmProducer : public GenZProducer //Find Z from original muons
   public:
 	std::string GetProducerId() const override { return "ValidGenZmmProducer"; };
 	ValidGenZmmProducer()
-		: GenZProducer(&ZJetProduct::m_genMuons)
+		: GenZProducer(&ZJetProduct::m_validGenMuons)
 	{
 	}
 	void setZ(ZJetProduct& product, KGenParticle* const lep1, KGenParticle* const lep2) const override
