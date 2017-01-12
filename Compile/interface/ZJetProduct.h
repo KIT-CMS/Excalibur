@@ -17,6 +17,9 @@ class ZJetProduct : public KappaProduct
 {
   public:
     ZJetProduct() : KappaProduct() {}
+    //Tags for debugging ZProducer
+    bool m_validgenzfound = false;
+    bool m_genzfound = false;
 
     // Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the
     // product after creation
