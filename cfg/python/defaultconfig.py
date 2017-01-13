@@ -45,7 +45,7 @@ def getBaseConfig(tagged=True, **kwargs):
 				'Processors': [], # Overwritten/cleaned by expand function, set cuts in data.py or mc.py
 				'Quantities': [
 					# General quantities
-					'npv', 'rho', 'weight', #'nputruth',
+					'npv', 'rho', 'weight','nbx', #'nputruth',
 					'njets', 'njetsinv', 'njets30', # number of valid and invalid jets
 					# Z quantities
 					'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
@@ -535,7 +535,7 @@ def mc_2015(cfg, **kwargs):
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
 def mc_2016(cfg, **kwargs):
-	#cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'],  cfg['InputFiles'],pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
+	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'],  cfg['InputFiles'],pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
