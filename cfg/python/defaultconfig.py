@@ -214,10 +214,8 @@ def _2016(cfg, **kwargs):
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 71.3
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
-	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt')#12.9/fb
-	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON.txt')#/fb
-	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt')#27.22/fb
-
+	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt')#27.22/fb
+	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt']
 # channel:
 def eemm(cfg, **kwargs):
 	cfg['Muons'] = 'muons'
@@ -501,7 +499,7 @@ def data_2016(cfg, **kwargs):
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['Pipelines']['default']['Quantities'] += ['npumean']
 	cfg['CutAlphaMax'] = 0.3
-	cfg['Jec'] = configtools.get_jec("Spring16_25nsV6_DATA")
+	cfg['Jec'] = configtools.getPath() + '/data/JECDatabase/textFiles/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA'
 	#cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'], normtag='')
 	#cfg['Lumi'] = 27.22
 
@@ -549,7 +547,7 @@ def mc_2016(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
 	#cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 	# use WIP corrections until full tarballs are available again -- MF@20160215
-	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV6_MC/Spring16_25nsV6_MC'
+	cfg['Jec'] = configtools.getPath() + '/data/JECDatabase/textFiles/Spring16_25nsV6_MC/Spring16_25nsV6_MC'
 	#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
 
 def mcee(cfg, **kwargs):
