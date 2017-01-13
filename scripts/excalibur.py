@@ -112,6 +112,9 @@ def ZJet():
 		if not options.resume:
 			prepare_wkdir_parent(options.work, options.out, options.clean)
 			lfn_modi = writeDBS(conf["InputFiles"], options.out, options.work + "/files.dbs")
+			if options.lfn:
+				lfn_modi = options.lfn
+			
 			populate_workdir(artus_json=options.json, workdir_path=options.work)
 			createGridControlConfig(conf, config_path, 
 						 timestamp = options.timestamp, 
@@ -334,6 +337,8 @@ Have fun. ;)
 		help="delete the latest output and jobs still running")
 	batch_parser.add_argument('-w', '--work', type=str, nargs=1, default=None,
 		help="specify custom work path (default from $EXCALIBUR_WORK variable")
+	batch_parser.add_argument('-L', '--lfn', type=str, nargs='?', default=None,
+		help="specify custom lfn modifier")
 	batch_parser.add_argument('-j', '--jobs', type=int, default=None,
 		help="set the number of jobs to use")
 	batch_parser.add_argument('--files-per-job', type=int, default=None,

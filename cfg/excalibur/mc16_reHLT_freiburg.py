@@ -6,7 +6,9 @@ def config():
 		#ekppath="/storage/a/afriedel/workdir-mc2016/*.root",
 #ekppath='/home/afriedel/CMSSW_8_0_22/src/Kappa/Skimming/zjet/skim80_jtb.root',
 	
-		ekppath="srm://dgridsrm-fzk.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/dcms/disk-only/store/user/afriedel/Skimming/mc-Iso04/MC_DYJets_to_LL/*.root"
+		ekppath="srm://dgridsrm-fzk.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/dcms/disk-only/store/user/afriedel/Skimming/mc-Iso04/MC_DYJets_to_LL/*.root",
+		#nafpath="root://cmsxrootd.gridka.de//pnfs/gridka.de/dcms/disk-only/store/user/afriedel/Skimming/mc-Iso04/MC_DYJets_to_LL/*.root"
+		nafpath="srm://dgridsrm-fzk.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/dcms/disk-only/store/user/afriedel/Skimming/mc-Iso04/MC_DYJets_to_LL/*.root"
 	)	
 	cfg = configtools.expand(cfg, ['zcuts',  'leptoncuts', 'genzcuts', 'genleptoncuts', 'allzcuts', 'allleptoncuts', 'nocuts'], ['None'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc'])
