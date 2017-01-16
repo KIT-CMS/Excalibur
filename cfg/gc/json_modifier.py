@@ -23,7 +23,7 @@ def ModifyJSON(jsonConfig, newPath, oldexcaliburpath=None):
         if "srm:" in os.environ['FILE_NAMES']: ## srm files will be downloaded
                 conf["InputFiles"] = [ f.split('//')[-1].strip().strip('"') for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
         else:
-                conf["InputFiles"] = [ f for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
+                conf["InputFiles"] = [ f.strip('"') for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
 
 	with open(newPath + '/' + os.path.basename(jsonConfig), 'w') as newJSON:
 		json.dump(conf, newJSON, sort_keys=True, indent=1, separators=(',', ':'))

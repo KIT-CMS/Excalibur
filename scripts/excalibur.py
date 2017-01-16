@@ -84,6 +84,8 @@ def ZJet():
 		for key, value in options.set_opts:
 			conf[key] = value
 		conf["InputFiles"] = createFileList(conf["InputFiles"], options.fast)
+		if options.lfn:
+			conf["InputFiles"] = change_lfn(options.lfn, conf["InputFiles"])
 		if conf["OutputPath"] == "out":
 			conf["OutputPath"] = options.out + '.root'
 		writeJson(conf, options.json)
@@ -144,7 +146,7 @@ def ZJet():
 		except:
 			print "Could not create symlink."
 
-	else:  # local
+	else:  # local	  
 		if not options.fast and len(conf["InputFiles"])>100:
 			print "Warning: The full run as a single job will take a while.",
 			print "Are you sure? [Y/n]"
@@ -202,12 +204,19 @@ def run_gc(config_path, output_glob, workdir_path):
 		print "grid-control run failed"
 		sys.exit(1)
 	try: 
-		subprocess.check_call(['downloadFromSE.py', config_path,'-o',output_glob,'-s'])
+		downloadFromSE = False
+	  	with open(config_path) as cfg_file:
+		  for line in cfg_file:
+		    if 'se path =' in line  and 'srm' in line:
+		      downloadFromSE = True
+		if downloadFromSE:
+		  subprocess.check_call(['downloadFromSE.py', config_path,'-o',output_glob,'-s'])
 	except KeyboardInterrupt:
 		sys.exit(0)
 	except subprocess.CalledProcessError:
 		print "downloadFromSE.py failed"
 		sys.exit(1)	
+	
 	
 	gctime = time.time() - gctime
 	print output_glob
@@ -257,7 +266,13 @@ def run_gc_pmerge(config_path, output_glob, workdir_path, mergers):
 	while merge_proc.poll() is None:
 		time.sleep(0.5)
 	return gctime
-
+      
+def change_lfn(new_lfn, input_files):
+	print "Will change lfn (the very begining of the file path) to",new_lfn
+	new_input_files = []
+	for akt_file in input_files:
+	    new_input_files.append(new_lfn+'/store/'+akt_file.split('/store/')[-1])    
+	return new_input_files
 
 def import_config(config_file, config_mods):
 	"""
@@ -620,7 +635,7 @@ def createFileList(infiles, fast=False):
 		else:
 		  out_files.extend(glob.glob(files))
 	  else:
-		out_files.attend(files)
+		out_files.append(files)
 
 	if not out_files:
 		print "No input files found."
