@@ -107,7 +107,7 @@ class ZProducerBaseZJet : public ZJetProducerBase
 	bool check_first_ll_collection;
 	bool check_second_ll_collection;
 	bool check_cross_ll_collection;
-        bool lepton_pair_onZ(TParticle* const lep1, TParticle* const lep2, ZJetSettings const& settings) const
+        virtual bool lepton_pair_onZ(TParticle* const lep1, TParticle* const lep2, ZJetSettings const& settings) const
 	{
 	     if(lep1->charge() + lep2->charge() != 0){
 	     	return false; // if charge not 0 can't be from Z 
@@ -236,8 +236,16 @@ class GenZProducer : public ZProducerBaseZJet<KGenParticle, KGenParticle, KGenPa
 	      product.m_genLeptonsFromBosonDecay = {};
 	      product.m_genBosonLVFound = false;
 		
-	      
-	      
+	}
+	bool lepton_pair_onZ(KGenParticle* const lep1, KGenParticle* const lep2, ZJetSettings const& settings) const override
+	{
+	     if(lep1->charge() + lep2->charge() != 0){
+	     	return false; // if charge not 0 can't be from Z 
+	     }
+	     KLV z_test;
+	     z_test.p4 = lep1->p4 + lep2->p4;
+	     double test_mass_diff = fabs(z_test.p4.M() - settings.GetZMass());
+             return (test_mass_diff < settings.GetGenZMassRange()); // test if invM is in Z Range
         }
 	bool is_closer_to_Z(double zCandidate_mass, ZJetProduct& product, ZJetSettings const& settings) const override{
             if (!product.m_genBosonLVFound) return true;
@@ -277,7 +285,7 @@ class GenZmmProducer : public GenZProducer //Find Z from status 1 muons
         {
 		GenZProducer::setZ(product, lep1, lep2);
 		product.m_genzfound = true;
-		std::cout << "FoundZ with Mass: " << product.m_genBosonLV.M() << std::endl;
+		//std::cout << "FoundZ with Mass: " << product.m_genBosonLV.M() << std::endl;
         }   
 };
 class ValidGenZmmProducer : public GenZProducer //Find Z from original muons
@@ -292,7 +300,7 @@ class ValidGenZmmProducer : public GenZProducer //Find Z from original muons
         {
 		GenZProducer::setZ(product, lep1, lep2);
 		product.m_validgenzfound = true;
-		std::cout << "FoundValidZ with Mass: " << product.m_genBosonLV.M() << std::endl;
+		//std::cout << "FoundValidZ with Mass: " << product.m_genBosonLV.M() << std::endl;
         }    
 };
 class GenZeeProducer : public GenZProducer
