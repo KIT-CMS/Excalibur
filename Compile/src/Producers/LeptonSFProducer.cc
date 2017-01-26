@@ -27,15 +27,6 @@ std::string LeptonSFProducer::GetProducerId() const { return "LeptonSFProducer";
 void LeptonSFProducer::Init(ZJetSettings const& settings)
 {
    m_sffile = settings.GetLeptonSFRootfile();
-   if(settings.GetChannel() == "mm"){
-   	m_id = settings.GetMuonID();
-    }
-   else if(settings.GetChannel() == "ee"){
-    	m_id = settings.GetElectronID();
-    }
-    else{
-       LOG(FATAL) << "No scale factors implemented for this Channel!";
-    }
     std::string histoname;  // histoname depending on id
     double error_multiplier = 0.;
     if (settings.GetLeptonSFVariation() == "up") {
@@ -45,8 +36,29 @@ void LeptonSFProducer::Init(ZJetSettings const& settings)
         LOG(WARNING) << "LeptonSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = -1.;
     }
-
-        histoname = ("histoSF");
+    if(settings.GetChannel() == "mm"){
+   	if(settings.GetMuonID() == "tight"){
+		if(settings.GetMuonIso() == "tight")
+			histoname = "TightID_TightISO";
+		else
+			histoname = "TightID_LooseISO";
+	}
+	if(settings.GetMuonID() == "medium"){
+		if(settings.GetMuonIso() == "tight")
+			histoname = "MediumID_TightISO";
+		else
+			histoname = "MediumID_LooseISO";
+	}
+	if(settings.GetMuonID() == "loose"){
+		if(settings.GetMuonIso() == "tight")
+			LOG(ERROR) << "No Efficiencies for loose ID and tight Iso";
+		else
+			histoname = "LooseID_LooseISO";
+	}
+    }
+    else{
+    	LOG(ERROR) << "LeptonSFProducer not implemented for this channel";
+    }
         m_etabins = &m_ybins;
         m_ptbins = &m_xbins;
         m_reversed_axes = true;
