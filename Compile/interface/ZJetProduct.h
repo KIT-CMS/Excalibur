@@ -169,6 +169,22 @@ class ZJetProduct : public KappaProduct
         return GetMet(settings, event, settings.GetCorrectionLevel());
     }
 
+	double GetGenHT(ZJetEvent const& event) const
+	{
+		double HT = 0;
+		for (unsigned int i = 0; i<event.m_genJets->size(); i++)
+			{ HT += event.m_genJets->at(i).p4.Pt(); std::cout<<i<<std::endl;}
+		return HT;
+	}
+
+	double GetHT(ZJetSettings const& settings, ZJetEvent const& event) const
+	
+	{  	double HT = 0;
+		for (unsigned int i = 0; i<GetValidJetCount(settings, event); i++)
+			{ HT += GetValidJet(settings, event, i)->p4.Pt(); std::cout<<i<<std::endl;}
+		return HT;
+	}
+
     //Calculate Phi* eta
     double GetPhiStarEta(ZJetEvent const& event) const
     {

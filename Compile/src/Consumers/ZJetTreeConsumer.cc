@@ -108,6 +108,12 @@ LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
 
     // Leading jet
     // basic quantities
+    
+    
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jetHT", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetHT(settings, event);
+		});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
@@ -375,6 +381,11 @@ LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         });
 
     // Gen jets
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genHT", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetGenHT(event);
+        });
+    
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (event.m_genJets != nullptr && event.m_genJets->size() > 0)

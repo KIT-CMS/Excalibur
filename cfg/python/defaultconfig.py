@@ -50,6 +50,7 @@ def getBaseConfig(tagged=True, **kwargs):
 					# Z quantities
 					'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
 					# Leading jet
+					'jetHT',
 					'jet1pt', 'jet1eta', 'jet1y', 'jet1phi',
 					'jet1chf', 'jet1nhf', 'jet1ef',
 					'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
@@ -116,6 +117,7 @@ def mc(cfg, **kwargs):
 		'npu',
 		'npumean',
 		'njets10',
+		'genHT',
 		'genjet1pt',
 		'genjet1eta',
 		'genjet1phi',
@@ -535,7 +537,7 @@ def mc_2015(cfg, **kwargs):
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
 def mc_2016(cfg, **kwargs):
-	cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'],  cfg['InputFiles'],pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
+	#cfg['PileupWeightFile'] = configtools.PUWeights(cfg['JsonFiles'],  cfg['InputFiles'],pileup_json="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt", min_bias_xsec=cfg['Minbxsec'], weight_limits=(0, 4))
 	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
