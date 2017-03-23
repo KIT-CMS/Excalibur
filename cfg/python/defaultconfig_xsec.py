@@ -18,8 +18,9 @@ def getBaseConfig(tagged=True, **kwargs):
 		'RC': True,  # Also provide random cone offset JEC, and use for type-I
 		'FlavourCorrections': False,  # Calculate additional MC flavour corrections
 		# ZProducer Settings
-		'ZMassRange': 20.,
-		'VetoMultipleZs' : False,
+		'ZMassRange': 10.,	
+		'GenZMassRange': 10.,
+		#'VetoMultipleZs' : False,
 		# TypeIMETProducer Settings
 		'Met' : 'met', # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
 		'TypeIJetPtMin': 10.,
@@ -225,8 +226,8 @@ def _2016(cfg, **kwargs):
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 69.2
 	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
-	#cfg['JsonFiles'] = configtools.RunJSON('/portal/ekpbms2/home/afriedel/CMSSW_8_0_18/src/Excalibur/data/json/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt')
-	cfg['JsonFiles'] = configtools.RunJSON('/portal/ekpbms2/home/afriedel/CMSSW_8_0_18/src/Excalibur/data/json/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt')
+	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt')
+	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt')
 
 
 # channel:
@@ -383,7 +384,7 @@ def em(cfg, **kwargs):
 
 	# validMuonsProducer
 	cfg['MuonID'] = 'tight'
-	cfg['MuonIso'] = 'tight'
+	cfg['MuonIso'] = 'loose'
 	cfg['MuonIsoType'] = 'pf'
 
 	cfg['MinNElectrons'] = 1
@@ -432,20 +433,20 @@ def mm(cfg, **kwargs):
 	cfg['Processors'] = [
 		'producer:MuonCorrectionsProducer',
 		'producer:ValidMuonsProducer',
-		'producer:ZmmProducer',
+		'producer:RecoZmmProducer',
 		
 	]
 	cfg['Pipelines']['default']['Processors'] = [
 		'filter:ValidGenZCut',
-		'filter:MinNGenMuonsCut',
-		'filter:GenMuonPtCut',
-		'filter:GenMuonEtaCut',
+		#'filter:MinNGenMuonsCut',
+		#'filter:GenMuonPtCut',
+		#'filter:GenMuonEtaCut',
 		'filter:GenZPtCut',
 		'filter:ValidZCut',
 		#'filter:MinNMuonsCut',
 		#'filter:MaxNMuonsCut',
-		'filter:MuonPtCut',
-		'filter:MuonEtaCut',
+		#'filter:LeadingLeptonPtCut',
+		#'filter:MuonEtaCut',
 		'filter:ZPtCut',
 		#'filter:LeadingJetPtCut',
 		#'filter:LeadingJetEtaCut',
@@ -459,7 +460,7 @@ def mm(cfg, **kwargs):
 	]
 
 	# validMuonsProducer
-	cfg['MuonID'] = 'medium'
+	cfg['MuonID'] = 'tight'
 	cfg['MuonIso'] = 'loose'
 	cfg['MuonIsoType'] = 'pf'
 	#cfg['UseHighPtID'] = True
@@ -474,18 +475,11 @@ def mm(cfg, **kwargs):
 	]
 	cfg['CutNMuonsMin'] = 2
 	cfg['CutNMuonsMax'] = 3
-
-	cfg['CutMuonPtMin'] = 22.0
-	cfg['GenMuonLowerPtCuts'] = ['22']
-	cfg['GenMuonUpperAbsEtaCuts'] = ['2.3']
-	cfg['MuonLowerPtCuts'] = ['22']
+	cfg['MuonLowerPtCuts'] = ['27']
 	cfg['MuonUpperAbsEtaCuts'] = ['2.3']
-	cfg['CutMuonEtaMax'] = 2.3
-	cfg['CutLeadingJetPtMin'] = 12.0
-	cfg['CutLeadingJetEtaMax'] = 1.3
-	cfg['CutZPtMin'] = 30.0
-	cfg['CutBackToBack'] = 0.34
-	cfg['CutAlphaMax'] = 0.3
+	cfg['GenMuonLowerPtCuts'] = ['27']
+	cfg['GenMuonUpperAbsEtaCuts'] = ['2.3']
+	cfg['CutZPtMin'] = 40.0
 
 #Efficiency calculation
 	
@@ -579,13 +573,6 @@ def mc_2016(cfg, **kwargs):
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
 		'ngenelectrons',
-		'matchedgenelectron1pt',
-		'matchedgenelectron2pt',
-		'genepluspt',
-		'genepluseta',
-		'geneplusphi',
-		'geneminuspt',
-		'geneminuseta',
 		'geneminusphi',
 		'genParticleMatchDeltaR',
 	]
@@ -625,7 +612,7 @@ def mcmm(cfg, **kwargs):
 			'producer:ZJetGenMuonProducer', 
 			'producer:GenZmmProducer', #Use this for Status 1 muons
 			#'producer:ValidGenZmmProducer', #Use this for original muons
-		      	'producer:RecoMuonGenParticleMatchingProducer'
+		      	'producer:RecoMuonGenParticleMatchingProducer',
 			]
 	cfg['RecoMuonMatchingGenParticleStatus'] = 1
 	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
@@ -663,13 +650,13 @@ def _2015mm(cfg, **kwargs):
 
 def _2016mm(cfg, **kwargs):
 	#cfg['MuonID'] = 'tight'
-	cfg['HltPaths'] = ['HLT_IsoMu22', 'HLT_IsoTkMu22']
+	cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
 	cfg['EventWeight'] = 'weight'
 	cfg['MuonRochesterCorrectionsFile'] = configtools.getPath()+'/../Artus/KappaAnalysis/data/rochcorr/RoccoR_13tev_2016.txt'
 	cfg['MuonEnergyCorrection'] = 'rochcorr2016'
 	cfg['ValidMuonsInput'] = "corrected"
-	cfg["MuonTriggerFilterNames"] = ["HLT_IsoMu22_v2:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v2:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoTkMu22_v3: hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoMu22_v3:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v4:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09"]
-	#cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
+	#cfg["MuonTriggerFilterNames"] = ["HLT_IsoMu22_v2:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v2:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoTkMu22_v3: hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoMu22_v3:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v4:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09"]
+	cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
  
 
 ###
@@ -715,6 +702,7 @@ def data_2012mm(cfg, **kwargs):
 	#cfg["MuonRadiationCorrection"] = False
 	#cfg["MuonSmearing"] = False
 	#cfg["MuonCorrectionParameters"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012ABC_DATA_ReReco_53X.txt"
+
 	#cfg["MuonCorrectionParametersRunD"] = configtools.getPath() + "/data/muoncorrection/MuScleFit_2012D_DATA_ReReco_53X.txt"
 
 def mc_2015ee(cfg, **kwargs):
@@ -729,7 +717,7 @@ def mc_2015mm(cfg, **kwargs):
 	cfg['LeptonTriggerSFRootfile'] = configtools.getPath()+"/data/scalefactors/2015/SFTriggerMC.root"
 
 def mc_2016mm(cfg, **kwargs):
-	cfg['LeptonSFRootfile'] = configtools.getPath()+"/data/scalefactors/2016/SFMC_ml.root"
+	cfg['LeptonSFRootfile'] = configtools.getPath()+"/data/scalefactors/2016/SFMC_ICHEP.root"
 	cfg['LeptonTriggerSFRootfile'] = configtools.getPath()+"/data/scalefactors/2016/SFTriggerMC.root"
 
 def data_2016ee(cfg, **kwargs):
