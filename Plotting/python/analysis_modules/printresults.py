@@ -34,7 +34,9 @@ class PrintResults(analysisbase.AnalysisBase):
 			od = collections.OrderedDict(sorted(plotData.plotdict["root_objects"].items(), key=lambda t: t[0]))
 			for nick, root_object in od.iteritems():
 				f.write (" %.6f" % root_object.GetBinContent(iBin))
-			f.write(" "+str(2.70000)+'\n') 
+			f.write(" "+str(2.00000)) #FSR uncertainty
+			f.write(" "+str(2.60000)) #Lumi
+			f.write(" "+str(0.50000)+ "\n") #Theory unc.
 		f.close()
 		print "Results written in ", plotData.plotdict["filename"]+'.txt'
 
