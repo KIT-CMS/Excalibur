@@ -20,6 +20,10 @@ class ConvertToTGraphErrors(analysisbase.AnalysisBase):
 				"--convert-nicks", nargs="+", default=None,
 				help="Nick names of the objects to be converted to ROOT histos"
 		)
+		self.convert_options.add_argument(
+                                "--convert-error-limit", nargs="+", default=False,
+                                help="limit errors to one"
+		)
 
 	def prepare_args(self, parser, plotData):
 		super(ConvertToTGraphErrors, self).prepare_args(parser, plotData)
@@ -30,5 +34,13 @@ class ConvertToTGraphErrors(analysisbase.AnalysisBase):
 		super(ConvertToTGraphErrors, self).run(plotData)
 		for nick in plotData.plotdict['convert_nicks']:
 			hist = plotData.plotdict["root_objects"][nick]
-			tgraph = ROOT.TGraphErrors(hist)
+			if(plotData.plotdict['convert_error_limit']):
+				tgraph = ROOT.TGraphAsymmErrors(hist)
+				for i in range(0,hist.GetNbinsX()):
+					if((hist.GetBinContent(i+1)+hist.GetBinError(i+1))>1):
+						tgraph.SetPointEYhigh(i,1-hist.GetBinContent(i+1))
+						tgraph.SetPointEYlow(i,2*hist.GetBinError(i+1)+hist.GetBinContent(i+1)-1)
+					print(hist.GetBinError(i+1), tgraph.GetErrorYhigh(i), tgraph.GetErrorYlow(i))
+			else:
+				tgraph = ROOT.TGraphErrors(hist)
 			plotData.plotdict["root_objects"][nick] = tgraph
