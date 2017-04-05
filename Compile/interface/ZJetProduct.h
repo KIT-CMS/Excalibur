@@ -172,16 +172,21 @@ class ZJetProduct : public KappaProduct
 	double GetGenHT(ZJetEvent const& event) const
 	{
 		double HT = 0;
-		for (unsigned int i = 0; i<event.m_genJets->size(); i++)
-			{ HT += event.m_genJets->at(i).p4.Pt(); std::cout<<i<<std::endl;}
-		return HT;
+		for (unsigned int idx = 0; idx<event.m_genParticles->size(); idx++)
+		 { if(event.m_genParticles->at(idx).isHardProcess()==1 
+				&& !( std::abs(event.m_genParticles->at(idx).pdgId ) == 23 ) 
+				&& !( std::abs(event.m_genParticles->at(idx).pdgId ) == 13 ) 
+				&& !( std::abs(event.m_genParticles->at(idx).pdgId ) == 11 ) )
+	                 { HT += event.m_genParticles->at(idx).p4.Pt();}
+		   }
+	return HT;
 	}
 
 	double GetHT(ZJetSettings const& settings, ZJetEvent const& event) const
 	
 	{  	double HT = 0;
-		for (unsigned int i = 0; i<GetValidJetCount(settings, event); i++)
-			{ HT += GetValidJet(settings, event, i)->p4.Pt(); std::cout<<i<<std::endl;}
+		for (unsigned int idx = 0; idx<GetValidJetCount(settings, event); idx++)
+			{if (GetValidJet(settings, event, idx)->p4.Pt() > 30)  HT += GetValidJet(settings, event, idx)->p4.Pt(); }
 		return HT;
 	}
 

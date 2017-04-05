@@ -611,6 +611,33 @@ class GenZPtCut : public ZJetFilterBase
     float zPtMin = 0;
 };
 
+///////////
+// GenHT //
+///////////
+class GenHTCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "GenHTCut"; }
+
+    GenHTCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        genhtMax = settings.GetCutGenHTMax();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (product.GetGenHT(event) < genhtMax);
+    }
+
+  private:
+    float genhtMax = 0;
+};
+
 ///////////////
 // ValidGenZ //
 ///////////////

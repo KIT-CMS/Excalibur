@@ -98,7 +98,9 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new ZPtCut();
     else if (id == GenZPtCut().GetFilterId())
         return new GenZPtCut();
-    else if (id == BackToBackCut().GetFilterId())
+    else if (id == GenHTCut().GetFilterId())
+		return new GenHTCut();
+	else if (id == BackToBackCut().GetFilterId())
         return new BackToBackCut();
     else if (id == MinNMuonsCut().GetFilterId())
         return new MinNMuonsCut();
