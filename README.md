@@ -51,6 +51,14 @@ The framework comes in 4 layers:
 To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
 git clone https://github.com/KappaAnalysis/Kappa.git
+cd Kappa
+echo docs/ >> .git/info/sparse-checkout
+echo DataFormats/ >> .git/info/sparse-checkout
+echo Skimming/data/ >> .git/info/sparse-checkout
+echo Skimming/python/ >> .git/info/sparse-checkout
+git config core.sparsecheckout true
+git read-tree -mu HEAD
+cd ..
 git clone https://github.com/KappaAnalysis/KappaTools.git
 git clone https://github.com/artus-analysis/Artus.git
 git clone https://github.com/artus-analysis/Excalibur.git
