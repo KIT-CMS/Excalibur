@@ -196,7 +196,7 @@ def _2015(cfg, **kwargs):
 	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 69.0
-	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data2015_13TEV.txt'
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data2015_13TeV.txt'
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
@@ -214,9 +214,9 @@ def _2016(cfg, **kwargs):
 	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 71.3
-	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data2016_13TEV.txt'
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data2016_13TeV.txt'
 	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt')#27.22/fb
-	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_BCDEFGH_13TeV_PromptReco_Collisions16_JSON.txt']
+	cfg['JsonFiles'] = [configtools.getPath() + '/data/json/Cert_BCDEFGH_13TeV_23Sep2016ReReco_Collisions16_JSON.txt']
 # channel:
 def eemm(cfg, **kwargs):
 	cfg['Muons'] = 'muons'

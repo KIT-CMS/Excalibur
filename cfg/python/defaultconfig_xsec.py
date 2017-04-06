@@ -205,7 +205,7 @@ def _2015(cfg, **kwargs):
 	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 69.0
-	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TeV.txt'
 	if kwargs.get('bunchcrossing', "50ns") == "50ns":
 		cfg['JsonFiles'] = configtools.RunJSON(configtools.getPath() + '/data/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt')
 	elif kwargs.get('bunchcrossing', "50ns") == "25ns":
@@ -225,7 +225,7 @@ def _2016(cfg, **kwargs):
 	cfg["InputFiles"] = configtools.InputFiles()
 	# data settings also used to derive values for mc
 	cfg['Minbxsec'] = 69.2
-	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TEV.txt'
+	cfg['NPUFile'] = configtools.getPath() + '/data/pileup/pumean_data_13TeV.txt'
 	cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt')
 	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt')
 
