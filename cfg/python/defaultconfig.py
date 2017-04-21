@@ -208,6 +208,7 @@ def _2016(cfg, **kwargs):
 	cfg['TaggedJets'] = 'ak4PFJetsCHS'
 	cfg['PileupDensity'] = 'pileupDensity'
 	cfg['JetIDVersion'] = 2016
+	cfg['TypeIJetPtMin'] = 15.
 	cfg['MinZllJetDeltaRVeto'] = 0.3
 	cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
 	# create empty containers to allow using references prematurely
