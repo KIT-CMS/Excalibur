@@ -40,7 +40,6 @@ class ConvertToTGraphErrors(analysisbase.AnalysisBase):
 					if((hist.GetBinContent(i+1)+hist.GetBinError(i+1))>1):
 						tgraph.SetPointEYhigh(i,1-hist.GetBinContent(i+1))
 						tgraph.SetPointEYlow(i,2*hist.GetBinError(i+1)+hist.GetBinContent(i+1)-1)
-					print(hist.GetBinError(i+1), tgraph.GetErrorYhigh(i), tgraph.GetErrorYlow(i))
 			else:
 				tgraph = ROOT.TGraphErrors(hist)
 			plotData.plotdict["root_objects"][nick] = tgraph
