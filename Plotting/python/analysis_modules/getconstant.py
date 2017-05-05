@@ -31,7 +31,6 @@ class GetConstant(analysisbase.AnalysisBase):
 	def run(self, plotData=None):
 		super(GetConstant, self).run(plotData)
 		for binning, constant_nick, constant in zip(plotData.plotdict['nicks_for_binning'],plotData.plotdict['constant_nicks'], plotData.plotdict['constant']):
-			print binning, constant_nick, constant
 			new_histo = plotData.plotdict["root_objects"][binning].Clone()
 			for bin in xrange(1,new_histo.GetNbinsX()+1):
 				new_histo.SetBinContent(bin, constant)
