@@ -443,8 +443,8 @@ def mm(cfg, **kwargs):
 		#'filter:GenMuonEtaCut',
 		'filter:GenZPtCut',
 		'filter:ValidZCut',
-		#'filter:MinNMuonsCut',
-		#'filter:MaxNMuonsCut',
+		'filter:MinNMuonsCut',
+		'filter:MaxNMuonsCut',
 		#'filter:LeadingLeptonPtCut',
 		#'filter:MuonEtaCut',
 		'filter:ZPtCut',
@@ -519,7 +519,6 @@ def data_2016(cfg, **kwargs):
 	#cfg['Processors'] += ['producer:NPUProducer']
 	#cfg['Pipelines']['default']['Quantities'] += ['npumean']
 	cfg['CutAlphaMax'] = 0.3
-	cfg['Jec'] = configtools.get_jec("Spring16_25nsV6_DATA")
 	#cfg['Lumi'] = configtools.Lumi(json_source=cfg['JsonFiles'], normtag='')
 
 def mc_2012(cfg, **kwargs):
@@ -529,7 +528,6 @@ def mc_2012(cfg, **kwargs):
 	# insert PU weight producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 	# 2012 PU weight file determined with: puWeightCalc.py data/json/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt /storage/a/dhaitz/skims/2015-05-16_DYJetsToLL_M_50_madgraph_8TeV/*.root  --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions12/8TeV/PileUp/pileup_latest.txt  --minBiasXsec 69 --weight-limits 0 10   --output $EXCALIBURPATH/data/pileup/weights_190456-208686_8TeV_22Jan2013ReReco_madgraphPU-RD.root
-	cfg['PileupWeightFile'] = configtools.getPath() + '/data/pileup/weights_190456-208686_8TeV_22Jan2013ReReco_madgraphPU-RD.root'
 	cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 
 def mc_2015(cfg, **kwargs):
@@ -554,7 +552,6 @@ def mc_2015(cfg, **kwargs):
 		raise ValueError("No support for 'bunchcrossing' %r" % kwargs['bunchcrossing'])
 
 def mc_2016(cfg, **kwargs):
-	#cfg['PileupWeightFile'] = configtools.getPath() + '/data/pileup/pileup_json_Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_to_workdir-mc2016_ST_xsec_69.2_weights_0-4.root'
 	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
 	cfg['CutBetaMax'] = 0.1
@@ -564,11 +561,7 @@ def mc_2016(cfg, **kwargs):
 	# insert Generator producer before EventWeightProducer:
 	cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
 	cfg['Pipelines']['default']['Quantities'] += ['generatorWeight']
-	#cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
-	#cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 	# use WIP corrections until full tarballs are available again -- MF@20160215
-	cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV6_MC/Spring16_25nsV6_MC'
-	#cfg['Jec'] = configtools.getPath() + '/data/jec/Spring16_25nsV1_MC/Spring16_25nsV1_MC'
 
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
@@ -650,13 +643,13 @@ def _2015mm(cfg, **kwargs):
 
 def _2016mm(cfg, **kwargs):
 	#cfg['MuonID'] = 'tight'
-	cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
+	cfg['HltPaths'] = ['HLT_IsoMu22', 'HLT_IsoTkMu22']
 	cfg['EventWeight'] = 'weight'
-	cfg['MuonRochesterCorrectionsFile'] = configtools.getPath()+'/../Artus/KappaAnalysis/data/rochcorr/RoccoR_13tev_2016.txt'
+	cfg['MuonRochesterCorrectionsFile'] = configtools.getPath()+'/../Artus/KappaAnalysis/data/rochcorr2016'
 	cfg['MuonEnergyCorrection'] = 'rochcorr2016'
 	cfg['ValidMuonsInput'] = "corrected"
-	#cfg["MuonTriggerFilterNames"] = ["HLT_IsoMu22_v2:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v2:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoTkMu22_v3: hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoMu22_v3:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v4:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09"]
-	cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
+	cfg["MuonTriggerFilterNames"] = ["HLT_IsoMu22_v2:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v2:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoTkMu22_v3: hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09", "HLT_IsoMu22_v3:hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","HLT_IsoTkMu22_v4:hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09"]
+	#cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
  
 
 ###
@@ -677,7 +670,7 @@ def data_2015mm(cfg, **kwargs):
 def data_2016mm(cfg, **kwargs):
 	cfg['Pipelines']['default']['Processors'] += ['producer:MuonTriggerMatchingProducer','producer:LeptonSFProducer','producer:LeptonTriggerSFProducer']
 	cfg['MuonPtVariationFactor'] = 1.00
-	cfg['LeptonSFRootfile'] = configtools.getPath()+"/data/scalefactors/2016/SFData_ml.root"
+	cfg['LeptonSFRootfile'] = configtools.getPath()+"/data/scalefactors/2016/SFData_ICHEP.root"
 	cfg['LeptonTriggerSFRootfile'] = configtools.getPath()+"/data/scalefactors/2016/SFTriggerData.root"
 	cfg['TriggerSFRuns'] = [274094,276097]
 
