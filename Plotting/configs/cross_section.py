@@ -208,9 +208,12 @@ def print_results(args=None):
 			d = ({
 				'files' : ['files/'+year+'/unfolded_data_'+obs+'_mean.root', 'files/'+year+'/poisson_uncertainty_'+obs+'.root', 'files/'+year+'/bkg_uncertainty_'+obs+'.root','files/'+year+'/ID_uncertainty_'+obs+'.root','files/'+year+'/Trigger_uncertainty_'+obs+'.root'],
 				'folders' : [''],
-				'analysis_modules' : ['PrintResults'],
+				'analysis_modules' : ['GetConstant','PrintResults'],
 				'filename' : 'results_'+obs+'_'+year,
-				'nicks' : ['a', 'b', 'c','d', 'e'],
+				'nicks' : ['a','b','c','d','e'],
+				'constant' : [2.0,2.5,0.5],
+				'nicks_for_binning' : ['a', 'a', 'a'],
+                                'constant_nicks' : ['f','g','h'],
 				'x_expressions': ['unfolded','error','relbkg','reldiffup','reldiffup'],
 				'scale_factors' :[fsr_factor,'1','50','100','100'],
 				})
