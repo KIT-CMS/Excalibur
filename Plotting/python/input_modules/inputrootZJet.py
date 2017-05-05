@@ -60,15 +60,13 @@ class InputRootZJet(inputroot.InputRoot):
 				plotData.plotdict['lumis'] = lumis
 		else:
 			lumis = plotData.plotdict['lumis']
-
 		# add 'weight' by default to weights
-		if not plotData.plotdict['no_weight'] and not any(bool(json) is False for json in plotData.input_json_dicts):
+		if not plotData.plotdict['no_weight']:
 			plotData.plotdict['weights'] = [
 				"(weight * ({0}))".format(weight)
 				if "weight" not in weight
 				else weight
 				for weight in plotData.plotdict['weights']]
-
 			# add lumi as weight for mc files if feasible
 			if len(set(lumis)) == 1 and lumis[0] > 0:
 				for i, rootfile in enumerate(plotData.plotdict['files']):
