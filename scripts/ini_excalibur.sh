@@ -83,6 +83,12 @@ elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     export EXCALIBUR_WORK=~/storage/working/
     export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Excalibur"
+elif [ $USER = "dsavoiu" ]; then
+    export EXCALIBURBRILSSH="dsavoiu@lxplus.cern.ch"
+    export EXCALIBUR_WORK=/nfs/dust/cms/user/dsavoiu/Work/Excalibur
+    export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/dsavoiu/Excalibur"
+    export HARRY_REMOTE_USER="dsavoiu"
+    export HARRY_USERPC="ekplx32.ekp.kit.edu"
 fi
 source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
