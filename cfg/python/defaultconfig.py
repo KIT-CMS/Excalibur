@@ -336,7 +336,7 @@ def mcmm(cfg, **kwargs):
 	]
 	cfg['RecoMuonMatchingGenParticleStatus'] = 1
 	cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable
-	cfg['Processors']+= 'producer:LeptonSFProducer',
+#	cfg['Processors']+= 'producer:LeptonSFProducer',
 	cfg['GenParticleTypes'] += ['genMuon', 'genTau']
 	cfg['GenMuonStatus'] = 1
 #	cfg['TriggerSFRuns'] = []
