@@ -4,11 +4,11 @@
 import Excalibur.Plotting.utility.colors as colors
 from Excalibur.Plotting.utility.toolsZJet import PlottingJob, get_input_files
 
+import time
 import argparse
 import copy
 import jec_factors
 import jec_files
-
 
 # TODO to more general location
 def get_list_slice(lists, arg):
@@ -114,7 +114,7 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 		'filename': 'extrapolation',
 		'labels': labellist,
 		'alphas': [0.3],
-		'zjetfolders': ['noalphacuts'], #for the case, that alpha values beyond the alpha cut should be included into the extrapolation
+		#'zjetfolders': ['noalphacuts'], #for the case, that alpha values beyond the alpha cut should be included into the extrapolation
 		'lines': [1.0],
 		'legend': 'lower left',
 		'x_expressions': 'alpha',
@@ -132,20 +132,21 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 		'line_widths': ['1'],
 		'tree_draw_options': 'prof',
 		'analysis_modules': ['Ratio', 'FunctionPlot'],
-		'plot_modules': ['PlotMplZJet', 'PlotExtrapolationText'],
+		'plot_modules': ['PlotExtrapolationValues','ExportRoot'],#'PlotExtrapolationText', 'PlotMplZJet',
 		'extrapolation_text_nicks': ['ptbalance_ratio_fit', 'mpf_ratio_fit'],
 		'extrapolation_text_colors': ['darkred', 'darkblue'],
-		'functions': ['[0]+[1]*x'],
-		'function_fit': fitlist[inputtuple],
-		'function_parameters': ['1,1'],
+		'extrapolation_values_nicks': ['ptbalance_data_fit'],#'ptbalance_mc_fit'],#fitnicklist[inputtuple],#
+		'functions': ['[0]+[1]*x'],#+[2]*x**2'],
+		'function_fit': ['ptbalance_data'],#fitlist[inputtuple],
+		'function_parameters': ['1,1'],#1'],
 		'function_ranges': ['0,0.3'],
-		'function_nicknames': fitnicklist[inputtuple],
+		'function_nicknames': ['ptbalance_data_fit'],#fitnicklist[inputtuple],
 		'ratio_numerator_nicks': ['ptbalance_data', 'mpf_data'],
 		'ratio_denominator_nicks': ['ptbalance_mc', 'mpf_mc'],
 		'ratio_result_nicks': ['ptbalance_ratio', 'mpf_ratio'],
 		'ratio_denominator_no_errors': False,
-		#'y_subplot_lims': [0.966, 1.034], #for Zmm
-		'y_subplot_lims': [0.93, 1.1], #for Zee
+		'y_subplot_lims': [0.966, 1.034], #for Zmm
+		#'y_subplot_lims': [0.95, 1.05], #for Zee
 		'extrapolation_text_position': [0.18, 1.025],
 		'y_subplot_label': '{} / {}'.format(labels[0], labels[1]).replace('(','').replace(')',''),
 		'subplot_fraction': 40,
@@ -155,108 +156,6 @@ def response_extrapolation(args=None, additional_dictionary=None, inputtuple='da
 		d.update(additional_dictionary)
 	return [PlottingJob(plots=[d], args=args)]
 
-def response_bin_comparisons(args=None, additional_dictionary=None, data_quantities=True):
-	plots = []
-
-	if additional_dictionary is not None:
-		additional_dictionary = additional_dictionary.copy()
-		if 'title' in additional_dictionary:
-			additional_dictionary.pop('title')
-		if 'labels' in additional_dictionary:
-			labels = additional_dictionary['labels']
-			additional_dictionary.pop('labels')
-		elif 'nicks' in additional_dictionary:
-			labels = additional_dictionary['nicks']
-			additional_dictionary.pop('nicks')
-		else:
-			labels = ['', '']
-	else:
-		labels = ['', '']
-	if labels != ['', '']:
-		labels = ["{0}".format(l) for l in labels]
-
-	for quantity, title_quantity, bins in zip(
-		[
-			'zpt',
-			'alpha',
-			#'npv',
-			#'abs(jet1eta)'
-		],
-		[
-			r"$\\mathit{p}_{T}^{Z}$",
-			r"$\\alpha$"
-			#'$\\mathit{n}_{PV}$',
-			#'|$\\mathit{\eta}_{Leading \ Jet}$|'
-		],
-		[
-			"30 40 50 60 75 95 125 180 300 1000",
-			"0 0.05 0.1 0.15 0.2 0.25 0.3",
-			#"-0.5 4.5 8.5 15.5 21.5 45.5",
-			#"0 0.783 1.305 1.93 2.5 2.964 3.139 5.191"
-		]
-	):
-		for method in ['ptbalance', 'mpf']:
-			bin_edges = bins.split(" ")
-			for i in xrange(len(bin_edges)-1):
-				filename_postfix = "{0}-{1}".format(bin_edges[i], bin_edges[i+1])
-
-				d = {
-					'x_expressions': [method],
-					'x_lims': [0, 2],
-					'x_bins': "20,0,2",
-					'weights': ["{0}>{1}&&{0}<{2}".format(quantity, bin_edges[i], bin_edges[i+1])],
-					'title': "{1} < {0} < {2}".format(title_quantity, bin_edges[i], bin_edges[i+1]),
-					'cutlabel': True,
-					#'analysis_modules': ['Ratio'],
-					'filename': method + "_" + quantity.replace("(", "").replace(")", "") + "_" + filename_postfix,
-					#'y_subplot_lims': [0.5, 1.5],
-					"nicks": ['nick1', 'nick2'],
-					"markers": ['*', '.', None, None],
-					"line_styles": [None, None, '-', '-'],
-					"colors": ["red", "blue"],
-					"labels": [labels[0], labels[1], labels[0] + " Fit", labels[1] + " Fit"],
-					"analysis_modules": ["NormalizeToFirstHisto","FunctionPlot"],
-					"function_fit": ["nick1", "nick2"],
-					"function_nicknames": ["nick1_fit", "nick2_fit"],
-					"function_parameters": ["1,1,1"],
-					"function_ranges": ["0,2"],
-					"functions": ["[0]*exp(-0.5*((x-[1])/[2])**2)"],
-				}
-
-				if additional_dictionary != None:
-					d.update(additional_dictionary)
-				plots.append(d)
-	return [PlottingJob(plots=plots, args=args)]
-
-def response_nevents(args=None, additional_dictionary=None, data_quantities=True):
-	"""Number of Events per Response bin"""
-	known_args, args = get_special_parser(args)
-	plots = []
-	# TODO put these default binning values somewhere more globally
-	for quantity, bins in zip(*get_list_slice([
-		['zpt', 'npv', 'abs(jet1eta)'],
-		['zpt', 'npv','abseta']
-	], known_args.no_quantities)):
-		d = {
-			'x_expressions': [quantity],
-			'x_bins': bins,
-			'lines': [1.0],
-			'analysis_modules': ['Ratio'],
-			'filename': "NEvents_" + quantity.replace("(", "").replace(")", ""),
-			'y_subplot_lims': [0.0, 2.0],
-			'legend': 'upper right',
-			'no_weight': True,
-		}
-		if quantity == 'abs(jet1eta)':
-			d['zjetfolders'] = ["noetacuts"]
-		if quantity == 'zpt':
-			d['x_log'] = True
-			d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
-		if additional_dictionary != None:
-			d.update(additional_dictionary)
-		plots.append(d)
-	return [PlottingJob(plots=plots, args=args)]
-
 def response_comparisons(args2=None, additional_dictionary=None, data_quantities=True):
 	"""Response (MPF/pTbal) vs zpt npv abs(jet1eta), with ratio"""
 	known_args, args = get_special_parser(args2)
@@ -264,8 +163,8 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 	plots = []
 	# TODO put these default binning values somewhere more globally
 	for quantity, bins in zip(*get_list_slice([
-		['zpt', 'npv', 'abs(jet1eta)'],
-		['zpt', 'npv','abseta']
+		['zpt', 'npv', 'abs(jet1eta)'],# 'abs(jet2eta)'],
+		['zpt', 'npv','abseta']#,'abseta']
 	], known_args.no_quantities)):
 		for method in get_list_slice([['ptbalance', 'mpf'] + (['trueresponse'] if not data_quantities else [])], known_args.no_methods)[0]:
 			d = {
@@ -279,27 +178,32 @@ def response_comparisons(args2=None, additional_dictionary=None, data_quantities
 				'cutlabel': True,
 				'lines': [1.0],
 				'analysis_modules': ['Ratio'],
-				#'analysis_modules': ['Divide'],
 				'ratio_denominator_no_errors': False,
 				'filename': method + "_" + quantity.replace("(", "").replace(")", ""),
-				'y_subplot_lims': [0.8, 1.2],
-				'legend': 'lower left',
+				'y_subplot_lims': [0.97, 1.03],
+				'legend': 'upper right',#'lower left',
 			}
 #########################################################
 			if method == 'mpf':
-				d['y_lims'] = [0.9,1.05]
+				d['y_label'] = '$MPF$ response'
+				d['y_lims'] = [0.95,1.05]				
 			if method == 'ptbalance':
-				if quantity == 'abs(jet1eta)':
-					d['y_lims'] = [0.72,0.93]
+				d['y_label'] = '$p_T-balance$ response'
+				if quantity == 'zpt':
+					d['y_lims'] = [0.8,1.04]
 				else:
-					d['y_lims'] = [0.82,0.96]
-#					d['legend'] = ['lower right']
+					d['y_lims'] = [0.73,0.99]
 #########################################################
-			if quantity == 'abs(jet1eta)':
+			if quantity == 'abs(jet1eta)' or 'abs(jet2eta)':
 				d['zjetfolders'] = ["noetacuts"]
+				d['x_bins'] = ["0.001 0.261 0.522 0.783 1.044 1.305 1.479 1.653 1.930 2.172 2.322 2.500 2.650 2.853 2.964 3.139 3.489 3.839 5.191"]
 			if quantity == 'zpt':
 				d['x_log'] = True
+				d['x_bins'] = ["30 40 50 60 85 105 130 175 230 300 400 500 700 1000 1500 2000"]
 				d['x_ticks'] = [30, 50, 70, 100, 200, 400, 1000]
+			if quantity == 'npv':
+				d['y_lims'] = [0.95,1.05]
+				d['x_bins']=["0 5 10 12 15 20 25 30 50"]
 			if method == 'trueresponse':
 				d['filename'] = "true_response__vs__" + quantity
 				d['weights'] = "matchedgenjet1pt>0"
@@ -314,26 +218,28 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 	plots = []
 	# TODO move this to more general location
 	x_dict = {
-		'alpha': ['40,0,1'],
-		'jet1area': ['40,0.3,0.9'],
-		'jet1eta': ['30,-1.5,1.5'],
-		'jet1phi': ['20,-3.1415,3.1415',],
-		'jet1pt': ['40,0,400'],
-		'jet2eta': ['20,-5,5'],
-		'jet2phi': ['20,-3.1415,3.1415',],
-		'jet2pt': ['30,0,75'],
-		'met': ['40,0,100'],
-		'metphi': ['20,-3.1415,3.1415',],
-		'mpf': ['40,0,2'],
-		'npu': ['31,-0.5,30.5'],
-		'npumean': ['40,0,40'],
-		'npv': ['31,-0.5,30.5'],
-		'ptbalance': ['40,0,2'],
-		'rawmet': ['40,0,100'],
-		'zmass': ['40,71,111'],
-		'zphi': ['20,-3.1415,3.1415',],
-		'zpt': ['40,0,400'],
-		'zy': ['25,-2.5,2.5'],
+		'alpha': ['80,0,1'],
+		'jet1area': ['80,0.3,0.9'],
+		'jet1eta': ['60,-5,5'],
+		'jet1phi': ['40,-3.1415,3.1415',],
+		'jet1pt': ['160,0,800'],
+		'jet2eta': ['40,-5,5'],
+		'jet2phi': ['40,-3.1415,3.1415',],
+		'jet2pt': ['60,0,75'],
+		'met': ['80,0,100'],
+		'metphi': ['40,-3.1415,3.1415',],
+		'mpf': ['80,0,2'],
+		'npu': ['31,-0.5,60.5'],
+		'npumean': ['100,0,50'],
+		'npv': ['51,-0.5,50.5'],
+		'ptbalance': ['80,0,2'],
+		'rawmet': ['80,0,100'],
+		'zmass': ['160,71,111'],
+		'zphi': ['40,-3.1415,3.1415',],
+		'zpt': ['80,0,400'],
+		'zy': ['50,-2.5,2.5'],
+		'genHT': ['3000,10.5,3000.5'],
+		'jetHT': ['3000,10.5,3000.5']
 	}
 	x_dict_zl={
 		'%s1phi': ['20,-3.1415,3.1415',],
@@ -343,10 +249,10 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		'%spluspt': ['20,0,150'],
 	}
 
-	quantity_list= ['zpt', 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
-			 'npv', 'npumean', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
-			 'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha',]
-	quantity_list_zl=['%s1pt', '%s1eta', '%s1phi', '%s2pt', '%s2eta', '%s2phi','%sminusphi', '%sminuseta', '%sminuspt', '%splusphi', '%spluseta', '%spluspt']
+	quantity_list= ['zpt']#, 'zy', 'zmass', 'zphi', 'jet1pt', 'jet1eta', 'jet1phi', 'jet1area',
+			 #'npv', 'npumean', 'rho', 'met', 'metphi', 'rawmet', 'rawmetphi', 'njets',
+			 #'ptbalance', 'mpf', 'jet2pt', 'jet2eta', 'jet2phi', 'alpha', 'genHT', 'jetHT']
+	quantity_list_zl=[]#'%s1pt', '%s1eta', '%s1phi', '%s2pt', '%s2eta', '%s2phi','%sminusphi', '%sminuseta', '%sminuspt', '%splusphi', '%spluseta', '%spluspt']
 	# apply channel specific settings
 	zl_basenames = []
 	if "mm" in channel:
@@ -362,13 +268,13 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		if len(x_dict[q]) == 1:
 			x_dict[q] += ['best']
 
-	for quantity in quantity_list \
-			 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
+	for quantity in quantity_list: #\
+		#	 + (['run', 'lumi', 'event'] if data_quantities else ['npu']):
 		# normal comparison
 		d = {
 			'x_expressions': [quantity],
 			'cutlabel': True,
-			'analysis_modules': ['Ratio'],
+			#'analysis_modules': ['Ratio'],
 			'y_subplot_lims': [0.75, 1.25],
 			'y_log': quantity in ['jet1pt', 'zpt']
 		}
@@ -380,7 +286,19 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 			d.update(additional_dictionary)
 		if quantity == 'alpha' and (additional_dictionary is None or 'zjetfolders' not in additional_dictionary):
 			d['zjetfolders'] = ['noalphacuts']
-
+		if quantity == 'genHT' or quantity == 'jetHT':
+			#d['zjetfolders'] = ['nocuts']
+			d['x_log'] = True,
+			d['y_log'] = True,
+			#d['x_bins'] = ["5 20 30 50 70 80 90 100 120 150 200 250 300 400 450 500 600 650 700 800 900 1000 1200 1400 2000 2500 3000 4000 5000"]
+			d['x_ticks'] = [30, 70, 200, 400, 1200, 2500]
+		if quantity == 'jet1eta' or quantity == 'jet2eta':
+			d['zjetfolders'] = ['nocuts']	
+		if quantity == 'genHT':
+			d['x_label'] = '${H}_T^{Gen}/GeV$'
+		if quantity == 'jetHT':
+			d['x_label'] = '${H}_T^{Reco}/GeV$'
+		
 		if quantity=='zphi':
 			d['y_rel_lims']=[1,1.3]
 		elif quantity== 'zpt':
@@ -391,11 +309,11 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		# shape comparison
 		d2 = copy.deepcopy(d)
 		d2.update({
-			'analysis_modules': ['NormalizeToFirstHisto', 'Ratio'],
+			'analysis_modules': ['NormalizeToFirstHisto','Ratio'],#
 			'filename': quantity+"_shapeComparison",
 			'title': "Shape Comparison",
 			'legend': 'upper right',
-			'y_subplot_lims': [0.75, 1.25],
+			'y_subplot_lims': [0.9, 1.1],
 		})
 		if channel in ("eemm", "mmee"):
 			d2['y_label']= 'Electron Events'
@@ -404,411 +322,338 @@ def basic_comparisons(args=None, additional_dictionary=None, data_quantities=Tru
 		plots.append(d2)
 	return [PlottingJob(plots=plots, args=args)]
 
-def basic_profile_comparisons(args=None, additional_dictionary=None):
-	""" Some basic profile plots. """
-	plots = []
-	for xquantity, yquantity in zip(['zpt'], ['zmass']):
-		d = {
-			'x_expressions': [xquantity],
-			'y_expressions': [yquantity],
-			'analysis_modules': ['Ratio'],
-			'tree_draw_options': 'prof',
-			'cutlabel': True,
-			'y_subplot_lims': [0.99, 1.01],
-			'x_log': True,
-			'x_bins': "zpt",
-			'markers': ['o', 'd'],
-		}
-		if yquantity == 'zmass':
-			z_mass_pdg = 91.1876
-			z_width_pdg = 2.4952
-			z_peak = 0.01
-			z_window = 5
-			d['y_lims'] =  [z_mass_pdg - z_window, z_mass_pdg + z_window],
-			d['plot_modules'] = ["PlotMplZJet", "PlotMplRectangle"]
-			d["rectangle_y"] = [
-				z_mass_pdg-z_width_pdg, z_mass_pdg+z_width_pdg,
-				z_mass_pdg-z_peak, z_mass_pdg+z_peak,
-			]
-			d["rectangle_alpha"] = [0.2, 0.5]
-			d["rectangle_color"] = ["blue", "green"]
-		plots.append(d)
-	for x_expression in ['npv', 'npumean']:
-		for y_expression in ['rho', 'npv']:
-			d = {
-				'x_expressions': [x_expression],
-				'y_expressions': [y_expression],
-				#'y_lims':[0,30],
-				'analysis_modules': ['Ratio'],
-				'tree_draw_options': 'prof',
-				'cutlabel': True,
-				'markers': ['o', 'd'],
-				'y_subplot_lims': [0.5, 1.5],
-				'x_bins': "25,0.5,25.5",
-				'legend': 'lower right',
-			}
-			if (x_expression=='npv' and y_expression=='rho'): d['y_lims']= [0,30]
-			plots.append(d)
-	if additional_dictionary != None:
-		for plot in plots:
-			plot.update(additional_dictionary)
-	return [PlottingJob(plots=plots, args=args)]
-
-
-
-
 def full_comparison(args=None, d=None, data_quantities=True, only_normalized=True,
 	                channel="mm", inputtuple="datamc", subtract_hf=True):
 	""" Do all comparison plots"""
 	plotting_jobs = []
-#	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
-#	plotting_jobs += basic_profile_comparisons(args, d)
-#	plotting_jobs += pf_fractions(args, d, subtract_hf=subtract_hf)
-#	plotting_jobs += response_nevents(args, d, data_quantities)
-	plotting_jobs += response_comparisons(args, d, data_quantities)
+	plotting_jobs += basic_comparisons(args, d, data_quantities, only_normalized, channel)
+	#plotting_jobs += response_comparisons(args, d, data_quantities)
 	plotting_jobs += response_extrapolation(args, d, inputtuple)
-#	plotting_jobs += jet_resolution(args, additional_dictionary=d)
 	return plotting_jobs
 
-
-def muon_2d(args=None, additional_dictionary=None):
-	"""2D plot of muon eta-phi-distribution. works for one file."""
-	d = {
-		# input
-		'folders': ['nocuts_L1L2L3/muons'],
-		'y_expressions': ['object.p4.Phi()'],
-		'x_expressions': ['object.p4.Eta()'],
-		'no_weight': True,
-		'x_bins': '200,-2.3,2.3',
-		'y_bins': '200,-3.14159,3,14159',
-		# formatting
-		'y_lims': [-3.14159, 3,14159],
-		'x_label': 'mueta',
-		'y_label': 'muphi',
-		# output
-		'filename': 'muon_eta_phi',
-	}
-	if additional_dictionary != None:
-		d.update(additional_dictionary)
-	return [PlottingJob(plots=[d], args=args)]
-
-def my_comparison_datamc_Zee_CHS(args=None):
+def my_comparison_datamc_Zll(args=None):
 	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
-	Res=True # disable/enable residual corrrections
+	Res=0 # disable/enable residual corrrections
+	Cut=1 # disable/enable cuts
+	if Res==True:
+		RES='Res'
+	else:
+		RES=''
+	if Cut==True:
+		CUT='finalcuts'
+	else:
+		CUT='noalphacuts'
+	PU='CHS'#'PUPPI'
+	RUN='BCDEFGH'
+	CH='mm'
+	MC='amc'#'amc'#
+	RECO='remini'
+	NICK =['Data','MC']
+	
 	plotting_jobs = []
 	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_ee_2016-08-03_02-56/out.root',
-					#'/storage/a/cheidecker/zjets/excalibur/data16_25ns_ee_2016-08-03_09-24/out.root'],
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_ee_all.root'],
-#					'/storage/jbod/tberger/working/excalibur/data16G_25ns_ee_2016-09-06_12-32/out.root'],
-		'corrections': ['L1L2L3', 'L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		#'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-		#				'(run>272007 && run<276811)'],
-		#				'(run>276831 && run<278808)'],#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-		#				'(run>278820)'],
-		'www_title': 'Comparison of Datasets for Zee, run2',
+		'files': [	'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_'+RUN+'_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/mc16_'+RUN+'_'+CH+'_'+MC+'.root'],
+		'corrections': ['L1L2L3'+RES, 'L1L2L3'],
+		'zjetfolders': CUT,
+#		'output_dir': '/ekpwww/web/tberger/public_html/plots_archive/'+time.strftime("%Y_%m_%d", time.localtime())+'/comparison_Z'+CH+'_'+RUN+'_'+RECO+'_'+PU+'_'+MC+'_'+CUT+RES,
+		'www_title': 'Comparison of Datasets for Zll, run2',
 		'www_text':'Run2: full data/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zee_CHS_miniAOD',
-		#'y_lims' : [0.73, 1.05],
-		'labels': ['MC','Data'],
+		'www': 'comparison_Z'+CH+'_'+RUN+'_'+RECO+'_'+PU+'_'+MC+'_'+CUT+RES,
+		'labels': NICK,
 		'y_subplot_label' : "Data/MC",
-		'y_subplot_lims' : [0.97,1.07],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
+		#'y_subplot_lims' : [0.9,1.1],
+		'texts_x': [0.34,0.69] if Res == True else [0.34,0.78],
+		'texts_y': [0.95,0.09],
+		'texts_size': [20,25],
+#		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{work\\hspace{0.2}in\\hspace{0.2}progress \\hspace{3.2}}$"
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
+		'plot_modules': ['ExportRoot'],
+#		'formats': ['svg'],
 	}
-	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datadata')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
-	return plotting_jobs
-
-def my_comparison_datamc_Zmm_CHS(args=None):
-	"""Run2: full data mc comparisons for work/data16BCD_25ns_mm.root and work/mc16_25ns_mm.root"""
-	Res=True # disable/enable residual corrrections
-	plotting_jobs = []
-	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_2016-08-03_01-36/out.root',
-					#'/storage/a/cheidecker/zjets/excalibur/data16_25ns_2016-08-02_16-49/out.root'],
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_mm_all.root'],
-		'corrections': ['L1L2L3', 'L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		#'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-		#				'(run>272007 && run<276811)',
-		#				'(run>276831 && run<278808)',#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-		#				'(run>278820)'],
-		'www_title': 'Comparison of Datasets for Zmm, run2',
-		'www_text':'Run2: full data/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zmm_CHS_miniAOD',
-#		'y_lims' : [0.73, 1.05],
-		'labels': ['MC','Data'],
-		'y_subplot_label' : "Data/MC",
-		'y_subplot_lims' : [0.989,1.05],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
-		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
-	}
-	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datadata')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
-	return plotting_jobs
-def my_comparison_datamc_Zee_PUPPI(args=None):
-	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
-	Res=True # disable/enable residual corrrections
-	plotting_jobs = []
-	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_ee_2016-08-03_02-56/out.root',
-					'/storage/jbod/tberger/zjets/excalibur_data16_25ns_ee.root',
-					'/storage/jbod/tberger/zjets/excalibur_data16_25ns_puppi_ee.root'],
-		'corrections': ['', '', ''] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		#'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-		#				'(run>272007 && run<276811)'],
-		#				'(run>276831 && run<278808)'],#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-		#				'(run>278820)'],
-		'www_title': 'Comparison of Datasets for Zee, run2',
-		'www_text':'Run2: full data/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zee_PUPPI',
-		#'y_lims' : [0.73, 1.05],
-		'labels': ['MC CHS','Data CHS','Data PUPPI'],
-#		'y_subplot_label' : "Data/MC",
-#		'y_subplot_lims' : [0.97,1.07],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
-		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
-	}
-	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datamc')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
-	return plotting_jobs
-
-def my_comparison_datamc_Zmm_PUPPI(args=None):
-	"""Run2: full data mc comparisons for work/data16BCD_25ns_mm.root and work/mc16_25ns_mm.root"""
-	Res=True # disable/enable residual corrrections
-	plotting_jobs = []
-	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_2016-08-03_01-36/out.root',
-					'/storage/jbod/tberger/zjets/excalibur_data16_25ns_mm.root',
-					'/storage/jbod/tberger/zjets/excalibur_data16_25ns_puppi_mm.root'],
-		'corrections': ['', '', ''] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		#'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-		#				'(run>272007 && run<276811)',
-		#				'(run>276831 && run<278808)',#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-		#				'(run>278820)'],
-		'www_title': 'Comparison of Datasets for Zmm, run2',
-		'www_text':'Run2: full data/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zmm_PUPPI',
-#		'y_lims' : [0.73, 1.05],
-		'labels': ['MC CHS','Data CHS','Data PUPPI'],
-#		'y_subplot_label' : "Data/MC",
-#		'y_subplot_lims' : [0.989,1.05],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
-		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
-	}
-	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datamc')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
-	return plotting_jobs
-
-def my_comparison_datamc_Zee_AOD(args=None):
-	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
-	Res=True # disable/enable residual corrrections
-	plotting_jobs = []
-	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_ee_2016-08-03_02-56/out.root',
-					'/storage/a/cheidecker/zjets/excalibur/data16_25ns_ee_2016-08-03_09-24/out.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_ee_all.root'],
-#					'/storage/jbod/tberger/working/excalibur/data16G_25ns_ee_2016-09-06_12-32/out.root'],
-		'corrections': ['L1L2L3', 'L1L2L3', 'L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-						'run<276811',
-						'run<276811'],
-		#				'(run>272007 && run<276811)'],
-		#				'(run>276831 && run<278808)'],#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-		#				'(run>278820)'],
-		'www_title': 'Comparison of Datasets for Zee, run2',
-		'www_text':'Run2: full data/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zee_AOD',
-		#'y_lims' : [0.73, 1.05],
-		'labels': ['MC','Data AOD','Data miniAOD'],
-		'y_subplot_label' : "Data/MC",
-		'y_subplot_lims' : [0.97,1.07],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
-		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
-	}
-	plotting_jobs += full_comparison(args, d, channel="ee", inputtuple='datamc')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
-	return plotting_jobs
-
-def my_comparison_datamc_Zmm_AOD(args=None):
-	"""Run2: full data mc comparisons for work/data16BCD_25ns_mm.root and work/mc16_25ns_mm.root"""
-	Res=True # disable/enable residual corrrections
-	plotting_jobs = []
-	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_2016-08-03_01-36/out.root',
-					'/storage/a/cheidecker/zjets/excalibur/data16_25ns_2016-08-02_16-49/out.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_mm_all.root'],
-		'corrections': ['L1L2L3', 'L1L2L3', 'L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-						'run<276811',
-						'run<276811'],
-		#				'(run>272007 && run<276811)',
-		#				'(run>276831 && run<278808)',#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-		#				'(run>278820)'],
-		'www_title': 'Comparison of Datasets for Zmm, AOD and miniAOD to MC, run2',
-		'www_text':'Run2: full dataAOD/dataminiAOD/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zmm_AOD',
-#		'y_lims' : [0.73, 1.05],
-		'labels': ['MC','Data AOD','Data miniAOD'],
-#		'y_subplot_label' : "Data/MC",
-#		'y_subplot_lims' : [0.989,1.05],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
-		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
-	}
-	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datamc')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
-	return plotting_jobs
-
-def my_comparison_datamc_Zee_all(args=None):
-	"""Run2: full data mc comparisons for work/data16BCD_25ns_mm.root and work/mc16_25ns_mm.root"""
-	Res=True # disable/enable residual corrrections
-	plotting_jobs = []
-	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_ee_2016-08-03_02-56/out.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_BCD_ee.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_E_ee.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_F_ee.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_G_ee.root'],
-		'corrections': ['L1L2L3', 'L1L2L3', 'L1L2L3', 'L1L2L3', 'L1L2L3'],# if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-						'(run>272007 && run<276811)',
-						'(run>276831 && run<277420)',
-						'(run>277772 && run<278808)',#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-						'(run>278820)'],
-		'colors' : ['black','red','blue','green','orange'],
-		'www_title': 'Comparison of Datasets for Zee, AOD and miniAOD to MC, run2',
-		'www_text':'Run2: full dataAOD/dataminiAOD/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zee_BCD-E-F-G',
-#		'y_lims' : [0.73, 1.05],
-		'labels': ['MC','Data BCD','Data E','Data F','Data G'],
-#		'y_subplot_label' : "Data/MC",
-#		'y_subplot_lims' : [0.989,1.05],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
-		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
-	}
-	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datamc')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
-	return plotting_jobs
-
-def my_comparison_datamc_Zmm_all(args=None):
-	"""Run2: full data mc comparisons for work/data16BCD_25ns_mm.root and work/mc16_25ns_mm.root"""
-	Res=True # disable/enable residual corrrections
-	plotting_jobs = []
-	d = {
-		'files': [	'/storage/a/cheidecker/zjets/excalibur/mc16_25ns_2016-08-03_01-36/out.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_BCD_mm.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_E_mm.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_F_mm.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_G_mm.root'],
-		'corrections': ['L1L2L3', 'L1L2L3', 'L1L2L3', 'L1L2L3', 'L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		'weights'	: [	'1',#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-						'(run>272007 && run<276811)',
-						'(run>276831 && run<277420)',
-						'(run>277772 && run<278808)',#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-						'(run>278820)'],
-		'www_title': 'Comparison of Datasets for Zmm, AOD and miniAOD to MC, run2',
-		'www_text':'Run2: full dataAOD/dataminiAOD/MC comparisons for Run2',
-		'www': 'comparison_datamc_Zmm_BCD-E-F-G',
-#		'y_lims' : [0.73, 1.05],
-		'labels': ['MC','Data BCD','Data E','Data F','Data G'],
-#		'y_subplot_label' : "Data/MC",
-#		'y_subplot_lims' : [0.989,1.05],
-		'colors' : ['black','red','blue','green','orange'],
-		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
-		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
-#		'formats': ['pdf'],
-#		'lumis': [20.88],
-	}
-	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datamc')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
+	if RUN=='BCD':
+		d.update({'lumis': [12.61]})#'weights'	: [	'1','(run>=272007&&run<=276811)'],#					'lumis'		: [12.93]	})					 # ICHEP Dataset
+	elif RUN=='EF':
+		d.update({'lumis': [6.71]})#'weights'	: [	'1','(run>=276831&&run<=278801)'],#					'lumis'		: [6.89]	})
+	elif RUN=='G':
+		d.update({'lumis': [7.94]})#'weights'	: [	'1','(run>=278802&&run<=280385)'],#					'lumis'		: [8.13]	})
+	elif RUN=='H':
+		d.update({'lumis': [8.61]})#'weights'	: [	'1','(run>=280385)']#					'lumis'		: [8.86]	})
+	elif RUN=='BCDEFGH':
+		d.update({'lumis': [35.87]})#'weights'	: [	'1','(run>=280385)'],
+	if CH=='ee':
+		d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3Res}$"] if Res else [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3}$"]})
+	elif CH=='mm':
+		d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow}\\mu\\mu}$",r"$\\bf{L1L2L3Res}$"] if Res else [r"$\\mathrm{\\bf{Z \\rightarrow}\\mu\\mu}$",r"$\\bf{L1L2L3}$"]})
+	
+	plotting_jobs += full_comparison(args, d, channel=CH, inputtuple='datadata')  # usually datamc
 	return plotting_jobs
 	
-def my_comparison_data_Zmmee(args=None):
-	"""Run2: full data mc comparisons for work/data16BCD_25ns_mm.root and work/mc16_25ns_mm.root"""
-	Res=True # disable/enable residual corrrections
+def my_comparison_dataallmc_Zll(args=None):
+	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
+	Res=1 # disable/enable residual corrrections
+	Cut=1 # disable/enable cuts
+	if Res==True:
+		RES='Res'
+	else:
+		RES=''
+	if Cut==True:
+		CUT='finalcuts'
+	else:
+		CUT='noetacuts'
+	PU='CHS'#'PUPPI'
+	RUN='BCD'
+	CH='mm'
+	MC='amc'
+	RECO='remini'
+	NICK =['DataBCD','DataEF','DataG','DataH',MC]
 	plotting_jobs = []
 	d = {
-		'files': [	'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_mm_all.root',
-					'/storage/jbod/tberger/zjets/excalibur_results_2016-10-07/excalibur_data16_25ns_ee_all.root'],
-		'corrections': ['L1L2L3', 'L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3'],
-		#'algorithms': ['ak4PFJetsCHS'],
-		'weights'	: [	#'(run>272007 && run<275376)','(run>275657 && run<276283)','(run>276315 && run<276811)'
-						#'(run>272007 && run<276811)','(run>272007 && run<276811)'],
-						#'(run>276831 && run<277420)','(run>276831 && run<277420)'],
-						'(run>277772 && run<278808)','(run>277772 && run<278808)'],#'(run>276831 && run<277420)','(run>277772 && run<278808)'
-		#				'(run>278820)','(run>278820)'],
-		'colors' : ['blue','red'],
-		'www_title': 'Comparison of Datasets for Zmm and Zee, run2',
-		'www_text':'Run2: full data comparisons for Zee and Zmm, Run2',
-		'www': 'comparison_data_Zmmee_F',
-#		'y_lims' : [0.73, 1.05],
-		'labels': [	#'DataBCD, 'r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$", 
-					#'DataE, 'r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$",
-					'DataF, 'r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$",
-					#'Data, 'r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$",
-					#'DataBCD, 'r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-					#'DataE, 'r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-					'DataF, 'r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-					#'Data, 'r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"],
-		'y_subplot_label' : "mm/ee",
-		'y_subplot_lims' : [0.989,1.015],
-#		'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"],
-		'texts_x': [0.84],
-		'texts_y': [0.93],
-		'texts_size': [20],
+		'files': [	'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_BCD_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_EF_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_G_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_H_'+CH+'_'+RECO+'.root',					
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/mc16_'+RUN+'_'+CH+'_'+MC+'.root'],
+		'corrections': ['L1L2L3'+RES, 'L1L2L3'+RES, 'L1L2L3'+RES, 'L1L2L3'+RES, 'L1L2L3'],# 'L1L2L3'+RES],['',''],#
+		'zjetfolders': CUT,
+#		'output_dir': '/ekpwww/web/tberger/public_html/plots_archive/'+time.strftime("%Y_%m_%d", time.localtime())+'/comparison_Z'+CH+'_'+RUN+'_'+RECO+'_'+PU+'_'+MC+'_'+CUT+RES,
+		'colors' : ['red','blue','green','orange','black','darkred','darkblue','darkgreen','darkorange'],
+		'www_title': 'Comparison of Datasets for Zll, run2',
+		'www_text':'Run2: full data/MC comparisons for Run2',
+		'www': 'comparison_Z'+CH+'_all_'+RECO+'_'+PU+'_'+MC+'_'+CUT+RES,
+		'labels': ['DataBCD('+RECO+')','DataEF('+RECO+')','DataG('+RECO+')','DataH('+RECO+')','MC('+MC+')'],
+		'nicks': NICK,				
+		'markers': ['o', 's'],
+		'y_subplot_label' : "Data/MC",
+		#'y_subplot_lims' : [0.9,1.1],
+		'ratio_numerator_nicks': [NICK[0:-1]],
+		'ratio_denominator_nicks': [NICK[-1]],
+		'texts_x': [0.34,0.69] if Res == True else [0.34,0.78],
+		'texts_y': [0.95,0.09],
+		'texts_size': [20,25],
+#		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{work\\hspace{0.2}in\\hspace{0.2}progress \\hspace{3.2}}$"
 		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
 #		'formats': ['pdf'],
-#		'lumis': [20.88],
 	}
-	plotting_jobs += full_comparison(args, d, channel="mm", inputtuple='datamc')  # usually datamc
-	d.update({'folders': ['finalcuts_L1L2L3Res', 'finalcuts_L1L2L3'] if not Res == False else ['finalcuts_L1L2L3', 'finalcuts_L1L2L3']})
+	if CH=='ee':
+		d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3Res}$"] if Res else [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3}$"]})
+	elif CH=='mm':
+		d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow}\\mu\\mu}$",r"$\\bf{L1L2L3Res}$"] if Res else [r"$\\mathrm{\\bf{Z \\rightarrow}\\mu\\mu}$",r"$\\bf{L1L2L3}$"]})
+	
+	plotting_jobs += response_comparisons(args, d)# data_quantities)
 	return plotting_jobs
 
+def my_comparison_dataallmcalphaetabins_Zll(args=None):
+	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
+	Res=0 # disable/enable residual corrrections
+	Cut=0 # disable/enable cuts
+	if Res==True:
+		RES='Res'
+	else:
+		RES=''
+	if Cut==True:
+		CUT='finalcuts'
+	else:
+		CUT='noalphanoetacuts'
+	PU='CHS'#'PUPPI'
+	RUN='BCDEFGH'
+	CH='mm'
+	MC='madgraph_NJ'
+	RECO='remini'
+	NICK= ['DataBCD','DataEF','DataG','DataH',MC]
+	#ETA= [0,0.8,1.3,1.9,2.5,3.0,5.2]#,2.4,5.191]#,2.4,10]#[0, 0.783, 1.305, 1.93, 2.5, 2.964, 3.139, 5.191]
+	ETA= [0,1.3,]
+	ALPHA= 0.3
+	plotting_jobs = []
+	d = {
+		'files': [	'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_BCD_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_EF_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_G_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_H_'+CH+'_'+RECO+'.root',					
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V1/mc16_JECv1_'+PU+'_'+RUN+'_'+CH+'_'+MC+'.root'],
+		'corrections': ['L1L2L3'+RES, 'L1L2L3'+RES, 'L1L2L3'+RES, 'L1L2L3'+RES, 'L1L2L3'],# 'L1L2L3'+RES],['',''],#
+		'zjetfolders': CUT,
+		'weights': ['abs(jet1eta)>%s'%ETA[0]+'&&abs(jet1eta)<%s'%ETA[1]+'&&alpha<%s'%ALPHA],
+#		'output_dir': '/ekpwww/web/tberger/public_html/plots_archive/'+time.strftime("%Y_%m_%d", time.localtime())+'/comparison_Z'+CH+'_'+RUN+'_'+RECO+'_'+PU+'_'+MC+'_'+CUT+RES,
+		'colors' : ['red','blue','green','orange','black','darkred','darkblue','darkgreen','darkorange'],
+		'www_title': 'Comparison of Datasets for Zll, run2',
+		'www_text':'Run2: full data/MC comparisons for Run2',
+		'www': 'comparison_Z'+CH+'_all_'+RECO+'_'+PU+'_'+MC+'eta_%s'%int(ETA[0]*10)+'-%s'%int(ETA[1]*10)+'_a_%s'%int(ALPHA*100)+RES,
+		'labels': ['DataBCD('+RECO+')','DataEF('+RECO+')','DataG('+RECO+')','DataH('+RECO+')','MC('+MC+')'],
+		'nicks': NICK,				
+		'markers': ['o', 's'],
+		'y_subplot_label' : "Data/MC",
+		#'y_subplot_lims' : [0.9,1.1],
+		'ratio_numerator_nicks': [NICK[0:-1]],
+		'ratio_denominator_nicks': [NICK[-1]],
+		'texts_x': [0.34,0.69,0.03,0.03] if Res == True else [0.34,0.78,0.05,0.05],
+		'texts_y': [0.95,0.09,0.9,0.83],
+		'texts_size': [20,25,15,15],		
+#		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{work\\hspace{0.2}in\\hspace{0.2}progress \\hspace{3.2}}$"
+		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
+#		'formats': ['pdf'],
+	}
+	if CH=='ee':
+		if Res==True:
+			d.update({	'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3Res}$",r"$%s<"%ETA[0]+r"|\\eta^\\mathrm{Jet1}|<%s$"%ETA[1],r"$\\alpha<%s$"%ALPHA]})
+		else:
+			d.update({	'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3}$",r"$%s<"%ETA[0]+r"|\\eta^\\mathrm{Jet1}|<%s$"%ETA[1],r"$\\alpha<%s$"%ALPHA]})
+	elif CH=='mm':
+		if Res==True:
+			d.update({	'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$",r"$\\bf{L1L2L3Res}$",r"$%s<"%ETA[0]+r"|\\eta^\\mathrm{Jet1}|<%s$"%ETA[1],r"$\\alpha<%s$"%ALPHA]})
+		else:
+			d.update({	'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$",r"$\\bf{L1L2L3}$",r"$%s<"%ETA[0]+r"|\\eta^\\mathrm{Jet1}|<%s$"%ETA[1],r"$\\alpha<%s$"%ALPHA]})
+	plotting_jobs += response_comparisons(args, d)# data_quantities)
+	return plotting_jobs
+	
+def my_comparison_dataalphabins_Zll(args=None):
+	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
+	Res=1 # disable/enable residual corrrections
+	Cut=0 # disable/enable cuts
+	if Res==True:
+		RES='Res'
+	else:
+		RES=''
+	if Cut==True:
+		CUT='finalcuts'
+	else:
+		CUT='noalphacuts'
+	PU='CHS'#'PUPPI'
+	RUN='BCDEFGH'
+	CH='mm'
+	MC='madgraph_NJ'#'amc'#
+	RECO='remini'
+	NICK =['Data'+RUN+'a<05','Data'+RUN+'a<10','Data'+RUN+'a<15','Data'+RUN+'a<20','Data'+RUN+'a<30'],
+	
+	plotting_jobs = []
+	d = {
+		'files': [	#'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V1/mc16_JECv1_'+PU+'_'+RUN+'_'+CH+'_'+MC+'.root',
+					#'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V1/mc16_JECv1_'+PU+'_'+RUN+'_'+CH+'_'+MC+'.root',
+					#'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V1/mc16_JECv1_'+PU+'_'+RUN+'_'+CH+'_'+MC+'.root',
+					#'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V1/mc16_JECv1_'+PU+'_'+RUN+'_'+CH+'_'+MC+'.root',
+					#'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V1/mc16_JECv1_'+PU+'_'+RUN+'_'+CH+'_'+MC+'.root'],
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_'+RUN+'_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_'+RUN+'_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_'+RUN+'_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_'+RUN+'_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_'+RUN+'_'+CH+'_'+RECO+'.root'],
+		'corrections': ['L1L2L3'+RES,'L1L2L3'+RES,'L1L2L3'+RES,'L1L2L3'+RES, 'L1L2L3'+RES],
+		'weights':['alpha<0.05','alpha<0.1','alpha<0.15','alpha<0.2','alpha<0.3'],
+		'zjetfolders': CUT,
+#		'output_dir': '/ekpwww/web/tberger/public_html/plots_archive/'+time.strftime("%Y_%m_%d", time.localtime())+'/comparison_Z'+CH+'_'+RUN+'_'+RECO+'_'+PU+'_'+MC+'_'+CUT+RES,
+		'colors': ['teal','violet','yellow','salmon','purple'],#'black','yellow','brown','violet','purple'],
+		'www_title': 'Comparison of Datasets for Zll, run2',
+		'www_text':'Run2: full data/MC comparisons for Run2',
+		#'www': 'comparison_Z'+CH+'_'+RUN+'_'+RECO+'_'+PU+'_'+MC+'_'+CUT+RES,
+		#'labels': ['Data'+RUN+'('+RECO+')','MC('+MC+')'],
+		'labels': NICK,
+		'y_lims':[0.84,1.1],
+		'www': 'comparison_Z'+CH+'_'+RUN+'_'+RECO+'_'+PU+'_alpha'+RES,
+		'analysis_modules': None, #['StatisticalErrors'],
+		#'ratio_numerator_nicks': [NICK[0:-1]],
+		#'ratio_denominator_nicks': [NICK[-1]],
+		#'y_subplot_label' : "Data/MC",
+		#'y_subplot_lims' : [0.9,1.1],		
+		'texts_x': [0.34,0.69] if Res == True else [0.34,0.78],
+		'texts_y': [0.95,0.09],
+		'texts_size': [20,25],
+#		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{work\\hspace{0.2}in\\hspace{0.2}progress \\hspace{3.2}}$"
+		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
+#		'formats': ['pdf'],
+	}
+	if RUN=='BCD':
+		d.update({'lumis': [12.61]})#'weights'	: [	'1','(run>=272007&&run<=276811)'],#					'lumis'		: [12.93]	})					 # ICHEP Dataset
+	elif RUN=='EF':
+		d.update({'lumis': [6.71]})#'weights'	: [	'1','(run>=276831&&run<=278801)'],#					'lumis'		: [6.89]	})
+	elif RUN=='G':
+		d.update({'lumis': [7.94]})#'weights'	: [	'1','(run>=278802&&run<=280385)'],#					'lumis'		: [8.13]	})
+	elif RUN=='H':
+		d.update({'lumis': [8.61]})#'weights'	: [	'1','(run>=280385)']#					'lumis'		: [8.86]	})
+	elif RUN=='BCDEFGH':
+		d.update({'lumis': [35.87]})#'weights'	: [	'1','(run>=280385)'],
+	if CH=='ee':
+		d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3Res}$"] if Res else [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3}$"]})
+	elif CH=='mm':
+		d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow}\\mu\\mu}$",r"$\\bf{L1L2L3Res}$"] if Res else [r"$\\mathrm{\\bf{Z \\rightarrow}\\mu\\mu}$",r"$\\bf{L1L2L3}$"]})
+	
+	plotting_jobs += response_comparisons(args, d)
+	return plotting_jobs
+	
+def my_extrapolation_datamczptetabins_Zll(args=None):
+	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
+	Res=1 # disable/enable residual corrrections
+	if Res==True:
+		RES='Res'
+	else:
+		RES=''
+	PU='CHS'#'PUPPI'
+	RUN='BCDEFGH'
+	CH='mm'
+	RECO='remini'
+	MC='madgraph_NJ'
+	NICK =[MC,'Data'+RUN]
+	ETA = [0,0.8,1.3,1.9,2.5,3.0,5.2]
+	#ETA = [0,0.8,1.3]
+	ZPT = [30,50]
+	
+	plotting_jobs = []
+	d = {
+		'files': [	'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/data16_'+RUN+'_'+CH+'_'+RECO+'.root',
+					'/storage/jbod/tberger/zjets/excalibur_results_datamc_Summer16_03Feb2017_V3/mc16_'+RUN+'_'+CH+'_'+MC+'.root'],
+		'corrections': ['L1L2L3'+RES, 'L1L2L3'],
+		'zjetfolders': 'nocuts',
+		'histogram_from_fit_eta_values': ETA,#[etastring],
+		'histogram_from_fit_zpt_values': ZPT,#[zptstring],
+		#'algorithms': ['ak4PFJetsPUPPI'],
+		'www_title': 'Comparison of Datasets for Zll, run2',
+		'www_text':'Run2: full data/MC comparisons for Run2',
+		'www': 'extrapolation_Z'+CH+'_'+RUN+RECO+'_'+PU+'_miniAOD_'+MC+'_'+RES,
+		'labels': NICK,
+		#'nicks': NICK,
+		'y_lims': [0.5,1.2],
+		'y_subplot_label' : "MC/Data",
+		'y_subplot_lims' : [0.95,1.05],
+		#'ratio_numerator_nicks': [NICK[0]],
+		#'ratio_denominator_nicks': [NICK[1]],
+		'texts_x': [0.84,0.78,0.05,0.05] if not Res else [0.84,0.69,0.05,0.05],
+		'texts_y': [0.93,0.09,0.89,0.97],
+		'texts_size': [20,25,15,15],
+#		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{work\\hspace{0.2}in\\hspace{0.2}progress \\hspace{3.2}}$"
+		'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
+#		'formats': ['pdf'],
+	}
+	if RUN=='BCD':
+		d.update({	#'weights'	: [	'1','(run>=272007&&run<=276811)'],
+					'lumis'		: [12.93]	})					 # ICHEP Dataset
+	elif RUN=='EF':
+		d.update({	#'weights'	: [	'1','(run>=276831&&run<=278801)'],
+					'lumis'		: [6.89]	})
+	elif RUN=='G':
+		d.update({	#'weights'	: [	'1','(run>=278802&&run<=280385)'],
+					'lumis'		: [8.13]	}) # special break in RunF
+	elif RUN=='H':
+		d.update({	#'weights'	: [	'1','(run>=280385)'],
+					'lumis'		: [8.86]	})	
+		
+	for eta1,eta2 in zip(ETA[:-1],ETA[1:]):
+		for zpt1,zpt2 in zip(ZPT[:-1],ZPT[1:]):
+			d.update({	'filename': 'extrapolation_eta%s'%eta1+'-eta%s'%eta2+'_zpt%s'%zpt1+'-zpt%s'%zpt2,
+						'weights': ['abs(jet1eta)>%s'%eta1+'&&abs(jet1eta)<%s'%eta2+'&&zpt>%s'%zpt1+'&&zpt<%s'%zpt2],
+						'etavalues': [eta1, eta2],
+						'zptvalues': [zpt1, zpt2]})
+			if CH=='ee':
+				if Res==True:
+					d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3Res}$",r"$%s<"%eta1+r"|\\eta^\\mathrm{Jet1}|<%s$"%eta2,r"$%s"%zpt1+r"<\\mathit{p}^\\mathrm{Z}_\\mathrm{T}/GeV<%s$"%zpt2]}) 
+				else:
+					d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} e e}$",r"$\\bf{L1L2L3}$",r"$%s<"%eta1+r"|\\eta^\\mathrm{Jet1}|<%s$"%eta2,r"$%s"%zpt1+r"<\\mathit{p}^\\mathrm{Z}_\\mathrm{T}/GeV<%s$"%zpt2]}) 
+			elif CH=='mm':
+				if Res==True:
+					d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$",r"$\\bf{L1L2L3Res}$",r"$%s<"%eta1+r"|\\eta^\\mathrm{Jet1}|<%s$"%eta2,r"$%s"%zpt1+r"<\\mathit{p}^\\mathrm{Z}_\\mathrm{T}/GeV<%s$"%zpt2]})
+				else:
+					d.update({'texts': [r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$",r"$\\bf{L1L2L3}$",r"$%s<"%eta1+r"|\\eta^\\mathrm{Jet1}|<%s$"%eta2,r"$%s"%zpt1+r"<\\mathit{p}^\\mathrm{Z}_\\mathrm{T}/GeV<%s$"%zpt2]})
+			plotting_jobs += response_extrapolation(args, d, inputtuple='datadata')
+	#d.update({'folders': ['nocuts_L1L2L3', 'nocuts_L1L2L3'+RES]})
+	return plotting_jobs
+	
 if __name__ == '__main__':
 	basic_comparisons()
