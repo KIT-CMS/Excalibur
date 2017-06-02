@@ -356,9 +356,9 @@ def mc_2016(cfg, **kwargs):
 	cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Spring16_25nsV6_MC/Spring16_25nsV6_MC')
 
 def _2016mm(cfg, **kwargs):
-#	cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
-	cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath()+'../Artus/KappaAnalysis/data/rochcorr2016')
+	#cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
 	cfg['MuonEnergyCorrection'] = 'rochcorr2016'
+	cfg['MuonRochesterCorrectionsFile'] = configtools.getPath()+'/../Artus/KappaAnalysis/data/rochcorr2016'
 #	cfg['ValidMuonsInput'] = "corrected"
 #	cfg["MuonTriggerFilterNames"] = [	"HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09",
 #										"HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09",
