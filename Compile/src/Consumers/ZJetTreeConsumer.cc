@@ -387,38 +387,38 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 0)
-                       ? event.m_genJets->at(0).p4.Pt()
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 0)
+                       ? ((KLVs*) event.m_genJets)->at(0).p4.Pt()
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 0)
-                       ? event.m_genJets->at(0).p4.Eta()
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 0)
+                       ? ((KLVs*) event.m_genJets)->at(0).p4.Eta()
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 0)
-                       ? event.m_genJets->at(0).p4.Phi()
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 0)
+                       ? ((KLVs*) event.m_genJets)->at(0).p4.Phi()
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 1)
-                       ? event.m_genJets->at(1).p4.Pt()
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 1)
+                       ? ((KLVs*) event.m_genJets)->at(1).p4.Pt()
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet2eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 1)
-                       ? event.m_genJets->at(1).p4.Eta()
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 1)
+                       ? ((KLVs*) event.m_genJets)->at(1).p4.Eta()
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet2phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 1)
-                       ? event.m_genJets->at(1).p4.Phi()
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 1)
+                       ? ((KLVs*) event.m_genJets)->at(1).p4.Phi()
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
@@ -472,14 +472,14 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     // deltaR for jets
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarjet1genjet1", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 0 && product.GetValidJetCount(settings, event) > 0
-						? ROOT::Math::VectorUtil::DeltaR(event.m_genJets->at(0).p4, product.GetValidJet(settings, event, 0)->p4)
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 0 && product.GetValidJetCount(settings, event) > 0
+						? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(0).p4, product.GetValidJet(settings, event, 0)->p4)
 						: DefaultValues::UndefinedFloat);
     });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarjet2genjet2", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (event.m_genJets != nullptr && event.m_genJets->size() > 1 && product.GetValidJetCount(settings, event) > 1
-						? ROOT::Math::VectorUtil::DeltaR(event.m_genJets->at(1).p4, product.GetValidJet(settings, event, 1)->p4)
+            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 1 && product.GetValidJetCount(settings, event) > 1
+						? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(1).p4, product.GetValidJet(settings, event, 1)->p4)
 						: DefaultValues::UndefinedFloat);
 	});
 

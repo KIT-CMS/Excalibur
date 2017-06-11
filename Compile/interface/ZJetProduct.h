@@ -58,7 +58,7 @@ class ZJetProduct : public KappaProduct
     {
         // Gen jets are always valid
         if (corrLevel == "Gen") {
-            return event.m_genJets->size();
+            return ((KLVs*) event.m_genJets)->size();
         }
         // Uncorrected valid jet
         else if (corrLevel == "None") {
@@ -84,7 +84,11 @@ class ZJetProduct : public KappaProduct
 
         // Gen jets
         if (corrLevel == "Gen") {
-            return &(event.m_genJets->at(index));
+            if (!settings.GetUseKLVGenJets()) {
+               throw std::runtime_error("ZJets analysis must set 'UseKLVGenJets' flag to true!");
+            }
+            // need to cast from vector of KGenJet to vector of KLVs before getting index!
+            return &(((KLVs*) event.m_genJets)->at(index));
         }
         // Uncorrected valid jet
         else if (corrLevel == "None") {
