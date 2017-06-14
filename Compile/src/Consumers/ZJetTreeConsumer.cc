@@ -1,5 +1,6 @@
 #include "Excalibur/Compile/interface/Consumers/ZJetTreeConsumer.h"
 #include "Artus/KappaAnalysis/interface/Producers/ValidElectronsProducer.h"
+#include "Artus/KappaAnalysis/interface/Producers/ValidJetsProducer.h"
 
 std::string ZJetTreeConsumer::GetConsumerId() const { return "ZJetTreeConsumer"; }
 
@@ -143,6 +144,70 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->area
                        : DefaultValues::UndefinedFloat;
         });
+    // Jet IDs (!!! 2016 requirements!!!)
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet1idloose", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 0)
+						? ValidJetsProducer::passesJetID(product.m_validJets[0],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+						: DefaultValues::UndefinedFloat;
+		});
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet1idmedium", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 0)
+						? ValidJetsProducer::passesJetID(product.m_validJets[0],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::MEDIUM)
+						: DefaultValues::UndefinedFloat;
+		});
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet1idtight", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 0)
+						? ValidJetsProducer::passesJetID(product.m_validJets[0],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::TIGHT)
+						: DefaultValues::UndefinedFloat;
+		});
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet2idloose", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 1)
+						? ValidJetsProducer::passesJetID(product.m_validJets[1],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+						: DefaultValues::UndefinedFloat;
+		});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet2idmedium", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 1)
+						? ValidJetsProducer::passesJetID(product.m_validJets[1],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::MEDIUM)
+						: DefaultValues::UndefinedFloat;
+		});
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet2idtight", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 1)
+						? ValidJetsProducer::passesJetID(product.m_validJets[1],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::TIGHT)
+						: DefaultValues::UndefinedFloat;
+		});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet3idloose", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 2)
+						? ValidJetsProducer::passesJetID(product.m_validJets[2],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+						: DefaultValues::UndefinedFloat;
+		});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet3idmedium", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 2)
+						? ValidJetsProducer::passesJetID(product.m_validJets[2],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::MEDIUM)
+						: DefaultValues::UndefinedFloat;
+		});
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jet3idtight", [settings](event_type const& event, product_type const& product) {
+            return (product.GetValidJetCount(settings, event) > 2)
+						? ValidJetsProducer::passesJetID(product.m_validJets[2],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::TIGHT)
+						: DefaultValues::UndefinedFloat;
+		});
     // PF fractions
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet1pf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
@@ -207,7 +272,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
                              ->getTag("QGlikelihood", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
-	});
+		});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet1puidraw", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
@@ -308,7 +373,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? product.GetValidJet(settings, event, 1)->p4.Eta()
                        : DefaultValues::UndefinedFloat;
         });
- LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet2puidraw", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 1)
                        ? static_cast<KJet*>(product.GetValidJet(settings, event, 1))
@@ -355,7 +420,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? product.GetValidJet(settings, event, 2)->p4.Eta()
                        : DefaultValues::UndefinedFloat;
         });
-
     // General jet stuff
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "njets", [settings](ZJetEvent const& event, ZJetProduct const& product) {
@@ -453,32 +517,51 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
 
     // Reco jet - gen jet matches
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedFloat;
         });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (genJet != nullptr) ? genJet->p4.Eta() : DefaultValues::UndefinedFloat;
         });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
+            return (genJet != nullptr) ? genJet->p4.Phi() : DefaultValues::UndefinedFloat;
+        });
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
             return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedFloat;
+        });
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenjet2eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
+            return (genJet != nullptr) ? genJet->p4.Eta() : DefaultValues::UndefinedFloat;
+		});
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenjet2phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
+            return (genJet != nullptr) ? genJet->p4.Phi() : DefaultValues::UndefinedFloat;
         });
     
     // deltaR for jets
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarjet1genjet1", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 0 && product.GetValidJetCount(settings, event) > 0
+            return (((KLVs*) event.m_genJets) != nullptr 
+									&& ((KLVs*) event.m_genJets)->size() > 0 
+									&& product.GetValidJetCount(settings, event) > 0
 						? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(0).p4, product.GetValidJet(settings, event, 0)->p4)
 						: DefaultValues::UndefinedFloat);
     });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarjet2genjet2", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (((KLVs*) event.m_genJets) != nullptr && ((KLVs*) event.m_genJets)->size() > 1 && product.GetValidJetCount(settings, event) > 1
+            return (((KLVs*) event.m_genJets) != nullptr 
+									&& ((KLVs*) event.m_genJets)->size() > 1 
+									&& product.GetValidJetCount(settings, event) > 1
 						? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(1).p4, product.GetValidJet(settings, event, 1)->p4)
 						: DefaultValues::UndefinedFloat);
 	});
@@ -1122,43 +1205,51 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     // IDs
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1looseid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idLoose()
+        "e1idloose", [](event_type const& event, product_type const& product) {
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idLoose()
+            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose", event.m_electronMetadata)
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1mediumid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idMedium()
+        "e1idmedium", [](event_type const& event, product_type const& product) {
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idMedium()
+            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium", event.m_electronMetadata)
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1tightid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idTight()
+        "e1idtight", [](event_type const& event, product_type const& product) {
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idTight()
+            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight", event.m_electronMetadata)
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1vetoid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idVeto()
+        "e1idveto", [](event_type const& event, product_type const& product) {
+			return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto", event.m_electronMetadata)
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idVeto()            
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1looseid95", [](event_type const& event, product_type const& product) {
+        "e1idloose95", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsLooseVbtf95Electron(
                 product.m_validElectrons[0], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1mediumid95", [](event_type const& event, product_type const& product) {
+        "e1idmedium95", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsMediumVbtf95Electron(
                 product.m_validElectrons[0], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1tightid95", [](event_type const& event, product_type const& product) {
+        "e1idtight95", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsTightVbtf95Electron(
                 product.m_validElectrons[0], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1tightid95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsTightVbtf95Electron(
+        "e1idveto95", [](event_type const& event, product_type const& product) {
+            return ValidElectronsProducer<ZJetTypes>::IsVetoVbtf95Electron(
                 product.m_validElectrons[0], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -1172,23 +1263,23 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                 product.m_validElectrons[0], event.m_electronMetadata);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2looseid95", [](event_type const& event, product_type const& product) {
+        "e2idloose95", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsLooseVbtf95Electron(
                 product.m_validElectrons[1], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2mediumid95", [](event_type const& event, product_type const& product) {
+        "e2idmedium95", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsMediumVbtf95Electron(
                 product.m_validElectrons[1], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2tightid95", [](event_type const& event, product_type const& product) {
+        "e2idtight95", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsTightVbtf95Electron(
                 product.m_validElectrons[1], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2tightid95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsTightVbtf95Electron(
+        "e2idveto95", [](event_type const& event, product_type const& product) {
+            return ValidElectronsProducer<ZJetTypes>::IsVetoVbtf95Electron(
                 product.m_validElectrons[1], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -1202,23 +1293,31 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                 product.m_validElectrons[1], event.m_electronMetadata);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2looseid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idLoose()
+        "e2idloose", [](event_type const& event, product_type const& product) {
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idLoose()
+            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose", event.m_electronMetadata)
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2mediumid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idMedium()
+        "e2idmedium", [](event_type const& event, product_type const& product) {
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idMedium()
+            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium", event.m_electronMetadata)
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2tightid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idTight()
+        "e2idtight", [](event_type const& event, product_type const& product) {
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idTight()
+            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight", event.m_electronMetadata)
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2vetoid", [](event_type const& event, product_type const& product) {
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idVeto()
+        "e2idveto", [](event_type const& event, product_type const& product) {
+            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idVeto()
+            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
+						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto", event.m_electronMetadata)
                                                         : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -1411,4 +1510,5 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 	});
     // Needs to be called at the end
     KappaLambdaNtupleConsumer::Init(settings);
+
 }

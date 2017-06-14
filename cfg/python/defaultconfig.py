@@ -26,7 +26,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [], # Please set this later depending on input type
 		# Valid Jet Selection	'ValidJetsInput': 'uncorrected',
-		'JetID' : 'loose',
+		'JetID' : 'loose',#'none',#
 		#'PuJetIDs' : ['2:puJetIDFullTight'],
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak4PFJetsCHS',
@@ -67,6 +67,9 @@ def getBaseConfig(tagged=True, **kwargs):
 					# MET and related
 					'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet',
 					'mettype1vecpt', 'mettype1pt',
+					'jet1idloose','jet1idmedium','jet1idtight',
+					'jet2idloose','jet2idmedium','jet2idtight',
+					'jet3idloose','jet3idmedium','jet3idtight',
 				],
 			},
 		},
@@ -201,7 +204,7 @@ def ee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Consumers'] += [
 		'KappaElectronsConsumer',
 	]	
-	cfg['ElectronID'] = 'vbft95_tight'
+	cfg['ElectronID'] = 'vbft95_tight'#'tight'#
 	cfg['ElectronIsoType'] = 'none'
 	cfg['ElectronIso'] = 'none'
 	cfg['ElectronReco'] = 'none'	
@@ -209,10 +212,10 @@ def ee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
 		'epluspt','epluseta','eplusphi','eplusiso',
 		'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
-		'e1pt', 'e1eta', 'e1phi', 'e1looseid', 'e1mediumid', 'e1tightid', 'e1vetoid',
-		'e1looseid95', 'e1mediumid95', 'e1tightid95',# 'e1mvanontrig', 'e1mvatrig',
-		'e2pt', 'e2eta', 'e2phi', 'e2looseid', 'e2mediumid', 'e2tightid', 'e2vetoid',
-		'e2looseid95', 'e2mediumid95', 'e2tightid95',# 'e2mvanontrig', 'e2mvatrig',
+		'e1pt', 'e1eta', 'e1phi', 
+		'e1idloose', 'e1idmedium', 'e1idtight', 'e1idveto', 'e1idloose95', 'e1idmedium95', 'e1idtight95','e1idveto95',# 'e1mvanontrig', 'e1mvatrig',
+		'e2pt', 'e2eta', 'e2phi', 
+		'e2idloose', 'e2idmedium', 'e2idtight', 'e2idveto', 'e2idloose95', 'e2idmedium95', 'e2idtight95','e2idveto95',# 'e2mvanontrig', 'e2mvatrig',
 		'nelectrons',#'deltare1gene1', 'deltare2gene2',
 	]
 	cfg['MinNElectrons'] = 2
