@@ -13,8 +13,8 @@ def config():
 	)
 	cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_'+RUN+'_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
 	cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_MC/'+JEC+'_MC')
-	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'noalphanoetacuts', 'noalphacuts', 'noetacuts', 'finalcuts'], ['None', 'L1', 'L1L2L3'])
-	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc'])
+	cfg = configtools.expand(cfg, ['nocuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
+	configtools.remove_quantities(cfg, ['jet1qgtag'])
 	cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/pileup_weights_'+RUN+'_13TeV_23Sep2016ReReco_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
 	cfg['NumberGeneratedEvents'] = 19970551
 	cfg['GeneratorWeight'] = 1.0
