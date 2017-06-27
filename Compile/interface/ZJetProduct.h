@@ -155,6 +155,24 @@ class ZJetProduct : public KappaProduct
     {
         return GetInvalidJetCount(settings, event, settings.GetCorrectionLevel());
     }
+    
+    KLV* GetInvalidJet(ZJetSettings const& settings,
+                     ZJetEvent const& event,
+                     unsigned long index,
+                     std::string corrLevel) const
+    {
+        assert(GetInvalidJetCount(settings, event, corrLevel) > index);
+
+        // Invalid jets, no need for different correction levels
+        return static_cast<KLV*>(m_invalidJets[index]);
+    }
+
+    KLV* GetInvalidJet(ZJetSettings const& settings,
+                     ZJetEvent const& event,
+                     unsigned long index) const
+    {
+        return GetInvalidJet(settings, event, index, settings.GetCorrectionLevel());
+    }
 
     // Access to (un)corrected MET
     KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const

@@ -52,7 +52,7 @@ void ValidZllJetsProducer::Produce(ZJetEvent const& event,
             }
         }
     }
-
+    
     // zl1 has higher pT, i.e. likely vetoes a higher pT jet that should be erased last
     if (zl1_idx > zl2_idx)
         std::swap(zl1_idx, zl2_idx);
@@ -60,4 +60,29 @@ void ValidZllJetsProducer::Produce(ZJetEvent const& event,
         product.m_validJets.erase(product.m_validJets.begin() + zl2_idx);
     if (zl1_idx < product.m_validJets.size())
         product.m_validJets.erase(product.m_validJets.begin() + zl1_idx);
+    
+	std::size_t invzl1_idx = -1u;
+    std::size_t invzl2_idx = -1u;
+	for (std::size_t i = 0; i < product.m_invalidJets.size(); ++i) {
+        if (ROOT::Math::VectorUtil::DeltaR(product.m_invalidJets.at(i)->p4,
+                                           product.m_zLeptons.first->p4) < minZllJetDeltaRVeto) {
+            invzl1_idx = i;
+            if (invzl2_idx < product.m_invalidJets.size()) {
+                break;
+            }
+        } else if (ROOT::Math::VectorUtil::DeltaR(product.m_invalidJets.at(i)->p4,
+                                                  product.m_zLeptons.second->p4) < minZllJetDeltaRVeto) {
+            invzl2_idx = i;
+            if (invzl1_idx < product.m_invalidJets.size()) {
+                break;
+            }
+        }
+    }
+    
+    if (invzl2_idx < product.m_invalidJets.size())
+        product.m_invalidJets.erase(product.m_invalidJets.begin() + invzl2_idx);
+    if (invzl1_idx < product.m_invalidJets.size())
+        product.m_invalidJets.erase(product.m_invalidJets.begin() + invzl1_idx);
+        
+    
 }

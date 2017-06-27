@@ -26,7 +26,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [], # Please set this later depending on input type
 		# Valid Jet Selection	'ValidJetsInput': 'uncorrected',
-		'JetID' : 'loose',#'none',#
+		'JetID' : 'loose',#
 		#'PuJetIDs' : ['2:puJetIDFullTight'],
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak4PFJetsCHS',
@@ -70,6 +70,10 @@ def getBaseConfig(tagged=True, **kwargs):
 					'jet1idloose','jet1idmedium','jet1idtight',
 					'jet2idloose','jet2idmedium','jet2idtight',
 					'jet3idloose','jet3idmedium','jet3idtight',
+					'invalidjet1pt', 'invalidjet1eta', 'invalidjet1y', 'invalidjet1phi','invalidjet1idloose',
+					'invalidjet2pt','invalidjet2idloose',
+					'invalidjet3pt','invalidjet3idloose',
+					
 				],
 			},
 		},
@@ -89,6 +93,7 @@ def data(cfg, **kwargs):
 	cfg['Processors'] = ['filter:JsonFilter',]+cfg['Processors']+['producer:HltProducer','filter:HltFilter',]
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['ProvideL2L3ResidualCorrections'] = True
+	cfg['ProvideL2ResidualCorrections'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
