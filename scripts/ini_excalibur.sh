@@ -81,8 +81,13 @@ elif [ $USER = "afriedel" ]; then
     export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/afriedel/Excalibur"
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
-    export EXCALIBUR_WORK=~/storage/working/
-    export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Excalibur"
+    if [[ $HOSTNAME = *ekpbms* ]]; then 
+		export EXCALIBUR_WORK=/storage/jbod/tberger/working/
+    else 
+		export EXCALIBUR_WORK=~/storage/working/
+    fi
+    #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Excalibur"
+    export EXCALIBUR_SE="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Excalibur"
 elif [ $USER = "dsavoiu" ]; then
     export EXCALIBURBRILSSH="dsavoiu@lxplus.cern.ch"
     export EXCALIBUR_WORK=/nfs/dust/cms/user/dsavoiu/Work/Excalibur
