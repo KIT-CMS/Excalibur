@@ -9,6 +9,8 @@ def config():
 	cfg = configtools.getConfig('data', 2016, CH, bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
 		#ekppath="/storage/jbod/tberger/SkimmingResults/Zll_DoElRun2016B-PromptReco-v2/*.root"
+		ekppath0="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016E-03Feb2017-v1/*.root",
+		ekppath1="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016F-03Feb2017-v1/*.root",
 		nafpath0="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016E-03Feb2017-v1/*.root",
 		nafpath1="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016F-03Feb2017-v1/*.root"
 		)

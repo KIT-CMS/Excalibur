@@ -9,6 +9,8 @@ def config():
 	cfg = configtools.getConfig('mc', 2016, CH, bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
 		#nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16/*.root",
+		ekppath0="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DYToLL_0J_amcatnloFXFX-pythia8_RunIISummer16_ext/*.root",
+		ekppath1="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DYToLL_0J_amcatnloFXFX-pythia8_RunIISummer16_backup/*.root",
 		nafpath0="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DYToLL_0J_amcatnloFXFX-pythia8_RunIISummer16_ext/*.root",
 		nafpath1="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DYToLL_0J_amcatnloFXFX-pythia8_RunIISummer16_backup/*.root"
 		#nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DYToLL_1J_amcatnloFXFX-pythia8_RunIISummer16_ext/*.root"

@@ -9,6 +9,10 @@ def config():
 	cfg = configtools.getConfig('data', 2016, 'ee', bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
 		#ekppath="/storage/jbod/tberger/SkimmingResults/Zll_DoElRun2016B-PromptReco-v2/*.root"
+		ekppath0="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016B-03Feb2017-ver1v1/*.root",
+		ekppath1="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016B-03Feb2017-ver2v2/*.root",
+		ekppath2="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016C-03Feb2017-v1/*.root",
+		ekppath3="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016D-03Feb2017-v1/*.root",		
 		nafpath0="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016B-03Feb2017-ver1v1/*.root",
 		nafpath1="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016B-03Feb2017-ver2v2/*.root",
 		nafpath2="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/reminiaod03Feb2017_metfix/Zll_DoElRun2016C-03Feb2017-v1/*.root",
