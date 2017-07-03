@@ -26,7 +26,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [], # Please set this later depending on input type
 		# Valid Jet Selection	'ValidJetsInput': 'uncorrected',
-		'JetID' : 'loose',#
+		'JetID' : 'loose',
 		#'PuJetIDs' : ['2:puJetIDFullTight'],
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak4PFJetsCHS',
@@ -70,7 +70,7 @@ def getBaseConfig(tagged=True, **kwargs):
 					'jet1idloose','jet1idmedium','jet1idtight',
 					'jet2idloose','jet2idmedium','jet2idtight',
 					'jet3idloose','jet3idmedium','jet3idtight',
-					'invalidjet1pt', 'invalidjet1eta', 'invalidjet1y', 'invalidjet1phi','invalidjet1idloose',
+					'invalidjet1pt','invalidjet1idloose','invalidjet1eta', 'invalidjet1y', 'invalidjet1phi',
 					'invalidjet2pt','invalidjet2idloose',
 					'invalidjet3pt','invalidjet3idloose',
 					
@@ -111,7 +111,8 @@ def mc(cfg, **kwargs):
 		'genjet2pt','genjet2eta','genjet2phi',
 		'ngenjets','ngenjets10','ngenjets30',
 		'matchedgenparton1pt',	'matchedgenparton1flavour','matchedgenparton2pt',
-		'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet2pt',
+		'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1phi',
+		'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2phi',
 		'genzpt','genzeta','genzphi','genzeta','genzy','genzmass',
 		'genzfound','validgenzfound',
 		'genzlepton1pt','genzlepton1eta','genzlepton1phi',
