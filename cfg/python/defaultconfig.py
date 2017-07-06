@@ -26,7 +26,7 @@ def getBaseConfig(tagged=True, **kwargs):
 		'EnableMetPhiCorrection': False,
 		'MetPhiCorrectionParameters': [], # Please set this later depending on input type
 		# Valid Jet Selection	'ValidJetsInput': 'uncorrected',
-		'JetID' : 'loose',
+		'JetID' : 'none', # object-based specification, 'none' if you want to use the event-based ID filter
 		#'PuJetIDs' : ['2:puJetIDFullTight'],
 		'JetMetadata' : 'jetMetadata',
 		'TaggedJets' : 'ak4PFJetsCHS',
@@ -162,6 +162,8 @@ def mc(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += ['puWeight']
 	
 def _2016(cfg, **kwargs):
+	cfg['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
+	cfg['CutJetID']='loose' # choose event-based JetID selection
 	cfg['Year'] = 2016
 	cfg['Energy'] = 13
 	cfg['JetIDVersion'] = 2016
@@ -199,6 +201,7 @@ def ee(cfg, **kwargs):
 		'producer:JetSorter',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
+		'filter:EtaPhiCleaningCut',
 		'filter:ElectronPtCut',
 		'filter:ElectronEtaCut',
 		'filter:LeadingJetPtCut',
@@ -206,11 +209,12 @@ def ee(cfg, **kwargs):
 		'filter:AlphaCut',
 		'filter:ZPtCut',
 		'filter:BackToBackCut',
+		#
 	]
 	cfg['Pipelines']['default']['Consumers'] += [
 		'KappaElectronsConsumer',
 	]	
-	cfg['ElectronID'] = 'vbft95_tight'#'tight'#
+	cfg['ElectronID'] = 'tight'#'vbft95_tight'#
 	cfg['ElectronIsoType'] = 'none'
 	cfg['ElectronIso'] = 'none'
 	cfg['ElectronReco'] = 'none'	
@@ -233,6 +237,7 @@ def ee(cfg, **kwargs):
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
 	cfg['CutAlphaMax'] = 0.3
+	cfg['CutEtaPhiCleaning'] = "../jecsys/rootfiles/hotjets-runBCDEFGH.root" #File used for eta-phi-cleaning
 	
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
