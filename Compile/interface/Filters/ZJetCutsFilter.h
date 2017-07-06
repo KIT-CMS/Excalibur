@@ -2,6 +2,7 @@
 
 
 #include "Artus/Core/interface/FilterBase.h"
+#include "Artus/KappaAnalysis/interface/Producers/ValidJetsProducer.h"
 
 /**
  * Filter class with cuts for ZJet analysis.
@@ -434,6 +435,76 @@ class AlphaCut : public ZJetFilterBase
   private:
     float alphaMax = 0;
 };
+///////////
+// EtaPhiCleaning //
+///////////
+class EtaPhiCleaningCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "EtaPhiCleaningCut"; }
+
+    EtaPhiCleaningCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        EtaPhiPath = settings.GetCutEtaPhiCleaning();
+		const char * EtaPhiFile = EtaPhiPath.c_str();
+		TFile *f = new TFile(EtaPhiFile,"READ");
+		assert(f && !f->IsZombie());		
+		h2jet = (TH2D*)f->Get("h2jet"); assert(h2jet);
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (product.GetValidJetCount(settings, event) > 1)
+					? (h2jet->GetBinContent(h2jet->FindBin(
+						product.GetValidJet(settings, event, 0)->p4.Eta(),
+						product.GetValidJet(settings, event, 0)->p4.Phi() )) < 0) 
+						//&&
+					  //(h2jet->GetBinContent(h2jet->FindBin(
+						//product.GetValidJet(settings, event, 1)->p4.Eta(),
+						//product.GetValidJet(settings, event, 1)->p4.Phi() )) < 0)
+					: true;
+	}
+	private:
+      TH2D *h2jet;
+      std::string EtaPhiPath;
+};
+///////////
+// JetID //
+///////////
+class JetIDCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "JetIDCut"; }
+
+    JetIDCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        JetId = settings.GetJetID();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+			{return (product.GetValidJetCount(settings, event) > 1)
+					? (ValidJetsProducer::passesJetID(product.m_validJets[0],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)==1)&&
+					  (ValidJetsProducer::passesJetID(product.m_validJets[1],
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)==1)
+					: true;
+			}
+	}
+	private:
+      std::string JetId;
+};
+
 //For Pipelining ZFilter is not usable
 class ValidZCut : public ZJetFilterBase
 {

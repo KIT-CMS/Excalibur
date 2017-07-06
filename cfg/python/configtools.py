@@ -85,6 +85,7 @@ def expand(config, cutModes, corrLevels, sfmodes = False, default="default"):
 		'noalphacuts': ['Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'noetacuts': ['LeadingJetEta', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'basiccuts': ['LeadingJetEta','Alpha','ZPt','GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'noetaphicleaning': ['EtaPhiCleaning','LeadingJetEta','Alpha','ZPt', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'finalcuts': ['GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'allleptoncuts' : ['ZPt', 'GenZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'], 
 		'allzcuts' : ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
