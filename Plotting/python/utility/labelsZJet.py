@@ -136,7 +136,7 @@ class LabelsDictZJet(labels.LabelsDict):
 			'genmpf': '$MPF$ Response (Gen level)',
 			'(jet1pt/zpt)': r'$\mathit{p}_T$ balance',
 			'mpf': '$MPF$ Response',
-			'ptbalance': r'$\mathit{p}_T$ Balance',
+			'ptbalance': r'$\mathit{p}_T$ Balance Response',
 			'trueresponse': r'$p_T^\mathrm{reco}$/$p_T^\mathrm{ptcl}$',
 			'recogen': 'Jet Response $\mathit{p}_T^{RecoJet}/\mathit{p}_T^{GenJet}$',
 			'sys': 'Relative Uncertainty [$\%$]',
