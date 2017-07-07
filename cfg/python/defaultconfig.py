@@ -90,11 +90,13 @@ def getBaseConfig(tagged=True, **kwargs):
 
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True	
-	cfg['Processors'] = ['filter:JsonFilter',]+cfg['Processors']+['producer:HltProducer','filter:HltFilter',]
+	cfg['Processors'] = ['filter:JsonFilter',]+cfg['Processors']+['producer:HltProducer','filter:HltFilter','filter:EtaPhiCleaningCut',]
+	cfg['CutEtaPhiCleaning'] = "../jecsys/rootfiles/hotjets-runBCDEFGH.root" #File used for eta-phi-cleaning
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['ProvideL2L3ResidualCorrections'] = True
 	cfg['ProvideL2ResidualCorrections'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
+
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
 	cfg['Processors'] += [
@@ -201,7 +203,6 @@ def ee(cfg, **kwargs):
 		'producer:JetSorter',
 	]
 	cfg['Pipelines']['default']['Processors'] = [
-		'filter:EtaPhiCleaningCut',
 		'filter:ElectronPtCut',
 		'filter:ElectronEtaCut',
 		'filter:LeadingJetPtCut',
@@ -237,7 +238,6 @@ def ee(cfg, **kwargs):
 	cfg['CutZPtMin'] = 30.0
 	cfg['CutBackToBack'] = 0.34
 	cfg['CutAlphaMax'] = 0.3
-	cfg['CutEtaPhiCleaning'] = "../jecsys/rootfiles/hotjets-runBCDEFGH.root" #File used for eta-phi-cleaning
 	
 def mcee(cfg, **kwargs):
 	cfg['Pipelines']['default']['Quantities'] += [
