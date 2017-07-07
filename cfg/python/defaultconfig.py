@@ -91,7 +91,7 @@ def getBaseConfig(tagged=True, **kwargs):
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True	
 	cfg['Processors'] = ['filter:JsonFilter',]+cfg['Processors']+['producer:HltProducer','filter:HltFilter','filter:EtaPhiCleaningCut',]
-	cfg['CutEtaPhiCleaning'] = "../jecsys/rootfiles/hotjets-runBCDEFGH.root" #File used for eta-phi-cleaning
+	cfg['CutEtaPhiCleaning'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['ProvideL2L3ResidualCorrections'] = True
 	cfg['ProvideL2ResidualCorrections'] = True
