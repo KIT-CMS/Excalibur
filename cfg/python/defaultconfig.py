@@ -90,12 +90,13 @@ def getBaseConfig(tagged=True, **kwargs):
 
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True	
-	cfg['Processors'] = ['filter:JsonFilter',]+cfg['Processors']+['producer:HltProducer','filter:HltFilter','filter:EtaPhiCleaningCut',]
+	cfg['Processors'] = ['filter:JsonFilter',]+cfg['Processors']+['producer:HltProducer','filter:HltFilter']
 	cfg['CutEtaPhiCleaning'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['ProvideL2L3ResidualCorrections'] = True
 	cfg['ProvideL2ResidualCorrections'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
+	cfg['Pipelines']['default']['Processors'] += ['filter:EtaPhiCleaningCut']
 
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
