@@ -91,12 +91,10 @@ def getBaseConfig(tagged=True, **kwargs):
 def data(cfg, **kwargs):
 	cfg['InputIsData'] = True	
 	cfg['Processors'] = ['filter:JsonFilter',]+cfg['Processors']+['producer:HltProducer','filter:HltFilter']
-	cfg['CutEtaPhiCleaning'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning
 	cfg['Processors'] += ['producer:NPUProducer']
 	cfg['ProvideL2L3ResidualCorrections'] = True
 	cfg['ProvideL2ResidualCorrections'] = True
 	cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
-	cfg['Pipelines']['default']['Processors'] += ['filter:EtaPhiCleaningCut']
 
 def mc(cfg, **kwargs):
 	cfg['InputIsData'] = False
@@ -167,6 +165,8 @@ def mc(cfg, **kwargs):
 def _2016(cfg, **kwargs):
 	cfg['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
 	cfg['CutJetID']='loose' # choose event-based JetID selection
+	cfg['Pipelines']['default']['Processors'] += ['filter:EtaPhiCleaningCut']
+	cfg['CutEtaPhiCleaning'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning
 	cfg['Year'] = 2016
 	cfg['Energy'] = 13
 	cfg['JetIDVersion'] = 2016
