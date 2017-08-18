@@ -28,9 +28,9 @@ before_install:
   - root-config --cflags --ldflags
   - cd ..
   - tar -xzf Excalibur/data/CondFormats.tar.gz
-  - git clone --depth=10 https://github.com/KappaAnalysis/Kappa.git
-  - git clone --depth=10 https://github.com/KappaAnalysis/KappaTools.git
-  - git clone --depth=10 https://github.com/artus-analysis/Artus.git
+  - git clone --depth=10 https://github.com/KIT-CMS/Kappa.git
+  - git clone --depth=10 https://github.com/KIT-CMS/KappaTools.git
+  - git clone --depth=10 https://github.com/KIT-CMS/Artus.git
   - cd Excalibur
 install:
   - sed -i 's/\ -j[0-9]*/\ -j2/' Makefile

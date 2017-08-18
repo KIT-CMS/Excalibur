@@ -1,13 +1,13 @@
 Excalibur
 =========
 
-[![Build Status](https://travis-ci.org/artus-analysis/Excalibur.svg)](https://travis-ci.org/artus-analysis/Excalibur)
+[![Build Status](https://travis-ci.org/KIT-CMS/Excalibur.svg)](https://travis-ci.org/KIT-CMS/Excalibur)
 
 Analysis repository for Z + jet studies and jet energy calibration.
-It is based on [Artus](https://github.com/artus-analysis/Artus "Artus Analysis") which in turn is (largely) based on [Kappa](https://github.com/KappaAnalysis "Kappa and KappaTools").
+It is based on [Artus](https://github.com/KIT-CMS/Artus "Artus Analysis") which in turn is (largely) based on [Kappa](https://github.com/KIT-CMS/Kappa "Kappa").
 The predecessor of this framework was also named excalibur and can be found [here](https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur "excalibur")  (protected).
 
-Please also have a look at the documentation for [Artus](https://github.com/artus-analysis/Artus/blob/master/README.md "Artus Readme") and [HarryPlotter](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
+Please also have a look at the documentation for [Artus](https://github.com/KIT-CMS/Artus/blob/master/README.md "Artus Readme") and [HarryPlotter](https://github.com/KIT-CMS/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
 
 The preceeding implementation can be found at: https://ekptrac.physik.uni-karlsruhe.de/trac/excalibur -
 many ideas were and can still be taken from there.
@@ -42,15 +42,15 @@ Alternatively, all these requirements can also be installed independently or tak
 ### Installation
 The framework comes in 4 layers:
 
-1. The data format definition of the input files: [Kappa](https://github.com/KappaAnalysis/Kappa "Kappa")
-2. The basic interaction toolkit for this format: [KappaTools](https://github.com/KappaAnalysis/KappaTools "KappaTools")
-3. The basic analysis framework to analyse the data: [Artus](https://github.com/artus-analysis/Artus "Artus")
+1. The data format definition of the input files: [Kappa](https://github.com/KIT-CMS/Kappa "Kappa")
+2. The basic interaction toolkit for this format: [KappaTools](https://github.com/KIT-CMS/KappaTools "KappaTools")
+3. The basic analysis framework to analyse the data: [Artus](https://github.com/KIT-CMS/Artus "Artus")
 4. The analysis specific program to do a Z+Jet(s) or calibration analysis: Excalibur
 5. The offline jet corrections in CondFormats
 
 To install these packages check them out using [git](http://git-scm.com/ "git"):
 ```
-git clone https://github.com/KappaAnalysis/Kappa.git
+git clone https://github.com/KIT-CMS/Kappa.git
 cd Kappa
 echo docs/ >> .git/info/sparse-checkout
 echo DataFormats/ >> .git/info/sparse-checkout
@@ -59,10 +59,10 @@ echo Skimming/python/ >> .git/info/sparse-checkout
 git config core.sparsecheckout true
 git read-tree -mu HEAD
 cd ..
-git clone https://github.com/KappaAnalysis/KappaTools.git
-git clone https://github.com/artus-analysis/Artus.git
-git clone https://github.com/artus-analysis/Excalibur.git
-git clone https://github.com/artus-analysis/TauRefit.git VertexRefit/TauRefit
+git clone https://github.com/KIT-CMS/KappaTools.git
+git clone https://github.com/KIT-CMS/Artus.git
+git clone https://github.com/KIT-CMS/Excalibur.git
+git clone https://github.com/KIT-CMS/TauRefit.git VertexRefit/TauRefit
 git clone https://github.com/cms-jet/JECDatabase.git
 tar -xzf Excalibur/data/CondFormats.tar.gz
 svn co https://ekptrac.physik.uni-karlsruhe.de/svn/grid-control/trunk/grid-control $CMSSW_BASE/../grid-control
@@ -200,7 +200,7 @@ See
 - scripts/, which contains an ini script and the 'merlin' plotting executable
 - Plotting/configs/, which contains plot configuration files
 
-Please also have a look at the [HarryPlotter documentation](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
+Please also have a look at the [HarryPlotter documentation](https://github.com/KIT-CMS/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme").
 
 Source the ini file. Since HarryPlotter is designed for SCRAM, you need to execute
 the shell function  `standalone_merlin` if you're using merlin outside a SCRAM
@@ -313,8 +313,8 @@ talk to the main developers.
 This tutorial will show you how to use Excalibur for (1) data analysis and (2) plotting.
 Please make sure you have successfully installed and compiled Artus and sourced the
 ini script according to the instructions above.
-Have a look at this Readme and the documentation for [Artus](https://github.com/artus-analysis/Artus/blob/master/README.md "Artus Readme")
-and [HarryPlotter](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme")
+Have a look at this Readme and the documentation for [Artus](https://github.com/KIT-CMS/Artus/blob/master/README.md "Artus Readme")
+and [HarryPlotter](https://github.com/KIT-CMS/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme")
 in case of questions.
 
 
@@ -350,7 +350,7 @@ explanation of the quantities is given above. What does e.g. 'mupluspt' mean?
 
 ### (2) Plotting with HarryPlotter/Merlin
 After the data processing with Artus, you need to use `merlin.py` to create plots
-from the output ROOT files. Have a look at the documentation for [HarryPlotter](https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme")
+from the output ROOT files. Have a look at the documentation for [HarryPlotter](https://github.com/KIT-CMS/Artus/blob/master/HarryPlotter/README.md "HarryPlotter Readme")
 and merlin (above) for basic installation and usage help and also if you have
 questions during the tutorial.
 

@@ -21,8 +21,8 @@ def main():
 	try:
 		parser = argparse.ArgumentParser(description="Merlin, a plotting tool derived\
 			from HarryPlotter. Please have a look at the documentation for Excalibur\
-			(https://github.com/artus-analysis/Excalibur/blob/master/README.md)\
-			and for HarryPlotter (https://github.com/artus-analysis/Artus/blob/master/HarryPlotter/README.md).")
+			(https://github.com/KIT-CMS/Excalibur/blob/master/README.md)\
+			and for HarryPlotter (https://github.com/KIT-CMS/Artus/blob/master/HarryPlotter/README.md).")
 		parser.add_argument('--python', nargs='+', default=[None],
 			help="execute python function(s). Available functions can be listed with --list-functions")
 		known_args, unknown_args = parser.parse_known_args()
