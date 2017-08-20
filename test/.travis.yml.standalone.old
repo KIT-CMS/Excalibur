@@ -1,0 +1,50 @@
+# travis config for Excalibur
+sudo: required
+language: cpp
+services: docker
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+compiler: gcc
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - clang
+before_install:
+  - python --version
+  - sudo apt-get -y install libboost1.54-all-dev root-system libroot-bindings-python5.34 cmake python2.7
+  - sudo pip install --upgrade pip
+  - sudo pip install numpy
+  - sudo pip show numpy
+  - ls /usr/local/lib/python2.7/dist-packages
+  - export PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
+  - echo $PYTHONPATH
+  - ls /usr/include/root /usr/lib/*/root5.34
+  - python --version
+  - python2.7 --version
+  - root-config --cflags --ldflags
+  - cd ..
+  - tar -xzf Excalibur/data/CondFormats.tar.gz
+  - git clone --depth=10 https://github.com/KIT-CMS/Kappa.git
+  - git clone --depth=10 https://github.com/KIT-CMS/KappaTools.git
+  - git clone --depth=10 https://github.com/KIT-CMS/Artus.git
+  - cd Excalibur
+install:
+  - sed -i 's/\ -j[0-9]*/\ -j2/' Makefile
+  - source scripts/ini_excalibur.sh
+  - standalone_merlin
+  - echo $PYTHONPATH
+  - export PYTHONPATH=$PYTHONPATH:/usr/lib/x86_64-linux-gnu/root5.34
+  - make check
+  - make all
+script:
+  - wget http://www-ekp.physik.uni-karlsruhe.de/~mfischer/public/excalibur/excalibur-data15-2.root
+  - wget http://www-ekp.physik.uni-karlsruhe.de/~mfischer/public/excalibur/excalibur-mc15.root
+  - ls -l
+  - sed -i 's:/storage/.*root:excalibur-data15-2.root:' test/data15.py.json
+  - sed -i 's:/storage/.*root:excalibur-mc15.root:' test/mc15.py.json
+  - test_excalibur.sh data15
+  - test_excalibur.sh mc15
