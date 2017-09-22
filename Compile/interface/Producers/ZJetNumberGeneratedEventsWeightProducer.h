@@ -38,13 +38,13 @@ class ZJetNumberGeneratedEventsWeightProducer : public NumberGeneratedEventsWeig
 
             // iterate over xsecs, find matching and get NEvents
             for (unsigned int i = 0; i < xsections.size(); ++i) {
-                if (std::abs(1.0 - event.m_genRunInfo->xSectionInt / xsections[i]) < m_tolerance) {
+                if (std::abs(1.0 - event.m_genLumiInfo->xSectionInt / xsections[i]) < m_tolerance) {
                     product.m_weights["numberGeneratedEventsWeight"] = 1.0 / nevents.at(i);
                     return;
                 }
             }
             LOG(FATAL) << "No reweighting possible for internal cross-section "
-                       << event.m_genRunInfo->xSectionInt;
+                       << event.m_genLumiInfo->xSectionInt;
         } else {
             NumberGeneratedEventsWeightProducer::Produce(event, product, settings);
         }
