@@ -15,6 +15,10 @@ class ExpressionsDictZJet(ExpressionsDict):
 		super(ExpressionsDictZJet, self).__init__()
 		self.expressions_dict.update({
 			'alpha': '(jet2pt/zpt)',
+			'A': '(zpt-jet1pt)/(zpt+jet1pt)',
+			'B': '1-mpf',
+			'ystar': 'abs(zy-jet1eta)/2',
+			'yboost': 'abs(zy+jet1eta)/2',
 			'ptbalance': '(jet1pt/zpt)',
 			'backtoback' : '(abs(delta_phi(z,jet1)-TMath::Pi()))',
 			'trueresponse': '(jet1pt/matchedgenjet1pt)',
