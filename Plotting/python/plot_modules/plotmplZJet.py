@@ -35,11 +35,17 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			"CutAlphaMax": r"$\mathit{\alpha}<@VALUE@$",
 			"CutLeadingJetEtaMax": r"|$\mathit{\eta}^{\mathrm{Leading \ jet}}$|$<@VALUE@$",
 			"CutZPtMin": "$\mathit{p}_\mathrm{T}^\mathrm{Z}>@VALUE@ \ GeV$",
+			"CutMuonPtMin": "$\mathit{p}_\mathrm{T}^\mathrm{\mu}>@VALUE@ \ GeV$",
+			"CutMuonEtaMax": r"|$\mathit{\eta}^{\mathrm{\mu}}$|$<@VALUE@$",
+			"ZMassRange": "|$\mathit{m}^\mathrm{Z}-\mathit{m}_\mathrm{PDG}^\mathrm{Z}$|$<@VALUE@ \ GeV$",
 		}
 		self.cutvaluedict = {
-			'CutAlphaMax': '0.2',
+			'CutAlphaMax': '0.3',
 			'CutLeadingJetEtaMax': '1.3',
 			'CutZPtMin': '30',
+			'CutMuonPtMin': '27',
+			'CutMuonEtaMax': '2.3',
+			'ZMassRange': '10.',
 		}
 
 	def modify_argument_parser(self, parser, args):
@@ -126,6 +132,7 @@ class PlotMplZJet(plotmpl.PlotMpl):
 			'noalphacuts': ['CutLeadingJetEtaMax', 'CutZPtMin'],
 			'noetacuts': ['CutAlphaMax', 'CutZPtMin'],
 			'noalphanoetacuts': ['CutZPtMin'],
+			'leptoncuts': ['ZMassRange','CutMuonPtMin','CutMuonEtaMax']
 		}
 
 		# put the cut values into the labels
