@@ -120,6 +120,97 @@ def get_module_list(path):
 	"""get a list with all python modules in the path."""
 	return [(module.find_module(name).load_module(name)) for module, name, is_pkg in pkgutil.walk_packages([path])]
 
+def get_list_slice(lists, arg):
+	if arg is False:
+		return lists
+	else:
+		return [[l[arg]] for l in lists]
+
+def get_special_parser(args):
+	parser = argparse.ArgumentParser()
+	# if these arguments are set true the function will not iterate over the respective quantities
+	#	by default, argument ist False -> whole list is taken and iterated over
+	#	if set without arguments: first item of list is taken, no iteration
+	#	if set with arguments N: N-th item of list is taken, no iteration
+	parser.add_argument('--no-quantities', type=int, nargs='?', default=False, const=0)
+	parser.add_argument('--no-methods', type=int, nargs='?', default=False, const=0)
+	if args is None:
+		known_args, args = parser.parse_known_args()
+	else:
+		known_args, args = parser.parse_known_args(args)
+	return known_args, args
+
+def generate_dict(args=None, additional_dictionary=None):
+	x_dict = {
+		'alpha': ['80,0,1'],
+		'jet1area': ['80,0.3,0.9'],
+		'jet1eta': ['60,-5,5'],
+		'jet1phi': ['40,-3.1415,3.1415',],
+		'jet1pt': ['160,0,800'],
+		'jet1res': ['80,0.95,1.2'],
+		'jet2eta': ['40,-5,5'],
+		'jet2phi': ['40,-3.1415,3.1415',],
+		'jet2pt': ['60,0,75'],
+		'met': ['80,0,100'],
+		'metphi': ['40,-3.1415,3.1415',],
+		'mpf': ['40,0,2'],
+		'npu': ['31,-0.5,60.5'],
+		'npumean': ['100,1,50'],
+		'npv': ['51,-0.5,50.5'],
+		'ptbalance': ['40,0,2'],
+		'A': ['40,-1,1'],
+		'B': ['40,-1,1'],
+		'rawmet': ['80,0,100'],
+		'zmass': ['160,71,111'],
+		'zphi': ['40,-3.1415,3.1415',],
+		'zpt': ['80,0,400'],
+		'zy': ['50,-2.5,2.5'],
+		'genHT': ['3000,10.5,3000.5'],
+		'jetHT': ['3000,10.5,3000.5']
+	}
+	return x_dict
+	
+def basiccutlabel(args, d,CH,ZPT,ALPHA,ETA,RES):
+	etalabel=r"$%s<"%ETA[0]+r"|\\eta^\\mathrm{Jet1}|<%s$"%ETA[1]
+	if ALPHA==[0.0]:
+		alphalabel=r"$\\alpha=0$"
+	else:
+		alphalabel=r"$\\alpha<%s$"%ALPHA[0]
+	if len(ZPT)==2:
+		zptlabel=r"$%s<"%ZPT[0]+r"\\mathrm{p}^Z_T/GeV<%s$"%ZPT[1]
+	elif len(ZPT)==1:
+		zptlabel=r"$\\mathrm{p}^Z_T/GeV>%s$"%ZPT[0]
+	if CH=='ee':
+		channellabel=r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"		
+	elif CH=='mm':
+		channellabel=r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"
+		
+	d.update({	'texts': [channellabel,r"$\\bf{"+RES+"}$",zptlabel,etalabel,alphalabel],
+				'texts_x': [0.34,0.69,0.03,0.03,0.03] if RES == 'L1L2L3Res' else [0.34,0.76,0.03,0.03,0.03],
+				'texts_y': [0.95,0.09,0.83,0.90,0.97],
+				'texts_size': [20,25,15,15,15],
+				'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{3.2}}$",#'CMS Preliminary',
+				#'title': r"$\\bf{CMS} \\hspace{0.5} \\it{work\\hspace{0.2}in\\hspace{0.2}progress \\hspace{3.2}}$"
+				})
+	return d
+
+def get_lumis(args, d, RUN, YEAR):
+	if YEAR==2016:
+		if RUN=='BCD':
+			d.update({	'lumis'		: [12.93]	})	# ICHEP Dataset
+		elif RUN=='EF':
+			d.update({	'lumis'		: [6.89]	})
+		elif RUN=='G':
+			d.update({	'lumis'		: [8.13]	})
+		elif RUN=='H':
+			d.update({	'lumis'		: [8.86]	})
+		elif RUN=='BCDEFGH':
+			d.update({	'lumis'		: [35.87]	})
+	elif YEAR==2017:
+		if RUN=='BCD':
+			d.update({	'lumis'		: [17.8]	})
+	return d
+
 
 class JECfile(object):
 	"""Class to handle JEC files and create ROOT histograms with the correction factors"""
@@ -236,3 +327,4 @@ class JECfile(object):
 
 	def _format_variable_list(self, var_list):
 		return [self.quantitydict.get(var, var).lower() for var in var_list]
+	
