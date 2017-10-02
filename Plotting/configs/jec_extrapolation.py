@@ -87,7 +87,7 @@ def response_extrapolation(args=None, additional_dictionary=None):
   return [PlottingJob(plots=[d], args=args)]
 
 def fit_extrapolation_profplot_datamc(args=None, additional_dictionary=None, only_normalized=False, channel='m'):
-	"""Profile Plot of fitted Zmasses in bins of any quantity"""
+	"""Profile Plot of extrapolation values of responses"""
 	plots = []
 	bins=[]
 	cut_quantities=['zpt','abs(jet1eta)'] #x_quantity on the plot
@@ -261,7 +261,7 @@ def my_extrapolation_datamczptetabins_Zll(args=None):
 	return plotting_jobs
 
 def my_comparison_dataallmcalpha0_Zll(args=None):
-	"""Run2: full data mc comparisons for data16_25ns_ee.root and work/mc16_25ns_ee.root"""
+	"""Comparison of Response vs. quantities as profile plot after extrapolation to alpha=0"""
 	Res=0 # disable/enable residual corrections
 	if Res==True:
 		RES='Res'
