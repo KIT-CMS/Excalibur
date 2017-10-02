@@ -532,7 +532,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
 				jobs = n_free_slots  # use multiples-of-X for stable job counts (caching)
 				print "%d free slots on ekpsg -> submit %d jobs" % (n_free_slots, jobs)
 
-		jobdict = {False: 80, True: 40} # is_data => files per job
+		jobdict = {False: 800, True: 400} # is_data => files per job
 		n_jobs = (jobs if jobs is not None else jobdict.get(settings['InputIsData'], 70))
 		files_per_job = max((len(settings['InputFiles']) / n_jobs) + 1, min_files_per_job)
 	d = {
