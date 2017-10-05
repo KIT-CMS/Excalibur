@@ -7,7 +7,7 @@ import itertools
 
 import Excalibur.Plotting.harryinterface as harryinterface
 import Artus.Utility.logger as logger
-from Excalibur.Plotting.utility.toolsZJet import get_input_files
+from Excalibur.Plotting.utility.toolsZJet import PlottingJob,get_input_files
 import warnings
 
 
@@ -81,8 +81,10 @@ def jec_combination(args=None, additional_dictionary=None, algo = 'CHS'):
 	alpha_limits = [0.1, 0.15, 0.2, 0.3, 0.4]
 	alpha_cuts = ['(alpha<{})'.format(limit) for limit in alpha_limits]
 	alpha_strings = ['a'+str(int(100*limit)) for limit in alpha_limits]
-
-	eta_borders = [0, 0.783, 1.305, 1.93, 2.5, 2.964, 3.2, 5.191]
+# wide eta bins:
+#	eta_borders = [0, 0.783, 1.305, 1.93, 2.5, 2.964, 3.2, 5.191] 
+# narrow eta bins:
+	eta_borders = [0.000, 0.261, 0.522, 0.783, 1.044, 1.305, 1.479, 1.653, 1.930, 2.172, 2.322, 2.500, 2.650, 2.853, 2.964, 3.139, 3.489, 3.839, 5.191]
 	eta_cuts = ["({0}<=abs(jet1eta)&&abs(jet1eta)<{1})".format(*b) for b in zip(eta_borders[:-1], eta_borders[1:])]
 	eta_cuts = ["(0<=abs(jet1eta)&&abs(jet1eta)<1.3)"] + eta_cuts  # also include standard barrel jet selection
 	eta_strings = ["eta_{0:0>2d}_{1:0>2d}".format(int(round(10*up)), int(round(10*low))) for up, low in zip(eta_borders[:-1], eta_borders[1:])]
@@ -371,7 +373,7 @@ def jec_combination_CHS_Zee_G(args=None):
 #		"www": 'jec_combination_CHS_Zee_fullalpha',
 	}
 	jec_combination(args, d, 'CHS')
-	
+
 def jec_combination_CHS_Zee_H(args=None):
 	d = {
 		'files': [
@@ -384,7 +386,7 @@ def jec_combination_CHS_Zee_H(args=None):
 #		"www": 'jec_combination_CHS_Zee_fullalpha',
 	}
 	jec_combination(args, d, 'CHS')
-	
+
 def jec_combination_CHS_Zee_BCDEFGH(args=None):
 	d = {
 		'files': [
@@ -397,4 +399,3 @@ def jec_combination_CHS_Zee_BCDEFGH(args=None):
 #		"www": 'jec_combination_CHS_Zee_fullalpha',
 	}
 	jec_combination(args, d, 'CHS')
-	
