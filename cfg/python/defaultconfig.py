@@ -52,8 +52,8 @@ def getBaseConfig(tagged=True, **kwargs):
 					# Z quantities
 					'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
 					'phistareta', 
-					'zl1pt', 'zl2pt', 'zl1eta',
-					'zl2eta', 'zl1phi', 'zl2phi',
+					'zl1pt', 'zl1eta', 'zl1phi',
+					'zl2pt', 'zl2eta', 'zl2phi',
 					# Leading jet
 					'njets10',#
 					'jet1pt', 'jet1eta', 'jet1y', 'jet1phi',
@@ -71,9 +71,9 @@ def getBaseConfig(tagged=True, **kwargs):
 					'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet',
 					'mettype1vecpt', 'mettype1pt',
 					'jetHT',
-					#'jet1idloose','jet1idmedium','jet1idtight',
-					#'jet2idloose','jet2idmedium','jet2idtight',
-					#'jet3idloose','jet3idmedium','jet3idtight',
+					'jet1idloose',#'jet1idmedium','jet1idtight',
+					'jet2idloose',#'jet2idmedium','jet2idtight',
+					'jet3idloose',#'jet3idmedium','jet3idtight',
 					#'invalidjet1pt','invalidjet1idloose','invalidjet1eta', 'invalidjet1y', 'invalidjet1phi',
 					#'invalidjet2pt','invalidjet2idloose',
 					#'invalidjet3pt','invalidjet3idloose',
@@ -84,7 +84,6 @@ def getBaseConfig(tagged=True, **kwargs):
 		'Processors': [
 			'producer:ValidTaggedJetsProducer',
 			'producer:ValidZllJetsProducer',
-			"filter:ValidJetsFilter",
 			'producer:ZJetCorrectionsProducer',
 			'producer:TypeIMETProducer',
 			'producer:JetSorter',
@@ -158,7 +157,7 @@ def mc(cfg, **kwargs):
 	cfg['CrossSection'] = -1
 	cfg['BaseWeight'] = 1000 # pb^-1 -> fb^-1
 	
-	cfg['GenZMassRange']= 10.
+	cfg['GenZMassRange']= 20.
 	
 	cfg['DeltaRRadiationJet'] = 1
 	cfg['CutAlphaMax'] = 0.3
@@ -185,22 +184,111 @@ def _2016(cfg, **kwargs):
 	cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_BCDEFGH_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
 	#cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt')
 
+def ee(cfg, **kwargs):
+	cfg['Electrons'] = 'electrons'
+	cfg['ElectronMetadata'] = 'electronMetadata'
+	cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL']
+	# The order of these producers is important!
+	cfg['Processors'] = [	
+							'producer:ZJetValidElectronsProducer',
+							'producer:RecoZmmProducer',
+							'producer:ZeeProducer',	
+							]+cfg['Processors']
+		
+	cfg['Pipelines']['default']['Processors'] = [
+		'filter:MinElectronsCountFilter',
+		'filter:MaxElectronsCountFilter',
+		'filter:ElectronPtCut',
+		'filter:ElectronEtaCut',
+		'filter:ZPtCut',
+		#'filter:ZFilter',
+		'filter:ValidZCut',
+		'filter:ValidJetsFilter',
+		'filter:LeadingJetPtCut',
+		'filter:LeadingJetEtaCut',
+		'filter:AlphaCut',
+		'filter:BackToBackCut',
+		]
+	cfg['Pipelines']['default']['Consumers'] += ['KappaElectronsConsumer',]
+	
+	cfg['ElectronID'] = 'tight'#'vbft95_tight'#
+	cfg['ElectronIsoType'] = 'none'
+	cfg['ElectronIso'] = 'none'
+	cfg['ElectronReco'] = 'none'
+	
+	cfg['Pipelines']['default']['Quantities'] += [
+		'epluspt','epluseta','eplusphi','eplusiso',
+		'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
+		'e1pt', 'e1eta', 'e1phi', 
+		'e1idloose', 'e1idmedium', 'e1idtight', 'e1idveto', 'e1idloose95', 'e1idmedium95', 'e1idtight95','e1idveto95',# 'e1mvanontrig', 'e1mvatrig',
+		'e2pt', 'e2eta', 'e2phi', 
+		'e2idloose', 'e2idmedium', 'e2idtight', 'e2idveto', 'e2idloose95', 'e2idmedium95', 'e2idtight95','e2idveto95',# 'e2mvanontrig', 'e2mvatrig',
+		'nelectrons', 'validz',
+		]
+	cfg['MinNElectrons'] = 2
+	cfg['MaxNElectrons'] = 3
+	cfg['CutElectronPtMin'] = 25.0
+	cfg['CutElectronEtaMax'] = 2.4
+	cfg['CutLeadingJetPtMin'] = 12.0
+	cfg['CutLeadingJetEtaMax'] = 1.3
+	cfg['CutBackToBack'] = 0.34
+	cfg['CutAlphaMax'] = 0.3
+	cfg['CutZPtMin'] = 30.0
+
+def mcee(cfg, **kwargs):
+	cfg['Pipelines']['default']['Quantities'] += [
+		'ngenelectrons',
+		'matchedgenelectron1pt',#'matchedgenelectron1eta','matchedgenelectron1phi',
+		'matchedgenelectron2pt',#'matchedgenelectron2eta','matchedgenelectron2phi',
+		'genepluspt','genepluseta','geneplusphi',
+		'geneminuspt','geneminuseta','geneminusphi',
+		'gene1pt','gene1eta','gene1phi',
+		'gene2pt','gene2eta','gene2phi',
+		#'genParticleMatchDeltaR',
+	]
+	# reco-gen electron matching producer
+	cfg['Processors'] += ['producer:GenZeeProducer', 'producer:RecoElectronGenParticleMatchingProducer']
+	cfg['RecoElectronMatchingGenParticleStatus'] = 3
+	cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.3
+	cfg["RecoElectronMatchingGenParticlePdgIds"] = [11, -11]
+	cfg["InvalidateNonGenParticleMatchingRecoElectrons"] = False
+	cfg['GenParticleTypes'] += ['genElectron']
+	cfg['GenElectronStatus'] = 3
+	# KappaCollectionsConsumer: dont add taus or taujets:
+	cfg['BranchGenMatchedElectrons'] = True
+	cfg['AddGenMatchedTaus'] = False
+	cfg['AddGenMatchedTauJets'] = False
+	
+	# not sure about the status codes in aMCatNLO/MG5. theres usually an e+/e-
+	# pair with status 1 in each event, so take this number for now
+	# see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
+#	cfg['RecoElectronMatchingGenParticleStatus'] = 1
+#	cfg[''] = 1
+
+	cfg['Pipelines']['default']['Processors'] += [
+			'filter:ValidGenZCut',
+			'filter:GenZPtCut',
+			]
+
+
 def mm(cfg, **kwargs):
 	cfg['Muons'] = 'muons'
 	cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
 	# The order of these producers is important!
 	cfg['Processors'] = [	#'producer:MuonCorrectionsProducer',
 							'producer:ValidMuonsProducer',
-							'producer:ZmmProducer',
+							'producer:RecoZmmProducer',
+							'producer:ZmmProducer', # seems to destroy GenZ
 							]+cfg['Processors']
 	cfg['Pipelines']['default']['Processors'] = [
-		#'filter:ValidZCut',
 		'filter:MinNMuonsCut',
 		'filter:MaxNMuonsCut',
-		'filter:ZFilter',
 		'filter:MuonPtCut',
 		'filter:MuonEtaCut',
+		#'filter:ZFilter',
+		'filter:ValidZCut',
 		'filter:ZPtCut',
+		'filter:ValidJetsFilter',
 		'filter:LeadingJetPtCut',
 		'filter:LeadingJetEtaCut',
 		'filter:AlphaCut',
@@ -300,8 +388,8 @@ def data_2016mm(cfg, **kwargs):
 	cfg['TriggerSFRuns'] = [274094,276097]
 
 def mc_2016mm(cfg, **kwargs):
-	cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_ICHEP.root")
-	cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFTriggerMC.root")
+	cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_Moriond.root")
+	cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFTriggerMC_Moriond.root")
 	
 
 

@@ -76,19 +76,19 @@ def expand(config, cutModes, corrLevels, sfmodes = False, default="default"):
 	# define cut variations and copy default pipeline for different cut variations
 	# ATTENTION: the modes dictionary contains the cuts which are REMOVED for a certain pipeline
 	modes = {
-		'nocuts': ['ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ','ValidZ'],
-		'leptoncuts': ['ZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
-		'zcuts': ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
-		'genzcuts' : ['ValidZ', 'ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha','MinNMuons','MaxNMuons'],
-		'genleptoncuts' : ['ValidZ', 'ZPt','GenZPt','MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha','MinNMuons','MaxNMuons'],
+		'nocuts': [	'JetID', 'ValidJets', 'ZPt','MinNMuons', 'MaxNMuons', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'MinNElectrons', 'MaxNElectrons', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'ZFilter', 'ValidZ', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons', 'MaxNGenMuons', 'ValidGenZ'],
+		'leptoncuts': ['JetID', 'ZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'ValidZ', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons', 'MaxNGenMuons', 'ValidGenZ'],
+		'zcuts': ['JetID', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
+		'genzcuts' : ['JetID', 'ValidZ', 'ZFilter', 'ZPt', 'MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha','MinNMuons','MaxNMuons'],
+		'genleptoncuts' : ['JetID', 'ValidZ', 'ZFilter', 'ZPt','GenZPt','ValidGenZ','MuonPt', 'MuonEta', 'ElectronPt', 'ElectronEta', 'LeadingJetPt','BackToBack', 'LeadingJetEta', 'Alpha','MinNMuons','MaxNMuons'],
 		'noalphanoetacuts': ['LeadingJetEta', 'Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'noalphacuts': ['Alpha', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'noetacuts': ['LeadingJetEta', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'basiccuts': ['LeadingJetEta','Alpha','ZPt','GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'noetaphicleaning': ['EtaPhiCleaning','LeadingJetEta','Alpha','ZPt', 'GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
 		'finalcuts': ['GenZPt', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons', 'ValidGenZ'],
-		'allleptoncuts' : ['ZPt', 'GenZPt', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'], 
-		'allzcuts' : ['LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
+		'allleptoncuts' : ['JetID', 'ZPt', 'GenZPt', 'ValidZ', 'ValidGenZ', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'], 
+		'allzcuts' : ['JetID', 'LeadingJetPt', 'BackToBack', 'LeadingJetEta', 'Alpha'],
 	}
 	for cutMode in cutModes:
 		if cutMode not in modes:
