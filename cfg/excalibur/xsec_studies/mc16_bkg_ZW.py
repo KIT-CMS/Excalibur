@@ -10,14 +10,14 @@ def config():
 		ekppath="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/afriedel/Skimming/mcbkg_Moriond/WZ/*.root",
 		nafpath="/pnfs/desy.de/cms/tier2/store/user/afriedel/Skimming/mcbkg_Moriond/WZ/*.root",
 		)
-	cfg['Pipelines']['default']['Processors'] += ['producer:MuonTriggerMatchingProducer','producer:LeptonSFProducer']#,'producer:LeptonTriggerSFProducer']
-	cfg['Processors'] = ['producer:MuonCorrectionsProducer',]+cfg['Processors']#
-	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'leptoncuts', 'allzcuts', 'allleptoncuts','genleptoncuts','genzcuts'], ['None'])
+	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'leptoncuts', 'allzcuts', 'allleptoncuts','genleptoncuts','genzcuts'], ['None','L1L2L3'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc'])
 	# Add Muon Correction and SF Producers
+	cfg['Processors'] += ['producer:MuonTriggerMatchingProducer','producer:LeptonSFProducer','producer:LeptonTriggerSFProducer',]
+	cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
 	cfg['ValidMuonsInput'] = "corrected"
 	cfg['MuonIso'] = 'loose'
-	cfg['CutMuonPtMin'] = 27.0
+	cfg['CutMuonPtMin'] = 22.0
 	cfg['CutZPtMin'] = 40.0
 	cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_MC/'+JEC+'_MC')
 	cfg['NumberGeneratedEvents'] = 2995828

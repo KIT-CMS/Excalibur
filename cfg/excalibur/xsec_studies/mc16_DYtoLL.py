@@ -7,19 +7,20 @@ JEC = 'Summer16_03Feb2017_V1'
 def config():
 	cfg = configtools.getConfig('mc', 2016, 'mm', bunchcrossing='25ns')
 	cfg["InputFiles"].set_input(
-		#ekppath="/storage/jbod/tberger/SkimmingResults/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1/*.root",
+		#ekppath="/storage/jbod/tberger/testfiles/skimming_output/MC/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1_testfile.root",
 		#ekppath="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16/*.root"
+		#ekppath="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16/*.root",
 		ekppath="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/dataminiaod_BC_2016-10-24/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1/*.root",
 		nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/dataminiaod_BC_2016-10-24/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1/*.root"
 	)
-	cfg['Pipelines']['default']['Processors'] += ['producer:MuonTriggerMatchingProducer','producer:LeptonSFProducer']#,'producer:LeptonTriggerSFProducer']
-	cfg['Processors'] = ['producer:MuonCorrectionsProducer',]+cfg['Processors']#
-	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'leptoncuts', 'allzcuts', 'allleptoncuts','genleptoncuts','genzcuts'], ['None'])
+	cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'leptoncuts', 'allzcuts', 'allleptoncuts','genleptoncuts','genzcuts'], ['None','L1L2L3'])
 	configtools.remove_quantities(cfg, ['jet1btag', 'jet1qgtag', 'jet1rc'])
-	# Add Muon Correction and SF Producers
+	# Add Muon SF and Correction Producers
+	cfg['Processors'] += ['producer:MuonTriggerMatchingProducer','producer:LeptonSFProducer','producer:LeptonTriggerSFProducer',]
+	cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
 	cfg['ValidMuonsInput'] = "corrected"
 	cfg['MuonIso'] = 'loose'
-	cfg['CutMuonPtMin'] = 27.0
+	cfg['CutMuonPtMin'] = 22.0
 	cfg['CutZPtMin'] = 40.0
 	cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_MC/'+JEC+'_MC')
 	cfg['NumberGeneratedEvents'] = 28611654 # for full Set: 28696958
