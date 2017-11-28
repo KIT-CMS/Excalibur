@@ -52,11 +52,12 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, CutZPtMin)
     IMPL_SETTING(float, CutBackToBack)
     IMPL_SETTING(float, CutAlphaMax)
-	IMPL_SETTING(float, CutGenHTMax)
-	IMPL_SETTING(std::string, CutEtaPhiCleaning)
-	IMPL_SETTING(std::string, CutJetID)
-	
-       // LeptonSFProducer
+    IMPL_SETTING(float, CutGenHTMax)
+    IMPL_SETTING(float, CutEtaPhiCleaningPt)
+    IMPL_SETTING(std::string, CutEtaPhiCleaningFile)
+    IMPL_SETTING(std::string, CutJetID)
+
+        // LeptonSFProducer
     IMPL_SETTING(std::string, LeptonSFRootfile)
     IMPL_SETTING(std::string, LeptonTriggerSFRootfile)
     IMPL_SETTING_INTLIST(TriggerSFRuns)   

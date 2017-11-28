@@ -442,37 +442,40 @@ class EtaPhiCleaningCut : public ZJetFilterBase
 {
   public:
     std::string GetFilterId() const override { return "EtaPhiCleaningCut"; }
-
+    
     EtaPhiCleaningCut() : ZJetFilterBase() {}
-
+    
     void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
-        EtaPhiPath = settings.GetCutEtaPhiCleaning();
-		const char * EtaPhiFile = EtaPhiPath.c_str();
-		TFile *f = new TFile(EtaPhiFile,"READ");
-		assert(f && !f->IsZombie());		
-		h2jet = (TH2D*)f->Get("h2jet"); assert(h2jet);
+        EtaPhiPath = settings.GetCutEtaPhiCleaningFile();
+        EtaPhiPt = settings.GetCutEtaPhiCleaningPt();
+        const char * EtaPhiFile = EtaPhiPath.c_str();
+        TFile *f = new TFile(EtaPhiFile,"READ");
+        assert(f && !f->IsZombie());		
+        h2jet = (TH2D*)f->Get("h2jet"); assert(h2jet);
     }
-
+    
     bool DoesEventPass(ZJetEvent const& event,
-                       ZJetProduct const& product,
-                       ZJetSettings const& settings) const override
+                        ZJetProduct const& product,
+                        ZJetSettings const& settings) const override
     {
-        return (product.GetValidJetCount(settings, event) > 1)
-					? (h2jet->GetBinContent(h2jet->FindBin(
-						product.GetValidJet(settings, event, 0)->p4.Eta(),
-						product.GetValidJet(settings, event, 0)->p4.Phi() )) < 0) 
-						//&&
-					  //(h2jet->GetBinContent(h2jet->FindBin(
-						//product.GetValidJet(settings, event, 1)->p4.Eta(),
-						//product.GetValidJet(settings, event, 1)->p4.Phi() )) < 0)
-					: true;
-	}
-	private:
-      TH2D *h2jet;
-      std::string EtaPhiPath;
+    bool jet_clean = true;
+    for(unsigned int i = 0; i < product.GetValidJetCount(settings, event);i++){
+        if (jet_clean && product.GetValidJet(settings, event, i)->p4.Pt()>EtaPhiPt){
+            jet_clean = (h2jet->GetBinContent(h2jet->FindBin(
+                        product.GetValidJet(settings, event, i)->p4.Eta(),
+                        product.GetValidJet(settings, event, i)->p4.Phi() )) < 0);
+            }
+        }
+    return(jet_clean);
+    }
+    private:
+        TH2D *h2jet;
+        std::string EtaPhiPath;
+        float EtaPhiPt;
 };
+
 ///////////
 // JetID //
 ///////////
@@ -495,9 +498,9 @@ class JetIDCut : public ZJetFilterBase
     {
 			{return (product.GetValidJetCount(settings, event) > 1)
 					? (ValidJetsProducer::passesJetID(product.m_validJets[0],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)==1)&&
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)&&
 					  (ValidJetsProducer::passesJetID(product.m_validJets[1],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)==1)
+							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)
 					: true;
 			}
 	}

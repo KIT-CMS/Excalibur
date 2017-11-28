@@ -82,7 +82,8 @@ elif [ $USER = "afriedel" ]; then
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     if [[ $HOSTNAME = *ekpbms* ]]; then 
-		export EXCALIBUR_WORK=/home/tberger/excalibur_work/
+		#export EXCALIBUR_WORK=/home/tberger/excalibur_work/
+        export EXCALIBUR_WORK=/storage/c/tberger/excalibur_work/
     else 
 		export EXCALIBUR_WORK=~/storage/working/
     fi
