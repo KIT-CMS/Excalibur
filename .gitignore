@@ -32,3 +32,6 @@ plots/
 work
 websync/
 store
+
+# PyCharm IDE directory
+.idea
