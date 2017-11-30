@@ -435,16 +435,20 @@ Have fun. ;)
 
 
 def resolve_config(config_name, config_dirs):
+	# return `None` is name is `None`
 	if config_name is None:
 		return None
+
+	# return the filename directly if the path exists
 	if os.path.isfile(config_name):
 		return config_name
-	if '/' not in config_name:
-		add_ext = '' if os.path.splitext(config_name)[1] else '.py'
-		for cdir in config_dirs:
-			candidate_file = os.path.join(cdir, config_name + add_ext)
-			if os.path.isfile(candidate_file):
-				return candidate_file
+
+	# search the paths given in `config_dirs`
+	add_ext = '' if os.path.splitext(config_name)[1] else '.py'
+	for cdir in config_dirs:
+		candidate_file = os.path.join(cdir, config_name + add_ext)
+		if os.path.isfile(candidate_file):
+			return candidate_file
 	raise ValueError("Config '%s' does not exist." % config_name)
 
 

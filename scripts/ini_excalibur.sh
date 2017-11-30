@@ -47,9 +47,13 @@ standalone_merlin(){
 # excalibur.py auto-completion
 function _artuscomplete_()
 {
+    _base_dir="${EXCALIBURPATH}/cfg/excalibur/"
     local names
-    for i in `ls ${EXCALIBURPATH}/cfg/excalibur/*.py`
-        do names="${names} `basename $i .py`"
+    for i in `find "$_base_dir" -name "*.py"`; do
+        # strip away common prefix
+        _relative_path="${i#${_base_dir}}"
+        # strip away '.py' extension and add as autocomplete candidate
+        names="${names} ${_relative_path%.py}"
     done
     COMPREPLY=($(compgen -W "${names}" -- ${COMP_WORDS[COMP_CWORD]}))
 }
