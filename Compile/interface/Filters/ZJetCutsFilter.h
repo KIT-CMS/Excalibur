@@ -496,15 +496,15 @@ class JetIDCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-			{return (product.GetValidJetCount(settings, event) > 1)
-					? (ValidJetsProducer::passesJetID(product.m_validJets[0],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)&&
-					  (ValidJetsProducer::passesJetID(product.m_validJets[1],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)
-					: true;
-			}
-	}
-	private:
+        {return (product.GetValidJetCount(settings, event) > 1)
+                ? (ValidJetsProducer::passesJetID(product.m_validJets[0],
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)&&
+                    (ValidJetsProducer::passesJetID(product.m_validJets[1],
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)
+                : false;
+        }
+    }
+    private:
       std::string JetId;
 };
 
