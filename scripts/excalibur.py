@@ -343,9 +343,9 @@ Have fun. ;)
 
 	batch_parser = parser.add_argument_group("batch processing arguments", "Deploy analysis to a cluster using grid-control.")
 	batch_parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
-		const=('naf' if 'naf' in socket.gethostname() else 'ekpsg'),
+		const=('naf' if 'naf' in socket.gethostname() else 'freiburg'),
 		help="use batch mode with optional base config "
-			 "'ekpcluster', 'ekpsg', 'ekpcloud', 'naf' or 'local' [Default: %(const)s]")
+			 "'freiburg', 'ekpcluster', 'ekpsg', 'ekpcloud', 'naf' or 'local' [Default: %(const)s]")
 	batch_parser.add_argument('-R', '--resume', action='store_true',
 		help="resume the grid-control run and hadd after interrupting it.")
 	batch_parser.add_argument('-d', '--delete', action='store_true',
