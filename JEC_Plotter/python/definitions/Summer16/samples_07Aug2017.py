@@ -26,6 +26,18 @@ SAMPLES = {
         sample_dir=_SAMPLE_DIR,
         sample_file='mc16_mm_BCDEFGH_DYNJ_Madgraph.root'
     ),
+    'MC_Zmm_DYJets_Madgraph_physicsflavor_71': Sample.load_using_convention(
+        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
+        sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_physicsflavor_71.root'
+    ),
+    'MC_Zmm_DYJets_Madgraph_algorithmicflavor_71': Sample.load_using_convention(
+        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
+        sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_algorithmicflavor_71.root'
+    ),
+    'MC_Zmm_DYJets_Madgraph_algorithmicflavor_1': Sample.load_using_convention(
+        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
+        sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_algorithmicflavor_1.root'
+    ),
     'Data_Zee_BCDEFGH': Sample.load_using_convention(
         sample_dir=_SAMPLE_DIR,
         sample_file='data16_ee_BCDEFGH_DoElLegacy.root'
@@ -57,13 +69,13 @@ SAMPLES = {
 # -- HCAL hot towers eta ranges
 
 _hcal_hot_eta_ranges = dict(
-    runB=(-2.172, -2.043),
-    runC=(-3.314, -3.139),
-    runD=(-3.489, -3.139),
+    runB=(-2.250, -1.930),
+    runC=(-3.489, -3.139),
+    runD=(-3.600, -3.139),
 )
 
 _hcal_hot_phi_ranges = dict(
-    runB=(2.290, 2.422),
+    runB=(2.200, 2.500),
     runC=(2.237, 2.475),
     runD=(2.237, 2.475),
 )
@@ -97,24 +109,14 @@ ADDITIONAL_CUTS['user'].update(
     dict(
         adhocEtaPhiBCD_pt0=CutSet("adhocEtaPhiBCD_pt0",
                               weights=[
-                                  # run B veto
-                                  "(1.0-(run>=272007&&run<=275376&&("
-                                    "(jet1eta>-2.172&&jet1eta<-2.073&&jet1phi>2.290&&jet1phi<2.422&&jet1pt>0)||"
-                                    "(jet2eta>-2.172&&jet2eta<-2.073&&jet2phi>2.290&&jet2phi<2.422&&jet2pt>0)||"
-                                    "(jet3eta>-2.172&&jet3eta<-2.073&&jet3phi>2.290&&jet3phi<2.422&&jet3pt>0)"
-                                  ")))",
-                                  # run C veto
-                                  "(1.0-(run>=275657&&run<=276283&&("
-                                    "(jet1eta>-3.314&&jet1eta<-3.139&&jet1phi>2.237&&jet1phi<2.475&&jet1pt>0)||"
-                                    "(jet2eta>-3.314&&jet2eta<-3.139&&jet2phi>2.237&&jet2phi<2.475&&jet2pt>0)||"
-                                    "(jet3eta>-3.314&&jet3eta<-3.139&&jet3phi>2.237&&jet3phi<2.475&&jet3pt>0)"
-                                  ")))",
-                                  # run D veto
-                                  "(1.0-(run>=276315&&run<=276811&&("
-                                    "(jet1eta>-3.489&&jet1eta<-3.139&&jet1phi>2.237&&jet1phi<2.475&&jet1pt>0)||"
-                                    "(jet2eta>-3.489&&jet2eta<-3.139&&jet2phi>2.237&&jet2phi<2.475&&jet2pt>0)||"
-                                    "(jet3eta>-3.489&&jet3eta<-3.139&&jet3phi>2.237&&jet3phi<2.475&&jet3pt>0)"
-                                  ")))"
+                                  "(1.0-("
+                                    "({jet1cuts})||({jet2cuts})||({jet3cuts})"
+                                  "))".format(
+                                      jet1cuts=ADDITIONAL_CUTS['hcal_hot_towers'][_run_name+'_jet1'].weights_string,
+                                      jet2cuts=ADDITIONAL_CUTS['hcal_hot_towers'][_run_name+'_jet2'].weights_string,
+                                      jet3cuts=ADDITIONAL_CUTS['hcal_hot_towers'][_run_name+'_jet3'].weights_string,
+                                  )
+                                  for _run_name in ('runB', 'runC', 'runD')
                               ],
                               labels=[
                                   r"ad-hoc BCD eta-phi cleaning",
@@ -122,24 +124,14 @@ ADDITIONAL_CUTS['user'].update(
         ),
         adhocEtaPhiBCD_pt15=CutSet("adhocEtaPhiBCD_pt15",
                               weights=[
-                                  # run B veto
-                                  "(1.0-(run>=272007&&run<=275376&&("
-                                    "(jet1eta>-2.172&&jet1eta<-2.073&&jet1phi>2.290&&jet1phi<2.422&&jet1pt>15)||"
-                                    "(jet2eta>-2.172&&jet2eta<-2.073&&jet2phi>2.290&&jet2phi<2.422&&jet2pt>15)||"
-                                    "(jet3eta>-2.172&&jet3eta<-2.073&&jet3phi>2.290&&jet3phi<2.422&&jet3pt>15)"
-                                  ")))",
-                                  # run C veto
-                                  "(1.0-(run>=275657&&run<=276283&&("
-                                    "(jet1eta>-3.314&&jet1eta<-3.139&&jet1phi>2.237&&jet1phi<2.475&&jet1pt>15)||"
-                                    "(jet2eta>-3.314&&jet2eta<-3.139&&jet2phi>2.237&&jet2phi<2.475&&jet2pt>15)||"
-                                    "(jet3eta>-3.314&&jet3eta<-3.139&&jet3phi>2.237&&jet3phi<2.475&&jet3pt>15)"
-                                  ")))",
-                                  # run D veto
-                                  "(1.0-(run>=276315&&run<=276811&&("
-                                    "(jet1eta>-3.489&&jet1eta<-3.139&&jet1phi>2.237&&jet1phi<2.475&&jet1pt>15)||"
-                                    "(jet2eta>-3.489&&jet2eta<-3.139&&jet2phi>2.237&&jet2phi<2.475&&jet2pt>15)||"
-                                    "(jet3eta>-3.489&&jet3eta<-3.139&&jet3phi>2.237&&jet3phi<2.475&&jet3pt>15)"
-                                  ")))"
+                                  "(1.0-("
+                                    "({jet1cuts}&&jet1pt>15)||({jet2cuts}&&jet2pt>15)||({jet3cuts}&&jet3pt>15)"
+                                  "))".format(
+                                      jet1cuts=ADDITIONAL_CUTS['hcal_hot_towers'][_run_name+'_jet1'].weights_string,
+                                      jet2cuts=ADDITIONAL_CUTS['hcal_hot_towers'][_run_name+'_jet2'].weights_string,
+                                      jet3cuts=ADDITIONAL_CUTS['hcal_hot_towers'][_run_name+'_jet3'].weights_string,
+                                  )
+                                  for _run_name in ('runB', 'runC', 'runD')
                               ],
                               labels=[
                                   r"ad-hoc BCD eta-phi cleaning",

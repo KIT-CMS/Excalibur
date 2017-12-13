@@ -255,7 +255,7 @@ class Combination(object):
         self._export_root_merlin_dicts[0]['file_mode'] = 'RECREATE'
 
     def _get_plot_dicts_in_batches_of(self, n_plots_per_batch):
-        """generator yielding prepares Merling dictionaries in batches of ``n_plots_per_batch``"""
+        """generator yielding prepared Merlin dictionaries in batches of ``n_plots_per_batch``"""
         _sz = len(self._export_root_merlin_dicts)
         _n_batches = int(_sz//n_plots_per_batch)
 

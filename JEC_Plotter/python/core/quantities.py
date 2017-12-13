@@ -1,10 +1,92 @@
+import numpy as np
+
 from collections import OrderedDict
 
 __all__ = ['Quantity', "QUANTITIES"]
 
-_N_BINS_DEFAULT = "50"
+_N_BINS_DEFAULT = 50
 
 DELTAR_FORMAT = "TMath::Sqrt(({a}eta-{b}eta)^2+TVector2::Phi_mpi_pi({a}phi-{b}phi)^2)"
+
+
+class BinSpec(object):
+    def __init__(self, bin_spec_string):
+        self._string = bin_spec_string
+        if ',' in self._string:
+            self._type = "equidistant"
+            _fields = self._string.split(',')
+            assert len(_fields) == 3
+            self._n_bins = _fields[0]
+            self._range = float(_fields[1]), float(_fields[2])
+            self._bin_edges = list(np.linspace(self._range[0], self._range[1], self._n_bins))
+        elif ' ' in self._string:
+            self._type = "bin_edges"
+            _fields = self._string.split(' ')
+            assert len(_fields) > 1
+            self._n_bins = len(_fields) - 1
+            self._range = float(_fields[0]), float(_fields[-1])
+            self._bin_edges = _fields
+        else:
+            self._type = "named_binning"
+            # TODO: get from Merlin/HarryPlotter?
+            self._n_bins = None
+            self._range = None
+            self._bin_edges = None
+
+    @classmethod
+    def make_from_bin_edges(cls, bin_edges):
+        """
+        Create a non-equidistant binning from a sequence of bin edges.
+
+        :param bin_edges: bin edges
+        :type bin_edges: list/tuple of int/float
+        :return: ``BinSpec`` object
+        """
+        _bin_edges_as_strings = map(str, bin_edges)
+        _string = " ".join(_bin_edges_as_strings)
+        return cls(bin_spec_string=_string)
+
+    @classmethod
+    def make_named(cls, binning_name):
+        """
+        Create a binning from a quantity name understood by Merlin/HarryPlotter.
+
+        :param binning_name: name of the quantity with a default binning in Merlin/HarryPlotter
+        :type binning_name: str
+        :return:
+        """
+        return cls(bin_spec_string=binning_name)
+
+    @classmethod
+    def make_equidistant(cls, n_bins, range):
+        """
+        Create a binning from a number of bins and a numeric range.
+
+        :param n_bins: number of bins
+        :type n_bins: int
+        :param range: numeric range
+        :type range: tuple of 2 floats
+        :return:
+        """
+        assert len(range) == 2
+        _string = ",".join((str(int(n_bins)), str(range[0]), str(range[1])))
+        return cls(bin_spec_string=_string)
+
+    @property
+    def n_bins(self):
+        return self._n_bins
+
+    @property
+    def bin_edges(self):
+        return self._bin_edges
+
+    @property
+    def range(self):
+        return self._range
+
+    @property
+    def string(self):
+        return self._string
 
 
 class Quantity(object):
@@ -23,7 +105,7 @@ class Quantity(object):
             return True
         return False
 
-    def available_for_channes(self, channel):
+    def available_for_channel(self, channel):
         if self.channels is None or channel in self.channels:
             return True
         return False
@@ -31,7 +113,7 @@ class Quantity(object):
     def get_bin_spec_as_string(self):
         if self.bin_spec is None:
             return None
-        return ",".join(self.bin_spec)
+        return self.bin_spec.string
 
 
 # -- plottable quantities
@@ -40,456 +122,478 @@ QUANTITIES = dict(
     alpha=Quantity(
         name='alpha',
         expression='alpha',
-        bin_spec=(_N_BINS_DEFAULT, '0', '0.5')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 0.5))
     ),
     e1eta=Quantity(
         name='e1eta',
         expression='e1eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         channels=['Zee']
     ),
     e1iso=Quantity(
         name='e1iso',
         expression='e1iso',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
         channels=['Zee']
     ),
     e1pt=Quantity(
         name='e1pt',
         expression='e1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '100'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         channels=['Zee']
     ),
     e2pt=Quantity(
         name='e2pt',
         expression='e2pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '100'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         channels=['Zee']
     ),
     eminusiso=Quantity(
         name='eminusiso',
         expression='eminusiso',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
         channels=['Zee']
     ),
     eplusiso=Quantity(
         name='eplusiso',
         expression='eplusiso',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
         channels=['Zee']
     ),
     genjet1eta=Quantity(
         name='genjet1eta',
         expression='genjet1eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{GenJet1}$',
         source_types=['MC']
     ),
     genjet1pt=Quantity(
         name='genjet1pt',
         expression='genjet1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '250'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 250)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{GenJet1}~/~GeV$',
         source_types=['MC']
     ),
     genjet2eta=Quantity(
         name='genjet2eta',
         expression='genjet2eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{GenJet2}$',
         source_types=['MC']
     ),
     genjet2pt=Quantity(
         name='genjet2pt',
         expression='genjet2pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '50'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 50)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{GenJet2}~/~GeV$',
         source_types=['MC']
     ),
     jet1area=Quantity(
         name='jet1area',
         expression='jet1area',
-        bin_spec=(_N_BINS_DEFAULT, '0.3', '0.7')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0.3, 0.7))
     ),
     jet1chf=Quantity(
         name='jet1chf',
         expression='jet1chf',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF charged hadron fraction (Jet 1)',
         log_scale=True
     ),
     jet1ef=Quantity(
         name='jet1ef',
         expression='jet1ef',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF electron fraction (Jet 1)',
         log_scale=True
     ),
     jet1eta=Quantity(
         name='jet1eta',
         expression='jet1eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{Jet1}$'
     ),
     jet1eta_extended=Quantity(
         name='jet1eta_extended',
         expression='jet1eta',
-        bin_spec=(_N_BINS_DEFAULT, '-9', '9'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-9, 9)),
         label='$\\\\eta^\\\\mathrm{Jet1}$'
     ),
     jet1hfem=Quantity(
         name='jet1hfem',
         expression='jet1hfem',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF HF em fraction (Jet 1)',
         log_scale=True
     ),
     jet1hfhf=Quantity(
         name='jet1hfhf',
         expression='jet1hfhf',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF HF hadronic fraction (Jet 1)',
         log_scale=True
     ),
     jet1mf=Quantity(
         name='jet1mf',
         expression='jet1mf',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF muon fraction (Jet 1)',
         log_scale=True
     ),
     jet1nhf=Quantity(
         name='jet1nhf',
         expression='jet1nhf',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF neutral hadron fraction (Jet 1)',
         log_scale=True
     ),
     jet1pf=Quantity(
         name='jet1pf',
         expression='jet1pf',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF photon fraction (Jet 1)',
         log_scale=True
     ),
     jet1phi=Quantity(
         name='jet1phi',
         expression='jet1phi',
-        bin_spec=(_N_BINS_DEFAULT, '-4', '4')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-4, 4))
     ),
     jet1pt=Quantity(
         name='jet1pt',
         expression='jet1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '250'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 250)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet1}~/~GeV$'
+    ),
+    jet1pt_log=Quantity(
+        name='jet1pt_log',
+        expression='jet1pt',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 250)),
+        label='$p_\\\\mathrm{T}^\\\\mathrm{Jet1}~/~GeV$',
+        log_scale=True,
     ),
     jet1pt_extended=Quantity(
         name='jet1pt_extended',
         expression='jet1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '700'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 700)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet1}~/~GeV$'
     ),
     jet1pt_extended_log=Quantity(
         name='jet1pt_extended_log',
         expression='jet1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '700'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 700)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet1}~/~GeV$',
         log_scale=True
     ),
     jet1ptl1=Quantity(
         name='jet1ptl1',
         expression='jet1ptl1',
-        bin_spec=(_N_BINS_DEFAULT, '0', '250')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 250))
     ),
     jet1pt_over_jet1ptraw=Quantity(
         name='jet1pt_over_jet1ptraw',
         expression='jet1pt/jet1ptraw',
         label=r"$p_\\mathrm{T}^\\mathrm{Jet1, corr}/p_\\mathrm{T}^\\mathrm{Jet1, raw}$",
-        bin_spec=(_N_BINS_DEFAULT, '0.95', '1.25')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0.95, 1.25))
     ),
     jet1res=Quantity(
         name='jet1res',
         expression='jet1res',
-        bin_spec=(_N_BINS_DEFAULT, '0.', '2.')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0., 2.))
     ),
     jet2eta=Quantity(
         name='jet2eta',
         expression='jet2eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{Jet2}$'
     ),
     jet2eta_extended=Quantity(
         name='jet2eta_extended',
         expression='jet2eta',
-        bin_spec=(_N_BINS_DEFAULT, '-9', '9'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-9, 9)),
         label='$\\\\eta^\\\\mathrm{Jet2}$'
     ),
     jet2phi=Quantity(
         name='jet2phi',
         expression='jet2phi',
-        bin_spec=(_N_BINS_DEFAULT, '-4', '4')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-4, 4))
     ),
     jet2pt=Quantity(
         name='jet2pt',
         expression='jet2pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '50'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 50)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet2}~/~GeV$'
     ),
     jet2pt_extended=Quantity(
         name='jet2pt_extended',
         expression='jet2pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '150'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 150)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet2}~/~GeV$'
     ),
     jet2pt_extended_log=Quantity(
         name='jet2pt_extended_log',
         expression='jet2pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '150'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 150)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet2}~/~GeV$',
         log_scale=True
     ),
     jet2pt_over_jet1pt=Quantity(
         name='jet2pt_over_jet1pt',
         expression='jet2pt/jet1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '1'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='jet1pt/jet2pt'
     ),
     jet3eta=Quantity(
         name='jet3eta',
         expression='jet3eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{Jet3}$'
     ),
     jet3eta_extended=Quantity(
         name='jet3eta_extended',
         expression='jet3eta',
-        bin_spec=(_N_BINS_DEFAULT, '-9', '9'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-9, 9)),
         label='$\\\\eta^\\\\mathrm{Jet3}$'
     ),
     jet3phi=Quantity(
         name='jet3phi',
         expression='jet3phi',
-        bin_spec=(_N_BINS_DEFAULT, '-4', '4'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-4, 4)),
         label='$\\\\phi^\\\\mathrm{Jet3}$'
     ),
     jet3pt=Quantity(
         name='jet3pt',
         expression='jet3pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '50'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 50)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet3}~/~GeV$'
     ),
     jet3pt_extended=Quantity(
         name='jet3pt_extended',
         expression='jet3pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '100'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet3}~/~GeV$'
     ),
     jet3pt_extended_log=Quantity(
         name='jet3pt_extended_log',
         expression='jet3pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '100'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{Jet3}~/~GeV$',
         log_scale=True
     ),
     jetHT=Quantity(
         name='jetHT',
         expression='jetHT',
-        bin_spec=(_N_BINS_DEFAULT, '0', '0.5')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 0.5))
     ),
     matchedgenjet1eta=Quantity(
         name='matchedgenjet1eta',
         expression='matchedgenjet1eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{MatchedGenJet1}$',
         source_types=['MC']
     ),
     matchedgenjet1pt=Quantity(
         name='matchedgenjet1pt',
         expression='matchedgenjet1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '250'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 250)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{MatchedGenJet1}~/~GeV$',
         source_types=['MC']
     ),
     matchedgenjet2eta=Quantity(
         name='matchedgenjet2eta',
         expression='matchedgenjet2eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{MatchedGenJet2}$',
         source_types=['MC']
     ),
     matchedgenjet2pt=Quantity(
         name='matchedgenjet2pt',
         expression='matchedgenjet2pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '50'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 50)),
         label='$p_\\\\mathrm{T}^\\\\mathrm{MatchedGenJet2}~/~GeV$',
         source_types=['MC']
     ),
     met=Quantity(
         name='met',
         expression='met',
-        bin_spec=(_N_BINS_DEFAULT, '0', '100')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100))
     ),
     metphi=Quantity(
         name='metphi',
         expression='metphi',
-        bin_spec=(_N_BINS_DEFAULT, '-4', '4')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-4, 4))
     ),
     mpf=Quantity(
         name='mpf',
         expression='mpf',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2))
     ),
     mu1eta=Quantity(
         name='mu1eta',
         expression='mu1eta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         channels=['Zmm']
     ),
     mu1iso=Quantity(
         name='mu1iso',
         expression='mu1iso',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
         channels=['Zmm']
     ),
     mu1pt=Quantity(
         name='mu1pt',
         expression='mu1pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '100'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         channels=['Zmm']
     ),
     mu2pt=Quantity(
         name='mu2pt',
         expression='mu2pt',
-        bin_spec=(_N_BINS_DEFAULT, '0', '100'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         channels=['Zmm']
     ),
     muminusiso=Quantity(
         name='muminusiso',
         expression='muminusiso',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
         channels=['Zmm']
     ),
     muplusiso=Quantity(
         name='muplusiso',
         expression='muplusiso',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
         channels=['Zmm']
     ),
     njets=Quantity(
         name='njets',
         expression='njets',
-        bin_spec=('161', '-0.5', '160.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=161, range=(-0.5, 160.5)),
         label='# of jets'
     ),
     njets10=Quantity(
         name='njets10',
         expression='njets10',
-        bin_spec=('31', '-0.5', '30.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=31, range=(-0.5, 30.5)),
         label='# of jets with $p_T>10$ GeV'
     ),
     njets10_log=Quantity(
         name='njets10_log',
         expression='njets10',
-        bin_spec=('31', '-0.5', '30.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=31, range=(-0.5, 30.5)),
         label='# of jets with $p_T>10$ GeV',
         log_scale=True
     ),
     njets30=Quantity(
         name='njets30',
         expression='njets30',
-        bin_spec=('6', '-0.5', '5.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=6, range=(-0.5, 5.5)),
         label='# of jets with $p_T>30$ GeV'
     ),
     njets30_log=Quantity(
         name='njets30_log',
         expression='njets30',
-        bin_spec=('6', '-0.5', '5.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=6, range=(-0.5, 5.5)),
         label='# of jets with $p_T>30$ GeV',
         log_scale=True
     ),
     njets_log=Quantity(
         name='njets_log',
         expression='njets',
-        bin_spec=('161', '-0.5', '160.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=161, range=(-0.5, 160.5)),
         label='# of jets'
     ),
     npu=Quantity(
         name='npu',
         expression='npu',
-        bin_spec=('61', '-0.5', '60.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=61, range=(-0.5, 60.5)),
         source_types=['MC']
     ),
     npu_log=Quantity(
         name='npu_log',
         expression='npu',
-        bin_spec=('61', '-0.5', '60.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=61, range=(-0.5, 60.5)),
         source_types=['MC'],
         log_scale=True
     ),
     npumean=Quantity(
         name='npumean',
         expression='npumean',
-        bin_spec=(_N_BINS_DEFAULT, '0', '60'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 60)),
         source_types=['MC']
     ),
     npumean_log=Quantity(
         name='npumean_log',
         expression='npumean',
-        bin_spec=(_N_BINS_DEFAULT, '0', '60'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 60)),
         source_types=['MC'],
         log_scale=True
     ),
     npv=Quantity(
         name='npv',
         expression='npv',
-        bin_spec=('61', '-0.5', '60.5')
+        bin_spec=BinSpec.make_equidistant(n_bins=61, range=(-0.5, 60.5))
     ),
     npv_log=Quantity(
         name='npv_log',
         expression='npv',
-        bin_spec=('61', '-0.5', '60.5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=61, range=(-0.5, 60.5)),
         log_scale=True
     ),
     ptbalance=Quantity(
         name='ptbalance',
         expression='ptbalance',
-        bin_spec=(_N_BINS_DEFAULT, '0', '2')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2))
+    ),
+    rho=Quantity(
+        name='rho',
+        expression='rho',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 50))
     ),
     run=Quantity(
         name='run',
         expression='run',
-        bin_spec=('120', '272007', '284044')
+        bin_spec=BinSpec.make_equidistant(n_bins=120, range=(272007, 284044))
     ),
     runBCD=Quantity(
         name='runBCD',
         expression='run',
-        bin_spec=('48', '272007', '276811')
+        bin_spec=BinSpec.make_equidistant(n_bins=48, range=(272007, 276811))
     ),
     zeta=Quantity(
         name='zeta',
         expression='zeta',
-        bin_spec=(_N_BINS_DEFAULT, '-5', '5'),
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{Z}$'
     ),
     zphi=Quantity(
         name='zphi',
         expression='zphi',
-        bin_spec=(_N_BINS_DEFAULT, '-4', '4')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-4, 4))
     ),
     zmass=Quantity(
         name='zmass',
         expression='zmass',
-        bin_spec=(_N_BINS_DEFAULT, '70', '110')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(70, 110))
     ),
     zpt=Quantity(
         name='zpt',
         expression='zpt',
-        bin_spec=(_N_BINS_DEFAULT, '1', '150')
+        bin_spec=BinSpec.make_from_bin_edges(
+            bin_edges=(30, 40, 50, 60, 85, 105, 130, 175, 230, 300, 400, 500, 700, 1000, 1500)
+        )
+    ),
+    zpt_log=Quantity(
+        name='zpt_log',
+        expression='zpt',
+        bin_spec=BinSpec.make_from_bin_edges(
+            bin_edges=(30, 40, 50, 60, 85, 105, 130, 175, 230, 300, 400, 500, 700, 1000, 1500)
+        ),
+        log_scale=True
     ),
     zpt_low=Quantity(
         name='zpt_low',
         expression='zpt',
-        bin_spec=(_N_BINS_DEFAULT, '15', '80')
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(15, 80))
     ),
 )
 

@@ -13,16 +13,16 @@ CHANNEL_SPEC = {
     }
 }
 
-
 class _Plot1D(object):
-    _INFOBOX_TOPLEFT_XY = (0.05, 0.97)
+    _INFOBOX_TOPLEFT_XY = (0.65, 0.77)
     _INFOBOX_SPACING_Y = 0.05
 
     def __init__(self, basename, quantity, selection,
                  samples, cut_sets, correction_string,
                  normalize_to_first_histo=False,
                  show_ratio_to_first=False,
-                 show_cut_info_text=True):
+                 show_cut_info_text=True,
+                 stacked=False):
         self._nsamples = len(samples)
 
         self._basename = basename
@@ -33,20 +33,23 @@ class _Plot1D(object):
         self._correction_string = correction_string
         self._normalize_to_first_histo = normalize_to_first_histo
         self._ratio = show_ratio_to_first
+        self._stacked = stacked
 
         _ncutsets = len(cut_sets)
 
         if _ncutsets == 1:
             cut_sets = [cut_sets[0]] * self._nsamples
 
-        assert len(cut_sets) == self._nsamples
+
+        if len(cut_sets) != self._nsamples:
+            raise ValueError("Number of cuts ({}) must match "
+                             "the number of samples ({}) provided!".format( len(cut_sets), self._nsamples))
 
         self._basic_weights_string = self._selection.weights_string
 
         self._channel = self._samples[0]['channel']
         assert all([_sample['channel'] == self._channel for _sample in self._samples])
 
-        _bin_spec = self._q.get_bin_spec_as_string()
         _output_folder = "_".join([self._basename,
                                    self._channel,
                                    self._correction_string,
@@ -60,14 +63,15 @@ class _Plot1D(object):
 
             # binning
             'x_expressions': [self._q.expression],
-            'x_bins': _bin_spec,
+            'x_bins': self._q.bin_spec.string,
             'x_label': self._q.label,
 
             # formatting
             'line_styles': '-',
-            'x_lims': map(float, self._q.bin_spec[1:]) if _bin_spec is not None else None,
+            'x_lims': list(self._q.bin_spec.range),
             'title': None,
             'y_log': self._q.log_scale,
+            'x_log': self._q.log_scale,
 
             # web gallery options
             'www': _output_folder,
@@ -101,7 +105,11 @@ class _Plot1D(object):
             'colors': [],
             'markers': [],
             'step': [],
-            'y_errors': []
+            'y_errors': [],
+            'stacks': [],
+
+            "subplot_fraction": 25,
+            "ratio_denominator_no_errors": False,
         }
 
         if show_cut_info_text:
@@ -120,13 +128,21 @@ class _Plot1D(object):
             _d['files'].append(_sample['file'])
             _d['labels'].append("{source_type} ({source_label})".format(**_sample._dict))
             _d['corrections'].append(self._correction_string)
-            _d['colors'].append(_sample['color'])
-            _d['markers'].append(_sample._dict.get('marker', '_'))
-            _d['step'].append(_sample._dict.get('step_flag', False))
             if _cutset is not None:
                 _d['weights'].append(self._basic_weights_string + '&&' + _cutset.weights_string)
             else:
                 _d['weights'].append(self._basic_weights_string)
+
+            if self._stacked:
+                _d['stacks'].append("single_stack")
+                _d['markers'].append(_sample._dict.get('marker', 'bar'))
+            else:
+                _d['stacks'].append("stack{}".format(_i))
+                _d['markers'].append(_sample._dict.get('marker', '_'))
+
+            _d['step'].append(_sample._dict.get('step_flag', False))
+            _d['colors'].append(_sample['color'])
+
             _d['y_errors'].append(True)
 
             # default to 'L1L2L3' for Monte Carlo
@@ -141,8 +157,6 @@ class _Plot1D(object):
                 "ratio_numerator_nicks": _num_nicks,
                 "ratio_denominator_nicks": ["nick0"],
                 "ratio_result_nicks": _res_nicks,
-                "ratio_denominator_no_errors": False,
-                "subplot_fraction": 25,
                 #"subplot_lines": [],
                 "subplot_nicks": _res_nicks,  #["dummy"],  # HARRYPLOTTER!!
                 "y_subplot_label": "Ratio",
@@ -155,10 +169,155 @@ class _Plot1D(object):
 
         return _d
 
+    def count_events(self, write_to_file=False):
+        """
+        Return the number of events passing the selection indicated by the `weights` plot keyword.
+        :return:
+        """
+        import ROOT
+
+        _d = self.get_dict()
+        _filenames = _d['files']
+        _weights = _d['weights']
+
+        if len(_filenames) != len(_weights):
+            if len(_weights) == 1:
+                _weights = [_weights[0]]*len(_filenames)
+            elif len(_filenames) == 1:
+                _filenames = [_filenames[0]]*len(_weights)
+            else:
+                ValueError("Length of 'files' ({}) and 'weights' ({}) "
+                           "plot dict entries do not match!".format(len(_filenames), len(_weights)))
+
+        assert len(_filenames) == len(_weights)
+
+        _results = dict(files=[], weights=[], event_count=[])
+        for _filename, _weight_string in zip(_filenames, _weights):
+            _file = ROOT.TFile(_filename)
+            _ntuple = _file.Get("{}/ntuple".format(self._selection.zjet_folder + '_' + self._correction_string))
+
+            # count events after applying the `weights`
+            _n_after_cuts = _ntuple.Draw(">>elist", _weight_string, "goff")
+            _results['files'].append(_filename)
+            _results['weights'].append(_weight_string)
+            _results['event_count'].append(_n_after_cuts)
+
+        if write_to_file:
+            import json, os, datetime
+            _eventcount_output_filename = _d['filename'] + '_eventcount.json'
+
+            _plot_output_dir = _d.get("output_dir", None)
+            if _plot_output_dir is None:
+                _plot_output_dir = os.path.join(
+                    "websync",
+                    datetime.date.today().strftime("%Y_%m_%d"),
+                    (_d.get("www", None) or "")
+                )
+                #print '[DEBUG] _plot_output_dir = ', _plot_output_dir
+
+            _plot_output_path = os.path.join(_plot_output_dir, _eventcount_output_filename)
+
+            print "[JEC_Plotter] Writing event count report to: '{}'".format(_plot_output_path)
+            with open(_plot_output_path, 'w') as _f:
+                json.dump(_results, _f, indent=4)
+
+        return _results
+
+
+class _Plot1DFractions(_Plot1D):
+    def __init__(self, basename, quantity, selection,
+                 fraction_samples, reference_cut_set, fraction_cut_sets,
+                 correction_string,
+                 show_cut_info_text=True):
+        #
+        # print len(fraction_cut_sets)
+        # print len(fraction_samples)
+        #
+        # print fraction_cut_sets
+        # print fraction_samples
+
+        super(_Plot1DFractions, self).__init__(
+            basename=basename,
+            quantity=quantity,
+            selection=selection,
+            samples=fraction_samples,
+            cut_sets=[None], # [self._reference_cut_set] + fraction_cut_sets,
+            correction_string=correction_string,
+            normalize_to_first_histo=False,     # always false for fraction plots
+            show_ratio_to_first=True,           # always true for fraction plots
+            show_cut_info_text=show_cut_info_text,
+            stacked=True)
+
+        self._ref_cut_set = reference_cut_set
+        self._frac_cut_sets = fraction_cut_sets
+
+        if len(fraction_samples) > 1:
+            fraction_samples = [fraction_samples[0]] + fraction_samples  # need dummy first sample
+
+        self._basic_dict.update({
+            "subplot_fraction": 0,  # do not show lower plot axes
+            "subplot_nicks": ["_dummy"],  # HARRYPLOTTER!!
+            "ratio_denominator_no_errors": "false",
+            "stacks": ["single_stack"],
+            "markers": 'bar',
+            "y_label": "Ratio",
+            "y_lims": [0, 1.29],
+            "y_log": False,
+
+            "ratio_denominator_nicks": ["nick0"],  # divide by reference
+            "nicks_blacklist": ["nick0_over0", "^nick0$"],  # do not plot reference
+            "y_errors": True,  # do not plot error bars
+            "analysis_modules": ["Ratio"],
+        })
+
+    def get_dict(self):
+        _d = deepcopy(self._basic_dict)
+
+        # reference (total of fraction)
+        _d['weights'].append(self._basic_weights_string)
+        _d['files'] = [self._samples[0]['file']]  # need sample file for reference
+
+        # default to 'L1L2L3' for Monte Carlo
+        _corr_string = self._correction_string
+        if self._correction_string == 'L1L2L3Res' and self._samples[0]['source_type'] != 'Data':
+            _corr_string = 'L1L2L3'
+        _d['corrections'].append(_corr_string)
+
+        _numerator_nicks = ['nick0']
+        _ratio_nicks = ['nick0_over0']
+        for _i, (_sample, _frac_cutset) in enumerate(reversed(zip(self._samples, self._frac_cut_sets))):
+            # things to add later
+            _numerator_nicks.append("nick{}".format(_i+1))
+            _ratio_nicks.append("nick{}_over0".format(_i+1))
+
+            # default to 'L1L2L3' for Monte Carlo
+            _corr_string = self._correction_string
+            if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                _corr_string = 'L1L2L3'
+
+            if _frac_cutset is not None:
+                _d['weights'].append(self._basic_weights_string + '&&' + _frac_cutset.weights_string)
+            else:
+                _d['weights'].append(self._basic_weights_string)
+
+            _d['files'].append(_sample['file'])
+            _d['corrections'].append(_corr_string)
+            _d['labels'].append("{source_type} ({source_label})".format(**_sample._dict))
+            _d['step'].append(_sample._dict.get('step_flag', False))
+            _d['colors'].append(_sample['color'])
+            #_d['y_errors'].append(True)
+            _d['nicks_blacklist'].append("^{}$".format(_numerator_nicks[-1]))
+
+        _d.update({
+            "nicks":_numerator_nicks + _ratio_nicks,
+            "ratio_numerator_nicks": _numerator_nicks,
+            "ratio_result_nicks": _ratio_nicks,
+        })
+
+        return _d
+
 
 class _Plot2D(_Plot1D):
-    _INFOBOX_TOPLEFT_XY = (0.05, 0.97)
-    _INFOBOX_SPACING_Y = 0.05
     def __init__(self, basename, quantity_pair, selection,
                  samples, cut_sets, correction_string,
                  normalize_to_first_histo=False,
@@ -174,9 +333,6 @@ class _Plot2D(_Plot1D):
         del self._q
         self._qx, self._qy = quantity_pair
 
-        _bin_spec_x = self._qx.get_bin_spec_as_string()
-        _bin_spec_y = self._qy.get_bin_spec_as_string()
-
         _output_folder = "_".join([self._basename,
                                    self._channel,
                                    self._correction_string,
@@ -190,18 +346,18 @@ class _Plot2D(_Plot1D):
 
             # binning
             'x_expressions': [self._qx.expression],
-            'x_bins': _bin_spec_x,
+            'x_bins': self._qx.bin_spec.string,
             'x_label': self._qx.label,
             'y_expressions': [self._qy.expression],
-            'y_bins': _bin_spec_y,
+            'y_bins': self._qy.bin_spec.string,
             'y_label': self._qy.label,
 
             # formatting
             'title': None,
             'line_styles': '-',
-            'x_lims': map(float, self._qx.bin_spec[1:]) if _bin_spec_x is not None else None,
+            'x_lims': list(self._qx.bin_spec.range),
             'x_log': self._qx.log_scale,
-            'y_lims': map(float, self._qy.bin_spec[1:]) if _bin_spec_y is not None else None,
+            'y_lims': list(self._qy.bin_spec.range),
             'y_log': self._qy.log_scale,
 
 
@@ -236,7 +392,8 @@ class _Plot2D(_Plot1D):
             'colors': [],
             'markers': [],
             'step': [],
-            'y_errors': []
+            'y_errors': [],
+            'stacks': []  # TODO: adapt inheritance to better suit 2D plots
         }
 
         self._profile = show_as_profile
@@ -255,8 +412,11 @@ class _Plot2D(_Plot1D):
         _d = super(_Plot2D, self).get_dict()
         # override markers for profile
         if self._profile:
-            #_d['markers'] = ['.']
+            _d['markers'] = ['.']
+            _d['step'] = [False]
             _d['line_styles'] = ""
+            _d['x_errors'] = True
+            del _d['y_bins']  # HARRYPLOTTER!!!
         return _d
 
 
@@ -267,7 +427,8 @@ class PlotHistograms1D(object):
                  basename='hist_1d', corrections='L1L2L3Res',
                  normalize_to_first=False,
                  show_ratio_to_first=False,
-                 show_cut_info_text=True):
+                 show_cut_info_text=True,
+                 stacked=False):
         self._plots = []
         self._basename = basename
 
@@ -288,13 +449,46 @@ class PlotHistograms1D(object):
                         correction_string=corrections,
                         normalize_to_first_histo=normalize_to_first,
                         show_ratio_to_first=show_ratio_to_first,
-                        show_cut_info_text=show_cut_info_text)
+                        show_cut_info_text=show_cut_info_text,
+                        stacked=stacked)
 
                 self._plots.append(_plot)
 
     def make_plots(self, args=None):
         _plot_dicts = [_p.get_dict() for _p in self._plots]
-        harryinterface.harry_interface(_plot_dicts, args)
+        # harryinterface.harry_interface(_plot_dicts, args)
+        harryinterface.harry_interface(_plot_dicts, (args or []) + ['--max-processes', '1'])
+
+class PlotHistograms1DFractions(PlotHistograms1D):
+
+    def __init__(self, fraction_samples, quantities, selection_cuts,
+                 reference_cut, fraction_cuts,
+                 basename='hist_1d_fractions',
+                 corrections='L1L2L3Res',
+                 show_cut_info_text=True):
+        self._plots = []
+        self._basename = basename
+
+        for _qn in quantities:
+
+            _q = QUANTITIES.get(_qn, None)
+            if _q is None:
+                print "UNKONWN quantity '%s': skipping..." % (_qn,)
+                continue
+
+            for _selection_cut in selection_cuts:
+
+                _plot = _Plot1DFractions(basename=self._basename,
+                                         quantity=_q,
+                                         selection=_selection_cut,
+                                         reference_cut_set=reference_cut,
+                                         fraction_samples=fraction_samples,
+                                         fraction_cut_sets=fraction_cuts,
+                                         correction_string=corrections,
+                                         show_cut_info_text=show_cut_info_text)
+
+                self._plots.append(_plot)
+
 
 class PlotHistograms2D(PlotHistograms1D):
 
@@ -333,7 +527,6 @@ class PlotHistograms2D(PlotHistograms1D):
                         show_as_profile=show_as_profile)
 
                 self._plots.append(_plot)
-
 
 # class PlotHistograms1DCompareCuts:
 #     _INFOBOX_TOPLEFT_XY = (0.05, 0.46)

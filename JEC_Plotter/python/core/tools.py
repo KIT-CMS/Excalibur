@@ -1,3 +1,4 @@
+import sys
 
 def print_dict_recursive(dct, output_stream=sys.stdout, indent_level=0, indent_width=4, indent_char=' ', filter_func=lambda x: True):
     _max_key_len = max([len(_key) for _key in dct.keys()])
