@@ -91,7 +91,7 @@ def getBaseConfig(tagged=False, **kwargs):
         # Wire Kappa objects
         'EventMetadata' : 'eventInfo',
         'LumiMetadata' : 'lumiInfo',
-        'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
+        'VertexSummary': 'offlinePrimaryVerticesSummary', # What is the difference to 'goodOfflinePrimaryVerticesSummary'?
     }
 
     if tagged:
