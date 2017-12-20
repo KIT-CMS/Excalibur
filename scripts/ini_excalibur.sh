@@ -86,15 +86,16 @@ elif [ $USER = "afriedel" ]; then
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     if [[ $HOSTNAME = *ekpbms* ]]; then 
-		#export EXCALIBUR_WORK=/home/tberger/excalibur_work/
+        #export EXCALIBUR_WORK=/home/tberger/excalibur_work/
         export EXCALIBUR_WORK=/storage/c/tberger/excalibur_work/
     else 
-		export EXCALIBUR_WORK=~/storage/working/
+        export EXCALIBUR_WORK=~/storage/working/
     fi
     export HARRY_REMOTE_USER="tberger"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
     #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Excalibur"
-    export EXCALIBUR_SE="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Excalibur"
+    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Excalibur"
+    #export EXCALIBUR_SE="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Excalibur"
 elif [ $USER = "dsavoiu" ]; then
     export EXCALIBURBRILSSH="dsavoiu@lxplus.cern.ch"
     export EXCALIBUR_WORK=/nfs/dust/cms/user/dsavoiu/Work/Excalibur
