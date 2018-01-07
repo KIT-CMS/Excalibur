@@ -95,7 +95,9 @@ void LeptonSFProducer::Produce(ZJetEvent const& event,
 {
 	if(product.m_zValid){
    	 	product.m_weights["leptonSFWeight"] =
-        		GetScaleFactor(0, *product.m_zLeptons.first) * GetScaleFactor(0, *product.m_zLeptons.second);
+        		//some old SF files already include the inverse, make sure you use them the right way!
+                //GetScaleFactor(0, *product.m_zLeptons.first) * GetScaleFactor(0, *product.m_zLeptons.second);
+        		1/GetScaleFactor(0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, *product.m_zLeptons.second);
 	}
 	else
 		product.m_weights["leptonSFWeight"] = 0;
@@ -129,7 +131,8 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
 		sfhistos.push_back((TH2F*) file.Get(std::to_string(runs.at(i)).c_str()));
     }
     else{
-	sfhistos.push_back((TH2F*) file.Get("histoSF"));
+	sfhistos.push_back((TH2F*) file.Get("IsoMu24_OR_IsoTkMu24"));
+    //sfhistos.push_back((TH2F*) file.Get("histoSF")); //check the TriggerSF histo names!
 	runcount = 1;
     }
     // Get the pT and eta bin borders
