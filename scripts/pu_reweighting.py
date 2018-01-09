@@ -5,11 +5,11 @@ from copy import deepcopy
 import argparse
 
 parser = argparse.ArgumentParser(description='Load data & MC PU distributions')
-parser.add_argument('-m', '--mc', type=str,  default="DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1",
+parser.add_argument('-m', '--mc', type=str,  default="Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1",
                     help="MC type, possible choices:___________________"
-                        "'DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1', "
-                        "'DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16', "
-                        "'DYJetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16' ")
+                        "'Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_25nsv2_v0-v1', "
+                        "'Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16', "
+                        "'Zll_DYJetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16' ")
 parser.add_argument('-d', '--data', type=str, default="BCD",
                     help="data period, possible choices: ________________ 'BCD','EF','G','H'")
 parser.add_argument('-p', '--path', type=str, default="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/dataminiaod_BC_2016-10-24/",
@@ -26,7 +26,7 @@ print RUN
 print MC
 print FOLDER
 
-mc_path=FOLDER+'Zll_'+MC #
+mc_path=FOLDER+MC #
 mc_filelist = os.listdir(mc_path) if args.number_of_files==None else os.listdir(mc_path)[1:args.number_of_files]
 mc_file   = os.path.join(configtools.getPath() ,"data/pileup/PU_MC_"+MC+".root")
 data_file = os.path.join(configtools.getPath() ,"data/pileup/PU_data_"+RUN+"_13TeV_23Sep2016ReReco.root")
