@@ -19,7 +19,7 @@ def getBaseConfig(tagged=False, **kwargs):
         'FlavourCorrections': False,  # Calculate additional MC flavour corrections
         # ZProducer Settings
         'ZMassRange': 20.,
-        #'VetoMultipleZs' : False,
+        'VetoMultipleZs' : False,
         # TypeIMETProducer Settings
         'Met' : 'met', # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
         'TypeIJetPtMin': 15.,
@@ -103,7 +103,7 @@ def data(cfg, **kwargs):
     cfg['Processors'] = ['filter:JsonFilter']+cfg['Processors']+['producer:HltProducer','filter:HltFilter',]
     cfg['Processors'] += ['producer:NPUProducer']
     cfg['ProvideL2L3ResidualCorrections'] = True
-    cfg['ProvideL2ResidualCorrections'] = True
+    #cfg['ProvideL2ResidualCorrections'] = True
     cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
 
 def mc(cfg, **kwargs):
@@ -203,12 +203,13 @@ def ee(cfg, **kwargs):
         'filter:MaxElectronsCountFilter',
         'filter:ElectronPtCut',
         'filter:ElectronEtaCut',
-        'filter:ZPtCut',
         #'filter:ZFilter',
         'filter:ValidZCut',
+        'filter:ZPtCut',
         'filter:ValidJetsFilter',
         'filter:LeadingJetPtCut',
         'filter:LeadingJetEtaCut',
+        'filter:LeadingJetYCut',
         'filter:AlphaCut',
         'filter:BackToBackCut',
         ]
@@ -234,6 +235,7 @@ def ee(cfg, **kwargs):
     cfg['CutElectronEtaMax'] = 2.4
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
+    cfg['CutLeadingJetYMax'] = 2.5
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -280,10 +282,14 @@ def mm(cfg, **kwargs):
     # The order of these producers is important!
     cfg['Processors'] = [	#'producer:MuonCorrectionsProducer',
                             'producer:ValidMuonsProducer',
-                            'producer:RecoZmmProducer',
                             'producer:ZmmProducer', # seems to destroy GenZ
+                            'producer:RecoZmmProducer',
                             ]+cfg['Processors']
     cfg['Pipelines']['default']['Processors'] = [
+        'filter:ValidJetsFilter',
+        'filter:LeadingJetPtCut',
+        'filter:LeadingJetEtaCut',
+        'filter:LeadingJetYCut',
         'filter:MinNMuonsCut',
         'filter:MaxNMuonsCut',
         'filter:MuonPtCut',
@@ -291,15 +297,10 @@ def mm(cfg, **kwargs):
         #'filter:ZFilter',
         'filter:ValidZCut',
         'filter:ZPtCut',
-        'filter:ValidJetsFilter',
-        'filter:LeadingJetPtCut',
-        'filter:LeadingJetEtaCut',
         'filter:AlphaCut',
         'filter:BackToBackCut',
         ]
-    cfg['Pipelines']['default']['Consumers'] += [
-        'KappaMuonsConsumer',
-        ]
+    cfg['Pipelines']['default']['Consumers'] += ['KappaMuonsConsumer',]
     # In case of Muon Corrections
     #cfg['ValidMuonsInput'] = "corrected"
     
@@ -315,16 +316,17 @@ def mm(cfg, **kwargs):
         'mu1pt', 'mu1eta', 'mu1phi',
         'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
         'mu2pt', 'mu2eta', 'mu2phi',
+        'mu3pt', 'mu3eta', 'mu3phi',
         'nmuons', 'validz',
         'leptonSFWeight','leptonTriggerSFWeight',
         ]
     cfg['CutNMuonsMin'] = 2
     cfg['CutNMuonsMax'] = 3
-    
     cfg['CutMuonPtMin'] = 20.0
     cfg['CutMuonEtaMax'] = 2.3
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
+    cfg['CutLeadingJetYMax'] = 2.5
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -356,10 +358,11 @@ def mcmm(cfg, **kwargs):
             'producer:RecoMuonGenParticleMatchingProducer',
             ]
     cfg['Pipelines']['default']['Processors'] += [
+            'filter:MinNGenMuonsCut',
+            'filter:MaxNGenMuonsCut',
+            'filter:GenMuonPtCut',
+            'filter:GenMuonEtaCut',
             'filter:ValidGenZCut',
-            #'filter:MinNGenMuonsCut',
-            #'filter:GenMuonPtCut',
-            #'filter:GenMuonEtaCut',
             'filter:GenZPtCut',
             ]
     cfg['RecoMuonMatchingGenParticleStatus'] = 1
