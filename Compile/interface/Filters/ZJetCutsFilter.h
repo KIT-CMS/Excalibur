@@ -22,9 +22,9 @@
  * back to back
  * alpha (second jet pt to z pt)
  */
-////////////////
+//////////////////
 // Min nLeptons //
-////////////////
+//////////////////
 class MinNLeptonsCut : public ZJetFilterBase
 {
   public:
@@ -49,9 +49,9 @@ class MinNLeptonsCut : public ZJetFilterBase
     unsigned long nLeptonsMin = 0;
 };
 
-////////////////
+//////////////////
 // Max nLeptons //
-////////////////
+//////////////////
 class MaxNLeptonsCut : public ZJetFilterBase
 {
   public:
@@ -227,9 +227,9 @@ class MuonEtaCut : public ZJetFilterBase
     float muonEtaMax = 0;
 };
 
-/////////////
+/////////////////
 // Electron Pt //
-/////////////
+/////////////////
 class ElectronPtCut : public ZJetFilterBase
 {
   public:
@@ -260,9 +260,9 @@ class ElectronPtCut : public ZJetFilterBase
     float electronPtMin = 0;
 };
 
-//////////////
+//////////////////
 // Electron Eta //
-//////////////
+//////////////////
 class ElectronEtaCut : public ZJetFilterBase
 {
   public:
@@ -348,6 +348,33 @@ class LeadingJetEtaCut : public ZJetFilterBase
     float leadingJetEtaMax = 0;
 };
 
+//////////////////////////
+// Leading Jet Rapidity //
+//////////////////////////
+class LeadingJetYCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "LeadingJetYCut"; }
+
+    LeadingJetYCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        leadingJetYMax = settings.GetCutLeadingJetYMax();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Rapidity()) < leadingJetYMax);
+    }
+
+  private:
+    float leadingJetYMax = 0;
+};
+
 //////////
 // Z Pt //
 //////////
@@ -373,6 +400,36 @@ class ZPtCut : public ZJetFilterBase
 
   private:
     float zPtMin = 0;
+};
+
+////////////
+// ValidZ //
+////////////
+
+//For Pipelining ZFilter is not usable
+class ValidZCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "ValidZCut"; }
+
+    ValidZCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        ZMassRange = settings.GetZMassRange();
+        ZMass = settings.GetZMass();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (product.m_zValid && std::abs(product.m_z.p4.M()-ZMass)<ZMassRange);
+    }
+  private:
+    float ZMassRange = 0;
+    float ZMass = 90;
 };
 
 //////////////////
@@ -435,9 +492,9 @@ class AlphaCut : public ZJetFilterBase
   private:
     float alphaMax = 0;
 };
-///////////
+////////////////////
 // EtaPhiCleaning //
-///////////
+////////////////////
 class EtaPhiCleaningCut : public ZJetFilterBase
 {
   public:
@@ -508,30 +565,10 @@ class JetIDCut : public ZJetFilterBase
       std::string JetId;
 };
 
-//For Pipelining ZFilter is not usable
-class ValidZCut : public ZJetFilterBase
-{
-  public:
-    std::string GetFilterId() const override { return "ValidZCut"; }
-
-    ValidZCut() : ZJetFilterBase() {}
-
-    void Init(ZJetSettings const& settings) override
-    {
-        ZJetFilterBase::Init(settings);
-    }
-
-    bool DoesEventPass(ZJetEvent const& event,
-                       ZJetProduct const& product,
-                       ZJetSettings const& settings) const override
-    {
-        return (product.m_zValid);
-    }
-};
 //GenLevelCuts
-////////////////
+///////////////////
 // Min nGenMuons //
-////////////////
+///////////////////
 class MinNGenMuonsCut : public ZJetFilterBase
 {
   public:
@@ -563,9 +600,9 @@ class MinNGenMuonsCut : public ZJetFilterBase
     unsigned long nMuonsMin = 0;
 };
 
-////////////////
+///////////////////
 // Max nGenMuons //
-////////////////
+///////////////////
 class MaxNGenMuonsCut : public ZJetFilterBase
 {
   public:
@@ -591,9 +628,9 @@ class MaxNGenMuonsCut : public ZJetFilterBase
     unsigned long nMuonsMax = 0;
 };
 
-/////////////
+////////////////
 // GenMuon Pt //
-/////////////
+////////////////
 class GenMuonPtCut : public ZJetFilterBase
 {
   public:
@@ -613,20 +650,24 @@ class GenMuonPtCut : public ZJetFilterBase
     {
         // Only the first two muons need to pass this cut
         bool allPassed = true;
-        allPassed = allPassed && product.m_genLeptonsFromBosonDecay.at(0)->p4.Pt() > muonPtMin;
+        /*allPassed = allPassed && product.m_genLeptonsFromBosonDecay.at(0)->p4.Pt() > muonPtMin;
         allPassed = product.m_genLeptonsFromBosonDecay.size() >= 2
                         ? (allPassed &&product.m_genLeptonsFromBosonDecay.at(1)->p4.Pt() > muonPtMin)
+                        : allPassed; product.m_genMuons[0]->p4.Phi()*/
+        allPassed = allPassed && product.m_genMuons[0]->p4.Pt() > muonPtMin;
+        allPassed = product.m_genMuons.size() >= 2
+                        ? (allPassed && product.m_genMuons[1]->p4.Pt() > muonPtMin)
                         : allPassed;
         return allPassed;
-    }
+    }   
 
   private:
     float muonPtMin = 0;
 };
 
-//////////////
+//////////////////
 // Gen Muon Eta //
-//////////////
+//////////////////
 class GenMuonEtaCut : public ZJetFilterBase
 {
   public:
@@ -646,9 +687,13 @@ class GenMuonEtaCut : public ZJetFilterBase
     {
         // Only the first two muons need to pass this cut
         bool allPassed = true;
-        allPassed = allPassed && std::fabs(product.m_genLeptonsFromBosonDecay.at(0)->p4.Eta()) < muonEtaMax;
+        /*allPassed = allPassed && std::fabs(product.m_genLeptonsFromBosonDecay.at(0)->p4.Eta()) < muonEtaMax;
         allPassed = product.m_genLeptonsFromBosonDecay.size() >= 2
                        ? (allPassed && std::fabs(product.m_genLeptonsFromBosonDecay.at(1)->p4.Eta()) < muonEtaMax)
+                        : allPassed;*/
+        allPassed = allPassed && std::fabs(product.m_genMuons[0]->p4.Eta()) < muonEtaMax;
+        allPassed = product.m_genMuons.size() >= 2
+                       ? (allPassed && std::fabs(product.m_genMuons[0]->p4.Eta()) < muonEtaMax)
                         : allPassed;
         return allPassed;
     }
@@ -658,9 +703,9 @@ class GenMuonEtaCut : public ZJetFilterBase
 };
 
 
-//////////
+//////////////
 // Gen Z Pt //
-//////////
+//////////////
 class GenZPtCut : public ZJetFilterBase
 {
   public:
@@ -726,14 +771,17 @@ class ValidGenZCut : public ZJetFilterBase
     void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
+        ZMassRange = settings.GetGenZMassRange();
+        ZMass = settings.GetZMass();
     }
 
     bool DoesEventPass(ZJetEvent const& event,
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-	//double mass_diff = std::fabs(product.m_genBosonLV.mass() - settings.GetZMass());
-        return (product.m_genBosonLVFound);
+        return (product.m_genBosonLVFound && std::fabs(product.m_genBosonLV.mass() - ZMass) < ZMassRange);
     }
+  private:
+    float ZMassRange = 0;
+    float ZMass = 90;
 };
-

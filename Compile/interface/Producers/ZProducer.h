@@ -67,7 +67,7 @@ class ZProducerBaseZJet : public ZJetProducerBase
 	}
 	
 	// OK not the most elegant way, but at least it is understandable. 
-	// If you have time you can also bring this double loop into a function which takes carre of differnt types of m_validLeptonsMember1/2
+	// If you have time you can also bring this double loop into a function which takes carre of different types of m_validLeptonsMember1/2
 	if (check_second_ll_collection){
 	  for (unsigned int i = 0; i < (product.*m_validLeptonsMember2).size(); ++i) {	
 	    for (unsigned int j = 0; j < i; ++j){
@@ -112,10 +112,11 @@ class ZProducerBaseZJet : public ZJetProducerBase
 	     if(lep1->charge() + lep2->charge() != 0){
 	     	return false; // if charge not 0 can't be from Z 
 	     }
-	     KLV z_test;
+         return true;
+	     /*KLV z_test;
 	     z_test.p4 = lep1->p4 + lep2->p4;
 	     double test_mass_diff = fabs(z_test.p4.M() - settings.GetZMass());
-             return (test_mass_diff < settings.GetZMassRange()); // test if invM is in Z Range
+             return (test_mass_diff < settings.GetZMassRange()); // test if invM is in Z Range*/
         }
        virtual bool is_closer_to_Z(double zCandidate_mass, ZJetProduct& product, ZJetSettings const& settings) const {
 		return true;
@@ -242,10 +243,11 @@ class GenZProducer : public ZProducerBaseZJet<KGenParticle, KGenParticle, KGenPa
 	     if(lep1->charge() + lep2->charge() != 0){
 	     	return false; // if charge not 0 can't be from Z 
 	     }
-	     KLV z_test;
+         return true;
+	     /*KLV z_test;
 	     z_test.p4 = lep1->p4 + lep2->p4;
 	     double test_mass_diff = fabs(z_test.p4.M() - settings.GetZMass());
-             return (test_mass_diff < settings.GetGenZMassRange()); // test if invM is in Z Range
+             return (test_mass_diff < settings.GetGenZMassRange()); // test if invM is in Z Range*/
         }
 	bool is_closer_to_Z(double zCandidate_mass, ZJetProduct& product, ZJetSettings const& settings) const override{
             if (!product.m_genBosonLVFound) return true;

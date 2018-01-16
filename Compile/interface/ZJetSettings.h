@@ -49,11 +49,13 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, CutElectronEtaMax)
     IMPL_SETTING(float, CutLeadingJetPtMin)
     IMPL_SETTING(float, CutLeadingJetEtaMax)
+    IMPL_SETTING(float, CutLeadingJetYMax)
     IMPL_SETTING(float, CutZPtMin)
     IMPL_SETTING(float, CutBackToBack)
     IMPL_SETTING(float, CutAlphaMax)
-    IMPL_SETTING(float, CutGenHTMax)
     IMPL_SETTING(float, CutEtaPhiCleaningPt)
+    IMPL_SETTING(float, CutGenHTMax)
+    IMPL_SETTING(float, GenZMassRange)
     IMPL_SETTING(std::string, CutEtaPhiCleaningFile)
     IMPL_SETTING(std::string, CutJetID)
 
@@ -66,5 +68,5 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(std::string, Channel, "mm")
 
     //GenZProducers
-    IMPL_SETTING_DEFAULT(float, GenZMassRange, 20.0)
+    //IMPL_SETTING_DEFAULT(float, GenZMassRange, 20.0)
 };
