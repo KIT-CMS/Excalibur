@@ -401,25 +401,27 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                              ->getId("puJetIDFullLoose", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
-    // 3rd leading jet
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet3pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.GetValidJetCount(settings, event) > 2)
-                       ? product.GetValidJet(settings, event, 2)->p4.Pt()
+    // add additional Jets: (default: jet3)
+    for (unsigned i = 2; i < 3; ++i) {
+        LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+            "jet"+ std::to_string(i+1) +"pt", [i, settings](ZJetEvent const& event, ZJetProduct const& product) {
+                return (product.GetValidJetCount(settings, event) > i)
+                        ? product.GetValidJet(settings, event, i)->p4.Pt()
+                        : DefaultValues::UndefinedFloat;
+            });
+        LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+             "jet"+ std::to_string(i+1) +"phi", [i, settings](ZJetEvent const& event, ZJetProduct const& product) {
+                return (product.GetValidJetCount(settings, event) > i)
+                       ? product.GetValidJet(settings, event, i)->p4.Phi()
                        : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet3phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.GetValidJetCount(settings, event) > 2)
-                       ? product.GetValidJet(settings, event, 2)->p4.Phi()
+            });
+        LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+            "jet"+ std::to_string(i+1) + "eta", [i, settings](ZJetEvent const& event, ZJetProduct const& product) {
+                return (product.GetValidJetCount(settings, event) > i)
+                       ? product.GetValidJet(settings, event, i)->p4.Eta()
                        : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet3eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.GetValidJetCount(settings, event) > 2)
-                       ? product.GetValidJet(settings, event, 2)->p4.Eta()
-                       : DefaultValues::UndefinedFloat;
-        });
+            });
+        }
     // General jet stuff
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "njets", [settings](ZJetEvent const& event, ZJetProduct const& product) {
@@ -940,6 +942,21 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mu2sumpupt", [](event_type const& event, product_type const& product) {
             return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->sumPUPt
+                                                    : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mu3pt", [](event_type const& event, product_type const& product) {
+            return product.m_validMuons.size() >= 3 ? product.m_validMuons[2]->p4.Pt()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mu3phi", [](event_type const& event, product_type const& product) {
+            return product.m_validMuons.size() >= 3 ? product.m_validMuons[2]->p4.Phi()
+                                                    : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mu3eta", [](event_type const& event, product_type const& product) {
+            return product.m_validMuons.size() >= 3 ? product.m_validMuons[2]->p4.Eta()
                                                     : DefaultValues::UndefinedFloat;
         });
 
