@@ -2,7 +2,7 @@ import configtools
 import os
 
 RUN = 'BCDEFGH'
-JEC = 'Summer16_07Aug2017_V3'
+JEC = 'Summer16_07Aug2017_V1'
 
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', bunchcrossing='25ns')
@@ -14,7 +14,7 @@ def config():
 
 
 
-    cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'leptoncuts', 'allzcuts', 'allleptoncuts','genleptoncuts','genzcuts'], ['None','L1L2L3'])
+    cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'leptoncuts', 'allzcuts', 'allleptoncuts','genleptoncuts','genzcuts'], ['None'])
     configtools.remove_quantities(cfg, ['jet1flavor','jet1rc'])
     # Add Muon Correction and SF Producers
     cfg['Processors'] += ['producer:MuonTriggerMatchingProducer','producer:LeptonSFProducer','producer:LeptonTriggerSFProducer',]
@@ -23,8 +23,6 @@ def config():
     cfg['ValidMuonsInput'] = "corrected"
     cfg['MuonIso'] = 'loose'
     cfg['CutMuonPtMin'] = 22.0
-    cfg['CutZPtMin'] = 40.0
-    cfg['CutLeadingJetEtaMax'] = 2.5
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_MC/'+JEC+'_MC')
     cfg['NumberGeneratedEvents'] = 6987124
     
