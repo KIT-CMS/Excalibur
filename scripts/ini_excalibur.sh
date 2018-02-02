@@ -98,8 +98,10 @@ elif [ $USER = "tberger" ]; then
     #export EXCALIBUR_SE="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Excalibur"
 elif [ $USER = "dsavoiu" ]; then
     export EXCALIBURBRILSSH="dsavoiu@lxplus.cern.ch"
-    export EXCALIBUR_WORK=/nfs/dust/cms/user/dsavoiu/Work/Excalibur
-    export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/dsavoiu/Excalibur"
+    #export EXCALIBUR_WORK=/portal/ekpbms1/home/dsavoiu/excalibur_work
+    export EXCALIBUR_WORK=/storage/c/dsavoiu/excalibur_work
+    #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/dsavoiu/Excalibur"
+    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Excalibur"
     export HARRY_REMOTE_USER="dsavoiu"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
 fi
