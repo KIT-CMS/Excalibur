@@ -186,7 +186,22 @@ def _2016(cfg, **kwargs):
     cfg['NPUFile'] = os.path.join(configtools.getPath(),'data/pileup/pumean_data2016_13TeV.txt')
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_BCDEFGH_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
     #cfg['JsonFiles'] = configtools.RunJSON('/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt')
-    
+
+def _2017(cfg, **kwargs):
+    cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
+    cfg['CutJetID']='loose' # choose event-based JetID selection ###### does not work yet!!! ####
+    cfg['Year'] = 2017
+    cfg['Energy'] = 13
+    cfg['JetIDVersion'] = 2016
+    cfg['MinZllJetDeltaRVeto'] = 0.3
+    cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
+    # create empty containers to allow using references prematurely
+    cfg["InputFiles"] = configtools.InputFiles()
+    # data settings also used to derive values for mc
+    cfg['Minbxsec'] = 69.2
+    cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2017_13TeV.txt')
+    cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
+
 def ee(cfg, **kwargs):
     cfg['Electrons'] = 'electrons'
     cfg['ElectronMetadata'] = 'electronMetadata'
@@ -398,6 +413,13 @@ def _2016ee(cfg, **kwargs):
     # -- ZJetValidElectronsProducer
     cfg['ApplyElectronVID'] = True
     cfg['ElectronVIDName'] = "Summer16-80X-V1"
+    cfg['ElectronVIDType'] = "cutbased"
+    cfg['ElectronVIDWorkingPoint'] = "tight"
+
+def _2017ee(cfg, **kwargs):
+    # -- ZJetValidElectronsProducer
+    cfg['ApplyElectronVID'] = True
+    cfg['ElectronVID'] = "Fall17-94X-V1-Preliminary"
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
