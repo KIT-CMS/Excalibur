@@ -1220,35 +1220,109 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return product.m_validElectrons.size() >= 2 ? product.m_validElectrons[1]->p4.Eta()
                                                         : DefaultValues::UndefinedFloat;
         });
-    // IDs
+
+    // -- electron IDs
+
+    const std::string electronVID = settings.GetElectronVIDName();
+    bool q_writeOutVIDs = true;
+    if (electronVID == "") {
+        q_writeOutVIDs = false;
+    }
+
+    // write out cutbased VIDs
+    const std::string electronVID_looseTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-loose";
+    const std::string electronVID_mediumTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-medium";
+    const std::string electronVID_tightTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-tight";
+    const std::string electronVID_vetoTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-veto";
+
+    // first electron VIDs
+
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idloose", [](event_type const& event, product_type const& product) {
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idLoose()
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose", event.m_electronMetadata)
-                                                        : DefaultValues::UndefinedFloat;
+        "e1idloose", [q_writeOutVIDs, electronVID_looseTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 1 ?
+                    product.m_validElectrons[0]->getId(
+                        electronVID_looseTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idmedium", [](event_type const& event, product_type const& product) {
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idMedium()
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium", event.m_electronMetadata)
-                                                        : DefaultValues::UndefinedFloat;
+        "e1idmedium", [q_writeOutVIDs, electronVID_mediumTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 1 ?
+                    product.m_validElectrons[0]->getId(
+                        electronVID_mediumTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idtight", [](event_type const& event, product_type const& product) {
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idTight()
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight", event.m_electronMetadata)
-                                                        : DefaultValues::UndefinedFloat;
+        "e1idtight", [q_writeOutVIDs, electronVID_tightTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 1 ?
+                    product.m_validElectrons[0]->getId(
+                        electronVID_tightTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idveto", [](event_type const& event, product_type const& product) {
-			return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto", event.m_electronMetadata)
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]->idVeto()            
-                                                        : DefaultValues::UndefinedFloat;
+        "e1idveto", [q_writeOutVIDs, electronVID_vetoTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 1 ?
+                    product.m_validElectrons[0]->getId(
+                        electronVID_vetoTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
         });
+
+    // second electron VIDs
+
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "e2idloose", [q_writeOutVIDs, electronVID_looseTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 2 ?
+                    product.m_validElectrons[1]->getId(
+                        electronVID_looseTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "e2idmedium", [q_writeOutVIDs, electronVID_mediumTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 2 ?
+                    product.m_validElectrons[1]->getId(
+                        electronVID_mediumTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "e2idtight", [q_writeOutVIDs, electronVID_tightTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 2 ?
+                    product.m_validElectrons[1]->getId(
+                        electronVID_tightTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "e2idveto", [q_writeOutVIDs, electronVID_vetoTag](event_type const& event, product_type const& product) {
+            if (q_writeOutVIDs) {
+                return product.m_validElectrons.size() >= 2 ?
+                    product.m_validElectrons[1]->getId(
+                        electronVID_vetoTag, event.m_electronMetadata
+                    ) : DefaultValues::UndefinedFloat;
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+
+    // -- non-VID electron IDs
+
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "e1idloose95", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsLooseVbtf95Electron(
@@ -1308,34 +1382,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "e2mvanontrig", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsMVANonTrigElectron(
                 product.m_validElectrons[1], event.m_electronMetadata);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idloose", [](event_type const& event, product_type const& product) {
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idLoose()
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose", event.m_electronMetadata)
-                                                        : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idmedium", [](event_type const& event, product_type const& product) {
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idMedium()
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium", event.m_electronMetadata)
-                                                        : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idtight", [](event_type const& event, product_type const& product) {
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idTight()
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight", event.m_electronMetadata)
-                                                        : DefaultValues::UndefinedFloat;
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idveto", [](event_type const& event, product_type const& product) {
-            //return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[1]->idVeto()
-            return product.m_validElectrons.size() >= 1 ? product.m_validElectrons[0]
-						->getId("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto", event.m_electronMetadata)
-                                                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "epluspt", [](ZJetEvent const& event, ZJetProduct const& product) -> float {

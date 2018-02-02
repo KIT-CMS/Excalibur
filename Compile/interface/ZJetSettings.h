@@ -36,6 +36,10 @@ class ZJetSettings : public KappaSettings
 
     // ZJetValidElectronsProducer
     IMPL_SETTING_DEFAULT(bool, ExcludeECALGap, false)
+    IMPL_SETTING_DEFAULT(bool, ApplyElectronVID, false)  // whether to apply electron VID
+    IMPL_SETTING_DEFAULT(std::string, ElectronVIDName, "")  // name of VID (e.g. "Summer16-80X-V1")
+    IMPL_SETTING_DEFAULT(std::string, ElectronVIDType, "")  // type of VID (e.g. 'cutbased')
+    IMPL_SETTING_DEFAULT(std::string, ElectronVIDWorkingPoint, "")  // e.g. 'tight'
 
     // ZJetCutsFilter
     IMPL_SETTING(unsigned, CutNLeptonsMin)

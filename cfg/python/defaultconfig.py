@@ -215,11 +215,17 @@ def ee(cfg, **kwargs):
         ]
     cfg['Pipelines']['default']['Consumers'] += ['KappaElectronsConsumer',]
     
-    cfg['ElectronID'] = 'tight'#'vbft95_tight'#
+    cfg['ElectronID'] = 'tight' # OLD electron ID code: set to 'none' or 'user' if using VID (s. below)
     cfg['ElectronIsoType'] = 'none'
     cfg['ElectronIso'] = 'none'
     cfg['ElectronReco'] = 'none'
-    
+
+    # -- ZJetValidElectronsProducer
+    cfg['ApplyElectronVID'] = False
+    #cfg['ElectronVIDName'] = "Summer16-80X-V1"
+    #cfg['ElectronVIDType'] = "cutbased"
+    #cfg['ElectronVIDWorkingPoint'] = "tight"
+
     cfg['Pipelines']['default']['Quantities'] += [
         'epluspt','epluseta','eplusphi','eplusiso',
         'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
@@ -387,6 +393,13 @@ def mc_2016(cfg, **kwargs):
 def _2016mm(cfg, **kwargs):
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')
     cfg['MuonEnergyCorrection'] = 'rochcorr2016'
+
+def _2016ee(cfg, **kwargs):
+    # -- ZJetValidElectronsProducer
+    cfg['ApplyElectronVID'] = True
+    cfg['ElectronVIDName'] = "Summer16-80X-V1"
+    cfg['ElectronVIDType'] = "cutbased"
+    cfg['ElectronVIDWorkingPoint'] = "tight"
 
 def data_2016mm(cfg, **kwargs):
     cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFData_ICHEP.root")
