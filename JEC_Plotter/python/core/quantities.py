@@ -2,6 +2,8 @@ import numpy as np
 
 from collections import OrderedDict
 
+from selection import CutSet
+
 __all__ = ['Quantity', "QUANTITIES"]
 
 _N_BINS_DEFAULT = 50
@@ -16,16 +18,16 @@ class BinSpec(object):
             self._type = "equidistant"
             _fields = self._string.split(',')
             assert len(_fields) == 3
-            self._n_bins = _fields[0]
+            self._n_bins = int(_fields[0])
             self._range = float(_fields[1]), float(_fields[2])
-            self._bin_edges = list(np.linspace(self._range[0], self._range[1], self._n_bins))
+            self._bin_edges = list(np.linspace(self._range[0], self._range[1], self._n_bins + 1))
         elif ' ' in self._string:
             self._type = "bin_edges"
             _fields = self._string.split(' ')
             assert len(_fields) > 1
             self._n_bins = len(_fields) - 1
             self._range = float(_fields[0]), float(_fields[-1])
-            self._bin_edges = _fields
+            self._bin_edges = map(float, _fields)
         else:
             self._type = "named_binning"
             # TODO: get from Merlin/HarryPlotter?
@@ -93,12 +95,28 @@ class Quantity(object):
     def __init__(self, expression, bin_spec,
                  name=None, label=None, source_types=None, log_scale=False, channels=None):
         self.bin_spec = bin_spec
-        self.label = label
         self.name = name
-        self.expression = expression
+        self._label = label
+        self._expression = expression
         self.source_types = source_types
         self.log_scale = log_scale
         self.channels = channels
+
+    @property
+    def expression(self):
+        return self._expression or self.name
+
+    @expression.setter
+    def expression(self, value):
+        self._expression = value
+
+    @property
+    def label(self):
+        return self._label or self.name
+
+    @label.setter
+    def label(self, value):
+        self._label = value
 
     def available_for_source_type(self, source_type):
         if self.source_types is None or source_type in self.source_types:
@@ -115,6 +133,59 @@ class Quantity(object):
             return None
         return self.bin_spec.string
 
+    def make_cutsets_from_binspec(self, bin_spec=None,
+                                  include_underflow=False,
+                                  include_overflow=False):
+        if bin_spec is not None:
+            _bs = bin_spec
+        else:
+            _bs = self.bin_spec
+
+        _be = _bs.bin_edges
+
+        _cs = []
+
+        # underflow
+        if include_underflow:
+            _name = "{}_-inf_{:.2f}".format(self.name, _be[0])
+            _ws = ["({})<{}".format(self.expression, _be[0])]
+            _l = "{}$<${:.2f}".format(self.label, _be[0])
+            _cs.append(
+                CutSet(
+                    name=_name,
+                    weights=_ws,
+                    labels=[_l]
+                )
+            )
+
+        # regular bins
+        for _be_lo, _be_hi in zip(_be[:-1], _be[1:]):
+            _name = "{}_{:.2f}_{:.2f}".format(self.name, _be_lo, _be_hi)
+            _ws = ["{}<=({})".format(_be_lo, self.expression),
+                   "({})<{}".format(self.expression, _be_hi)]
+            _l = r"{:.2f}$\\leq${}$<${:.2f}".format(_be_lo, self.label, _be_hi)
+            _cs.append(
+                CutSet(
+                    name=_name,
+                    weights=_ws,
+                    labels=[_l]
+                )
+            )
+
+        # overflow
+        if include_overflow:
+            _name = "{}_{:.2f}_inf".format(self.name, _be[-1])
+            _ws = ["{}<=({})".format( _be[-1], self.expression)]
+            _l = "{}$\\geq${:.2f}".format(self.label, _be[-1])
+            _cs.append(
+                CutSet(
+                    name=_name,
+                    weights=_ws,
+                    labels=[_l]
+                )
+            )
+
+        return _cs
 
 # -- plottable quantities
 
@@ -158,6 +229,18 @@ QUANTITIES = dict(
         name='eplusiso',
         expression='eplusiso',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
+        channels=['Zee']
+    ),
+    eminuspt=Quantity(
+        name='eminuspt',
+        expression='eminuspt',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
+        channels=['Zee']
+    ),
+    epluspt=Quantity(
+        name='epluspt',
+        expression='epluspt',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         channels=['Zee']
     ),
     genjet1eta=Quantity(
@@ -464,6 +547,18 @@ QUANTITIES = dict(
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2)),
         channels=['Zmm']
     ),
+    muminuspt=Quantity(
+        name='muminuspt',
+        expression='muminuspt',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
+        channels=['Zmm']
+    ),
+    mupluspt=Quantity(
+        name='mupluspt',
+        expression='mupluspt',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
+        channels=['Zmm']
+    ),
     njets=Quantity(
         name='njets',
         expression='njets',
@@ -554,6 +649,12 @@ QUANTITIES = dict(
         expression='run',
         bin_spec=BinSpec.make_equidistant(n_bins=120, range=(272007, 284044))
     ),
+    run2017=Quantity(
+        name='run2017',
+        label='Run number',
+        expression='run',
+        bin_spec=BinSpec.make_equidistant(n_bins=120, range=(297020, 306462))
+    ),
     runBCD=Quantity(
         name='runBCD',
         expression='run',
@@ -573,11 +674,13 @@ QUANTITIES = dict(
     zmass=Quantity(
         name='zmass',
         expression='zmass',
+        label='$m_\\\\mathrm{Z}$ / GeV',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(70, 110))
     ),
     zpt=Quantity(
         name='zpt',
         expression='zpt',
+        label='$p_\\\\mathrm{T}^\\\\mathrm{Z}$ / GeV',
         bin_spec=BinSpec.make_from_bin_edges(
             bin_edges=(30, 40, 50, 60, 85, 105, 130, 175, 230, 300, 400, 500, 700, 1000, 1500)
         )
@@ -585,6 +688,7 @@ QUANTITIES = dict(
     zpt_log=Quantity(
         name='zpt_log',
         expression='zpt',
+        label='$p_\\\\mathrm{T}^\\\\mathrm{Z}$ / GeV',
         bin_spec=BinSpec.make_from_bin_edges(
             bin_edges=(30, 40, 50, 60, 85, 105, 130, 175, 230, 300, 400, 500, 700, 1000, 1500)
         ),
@@ -593,6 +697,7 @@ QUANTITIES = dict(
     zpt_low=Quantity(
         name='zpt_low',
         expression='zpt',
+        label='$p_\\\\mathrm{T}^\\\\mathrm{Z}$ / GeV',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(15, 80))
     ),
 )

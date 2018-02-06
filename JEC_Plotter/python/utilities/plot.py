@@ -39,8 +39,13 @@ def plot_time_dependence(sample,
     )
 
     for _plot in _ph._plots:
-        if _plot._q in ('jet1pt_over_jet1ptraw', 'mpf', 'ptbalance'):
-            _plot._basic_dict['lines'] = ['1.0']  # guide to the eye
+        try:
+            _plot._q
+            if _plot._q in ('jet1pt_over_jet1ptraw', 'mpf', 'ptbalance'):
+                _plot._basic_dict['lines'] = ['1.0']  # guide to the eye
+        except AttributeError:
+            if _plot._qy in ('jet1pt_over_jet1ptraw', 'mpf', 'ptbalance'):
+                _plot._basic_dict['lines'] = ['1.0']  # guide to the eye
 
     _ph.make_plots()
 

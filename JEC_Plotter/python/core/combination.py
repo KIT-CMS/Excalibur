@@ -116,7 +116,7 @@ class Combination(object):
 
         _output_filename = "_".join((self._basename,
                                      self._sample_data['channel'],
-                                     self._sample_dataself['source_label'],
+                                     self._sample_data['source_label'],
                                      time.strftime("%Y-%m-%d", time.localtime())))
 
         self._export_root_merlin_base_dict = {

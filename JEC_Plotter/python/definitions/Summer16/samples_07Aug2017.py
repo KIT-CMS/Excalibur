@@ -14,6 +14,10 @@ SAMPLES = {
         sample_dir=_SAMPLE_DIR,
         sample_file='data16_mm_BCDEFGH_DoMuLegacy.root'
     ),
+    'Data_Zmm_BCDEFGH_JECV5': Sample.load_using_convention(
+        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+        sample_file='data16_mm_BCDEFGH_DoMuLegacy.root'
+    ),
     'Data_Zmm_BCD': Sample.load_using_convention(
         sample_dir=_SAMPLE_DIR,
         sample_file='data16_mm_BCD_DoMuLegacy.root'
@@ -61,6 +65,10 @@ SAMPLES = {
     'Data_Zee_BCD_noetaphiclean': Sample.load_using_convention(
         sample_dir=_SAMPLE_DIR,
         sample_file='data16_ee_BCD_DoElLegacy_noetaphiclean.root'
+    ),
+    'Data_Zee_BCDEFGH_JECV5': Sample.load_using_convention(
+        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+        sample_file='data16_ee_BCDEFGH_DoElLegacy.root'
     ),
 }
 

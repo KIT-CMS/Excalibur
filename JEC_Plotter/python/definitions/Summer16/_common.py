@@ -179,6 +179,7 @@ _jec_iovs = dict(
     EFearly=(276831, 278801),
     FlateG=(278802, 280385),
     H=(280919, 284044),
+    FlateGH=(278802, 284044),
 )
 
 ADDITIONAL_CUTS['jec_iovs'] = dict()

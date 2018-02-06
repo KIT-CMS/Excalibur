@@ -63,12 +63,12 @@ class _Plot1D(object):
 
             # binning
             'x_expressions': [self._q.expression],
-            'x_bins': self._q.bin_spec.string,
+            'x_bins': self._q.bin_spec.string if self._q.bin_spec is not None else None,
             'x_label': self._q.label,
 
             # formatting
             'line_styles': '-',
-            'x_lims': list(self._q.bin_spec.range),
+            'x_lims': list(self._q.bin_spec.range) if self._q.bin_spec is not None else None,
             'title': None,
             'y_log': self._q.log_scale,
             'x_log': self._q.log_scale,
@@ -120,10 +120,23 @@ class _Plot1D(object):
                 self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
                 self._basic_dict['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
 
+    @property
+    def _all_involved_quantities(self):
+        return [self._q]
+
     def get_dict(self):
         _d = deepcopy(self._basic_dict)
 
         for _i, (_sample, _cutset) in enumerate(zip(self._samples, self._cut_sets)):
+
+            # skip quantities not available in certain channels
+            if not all([_q.available_for_channel(_sample['channel']) for _q in self._all_involved_quantities]):
+                continue
+
+            # skip quantities not available in certain source types (data/MC)
+            if not all([_q.available_for_source_type(_sample['source_type']) for _q in self._all_involved_quantities]):
+                continue
+
             _d['nicks'].append("nick{}".format(_i))
             _d['files'].append(_sample['file'])
             _d['labels'].append("{source_type} ({source_label})".format(**_sample._dict))
@@ -161,11 +174,16 @@ class _Plot1D(object):
                 "subplot_nicks": _res_nicks,  #["dummy"],  # HARRYPLOTTER!!
                 "y_subplot_label": "Ratio",
                 'y_subplot_lims': [0.85, 1.05],
-                'y_errors': _d['y_errors']+[False]*len(_num_nicks),
+                'y_errors': _d['y_errors'] + [True] * len(_num_nicks),
             })
 
+            # need to create a 'parallel' set of stacks for the ratios
+            # to avoid stacking ratios and non-rations together...
+            if 'stacks' in _d:
+                _d['stacks'].extend([_stackname+'_r' for _stackname in _d['stacks']])
+
         if self._normalize_to_first_histo and len(_d['files']) > 1:
-            _d['analysis_modules'].append("NormalizeToFirstHisto")
+            _d['analysis_modules'].insert(0, "NormalizeToFirstHisto")
 
         return _d
 
@@ -328,7 +346,7 @@ class _Plot2D(_Plot1D):
         super(_Plot2D, self).__init__(
             basename=basename, quantity=quantity_pair[0], selection=selection,
             samples=samples, cut_sets=cut_sets, correction_string=correction_string,
-            normalize_to_first_histo=False, show_ratio_to_first=False
+            normalize_to_first_histo=False, show_ratio_to_first=show_ratio_to_first
         )
         del self._q
         self._qx, self._qy = quantity_pair
@@ -346,18 +364,18 @@ class _Plot2D(_Plot1D):
 
             # binning
             'x_expressions': [self._qx.expression],
-            'x_bins': self._qx.bin_spec.string,
+            'x_bins': self._qx.bin_spec.string if self._qx.bin_spec is not None else None,
             'x_label': self._qx.label,
             'y_expressions': [self._qy.expression],
-            'y_bins': self._qy.bin_spec.string,
+            'y_bins': self._qy.bin_spec.string if self._qy.bin_spec is not None else None,
             'y_label': self._qy.label,
 
             # formatting
             'title': None,
             'line_styles': '-',
-            'x_lims': list(self._qx.bin_spec.range),
+            'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
             'x_log': self._qx.log_scale,
-            'y_lims': list(self._qy.bin_spec.range),
+            'y_lims': list(self._qy.bin_spec.range) if self._qy.bin_spec is not None else None,
             'y_log': self._qy.log_scale,
 
 
@@ -407,6 +425,10 @@ class _Plot2D(_Plot1D):
                 self._basic_dict['texts_size'].append(15)
                 self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
                 self._basic_dict['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
+
+    @property
+    def _all_involved_quantities(self):
+        return [self._qx, self._qy]
 
     def get_dict(self):
         _d = super(_Plot2D, self).get_dict()
@@ -496,6 +518,7 @@ class PlotHistograms2D(PlotHistograms1D):
                  additional_cuts=None,
                  basename='hist_2d', corrections='L1L2L3Res',
                  show_cut_info_text=True,
+                 show_ratio_to_first=False,
                  show_as_profile=False):
 
         self._plots = []
@@ -522,7 +545,7 @@ class PlotHistograms2D(PlotHistograms1D):
                         cut_sets=additional_cuts,
                         correction_string=corrections,
                         normalize_to_first_histo=False,
-                        show_ratio_to_first=False,
+                        show_ratio_to_first=show_ratio_to_first,
                         show_cut_info_text=show_cut_info_text,
                         show_as_profile=show_as_profile)
 
