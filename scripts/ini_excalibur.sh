@@ -104,6 +104,10 @@ elif [ $USER = "dsavoiu" ]; then
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Excalibur"
     export HARRY_REMOTE_USER="dsavoiu"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
+    if [[ $HOSTNAME = *bms* ]]; then
+         export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/dsavoiu/public_html/plots_archive/{subdir}"
+         export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/dsavoiu/public_html/plots_archive/{subdir}"
+    fi
 fi
 source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
