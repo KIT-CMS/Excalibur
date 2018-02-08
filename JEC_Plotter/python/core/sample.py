@@ -16,6 +16,7 @@ SAMPLE_SOURCE_COLOR_MAP = {
         'madgraph_4J': 'k',
         'madgraph_NJ': 'k',
         'DYJets_Madgraph': 'k',
+        'DYNJ_Madgraph': 'k',
     }
 
 SAMPLE_FILENAME_CONVENTIONS = {
@@ -27,11 +28,19 @@ SAMPLE_FILENAME_CONVENTIONS = {
                 'marker': '_',
                 'step_flag': True
         },
-        "mc([0-9]+)_([^_]+)_[BCDEFGH]+_([^.]+).root": {
+        "mc16_([^_]+)_[BCDEFGH]+_([^.]+).root": {
                 'source_type': 'MC',
-                'channel': lambda e, s: 'Z'+e.match(s).groups()[1],
-                'source_label': lambda e, s: e.match(s).groups()[2],
-                'color': lambda e, s: SAMPLE_SOURCE_COLOR_MAP.get(e.match(s).groups()[2], None),
+                'channel': lambda e, s: 'Z'+e.match(s).groups()[0],
+                'source_label': lambda e, s: e.match(s).groups()[1],
+                'color': lambda e, s: SAMPLE_SOURCE_COLOR_MAP.get(e.match(s).groups()[1], None),
+                'marker': '_',
+                'step_flag': True
+        },
+        "mc17_([^_]+)_([^.]+).root": {
+                'source_type': 'MC',
+                'channel': lambda e, s: 'Z'+e.match(s).groups()[0],
+                'source_label': lambda e, s: e.match(s).groups()[1],
+                'color': lambda e, s: SAMPLE_SOURCE_COLOR_MAP.get(e.match(s).groups()[1], None),
                 'marker': '_',
                 'step_flag': True
         },
