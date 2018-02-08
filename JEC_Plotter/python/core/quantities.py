@@ -509,6 +509,7 @@ QUANTITIES = dict(
     mpf=Quantity(
         name='mpf',
         expression='mpf',
+        label="MPF",
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2))
     ),
     mu1eta=Quantity(
@@ -637,6 +638,7 @@ QUANTITIES = dict(
     ptbalance=Quantity(
         name='ptbalance',
         expression='ptbalance',
+        label='$p_\\\\mathrm{T}$ balance',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2))
     ),
     rho=Quantity(

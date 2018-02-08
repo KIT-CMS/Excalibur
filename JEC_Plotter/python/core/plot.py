@@ -2,7 +2,7 @@ import Excalibur.Plotting.harryinterface as harryinterface
 
 from copy import deepcopy
 
-from Excalibur.JEC_Plotter.core.quantities import QUANTITIES
+from Excalibur.JEC_Plotter.core.quantities import BinSpec, QUANTITIES
 
 CHANNEL_SPEC = {
     'Zmm' : {
@@ -442,6 +442,213 @@ class _Plot2D(_Plot1D):
         return _d
 
 
+
+class _PlotExtrapolation(_Plot1D):
+    # todo: implement cycler
+    _LIGHT_COLORS_CYCLE = ['orange', 'royalblue', 'green']
+    _DARK_COLORS_CYCLE = ['darkred', 'darkblue', 'darkgreen']
+    def __init__(self,
+                 basename,
+                 sample_data,
+                 sample_mc,
+                 selection,
+                 response_quantities,
+                 extrapolation_quantity,
+                 fit_function_range,
+                 n_extrapolation_bins,
+                 correction_string,
+                 show_cut_info_text=False):
+
+        self._basename = basename
+        self._qys = response_quantities
+        self._qx = extrapolation_quantity
+        self._sample_data = sample_data
+        self._sample_mc = sample_mc
+        self._selection = selection
+        self._correction_string = correction_string
+        self._function_range = fit_function_range
+        assert len(self._function_range) == 2
+
+        self._bin_spec = BinSpec.make_equidistant(n_extrapolation_bins, self._function_range)
+
+        self._basic_weights_string = self._selection.weights_string
+
+        self._channel = self._sample_data['channel']
+        assert self._sample_data["channel"] == self._sample_mc["channel"]
+
+        # computes y variable limits
+        _y_range = None
+        for _qy in self._qys:
+            _bs = _qy.bin_spec
+            if _bs is None:
+                continue
+            _rg = _bs.range
+            if _y_range is None:
+                _y_range = list(_rg)
+            else:
+                # expand range as needed
+                _y_range[0] = min(_y_range[0], _rg[0])
+                _y_range[1] = max(_y_range[1], _rg[1])
+
+        _output_folder = "_".join([self._basename,
+                                   self._channel,
+                                   self._correction_string,
+                                   self._selection.name])
+        _output_filename = '{}'.format(self._basename)
+        self._basic_dict = {
+            # data
+            'zjetfolders': [self._selection.zjet_folder],
+            'weights': [self._basic_weights_string],
+
+            # binning
+            'x_expressions': [self._qx.expression],
+            #'x_bins': self._qx.bin_spec.string if self._qx.bin_spec is not None else None,
+            'x_bins': self._bin_spec.string,
+            'x_label': self._qx.label,
+            ## todo
+            #'y_bins': self._qy.bin_spec.string if self._qy.bin_spec is not None else None,
+            'y_label': "Response",
+            'y_subplot_label': "Ratio",
+
+            'y_subplot_lims': [0.95, 1.05],
+            #'y_lims': _y_range,
+            'y_lims': [0.6, 1.2],
+
+            # formatting
+            'title': None,
+            'line_widths': '1',
+            'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
+            'x_log': self._qx.log_scale,
+
+            # texts
+            "texts": [
+                CHANNEL_SPEC.get(self._channel, {}).get('label', ""),
+                r"$\\bf{{{0}}}$".format(self._correction_string)
+            ],
+            "texts_size": [
+                20,
+                25,
+            ],
+            "texts_x": [
+                0.1, #self._INFOBOX_TOPLEFT_XY[0],
+                0.68,
+            ],
+            "texts_y": [
+                1.08,  # self._INFOBOX_TOPLEFT_XY[1],
+                0.09,
+            ],
+            # web gallery options
+            'www': _output_folder,
+            'filename': _output_filename,
+
+            'analysis_modules': [
+                "Ratio",
+                "FunctionPlot"
+            ],
+            'plot_modules': [
+                "PlotMplZJet",
+                "PlotExtrapolationText",
+            ],
+
+            'function_parameters': ["1,1,1"],
+            'function_ranges': [",".join(map(str, self._function_range))],
+            'functions': ["[0]+[1]*x"],
+
+            'lines': [1],
+            'legend': "lower left",
+            'subplot_fraction': 30,
+            'subplot_legend': "lower right",
+            "ratio_denominator_no_errors": "false",
+
+            'tree_draw_options': 'prof',
+
+            # -- filled in per sample/response quantity
+            'y_expressions': [],
+            'extrapolation_text_colors': [],
+            'extrapolation_text_nicks': [],
+            'function_fit': [],
+            'function_nicknames': [],
+            "ratio_result_nicks": [],
+            "ratio_numerator_nicks": [],
+            "ratio_denominator_nicks": [],
+
+            'nicks': [],
+            'files': [],
+            'labels': [],
+            'corrections': [],
+            'colors': [],
+            'markers': [],
+            'marker_fill_styles': [],
+            'alphas': 0.3  # transparency
+        }
+
+        if show_cut_info_text:
+            # add cut labels as text
+            for _i, _cl in enumerate(self._selection.texts):
+                self._basic_dict['texts'].append(_cl)
+                self._basic_dict['texts_size'].append(15)
+                self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
+                self._basic_dict['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
+
+    @property
+    def _all_involved_quantities(self):
+        return [self._qx] + self._qys
+
+    def get_dict(self):
+        _d = deepcopy(self._basic_dict)
+
+        for _qy in self._qys:
+            _d['y_expressions'].extend(
+                [_qy.expression, _qy.expression]
+            )
+            _d['files'].extend([
+                "{}".format(self._sample_data['file']),
+                "{}".format(self._sample_mc['file'])
+            ])
+            _d['corrections'].extend([
+                "{}".format(self._correction_string),
+                "L1L2L3"  # MC is always L1L2L3
+            ])
+            _d['nicks'].extend([
+                "{}_data".format(_qy.name),
+                "{}_mc".format(_qy.name)
+            ])
+            _d['labels'].extend([
+                "{} {source_type} ({source_label})".format(_qy.label, **self._sample_data._dict),
+                "{} {source_type} ({source_label})".format(_qy.label, **self._sample_mc._dict),
+            ])
+            _d['ratio_numerator_nicks'].append("{}_data".format(_qy.name))
+            _d['ratio_denominator_nicks'].append("{}_mc".format(_qy.name))
+            _d['ratio_result_nicks'].append("{}_ratio".format(_qy.name))
+
+        for _qy in self._qys:
+            _d['labels'].append("{}".format(_qy.label))
+
+        #_d['labels'] += [""] * len(self._qys) ???
+
+        _d['markers'] = ["s", "o"] * len(self._qys) + ["o", "o"]
+        _d['marker_fill_styles'] = ["none"] * len(self._qys) + ["full"] * len(self._qys) + ["none", "full"]
+        _d['line_styles'] = [None]*3*len(self._qys) + ["--"]*3*len(self._qys)
+
+        # fit both quantities and their ratios
+        _d['function_fit'] = _d['nicks'] + _d['ratio_result_nicks']
+        _d['function_nicknames'] = ["{}_fit".format(_n) for _n in _d['function_fit']]
+
+        _d['extrapolation_text_nicks'] = ['{}_ratio_fit'.format(_qy.name) for _qy in self._qys]
+
+        for _i, _qy in enumerate(self._qys):
+            _d['colors'].extend([
+                self._LIGHT_COLORS_CYCLE[_i % len(self._LIGHT_COLORS_CYCLE)],
+                self._DARK_COLORS_CYCLE[_i % len(self._DARK_COLORS_CYCLE)]
+            ])
+        for _i, _qy in enumerate(self._qys):
+            _col = self._DARK_COLORS_CYCLE[_i % len(self._DARK_COLORS_CYCLE)]
+            _d['extrapolation_text_colors'].append(_col)
+            _d['colors'].append(_col)
+
+        return _d
+
+
 class PlotHistograms1D(object):
 
     def __init__(self, samples, quantities, selection_cuts,
@@ -537,17 +744,59 @@ class PlotHistograms2D(PlotHistograms1D):
                 continue
 
             for _selection_cut in selection_cuts:
-
                 _plot = _Plot2D(basename=self._basename,
-                        quantity_pair=(_qx, _qy),
-                        selection=_selection_cut,
-                        samples=samples,
-                        cut_sets=additional_cuts,
-                        correction_string=corrections,
-                        normalize_to_first_histo=False,
-                        show_ratio_to_first=show_ratio_to_first,
-                        show_cut_info_text=show_cut_info_text,
-                        show_as_profile=show_as_profile)
+                                quantity_pair=(_qx, _qy),
+                                selection=_selection_cut,
+                                samples=samples,
+                                cut_sets=additional_cuts,
+                                correction_string=corrections,
+                                normalize_to_first_histo=False,
+                                show_ratio_to_first=show_ratio_to_first,
+                                show_cut_info_text=show_cut_info_text,
+                                show_as_profile=show_as_profile)
+
+                self._plots.append(_plot)
+
+class PlotExtrapolation(PlotHistograms2D):
+
+    def __init__(self,
+                 sample_data,
+                 sample_mc,
+                 response_quantities,
+                 selection_cuts,
+                 extrapolation_quantity='alpha',
+                 fit_function_range=(0, 0.3),
+                 n_extrapolation_bins=6,
+                 basename='extrapolation',
+                 corrections='L1L2L3Res'):
+
+        self._plots = []
+        self._basename = basename
+
+        _qx = QUANTITIES.get(extrapolation_quantity, None)
+        if _qx is None:
+            raise ValueError("UNKONWN extrapolation quantity '%s'!" % (extrapolation_quantity,))
+
+        _qys = []
+        for _qyn in response_quantities:
+            _qy = QUANTITIES.get(_qyn, None)
+            if _qy is None:
+                print "UNKONWN response quantity '%s': skipping..." % (_qyn,)
+                continue
+            _qys.append(_qy)
+
+            for _selection_cut in selection_cuts:
+                _plot = _PlotExtrapolation(
+                    basename=self._basename,
+                    sample_data=sample_data,
+                    sample_mc=sample_mc,
+                    selection=_selection_cut,
+                    response_quantities=_qys,
+                    extrapolation_quantity=_qx,
+                    fit_function_range=fit_function_range,
+                    n_extrapolation_bins=n_extrapolation_bins,
+                    correction_string=corrections,
+                    show_cut_info_text=False)
 
                 self._plots.append(_plot)
 
