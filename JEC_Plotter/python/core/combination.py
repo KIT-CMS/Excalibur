@@ -1,8 +1,19 @@
+import os
+import time
+import ROOT
+
+from .quantities import BinSpec, QUANTITIES
+
+from array import array
+from copy import deepcopy
+
+from Artus.Utility.tfilecontextmanager import TFileContextManager
+from Excalibur.Plotting.utility.expressionsZJet import ExpressionsDictZJet
+from Artus.HarryPlotter.analysis_modules.tgraphfromhistograms import HistogramGroupIterator
+
 import Excalibur.Plotting.harryinterface as harryinterface
 
-import time
 
-from copy import deepcopy
 
 CHANNEL_SPEC = {
     'Zmm' : {
@@ -15,6 +26,7 @@ CHANNEL_SPEC = {
 
 ALPHA_UPPER_BIN_EDGES = [0.1, 0.15, 0.2, 0.3, 0.4]
 
+ETA_BIN_EDGES_BARREL = [0, 1.3]
 ETA_BIN_EDGES_WIDE = [0, 0.783, 1.305, 1.93,
                       2.5, 2.964, 3.2, 5.191]
 ETA_BIN_EDGES_NARROW = [0.000, 0.261, 0.522, 0.783, 1.044, 1.305,
@@ -22,8 +34,346 @@ ETA_BIN_EDGES_NARROW = [0.000, 0.261, 0.522, 0.783, 1.044, 1.305,
                         2.650, 2.853, 2.964, 3.139, 3.489, 3.839,
                         5.191]
 
-class Combination(object):
-    """Create a ROOT file containing histograms for specified quantities."""
+class CombinationDirect(object):
+    """Create a ROOT file containing histograms for specified quantities.
+
+    This class uses ROOT directly for creating the output.
+    """
+    _expr_dict_zjet = ExpressionsDictZJet()
+
+    _quantity_labels = {
+        # just raw number of events -> None
+        None: 'RawNEvents',
+
+        # 1D histograms
+        'ptbalance': 'PtBal',
+        'mpf': 'MPF',
+        'rawmpf': 'MPF-notypeI',
+        'zmass': 'ZMass',
+        'npumean': 'Mu',
+        'rho': 'Rho',
+        'npv': 'NPV',
+
+        # 2D histograms
+        ("npumean", "rho"): "rho_vs_npumean",
+        ("npumean", "npv"): "npv_vs_npumean",
+    }
+
+    def __init__(self,
+                 sample_data,
+                 sample_mc,
+                 global_selection,
+                 alpha_upper_bin_edges,
+                 eta_binnings,
+                 basename="combination_ZJet",
+                 correction_folders=('L1L2L3',),
+                 pileup_subtraction_algorithm='CHS'):
+        """
+
+        :param sample_data: `jercplot.core.sample.Sample` object containing the data
+        :type sample_data: `jercplot.core.sample.Sample` object
+        :param sample_mc: `jercplot.core.sample.Sample` object containing the MC
+        :type sample_mc: `jercplot.core.sample.Sample` object
+        :param global_selection: `jercplot.core.selection.CutSet` object specifying the selection cuts
+        :type global_selection: `jercplot.core.selection.CutSet` object
+        :param basename: base name of the generated output file (combination file)
+        :type basename: str
+        :param alpha_upper_bin_edges: list of upper bin edges for the inclusive alpha binning
+        :type alpha_upper_bin_edges: list of float
+        :param eta_binnings: a list of lists indicating the eta bin edges (each list must be given in ascending order!)
+        :type eta_binnings: list of float
+        :param correction_folders: list of ZJet correction levels (e.g. ``['L1L2L3']``)
+        :type correction_folders: list of str
+        :param pileup_subtraction_algorithm: name of algorithm used for pileup subtraction (e.g. ``'CHS'``) (only used as label)
+        :type pileup_subtraction_algorithm: str
+        :param inclusive_eta_bin: whether to include plots for the entire eta range in addition to the sub-bins.
+        :type inclusive_eta_bin: bool
+        """
+
+        self._sample_data = sample_data
+        self._sample_mc = sample_mc
+
+        self._channel = self._sample_data['channel']
+        assert self._sample_mc['channel'] == self._channel
+
+        self._basename = basename
+        self._correction_folders = correction_folders
+        self._pu_algorithm = pileup_subtraction_algorithm
+        self._alpha_upper_bin_edges = alpha_upper_bin_edges
+        self._eta_binnings = eta_binnings
+        self._selection = global_selection
+
+        # check that the eta binning specification is correct
+        try:
+            # first two levels must be iterable
+            iter(self._eta_binnings)
+            iter(self._eta_binnings[0])
+        except ValueError:
+            raise ValueError("'eta_binnings' must be a list of lists of bin edges!")
+
+        self._global_cuts = self._selection.weights_string if self._selection is not None else None
+
+        self._alpha_cut_dicts = [
+            {
+                'cut_string' : '(alpha<{})'.format(_alpha_upper),
+                'label_string': 'a' + str(int(100 * _alpha_upper))
+            }
+            for _alpha_upper in self._alpha_upper_bin_edges
+        ]
+
+        self._eta_cut_dicts = []
+        for _eta_bin_edges in self._eta_binnings:
+            self._eta_cut_dicts += [
+                {
+                    'eta_hi': _eta_hi,  # only used for display
+                    'eta_lo': _eta_lo,  # only used for display
+                    'cut_string': "({0}<=abs(jet1eta)&&abs(jet1eta)<{1})".format(_eta_lo, _eta_hi),
+                    'label_string': "eta_{0:0>2d}_{1:0>2d}".format(int(round(10 * _eta_lo)), int(round(10 * _eta_hi))),
+                }
+                for (_eta_lo, _eta_hi) in zip(_eta_bin_edges[:-1], _eta_bin_edges[1:])
+            ]
+
+        self._output_filename = "_".join((self._basename,
+                                     self._sample_data['channel'],
+                                     self._sample_data['source_label'],
+                                     time.strftime("%Y-%m-%d", time.localtime()))) + ".root"
+
+    def _prepare(self):
+        '''prepare the Merlin dictionaries used for "plotting" to the ROOT file.'''
+        self._comb_dicts = []
+        for _alpha_cut_dict in self._alpha_cut_dicts:
+            for _eta_cut_dict in self._eta_cut_dicts:
+                    for _quantity, _quantity_label in self._quantity_labels.iteritems():
+
+                        _configuration_label = '_'.join([_quantity_label,  # TODO: assert key in dict?
+                                                         self._pu_algorithm,
+                                                         _alpha_cut_dict['label_string'],
+                                                         _eta_cut_dict['label_string']])
+
+                        self._comb_dicts.append(
+                            dict(
+                                configuration_label=_configuration_label,
+
+                                x_expression='zpt',
+                                x_label='zpt',
+                                x_bins=QUANTITIES['zpt'].bin_spec,
+
+                                weights='&&'.join((
+                                    self._global_cuts or "1.0",
+                                    _alpha_cut_dict['cut_string'],
+                                    _eta_cut_dict['cut_string']
+                                )),
+                            )
+                        )
+
+                        if isinstance(_quantity, tuple):
+                            # 2D histogram
+                            self._comb_dicts[-1].update(
+                                dict(
+                                    x_expression=_quantity[0],
+                                    x_label=_quantity[0],
+                                    # TODO: make more general (?)
+                                    x_bins=BinSpec.make_equidistant(25, (0.5, 25.5)),
+
+                                    y_expression=_quantity[1],
+                                    y_label=_quantity[1],
+                                )
+                            )
+                        elif _quantity is None:
+                            pass
+                        else:
+                            # assume 1D histogram (or `None` for raw event number)
+                            self._comb_dicts[-1].update(
+                                dict(
+                                    y_expression=_quantity,
+                                    y_label=_quantity,
+                                )
+                            )
+
+    @staticmethod
+    def _create_root_histogram(name, root_object_class_name, x_bin_spec, y_bin_spec=None):
+
+        _root_obj_class = getattr(ROOT, root_object_class_name)
+        _root_obj_args = [name, name, x_bin_spec.n_bins, array("d", x_bin_spec.bin_edges)]
+
+        if y_bin_spec is not None:
+            _root_obj_args.extend([y_bin_spec.n_bins, array("d", y_bin_spec.bin_edges)])
+
+        #if 'Profile' in root_object_class_name:
+        #    _root_obj_args.append('')
+        #print "Calling ctor for '{}' with args: {}".format(root_object_class_name, _root_obj_args)
+        _root_obj = _root_obj_class(*_root_obj_args)
+        #print "Returning ROOT object:", _root_obj
+
+        return _root_obj
+
+
+    @staticmethod
+    def _profile_to_tgrapherrors(tge_label, profile_x, profile_y):
+        _histo_iter = HistogramGroupIterator(
+            histograms=(profile_x, profile_y),
+            skip=HistogramGroupIterator.SKIP_ANY
+        )
+        _tge = ROOT.TGraphErrors()
+        for _i, _bincont in enumerate(_histo_iter):
+            (_xm, _xe), (_ym, _ye) = _bincont
+            _tge.SetPoint(_i, _xm, _ym)
+            _tge.SetPointError(_i, _xe, _ye)
+        _tge.SetName(tge_label)
+        _tge.SetTitle(tge_label)
+        return _tge
+
+
+    def run(self, require_confirmation=True):
+        """Create the combination file from the plot dicts"""
+
+        self._prepare()
+
+        _root_file_data = ROOT.TFile(self._sample_data['file'])
+        _root_file_mc = ROOT.TFile(self._sample_mc['file'])
+
+        _zjet_folder = self._selection.zjet_folder
+
+        print "\nCreating combination file...\n"
+        print "Using data sample at: {}".format(self._sample_data['file'])
+        print "Using MC sample at: {}".format(self._sample_mc['file'])
+        print "Using cut folder: {}".format(_zjet_folder)
+        print "Using global weight string: '{}'".format(self._global_cuts)
+        print "\nAlpha upper bin edges: {}".format(self._alpha_upper_bin_edges)
+        print "Eta binnings:"
+        for _ecd in self._eta_cut_dicts:
+            print "{} -> eta in [{}, {}]".format(_ecd['label_string'], _ecd['eta_lo'], _ecd['eta_hi'])
+        print "\nCorrection levels: {}".format(self._correction_folders)
+        print "\nTotal number of objects: "
+        print "    3 (data, mc, ratio)"
+        print "  * {} (no. of requested output quantities)".format(len(self._quantity_labels.keys()))
+        print "  * {} (alpha bins)".format(len(self._alpha_cut_dicts))
+        print "  * {} (eta bins)".format(len(self._eta_cut_dicts))
+        print "  * {} (correction levels)".format(len(self._correction_folders))
+        print "-------------------------------"
+        print "  = {}".format(3 * len(self._comb_dicts) * len(self._correction_folders))
+
+        print "\nOutput file name: {}".format(self._output_filename)
+
+        if os.path.exists(self._output_filename):
+            raise IOError("File '{}' exists: will not overwrite!")
+
+        if require_confirmation:
+            _answer = ''
+            while _answer.lower() not in ('y', 'yes', 'no', 'n'):
+                if _answer:
+                    print "Please answer 'yes'/'y' or 'no'/'n':"
+                _answer = raw_input("Is this correct? [yes/no] >")
+
+            if _answer in ('no', 'n'):
+                print "Aborted by user."
+                exit(1)
+
+        _root_file_output = ROOT.TFile(self._output_filename, "RECREATE")
+
+        for _corr_folder in self._correction_folders:
+            print "Processing correction level '{}'...".format(_corr_folder)
+
+            _root_ntuple_data = _root_file_data.Get("{}_{}/ntuple".format(_zjet_folder, _corr_folder))
+
+            # no residuals in MC -> use L1L2L3 instead
+            if _corr_folder == "L1L2L3Res":
+                _root_ntuple_mc = _root_file_mc.Get("{}_{}/ntuple".format(_zjet_folder, "L1L2L3"))
+            else:
+                _root_ntuple_mc = _root_file_mc.Get("{}_{}/ntuple".format(_zjet_folder, _corr_folder))
+
+            for _pd in self._comb_dicts:
+
+                _plot_label = "{}_{}".format(_pd['configuration_label'], _corr_folder)
+
+                print "\tProcessing '{}'...".format(_plot_label)
+                _weights = self._expr_dict_zjet.replace_expressions(_pd['weights'])
+                _x_expr = self._expr_dict_zjet.replace_expressions(_pd['x_expression'])
+                _y_expr = _pd.get('y_expression')
+
+                # -- distinguish two main cases: 1D histos and 2D profiles
+                if _y_expr is not None:
+                    # if y_expression given -> 2D profile
+                    _y_expr = self._expr_dict_zjet.replace_expressions(_y_expr)
+
+                    # -- create the (temporary) profile histos
+                    _data_prof_y_label = "Data_{}_y_prof".format(_plot_label)
+                    _data_prof_x_label = "Data_{}_x_prof".format(_plot_label)
+                    _data_prof_y_obj = self._create_root_histogram(_data_prof_y_label,
+                                                                   "TProfile",
+                                                                   _pd['x_bins'])
+                    _data_prof_x_obj = _data_prof_y_obj.Clone(_data_prof_x_label)
+
+                    _mc_prof_y_label = "MC_{}_y_prof".format(_plot_label)
+                    _mc_prof_x_label = "MC_{}_x_prof".format(_plot_label)
+                    _mc_prof_y_obj = self._create_root_histogram(_mc_prof_y_label,
+                                                                 "TProfile",
+                                                                 _pd['x_bins'])
+                    _mc_prof_x_obj = _mc_prof_y_obj.Clone(_mc_prof_x_label)
+
+                    # -- fill the profile histos from the TTree
+                    _root_ntuple_data.Project(_data_prof_y_label, "{}:{}".format(_y_expr, _x_expr), _weights, "prof goff")
+                    _root_ntuple_mc.Project(_mc_prof_y_label, "{}:{}".format(_y_expr, _x_expr), _weights, "prof goff")
+                    _root_ntuple_data.Project(_data_prof_x_label, "{}:{}".format(_x_expr, _x_expr), _weights, "prof goff")
+                    _root_ntuple_mc.Project(_mc_prof_x_label, "{}:{}".format(_x_expr, _x_expr), _weights, "prof goff")
+
+                    _data_prof_y = _root_file_output.Get(_data_prof_y_label)
+                    _mc_prof_y = _root_file_output.Get(_mc_prof_y_label)
+                    _data_prof_x = _root_file_output.Get(_data_prof_x_label)
+                    _mc_prof_x = _root_file_output.Get(_mc_prof_x_label)
+
+
+                    # -- create ratio histogram
+                    _ratio_obj = _data_prof_y_obj.ProjectionX().Clone("Ratio_{}".format(_plot_label))
+                    _ratio_obj.Divide(_mc_prof_y_obj.ProjectionX())
+                    _ratio_obj.SetTitle("Ratio_{}".format(_plot_label))
+
+                    # -- convert data, mc profiles to TGraphErrors
+                    _tge_data = self._profile_to_tgrapherrors("Data_{}".format(_plot_label), _data_prof_x, _data_prof_y)
+                    _tge_mc = self._profile_to_tgrapherrors("MC_{}".format(_plot_label), _mc_prof_x, _mc_prof_y)
+                else:
+                    # if y_expression not given -> 1D histogram
+
+                    # -- create the 1D histos
+                    _data_label = "Data_{}".format(_plot_label)
+                    _data_obj = self._create_root_histogram(_data_label,
+                                                            "TH1D",
+                                                            _pd['x_bins'])
+
+                    _mc_label = "MC_{}".format(_plot_label)
+                    _mc_obj = self._create_root_histogram(_mc_label,
+                                                          "TH1D",
+                                                          _pd['x_bins'])
+
+                    # -- fill the profile histos from the TTree
+                    _root_ntuple_data.Project(_data_label, "{}".format(_x_expr), _weights, "goff")
+                    _root_ntuple_mc.Project(_mc_label, "{}".format(_x_expr), _weights, "goff")
+
+                    # -- create ratio histogram
+                    _ratio_obj = _data_obj.Clone("Ratio_{}".format(_plot_label))
+                    _ratio_obj.Divide(_mc_obj)
+                    _ratio_obj.SetTitle("Ratio_{}".format(_plot_label))
+
+                    # -- convert data, mc profiles to TGraphErrors
+                    _tge_data = _data_obj
+                    _tge_mc = _mc_obj
+
+                # -- write out everything
+                _tge_data.Write()
+                _tge_mc.Write()
+                _ratio_obj.Write()
+
+        print 'Done!'
+        print 'Output file is: {}'.format(self._output_filename)
+        _root_file_output.Close()
+
+
+class CombinationMerlin(object):
+    """Create a ROOT file containing histograms for specified quantities.
+
+    This class constructs and passes plot config dictionaries to Merlin,
+    which then creates the combination file.
+    """
 
     _quantity_labels = {
         # just raw number of events -> None
@@ -87,7 +437,9 @@ class Combination(object):
         self._eta_bin_edges = eta_bin_edges
         self._selection = global_selection
 
-        self._global_cuts = self._selection.weights_string
+        self._global_cuts = "1.0"
+        if self._selection is not None:
+            self._global_cuts = self._selection.weights_string
 
         self._alpha_cut_dicts = [
             {
