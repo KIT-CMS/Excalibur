@@ -150,7 +150,7 @@ for _run_name, _run_range in _run_ranges.iteritems():
         _run_name: CutSet(
             _run_name,
             weights=[
-                "run>={}&&run<={}".format(
+                "((run>={}&&run<={})||run==1)".format(  # exclude MC from cut
                     _run_range[0],
                     _run_range[1],
                 )

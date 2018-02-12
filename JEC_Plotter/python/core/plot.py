@@ -22,7 +22,8 @@ class _Plot1D(object):
                  normalize_to_first_histo=False,
                  show_ratio_to_first=False,
                  show_cut_info_text=True,
-                 stacked=False):
+                 stacked=False,
+                 dataset_label=None):
         self._nsamples = len(samples)
 
         self._basename = basename
@@ -34,6 +35,7 @@ class _Plot1D(object):
         self._normalize_to_first_histo = normalize_to_first_histo
         self._ratio = show_ratio_to_first
         self._stacked = stacked
+        self._dataset_label = dataset_label
 
         _ncutsets = len(cut_sets)
 
@@ -72,6 +74,8 @@ class _Plot1D(object):
             'title': None,
             'y_log': self._q.log_scale,
             'x_log': self._q.log_scale,
+
+            'dataset_title': self._dataset_label,
 
             # web gallery options
             'www': _output_folder,
@@ -246,7 +250,8 @@ class _Plot1DFractions(_Plot1D):
     def __init__(self, basename, quantity, selection,
                  fraction_samples, reference_cut_set, fraction_cut_sets,
                  correction_string,
-                 show_cut_info_text=True):
+                 show_cut_info_text=True,
+                 dataset_label=None):
         #
         # print len(fraction_cut_sets)
         # print len(fraction_samples)
@@ -264,7 +269,8 @@ class _Plot1DFractions(_Plot1D):
             normalize_to_first_histo=False,     # always false for fraction plots
             show_ratio_to_first=True,           # always true for fraction plots
             show_cut_info_text=show_cut_info_text,
-            stacked=True)
+            stacked=True,
+            dataset_label=dataset_label)
 
         self._ref_cut_set = reference_cut_set
         self._frac_cut_sets = fraction_cut_sets
@@ -341,12 +347,14 @@ class _Plot2D(_Plot1D):
                  normalize_to_first_histo=False,
                  show_ratio_to_first=False,
                  show_cut_info_text=True,
-                 show_as_profile=False):
+                 show_as_profile=False,
+                 dataset_label=None):
 
         super(_Plot2D, self).__init__(
             basename=basename, quantity=quantity_pair[0], selection=selection,
             samples=samples, cut_sets=cut_sets, correction_string=correction_string,
-            normalize_to_first_histo=False, show_ratio_to_first=show_ratio_to_first
+            normalize_to_first_histo=False, show_ratio_to_first=show_ratio_to_first,
+            dataset_label=dataset_label
         )
         del self._q
         self._qx, self._qy = quantity_pair
@@ -378,6 +386,7 @@ class _Plot2D(_Plot1D):
             'y_lims': list(self._qy.bin_spec.range) if self._qy.bin_spec is not None else None,
             'y_log': self._qy.log_scale,
 
+            'dataset_title': self._dataset_label,
 
             # texts
             "texts": [
@@ -457,7 +466,9 @@ class _PlotExtrapolation(_Plot1D):
                  fit_function_range,
                  n_extrapolation_bins,
                  correction_string,
-                 show_cut_info_text=False):
+                 show_cut_info_text=False,
+                 dataset_label=None,
+                 additional_cut_dict=None):
 
         self._basename = basename
         self._qys = response_quantities
@@ -465,13 +476,16 @@ class _PlotExtrapolation(_Plot1D):
         self._sample_data = sample_data
         self._sample_mc = sample_mc
         self._selection = selection
+        self._add_cut_dict = additional_cut_dict
         self._correction_string = correction_string
         self._function_range = fit_function_range
+        self._dataset_label = dataset_label
         assert len(self._function_range) == 2
 
-        self._bin_spec = BinSpec.make_equidistant(n_extrapolation_bins, self._function_range)
+        self._data_source_label = self._sample_data._dict['source_label']
+        self._mc_source_label = self._sample_mc._dict['source_label']
 
-        self._basic_weights_string = self._selection.weights_string
+        self._bin_spec = BinSpec.make_equidistant(n_extrapolation_bins, self._function_range)
 
         self._channel = self._sample_data['channel']
         assert self._sample_data["channel"] == self._sample_mc["channel"]
@@ -495,6 +509,18 @@ class _PlotExtrapolation(_Plot1D):
                                    self._correction_string,
                                    self._selection.name])
         _output_filename = '{}'.format(self._basename)
+
+        _total_cut = self._selection
+        _add_cut = self._add_cut_dict.get('cut', None)
+        if _add_cut is not None:
+            _total_cut = self._selection + _add_cut
+            _output_filename += "_{}".format(_add_cut.name)
+            # replace data source label with cut label
+            self._data_source_label = self._add_cut_dict.get('label', self._data_source_label)
+            # FIXME: what about MC?
+
+        self._basic_weights_string = _total_cut.weights_string
+
         self._basic_dict = {
             # data
             'zjetfolders': [self._selection.zjet_folder],
@@ -519,6 +545,8 @@ class _PlotExtrapolation(_Plot1D):
             'line_widths': '1',
             'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
             'x_log': self._qx.log_scale,
+
+            'dataset_title': self._dataset_label,
 
             # texts
             "texts": [
@@ -614,8 +642,8 @@ class _PlotExtrapolation(_Plot1D):
                 "{}_mc".format(_qy.name)
             ])
             _d['labels'].extend([
-                "{} {source_type} ({source_label})".format(_qy.label, **self._sample_data._dict),
-                "{} {source_type} ({source_label})".format(_qy.label, **self._sample_mc._dict),
+                "{0} {source_type} ({1})".format(_qy.label, self._data_source_label, **self._sample_data._dict),
+                "{0} {source_type} ({1})".format(_qy.label, self._mc_source_label, **self._sample_mc._dict),
             ])
             _d['ratio_numerator_nicks'].append("{}_data".format(_qy.name))
             _d['ratio_denominator_nicks'].append("{}_mc".format(_qy.name))
@@ -657,7 +685,8 @@ class PlotHistograms1D(object):
                  normalize_to_first=False,
                  show_ratio_to_first=False,
                  show_cut_info_text=True,
-                 stacked=False):
+                 stacked=False,
+                 jec_version_label=None,):
         self._plots = []
         self._basename = basename
 
@@ -679,7 +708,8 @@ class PlotHistograms1D(object):
                         normalize_to_first_histo=normalize_to_first,
                         show_ratio_to_first=show_ratio_to_first,
                         show_cut_info_text=show_cut_info_text,
-                        stacked=stacked)
+                        stacked=stacked,
+                        dataset_label=jec_version_label)
 
                 self._plots.append(_plot)
 
@@ -694,7 +724,8 @@ class PlotHistograms1DFractions(PlotHistograms1D):
                  reference_cut, fraction_cuts,
                  basename='hist_1d_fractions',
                  corrections='L1L2L3Res',
-                 show_cut_info_text=True):
+                 show_cut_info_text=True,
+                 jec_version_label=None,):
         self._plots = []
         self._basename = basename
 
@@ -714,9 +745,11 @@ class PlotHistograms1DFractions(PlotHistograms1D):
                                          fraction_samples=fraction_samples,
                                          fraction_cut_sets=fraction_cuts,
                                          correction_string=corrections,
-                                         show_cut_info_text=show_cut_info_text)
+                                         show_cut_info_text=show_cut_info_text,
+                                         dataset_label=jec_version_label)
 
                 self._plots.append(_plot)
+
 
 
 class PlotHistograms2D(PlotHistograms1D):
@@ -726,7 +759,8 @@ class PlotHistograms2D(PlotHistograms1D):
                  basename='hist_2d', corrections='L1L2L3Res',
                  show_cut_info_text=True,
                  show_ratio_to_first=False,
-                 show_as_profile=False):
+                 show_as_profile=False,
+                 jec_version_label=None,):
 
         self._plots = []
         self._basename = basename
@@ -753,11 +787,12 @@ class PlotHistograms2D(PlotHistograms1D):
                                 normalize_to_first_histo=False,
                                 show_ratio_to_first=show_ratio_to_first,
                                 show_cut_info_text=show_cut_info_text,
-                                show_as_profile=show_as_profile)
+                                show_as_profile=show_as_profile,
+                                dataset_label=jec_version_label)
 
                 self._plots.append(_plot)
 
-class PlotExtrapolation(PlotHistograms2D):
+class PlotResponseExtrapolation(PlotHistograms2D):
 
     def __init__(self,
                  sample_data,
@@ -768,8 +803,9 @@ class PlotExtrapolation(PlotHistograms2D):
                  fit_function_range=(0, 0.3),
                  n_extrapolation_bins=6,
                  basename='extrapolation',
-                 corrections='L1L2L3Res'):
-
+                 corrections='L1L2L3Res',
+                 jec_version_label=None,
+                 additional_cut_dicts=None,):  # one plot per add. cut
         self._plots = []
         self._basename = basename
 
@@ -786,19 +822,22 @@ class PlotExtrapolation(PlotHistograms2D):
             _qys.append(_qy)
 
             for _selection_cut in selection_cuts:
-                _plot = _PlotExtrapolation(
-                    basename=self._basename,
-                    sample_data=sample_data,
-                    sample_mc=sample_mc,
-                    selection=_selection_cut,
-                    response_quantities=_qys,
-                    extrapolation_quantity=_qx,
-                    fit_function_range=fit_function_range,
-                    n_extrapolation_bins=n_extrapolation_bins,
-                    correction_string=corrections,
-                    show_cut_info_text=False)
+                for _ac_dict in additional_cut_dicts:
+                    _plot = _PlotExtrapolation(
+                        basename=self._basename,
+                        sample_data=sample_data,
+                        sample_mc=sample_mc,
+                        selection=_selection_cut,
+                        response_quantities=_qys,
+                        extrapolation_quantity=_qx,
+                        fit_function_range=fit_function_range,
+                        n_extrapolation_bins=n_extrapolation_bins,
+                        correction_string=corrections,
+                        show_cut_info_text=False,
+                        dataset_label=jec_version_label,
+                        additional_cut_dict=_ac_dict)
 
-                self._plots.append(_plot)
+                    self._plots.append(_plot)
 
 # class PlotHistograms1DCompareCuts:
 #     _INFOBOX_TOPLEFT_XY = (0.05, 0.46)

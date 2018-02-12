@@ -24,16 +24,6 @@ QUANTITIES['jet1eta_narrow'].bin_spec = BinSpec.make_from_bin_edges([0.000, 0.26
 #QUANTITIES['jet1eta_wide'].name = 'jet1eta_wide'
 #QUANTITIES['jet1eta_wide'].bin_spec = BinSpec.make_from_bin_edges([0, 0.783, 1.305, 1.93, 2.5, 2.964, 3.2, 5.191])
 
-_QUANTITIES = [
-    'mpf', 'ptbalance',
-    'rhoo',
-    #'npumean',
-    'zpt_log', 'zphi', 'zmass',
-    'jet1pt', 'jet2pt', 'jet3pt',
-    'met', 'metphi',
-    'jet1phi', 'jet2phi', 'jet3phi',
-]
-
 _QUANTITY_PAIRS = [
     ('zpt_log', 'ptbalance'),
     ('zpt_log', 'mpf'),
@@ -45,7 +35,7 @@ _QUANTITY_PAIRS = [
     ('jet1eta_narrow', 'mpf'),
 ]
 
-_cut_final_no_eta = CutSet("basicToNoAlpha",
+_cut_final_no_eta = CutSet("basicToNoEta",
     weights=[
         "alpha<0.3",
         "zpt>30",
@@ -58,7 +48,7 @@ _cut_final_no_eta = CutSet("basicToNoAlpha",
 
 _SELECTION_CUTS = [
     SELECTION_CUTS['finalcuts'],
-    SELECTION_CUTS['basiccuts'] + _cut_final_no_eta
+    #SELECTION_CUTS['basiccuts'] + _cut_final_no_eta
 ]
 
 _ADDITIONAL_CUTS = [
@@ -87,16 +77,6 @@ _ADDITIONAL_CUTS = [
         'label': r"RunF",
         'color': 'cyan'
     },
-#    {
-#        'cut': ADDITIONAL_CUTS['run_periods']['runG'],
-#        'label': r"RunG",
-#        'color': 'green'
-#    },
-#    {
-#        'cut': ADDITIONAL_CUTS['run_periods']['runH'],
-#        'label': r"RunH",
-#        'color': 'orange'
-#    }
 ]
 
 def _workflow(sample_data, sample_mc, jecv):
@@ -120,7 +100,7 @@ def _workflow(sample_data, sample_mc, jecv):
     #for _corr_level in ('L1L2L3', 'L1L2L3Res'):
     for _corr_level in ('L1L2L3',):
         _ph2 = PlotHistograms2D(
-            basename="data_mc_17Nov2017_JEC{}".format(jecv),
+            basename="data_mc_closure_17Nov2017_JEC{}".format(jecv),
             # there is one subplot per sample and cut in each plot
             samples=_SAMPLES,
             corrections=_corr_level,
@@ -131,45 +111,20 @@ def _workflow(sample_data, sample_mc, jecv):
             selection_cuts=_SELECTION_CUTS,
             show_as_profile=True,
             show_ratio_to_first=True,
-            show_cut_info_text=False
-        )
-        _ph = PlotHistograms1D(
-            basename="data_mc_hist_17Nov2017_JEC{}".format(jecv),
-            # there is one subplot per sample and cut in each plot
-            samples=_SAMPLES,
-            corrections=_corr_level,
-            additional_cuts=_add_cuts,
-            # each quantity cut generates a different plot
-            quantities=_QUANTITIES,
-            # each selection cut generates a new plot
-            selection_cuts=_SELECTION_CUTS,
-            normalize_to_first=True,
-            show_ratio_to_first=True,
-            show_cut_info_text=False
+            show_cut_info_text=False,
+            jec_version_label="Fall17 JEC {}".format(jecv)
         )
 
-        for _plot in _ph._plots:
-            pass
-
-        _phs.append(_ph)
         _phs.append(_ph2)
 
         for _ph in _phs:
             _ph.make_plots()
 
 if __name__ == "__main__":
-    _jecv = "V3"
-    _workflow(sample_data=SAMPLES['Data_Zmm_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zmm_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
-    _workflow(sample_data=SAMPLES['Data_Zee_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zee_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
-
-    _jecv = "V4"
-    _workflow(sample_data=SAMPLES['Data_Zmm_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zmm_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
-    _workflow(sample_data=SAMPLES['Data_Zee_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zee_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
+    for _jecv in ("V4",):
+        _workflow(sample_data=SAMPLES['Data_Zmm_BCDEF_Fall17_{}'.format(_jecv)],
+                  sample_mc=SAMPLES['MC_Zmm_DYNJ_Fall17_{}'.format(_jecv)],
+                  jecv=_jecv)
+        _workflow(sample_data=SAMPLES['Data_Zee_BCDEF_Fall17_{}'.format(_jecv)],
+                  sample_mc=SAMPLES['MC_Zee_DYNJ_Fall17_{}'.format(_jecv)],
+                  jecv=_jecv)

@@ -1,4 +1,4 @@
-from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, PlotExtrapolation, QUANTITIES, BinSpec, CutSet
+from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, PlotResponseExtrapolation, QUANTITIES, BinSpec, CutSet
 from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import (
     SAMPLES,
     SELECTION_CUTS,
@@ -42,10 +42,15 @@ _cut_final_no_eta = CutSet("basicToNoEta",
 
 _SELECTION_CUTS = [
     SELECTION_CUTS['finalcuts'],
-    SELECTION_CUTS['basiccuts'] + _cut_final_no_eta
+    #SELECTION_CUTS['basiccuts'] + _cut_final_no_eta
 ]
 
 _ADDITIONAL_CUTS = [
+    {
+        'cut': None,
+        'label': r"RunsBCDEF",
+        'color': 'black'
+    },
     {
         'cut': ADDITIONAL_CUTS['run_periods']['runB'],
         'label': r"RunB",
@@ -76,24 +81,11 @@ _ADDITIONAL_CUTS = [
 def _workflow(sample_data, sample_mc, jecv):
     _phs = []
 
-    _add_cuts = [_ac['cut'] for _ac in _ADDITIONAL_CUTS]
 
-    _add_cuts.insert(0, None)
-
-    _SAMPLES = []
-
-    _SAMPLES.append(deepcopy(sample_mc))
-    _SAMPLES[-1]['color'] = 'k'
-    _SAMPLES[-1]['source_label'] = sample_mc['source_label']
-
-    for _ac in _ADDITIONAL_CUTS:
-        _SAMPLES.append(deepcopy(sample_data))
-        _SAMPLES[-1]['color'] = _ac['color']
-        _SAMPLES[-1]['source_label'] = '{}'.format(_ac['label'])
 
     #for _corr_level in ('L1L2L3', 'L1L2L3Res'):
     for _corr_level in ('L1L2L3',):
-        _ph = PlotExtrapolation(
+        _ph = PlotResponseExtrapolation(
             basename='extrapolation_17Nov2017_JEC{}'.format(jecv),
             sample_data=sample_data,
             sample_mc=sample_mc,
@@ -102,6 +94,8 @@ def _workflow(sample_data, sample_mc, jecv):
             extrapolation_quantity='alpha',
             n_extrapolation_bins=6,
             corrections=_corr_level,
+            jec_version_label="Fall17 JEC {}".format(jecv),
+            additional_cut_dicts=_ADDITIONAL_CUTS,
         )
 
         for _plot in _ph._plots:
@@ -113,18 +107,10 @@ def _workflow(sample_data, sample_mc, jecv):
             _ph.make_plots()
 
 if __name__ == "__main__":
-    _jecv = "V3"
-    _workflow(sample_data=SAMPLES['Data_Zmm_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zmm_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
-    _workflow(sample_data=SAMPLES['Data_Zee_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zee_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
-
-    _jecv = "V4"
-    _workflow(sample_data=SAMPLES['Data_Zmm_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zmm_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
-    _workflow(sample_data=SAMPLES['Data_Zee_BCDEF_Fall17_{}'.format(_jecv)],
-              sample_mc=SAMPLES['MC_Zee_DYNJ_Fall17_{}'.format(_jecv)],
-              jecv=_jecv)
+    for _jecv in ("V4",):
+        _workflow(sample_data=SAMPLES['Data_Zmm_BCDEF_Fall17_{}'.format(_jecv)],
+                  sample_mc=SAMPLES['MC_Zmm_DYNJ_Fall17_{}'.format(_jecv)],
+                  jecv=_jecv)
+        _workflow(sample_data=SAMPLES['Data_Zee_BCDEF_Fall17_{}'.format(_jecv)],
+                  sample_mc=SAMPLES['MC_Zee_DYNJ_Fall17_{}'.format(_jecv)],
+                  jecv=_jecv)

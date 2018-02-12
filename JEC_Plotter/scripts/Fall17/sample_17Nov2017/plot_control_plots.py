@@ -66,7 +66,7 @@ _ADDITIONAL_CUTS = [
 #    }
 ]
 
-def _workflow(sample):
+def _workflow(sample, jecv):
     _phs = []
 
     _add_cuts = [_ac['cut'] for _ac in _ADDITIONAL_CUTS]
@@ -88,7 +88,8 @@ def _workflow(sample):
         # each selection cut generates a new plot
         selection_cuts=_SELECTION_CUTS,
         show_ratio_to_first=True,
-        show_cut_info_text=False
+        show_cut_info_text=False,
+        jec_version_label="Fall17 JEC {}".format(jecv)
     )
 
     _ph2 = PlotHistograms1D(
@@ -116,5 +117,6 @@ def _workflow(sample):
         _ph.make_plots()
 
 if __name__ == "__main__":
-    _workflow(SAMPLES['Data_Zmm_BCDEF_Fall17_V3'])
-    _workflow(SAMPLES['Data_Zee_BCDEF_Fall17_V3'])
+    _jecv = "V4"
+    _workflow(SAMPLES['Data_Zmm_BCDEF_Fall17_{}'.format(_jecv)], jecv=_jecv)
+    _workflow(SAMPLES['Data_Zee_BCDEF_Fall17_{}'.format(_jecv)], jecv=_jecv)
