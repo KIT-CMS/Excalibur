@@ -3,7 +3,7 @@ import os
 
 RUN='F'
 CH='ee'
-JEC='Fall17_17Nov2017'+RUN+'_V3'
+JEC='Fall17_17Nov2017'+RUN+'_V4'
 
 def config():
     cfg = configtools.getConfig('data', 2017, CH)
@@ -15,6 +15,7 @@ def config():
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_DATA/'+JEC+'_DATA')
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
+    cfg['ElectronID'] = 'user'  # old ID no longer written out in new skim
     cfg['ApplyElectronVID'] = True
     #cfg['ElectronVIDName'] = "Summer16-80X-V1"
     cfg['ElectronVIDName'] = "Fall17-94X-V1-Preliminary"
