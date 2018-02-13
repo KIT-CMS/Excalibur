@@ -25,6 +25,8 @@ def getBaseConfig(tagged=False, **kwargs):
         'TypeIJetPtMin': 15.,
         'EnableMetPhiCorrection': False,
         'MetPhiCorrectionParameters': [], # Please set this later depending on input type
+        # JetRecoilProducer Settings
+        'JetRecoilMinPtThreshold': 15.,
         # Valid Jet Selection	'ValidJetsInput': 'uncorrected',
         'JetID' : 'none', # object-based specification, 'none' if you want to use the event-based ID filter
         #'PuJetIDs' : ['2:puJetIDFullTight'],
@@ -71,6 +73,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet',
                     'mettype1vecpt', 'mettype1pt',
                     'jetHT',
+                    'jetrecoilpt', 'jetrecoilphi', 'jetrecoileta', 'jetrpf',
                     'jet1idloose',#'jet1idmedium','jet1idtight',
                     'jet2idloose',#'jet2idmedium','jet2idtight',
                     'jet3idloose',#'jet3idmedium','jet3idtight',
@@ -87,6 +90,7 @@ def getBaseConfig(tagged=False, **kwargs):
             'producer:ZJetCorrectionsProducer',
             'producer:TypeIMETProducer',
             'producer:JetSorter',
+            'producer:JetRecoilProducer',
             ],
         # Wire Kappa objects
         'EventMetadata' : 'eventInfo',

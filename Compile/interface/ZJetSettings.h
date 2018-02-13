@@ -13,6 +13,9 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(bool, EnableMetPhiCorrection, false)
     IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
 
+    // JetRecoilProducer
+    IMPL_SETTING(float, JetRecoilMinPtThreshold)
+
     // ZJetCorrectionsProducer
     IMPL_SETTING_DEFAULT(std::string, CorrectionLevel, "None")
     IMPL_SETTING(std::string, Jec)

@@ -35,6 +35,9 @@ class ZJetProduct : public KappaProduct
     // Added by TypeIMETProducer
     std::map<std::string, KMET> m_corrMET;
 
+    // Added by JetRecoilProducer
+    std::map<std::string, KLV> m_correctedJetRecoils;
+
     // Added by RecoJetGenPartonMatchingProducer
     std::map<std::string, std::map<KJet*, KGenParticle*>> m_matchedGenPartons;
 
@@ -186,6 +189,26 @@ class ZJetProduct : public KappaProduct
         }
     }
 
+    // get the jet recoil for all correction levels
+    const KLV* GetJetRecoil(ZJetSettings const& settings,
+                            ZJetEvent const& event,
+                            std::string corrLevel) const
+    {
+        std::map<std::string, KLV>::const_iterator it = m_correctedJetRecoils.find(corrLevel);
+        if (it == m_correctedJetRecoils.end()) {
+            // no jet recoil available
+            return nullptr;
+        }
+        return &(it->second);
+    }
+
+    // get the jet recoil for the current correction level
+    const KLV* GetJetRecoil(ZJetSettings const& settings,
+                            ZJetEvent const& event) const
+    {
+        return GetJetRecoil(settings, event, settings.GetCorrectionLevel());
+    }
+
     KMET* GetMet(ZJetSettings const& settings, ZJetEvent const& event) const
     {
         return GetMet(settings, event, settings.GetCorrectionLevel());
@@ -261,6 +284,14 @@ class ZJetProduct : public KappaProduct
         double scalPtEt = m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
         double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
         return 1.0 + scalPtEt / scalPtSq;
+    }
+
+    // Calculate RPF
+    double GetRPF(const KLV* jetRecoil) const
+    {
+        double scalPtEt = m_z.p4.Px() * jetRecoil->p4.Px() + m_z.p4.Py() * jetRecoil->p4.Py();
+        double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
+        return -scalPtEt / scalPtSq;
     }
 
     // Reco jet - gen parton matching result

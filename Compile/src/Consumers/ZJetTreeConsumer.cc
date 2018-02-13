@@ -445,6 +445,32 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return product.CountValidJetsAbovePt(settings, event, 30.0);
         });
 
+    // Jet recoil
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jetrecoilpt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            const KLV* jetRecoil = product.GetJetRecoil(settings, event);
+            return jetRecoil ? product.GetJetRecoil(settings, event)->p4.Pt()
+                             : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jetrecoilphi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            const KLV* jetRecoil = product.GetJetRecoil(settings, event);
+            return jetRecoil ? product.GetJetRecoil(settings, event)->p4.Phi()
+                             : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jetrecoileta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            const KLV* jetRecoil = product.GetJetRecoil(settings, event);
+            return jetRecoil ? product.GetJetRecoil(settings, event)->p4.Eta()
+                             : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jetrpf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            const KLV* jetRecoil = product.GetJetRecoil(settings, event);
+            return jetRecoil ? product.GetRPF(jetRecoil)
+                             : DefaultValues::UndefinedFloat;
+        });
+
     // Gen jets
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genHT", [settings](ZJetEvent const& event, ZJetProduct const& product) {
