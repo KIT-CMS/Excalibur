@@ -465,6 +465,233 @@ class _Plot2D(_Plot1D):
         return _d
 
 
+class _Plot2DQuantitiesProfile(_Plot2D):
+    # todo: implement cycler
+    _COLORS_CYCLE = ['orange', 'royalblue', 'green', 'violet', 'teal', 'brown']
+    _MARKERS_CYCLE = ['o', 's', 'd', '^', '*', 'v']
+    def __init__(self, basename,
+                 quantity_x, quantities_y,
+                 y_label,
+                 y_range,
+                 selection,
+                 sample_mc,
+                 sample_data,
+                 correction_string,
+                 normalize_to_first_histo=False,
+                 show_ratio_to_first=False,
+                 stacked=False,
+                 show_cut_info_text=True,
+                 show_as_profile=False,
+                 dataset_label=None,
+                 y_log_scale=False,
+                 colors_mc=None,
+                 markers_data=None):
+
+        self._qx = quantity_x
+        self._qys = quantities_y
+
+        self._basename = basename
+        self._sample_mc = sample_mc
+        self._sample_data = sample_data
+        self._selection = selection
+        self._correction_string = correction_string
+        self._normalize_to_first_histo = normalize_to_first_histo
+        self._ratio = show_ratio_to_first
+        self._stacked = stacked
+        self._dataset_label = dataset_label
+        self._y_log_scale = y_log_scale
+        self._y_label = y_label
+        self._y_range = y_range
+        self._colors_mc = colors_mc or self._COLORS_CYCLE
+        self._markers_data = markers_data or self._MARKERS_CYCLE
+
+        self._basic_weights_string = self._selection.weights_string
+
+        self._channel = self._sample_mc['channel']
+
+        _output_folder = "_".join([self._basename,
+                                   self._channel,
+                                   self._correction_string,
+                                   self._selection.name])
+        _output_filename = "_".join([_q.name for _q in self._qys])
+        _output_filename = '{0}_vs_{1}'.format(_output_filename, self._qx.name)
+
+        _y_range = self._y_range
+        if _y_range is None:
+            _y_range = min([_q.bin_spec.range[0] for _q in self._qys]), max([_q.bin_spec.range[1] for _q in self._qys])
+
+        self._basic_dict = {
+            # data
+            'zjetfolders': [self._selection.zjet_folder],
+            # 'weights': [self._basic_weights_string],
+            'weights': [],
+
+            # binning
+            'x_expressions': [self._qx.expression],
+            'x_bins': self._qx.bin_spec.string if self._qx.bin_spec is not None else None,
+            'x_label': self._qx.label,
+            #'y_bins': None,
+            'y_label': self._y_label,
+
+            # formatting
+            'title': None,
+            'line_styles': [],
+            'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
+            'x_log': self._qx.log_scale,
+            'y_lims': list(_y_range),
+            'y_log': self._y_log_scale,
+
+            'dataset_title': self._dataset_label,
+
+            'legend': "lower left",
+
+            # texts
+            "texts": [
+                CHANNEL_SPEC.get(self._channel, {}).get('label', ""),
+                r"$\\bf{{{0}}}$".format(self._correction_string)
+            ],
+            "texts_size": [
+                20,
+                25,
+            ],
+            "texts_x": [
+                0.1,  # self._INFOBOX_TOPLEFT_XY[0],
+                0.10,
+            ],
+            "texts_y": [
+                1.08,  # self._INFOBOX_TOPLEFT_XY[1],
+                0.98,
+            ],
+            # web gallery options
+            'www': _output_folder,
+            'filename': _output_filename,
+
+            'analysis_modules': [],
+
+            # -- filled in per sample/cut group
+            'nicks': [],
+            'files': [],
+            'labels': [],
+            'corrections': [],
+            'colors': [],
+            'alphas': [],
+            'markers': [],
+            'step': [],
+            'y_expressions': [],
+            'y_errors': [],
+            'x_errors': [],
+            'stacks': [],
+            #'zorder': []
+        }
+
+        self._profile = show_as_profile
+        if show_as_profile:
+            self._basic_dict['tree_draw_options'] = 'prof'
+
+        if show_cut_info_text:
+            # add cut labels as text
+            for _i, _cl in enumerate(self._selection.texts):
+                self._basic_dict['texts'].append(_cl)
+                self._basic_dict['texts_size'].append(15)
+                self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
+                self._basic_dict['texts_y'].append(
+                    self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
+
+    def get_dict(self):
+        _d = deepcopy(self._basic_dict)
+
+        for _sample in (self._sample_mc, self._sample_data):
+            for _i, _qy in enumerate(self._qys):
+
+                # skip quantities not available in certain channels
+                if not _qy.available_for_channel(_sample['channel']):
+                    continue
+
+                # skip quantities not available in certain source types (data/MC)
+                if not _qy.available_for_source_type(_sample['source_type']):
+                    continue
+
+                _d['files'].append(_sample['file'])
+                _d['corrections'].append(self._correction_string)
+                _d['weights'].append(self._basic_weights_string)
+
+                #_d['markers'].append(self._sample._dict.get('marker', 'bar'))
+
+                _d['y_expressions'].append(_qy.expression)
+
+                _d['line_styles'].append("")
+                _d['step'].append(True)
+
+                if _sample['source_type'] == 'MC':
+                    #_d['zorder'].append(1)
+                    _d['nicks'].append("mc{}".format(_i))
+                    _d['stacks'].append("stack_mc")
+                    _d['markers'].append('bar')
+                    _d['colors'].append(self._colors_mc[_i % len(self._colors_mc)])
+                    _d['alphas'].append(1.0)
+                    _d['x_errors'].append(False)
+                    _d['labels'].append("{}".format(_qy.label))
+                else:
+                    #_d['zorder'].append(0)
+                    _d['nicks'].append("data{}".format(_i))
+                    _d['stacks'].append("stack_data")
+                    _d['markers'].append(self._markers_data[_i % len(self._markers_data)])
+                    _d['colors'].append('k')
+                    _d['alphas'].append(1.0)
+                    _d['x_errors'].append(True)
+                    _d['labels'].append("{}".format(_qy.label))
+
+                # _d['step'].append(_sample._dict.get('step_flag', False))
+                # if _d['step'][-1]:
+                #     _d['line_styles'].append(_sample._dict.get('line_styles', "-"))
+                # else:
+                #     _d['line_styles'].append(_sample._dict.get('line_styles', ""))
+
+                _d['y_errors'].append(True)
+
+                # default to 'L1L2L3' for Monte Carlo
+                if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                    _d['corrections'][-1] = 'L1L2L3'
+
+        if self._ratio:
+            _d['analysis_modules'].append("Ratio")
+            _numer_nicks = ["data{}".format(i) for i in range(len(self._qys))]
+            _denom_nicks = ["mc{}".format(i) for i in range(len(self._qys))]
+            _res_nicks = ["ratio{}".format(i) for i in range(len(self._qys))]
+
+            _d.update({
+                "ratio_numerator_nicks": _numer_nicks,
+                "ratio_denominator_nicks": _denom_nicks,
+                "ratio_result_nicks": _res_nicks,
+                # "subplot_lines": [],
+                "subplot_nicks": _res_nicks,  # ["dummy"],  # HARRYPLOTTER!!
+                "y_subplot_label": "Ratio",
+                # 'y_subplot_lims': [0.5, 4.1],
+                'y_subplot_lims': [0.75, 1.25],
+                'subplot_fraction': 20,
+
+                # -- extend
+                'labels': _d['labels'] + ["R"] * len(_numer_nicks),
+                'stacks': _d['stacks'] + ["ratio_stack_{}".format(_i) for _i in range(len(_numer_nicks))],
+                'markers': _d['markers'] + [self._markers_data[_i % len(self._markers_data)] for _i in range(len(_numer_nicks))],
+                'colors': _d['colors'] +  [self._colors_mc[_i % len(self._colors_mc)] for _i in range(len(_numer_nicks))],
+                'alphas': _d['alphas'] + [1.0] * len(_numer_nicks),
+
+                'y_errors': _d['y_errors'] + [True] * len(_numer_nicks),
+                'x_errors': _d['x_errors'] + [False] * len(_numer_nicks),
+
+                'step': _d['step'] + [True] * len(_numer_nicks),
+                'line_styles': _d['line_styles'] + [""] * len(_numer_nicks),
+                #'zorder': _d['zorder'] + [0] * len(_numer_nicks),
+
+
+
+            })
+
+        if self._normalize_to_first_histo and len(_d['files']) > 1:
+            _d['analysis_modules'].insert(0, "NormalizeToFirstHisto")
+
+        return _d
 
 class _PlotExtrapolation(_Plot1D):
     # todo: implement cycler
@@ -807,6 +1034,61 @@ class PlotHistograms2D(PlotHistograms1D):
                                 dataset_label=jec_version_label)
 
                 self._plots.append(_plot)
+
+
+class PlotHistograms2DQuantitiesProfile(PlotHistograms2D):
+
+    def __init__(self,
+                 sample_mc,
+                 sample_data,
+                 quantity_x, quantities_y,
+                 y_label,
+                 selection_cuts,
+                 y_range=None,
+                 colors_mc=None,
+                 markers_data=None,
+                 basename='hist_qprof', corrections='L1L2L3Res',
+                 show_cut_info_text=True,
+                 show_ratio_to_first=False,
+                 show_as_profile=False,
+                 jec_version_label=None, ):
+
+        self._plots = []
+        self._basename = basename
+
+        _qx = QUANTITIES.get(quantity_x, None)
+        if _qx is None:
+            print "UNKONWN 'x' quantity '%s': skipping..." % (quantity_x,)
+            return
+
+        _qys = []
+        for _qyn in quantities_y:
+            _qy = QUANTITIES.get(_qyn, None)
+            if _qy is None:
+                print "UNKONWN 'y' quantity '%s': skipping..." % (_qyn,)
+                continue
+            _qys.append(_qy)
+
+        for _selection_cut in selection_cuts:
+            _plot = _Plot2DQuantitiesProfile(
+                basename=self._basename,
+                quantity_x=_qx,
+                quantities_y=_qys,
+                y_label=y_label,
+                y_range=y_range,
+                colors_mc=colors_mc,
+                markers_data=markers_data,
+                selection=_selection_cut,
+                sample_mc=sample_mc,
+                sample_data=sample_data,
+                correction_string=corrections,
+                normalize_to_first_histo=False,
+                show_ratio_to_first=show_ratio_to_first,
+                show_cut_info_text=show_cut_info_text,
+                show_as_profile=show_as_profile,
+                dataset_label=jec_version_label)
+
+            self._plots.append(_plot)
 
 class PlotResponseExtrapolation(PlotHistograms2D):
 
