@@ -586,14 +586,14 @@ class MinNGenMuonsCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-	unsigned int nMuons = 0;
+	/*unsigned int nMuons = 0;
 	for(unsigned int i = 0; i < product.m_genLeptonsFromBosonDecay.size();i++){
 		if(std::abs(product.m_genLeptonsFromBosonDecay.at(i)->pdgId) == 13)
 			nMuons++;
-	}
+	}*/
 	
-	return(nMuons>=nMuonsMin);
-	//return(product.m_genMuons.size()>=nMuonsMin);
+	//return(nMuons>=nMuonsMin);
+	return(product.m_genMuons.size()>=nMuonsMin);
     }
 
   private:
