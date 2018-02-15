@@ -279,16 +279,14 @@ QUANTITIES = dict(
     jet1chf=Quantity(
         name='jet1chf',
         expression='jet1chf',
-        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
+        bin_spec=BinSpec.make_equidistant(n_bins=30, range=(0, 1)),
         label='PF charged hadron fraction (Jet 1)',
-        log_scale=True
     ),
     jet1ef=Quantity(
         name='jet1ef',
         expression='jet1ef',
-        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
+        bin_spec=BinSpec.make_equidistant(n_bins=30, range=(0, 1)),
         label='PF electron fraction (Jet 1)',
-        log_scale=True
     ),
     jet1eta=Quantity(
         name='jet1eta',
@@ -307,35 +305,30 @@ QUANTITIES = dict(
         expression='jet1hfem',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF HF em fraction (Jet 1)',
-        log_scale=True
     ),
     jet1hfhf=Quantity(
         name='jet1hfhf',
         expression='jet1hfhf',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
         label='PF HF hadronic fraction (Jet 1)',
-        log_scale=True
     ),
     jet1mf=Quantity(
         name='jet1mf',
         expression='jet1mf',
-        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
+        bin_spec=BinSpec.make_equidistant(n_bins=30, range=(0, 1)),
         label='PF muon fraction (Jet 1)',
-        log_scale=True
     ),
     jet1nhf=Quantity(
         name='jet1nhf',
         expression='jet1nhf',
-        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
+        bin_spec=BinSpec.make_equidistant(n_bins=30, range=(0, 1)),
         label='PF neutral hadron fraction (Jet 1)',
-        log_scale=True
     ),
     jet1pf=Quantity(
         name='jet1pf',
         expression='jet1pf',
-        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 1)),
+        bin_spec=BinSpec.make_equidistant(n_bins=30, range=(0, 1)),
         label='PF photon fraction (Jet 1)',
-        log_scale=True
     ),
     jet1phi=Quantity(
         name='jet1phi',

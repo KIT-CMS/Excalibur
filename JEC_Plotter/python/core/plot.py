@@ -23,7 +23,8 @@ class _Plot1D(object):
                  show_ratio_to_first=False,
                  show_cut_info_text=True,
                  stacked=False,
-                 dataset_label=None):
+                 dataset_label=None,
+                 y_log_scale=False):
         self._nsamples = len(samples)
 
         self._basename = basename
@@ -36,6 +37,7 @@ class _Plot1D(object):
         self._ratio = show_ratio_to_first
         self._stacked = stacked
         self._dataset_label = dataset_label
+        self._y_log_scale = y_log_scale
 
         _ncutsets = len(cut_sets)
 
@@ -69,10 +71,9 @@ class _Plot1D(object):
             'x_label': self._q.label,
 
             # formatting
-            'line_styles': '-',
             'x_lims': list(self._q.bin_spec.range) if self._q.bin_spec is not None else None,
             'title': None,
-            'y_log': self._q.log_scale,
+            'y_log': self._y_log_scale,
             'x_log': self._q.log_scale,
 
             'dataset_title': self._dataset_label,
@@ -109,7 +110,9 @@ class _Plot1D(object):
             'colors': [],
             'markers': [],
             'step': [],
+            'line_styles': [],
             'y_errors': [],
+            'x_errors': [],
             'stacks': [],
 
             "subplot_fraction": 25,
@@ -158,9 +161,15 @@ class _Plot1D(object):
                 _d['markers'].append(_sample._dict.get('marker', '_'))
 
             _d['step'].append(_sample._dict.get('step_flag', False))
+            if _d['step'][-1]:
+                _d['line_styles'].append(_sample._dict.get('line_styles', "-"))
+            else:
+                _d['line_styles'].append(_sample._dict.get('line_styles', ""))
+
             _d['colors'].append(_sample['color'])
 
             _d['y_errors'].append(True)
+            _d['x_errors'].append(True)
 
             # default to 'L1L2L3' for Monte Carlo
             if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
@@ -179,6 +188,10 @@ class _Plot1D(object):
                 "y_subplot_label": "Ratio",
                 'y_subplot_lims': [0.85, 1.05],
                 'y_errors': _d['y_errors'] + [True] * len(_num_nicks),
+                'x_errors': _d['x_errors'] + [False] * len(_num_nicks),
+                'markers': _d['markers'] + ["s"] * len(_num_nicks),
+                'step': _d['step'] + [False] * len(_num_nicks),
+                'line_styles': _d['line_styles'] + [""] * len(_num_nicks),
             })
 
             # need to create a 'parallel' set of stacks for the ratios
@@ -380,7 +393,7 @@ class _Plot2D(_Plot1D):
 
             # formatting
             'title': None,
-            'line_styles': '-',
+            'line_styles': ['-'],
             'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
             'x_log': self._qx.log_scale,
             'y_lims': list(self._qy.bin_spec.range) if self._qy.bin_spec is not None else None,
@@ -420,6 +433,7 @@ class _Plot2D(_Plot1D):
             'markers': [],
             'step': [],
             'y_errors': [],
+            'x_errors': [],
             'stacks': []  # TODO: adapt inheritance to better suit 2D plots
         }
 
@@ -686,7 +700,8 @@ class PlotHistograms1D(object):
                  show_ratio_to_first=False,
                  show_cut_info_text=True,
                  stacked=False,
-                 jec_version_label=None,):
+                 jec_version_label=None,
+                 y_log_scale=False):
         self._plots = []
         self._basename = basename
 
@@ -709,7 +724,8 @@ class PlotHistograms1D(object):
                         show_ratio_to_first=show_ratio_to_first,
                         show_cut_info_text=show_cut_info_text,
                         stacked=stacked,
-                        dataset_label=jec_version_label)
+                        dataset_label=jec_version_label,
+                        y_log_scale=y_log_scale)
 
                 self._plots.append(_plot)
 
