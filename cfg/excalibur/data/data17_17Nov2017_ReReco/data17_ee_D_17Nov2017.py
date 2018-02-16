@@ -15,13 +15,7 @@ def config():
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_DATA/'+JEC+'_DATA')
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
-    cfg['ElectronID'] = 'user'  # old ID no longer written out in new skim
-    cfg['ApplyElectronVID'] = True
-    #cfg['ElectronVIDName'] = "Summer16-80X-V1"
-    cfg['ElectronVIDName'] = "Fall17-94X-V1-Preliminary"
-    cfg['ElectronVIDType'] = "cutbased"
-    cfg['ElectronVIDWorkingPoint'] = "tight"
-
     cfg['ProvideL2ResidualCorrections'] = False
     cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2L3Res'])
+
     return cfg

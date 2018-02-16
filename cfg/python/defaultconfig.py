@@ -419,9 +419,24 @@ def _2016ee(cfg, **kwargs):
 def _2017ee(cfg, **kwargs):
     # -- ZJetValidElectronsProducer
     cfg['ApplyElectronVID'] = True
-    cfg['ElectronVID'] = "Fall17-94X-V1-Preliminary"
+    cfg['ElectronVIDName'] = "Fall17-94X-V1-Preliminary"
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
+
+    # -- double electron triggers: Ele17 no longer deployed
+    cfg['HltPaths']= [
+        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
+        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
+    ]
+
+def _2017mm(cfg, **kwargs):
+    cfg['HltPaths'] = [
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ',
+        'HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ',
+        # -- lowest pT unprescaled trigger for the whole of 2017
+        # https://indico.cern.ch/event/682891/contributions/2810364/attachments/1570825/2477991/20171206_CMSWeek_MuonHLTReport_KPLee_v3_1.pdf
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8',
+    ]
 
 def data_2016mm(cfg, **kwargs):
     cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFData_ICHEP.root")
