@@ -74,9 +74,9 @@ def getBaseConfig(tagged=False, **kwargs):
                     'mettype1vecpt', 'mettype1pt',
                     'jetHT',
                     'jetrecoilpt', 'jetrecoilphi', 'jetrecoileta', 'jetrpf',
-                    'jet1idloose',#'jet1idmedium','jet1idtight',
-                    'jet2idloose',#'jet2idmedium','jet2idtight',
-                    'jet3idloose',#'jet3idmedium','jet3idtight',
+                    'jet1idtightlepveto', 'jet1idtight', 'jet1idloose',
+                    'jet2idtightlepveto', 'jet2idtight', 'jet2idloose',
+                    'jet3idtightlepveto', 'jet3idtight', 'jet3idloose',
                     #'invalidjet1pt','invalidjet1idloose','invalidjet1eta', 'invalidjet1y', 'invalidjet1phi',
                     #'invalidjet2pt','invalidjet2idloose',
                     #'invalidjet3pt','invalidjet3idloose',
@@ -175,12 +175,14 @@ def mc(cfg, **kwargs):
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
-    cfg['CutJetID']='loose' # choose event-based JetID selection ###### does not work yet!!! ####
+    cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
+    cfg['CutJetIDVersion'] = 2016
+    cfg['CutJetIDFirstNJets'] = 2
     cfg['CutEtaPhiCleaningFile'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning, must contain a TH2D called "h2jet"
     cfg['CutEtaPhiCleaningPt'] = 15 # minimum jet pt for eta-phi-cleaning
     cfg['Year'] = 2016
     cfg['Energy'] = 13
-    cfg['JetIDVersion'] = 2016
+    cfg['JetIDVersion'] = 2016  # for object-based JetID
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely
@@ -193,10 +195,12 @@ def _2016(cfg, **kwargs):
 
 def _2017(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
-    cfg['CutJetID']='loose' # choose event-based JetID selection ###### does not work yet!!! ####
+    cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
+    cfg['CutJetIDVersion'] = 2017
+    cfg['CutJetIDFirstNJets'] = 2
     cfg['Year'] = 2017
     cfg['Energy'] = 13
-    cfg['JetIDVersion'] = 2016
+    cfg['JetIDVersion'] = 2017  # for object-based JetID
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely

@@ -144,70 +144,24 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))->area
                        : DefaultValues::UndefinedFloat;
         });
-    // Jet IDs (!!! 2016 requirements!!!)
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet1idloose", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 0)
-						? ValidJetsProducer::passesJetID(product.m_validJets[0],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
-						: DefaultValues::UndefinedFloat;
-		});
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet1idmedium", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 0)
-						? ValidJetsProducer::passesJetID(product.m_validJets[0],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::MEDIUM)
-						: DefaultValues::UndefinedFloat;
-		});
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet1idtight", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 0)
-						? ValidJetsProducer::passesJetID(product.m_validJets[0],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::TIGHT)
-						: DefaultValues::UndefinedFloat;
-		});
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet2idloose", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 1)
-						? ValidJetsProducer::passesJetID(product.m_validJets[1],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
-						: DefaultValues::UndefinedFloat;
-		});
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet2idmedium", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 1)
-						? ValidJetsProducer::passesJetID(product.m_validJets[1],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::MEDIUM)
-						: DefaultValues::UndefinedFloat;
-		});
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet2idtight", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 1)
-						? ValidJetsProducer::passesJetID(product.m_validJets[1],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::TIGHT)
-						: DefaultValues::UndefinedFloat;
-		});
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet3idloose", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 2)
-						? ValidJetsProducer::passesJetID(product.m_validJets[2],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
-						: DefaultValues::UndefinedFloat;
-		});
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet3idmedium", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 2)
-						? ValidJetsProducer::passesJetID(product.m_validJets[2],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::MEDIUM)
-						: DefaultValues::UndefinedFloat;
-		});
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jet3idtight", [settings](event_type const& event, product_type const& product) {
-            return (product.GetValidJetCount(settings, event) > 2)
-						? ValidJetsProducer::passesJetID(product.m_validJets[2],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::TIGHT)
-						: DefaultValues::UndefinedFloat;
-		});
+
+    // Jet IDs
+    KappaEnumTypes::JetIDVersion jetIDVersionEnumType = KappaEnumTypes::ToJetIDVersion(settings.GetJetIDVersion());
+    for (const std::string& idName : {"loose", "tight", "tightlepveto"}) {
+        KappaEnumTypes::JetID jetIDEnumType = KappaEnumTypes::ToJetID(idName);
+        for (unsigned int iJet = 0; iJet < 3; ++iJet) {
+            const std::string branchName = "jet" + std::to_string(iJet + 1) + "id" + idName;
+            LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+                branchName, [iJet, jetIDVersionEnumType, jetIDEnumType, settings](event_type const& event, product_type const& product) {
+                    return (product.GetValidJetCount(settings, event) > iJet)
+                               ? ValidJetsProducer::passesJetID(dynamic_cast<KBasicJet*>(product.GetValidJet(settings, event, iJet)),
+                                                                jetIDVersionEnumType,
+                                                                jetIDEnumType)
+                               : DefaultValues::UndefinedFloat;
+               });
+        }
+    }
+
     // PF fractions
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet1pf", [settings](ZJetEvent const& event, ZJetProduct const& product) {

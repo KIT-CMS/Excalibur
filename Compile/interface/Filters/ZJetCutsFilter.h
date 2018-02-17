@@ -546,23 +546,38 @@ class JetIDCut : public ZJetFilterBase
     void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
-        JetId = settings.GetJetID();
+        const std::string jetID = settings.GetCutJetID();
+        const std::string jetIDVersion = settings.GetCutJetIDVersion();
+
+        // store the jet ID and jet ID version as enum types for fast evaluation
+        m_jetIDEnumType = KappaEnumTypes::ToJetID(jetID);
+        m_jetIDVersionEnumType = KappaEnumTypes::ToJetIDVersion(jetIDVersion);
+        m_numJets = settings.GetCutJetIDFirstNJets();
     }
 
     bool DoesEventPass(ZJetEvent const& event,
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        {return (product.GetValidJetCount(settings, event) > 1)
-                ? (ValidJetsProducer::passesJetID(product.m_validJets[0],
-                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)&&
-                    (ValidJetsProducer::passesJetID(product.m_validJets[1],
-                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::ToJetID(JetId))==1)
-                : false;
+        for (unsigned int iJet = 0; iJet < m_numJets; ++iJet) {
+            bool _jetPassesID = (product.GetValidJetCount(settings, event) > iJet)
+                                    ? ValidJetsProducer::passesJetID(
+                                          dynamic_cast<KBasicJet*>(product.GetValidJet(settings, event, 0)),
+                                          m_jetIDVersionEnumType,
+                                          m_jetIDEnumType)
+                                    : false;
+            // return immediately on non-passing jet
+            if (!_jetPassesID) {
+                return false;
+            }
         }
+        return true;  // first 'm_numJets' Jets passed ID
     }
+
     private:
-      std::string JetId;
+      unsigned int m_numJets;
+      KappaEnumTypes::JetID m_jetIDEnumType;
+      KappaEnumTypes::JetIDVersion m_jetIDVersionEnumType;
 };
 
 //GenLevelCuts

@@ -65,6 +65,8 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, GenZMassRange)
     IMPL_SETTING(std::string, CutEtaPhiCleaningFile)
     IMPL_SETTING(std::string, CutJetID)
+    IMPL_SETTING(std::string, CutJetIDVersion)
+    IMPL_SETTING(unsigned, CutJetIDFirstNJets)
 
         // LeptonSFProducer
     IMPL_SETTING(std::string, LeptonSFRootfile)
