@@ -426,6 +426,7 @@ def _2016ee(cfg, **kwargs):
 
 def _2017ee(cfg, **kwargs):
     # -- ZJetValidElectronsProducer
+    cfg['ElectronID'] = "user"
     cfg['ApplyElectronVID'] = True
     cfg['ElectronVIDName'] = "Fall17-94X-V1-Preliminary"
     cfg['ElectronVIDType'] = "cutbased"
