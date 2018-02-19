@@ -35,8 +35,8 @@ cd ..
 
 git clone https://github.com/KIT-CMS/KappaTools.git -b master
 git clone https://github.com/KIT-CMS/Artus.git -b master
-git clone https://github.com/KIT-CMS/TauRefit.git VertexRefit/TauRefit -b master
-git clone https://github.com/cms-jet/JECDatabase.git --depth=1 -b master
+#git clone https://github.com/KIT-CMS/TauRefit.git VertexRefit/TauRefit -b master
+#git clone https://github.com/cms-jet/JECDatabase.git --depth=1 -b master
 
 #######################
 
