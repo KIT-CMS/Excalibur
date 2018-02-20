@@ -708,7 +708,7 @@ class GenMuonEtaCut : public ZJetFilterBase
                         : allPassed;*/
         allPassed = allPassed && std::fabs(product.m_genMuons[0]->p4.Eta()) < muonEtaMax;
         allPassed = product.m_genMuons.size() >= 2
-                       ? (allPassed && std::fabs(product.m_genMuons[0]->p4.Eta()) < muonEtaMax)
+                       ? (allPassed && std::fabs(product.m_genMuons[1]->p4.Eta()) < muonEtaMax)
                         : allPassed;
         return allPassed;
     }
