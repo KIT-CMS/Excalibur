@@ -98,34 +98,13 @@ void ValidZllGenJetsProducer::Produce(ZJetEvent const& event,
                                    ZJetSettings const& settings) const
 {
     assert(event.m_genJets);
-    /*if (!product.m_genBosonLVFound)
-        return;*/
-    int i=0;
     for (unsigned int jet=0; jet < ((KLVs*) event.m_genJets)->size(); ++jet) {
-        std::cout << "P4 Jet Nr."   << jet+1 << " : " << ((KLVs*) event.m_genJets)->at(jet).p4 << std::endl;
         bool validjet = true;
         for (unsigned int lep=0; lep<product.m_genLeptonsFromBosonDecay.size(); ++lep) {
-        //for (unsigned int lep=0; lep<product.m_genMuons.size(); ++lep) {
             validjet = validjet && ROOT::Math::VectorUtil::DeltaR( ((KLVs*) event.m_genJets)->at(jet).p4, product.m_genLeptonsFromBosonDecay[lep]->p4) > minZllJetDeltaRVeto;
-            std::cout << "P4 Lepton Nr." << lep+1 << " : " << product.m_genLeptonsFromBosonDecay[lep]->p4 << std::endl;
-            std::cout << "DeltaR between Jet Nr. " << jet+1 << " and Lepton Nr. "<< lep+1 << " : " << ROOT::Math::VectorUtil::DeltaR( ((KLVs*) event.m_genJets)->at(jet).p4, product.m_genLeptonsFromBosonDecay[lep]->p4) << std::endl; 
         }
         if (validjet) {
             product.m_simpleGenJets.push_back(&((KLVs*) event.m_genJets)->at(jet));
-            std::cout << "P4 cleaned Jet Nr."   << i+1 << " : " << product.m_simpleGenJets.at(i)->p4 << std::endl;
-            i++;
         }
-        
-        
-        //std::cout << "Pt Jet Nr."  << iii << " : " << ((KLVs*) event.m_genJets)->at(iii).p4  << std::endl;
-        //product.m_newGenJets.push_back(&((KLVs*) event.m_genJets)->at(iii));
-        /*std::cout << "Pt Jet Nr."  << jet << " : " << event.m_genJets->at(jet).p4.Pt()  << std::endl;
-        std::cout << "Eta Jet Nr." << jet << " : " << event.m_genJets->at(jet).p4.Eta() << std::endl;
-        std::cout << "Phi Jet Nr." << jet << " : " << event.m_genJets->at(jet).p4.Phi() << std::endl;
-        std::cout << "Mass Jet Nr."   << jet << " : " << event.m_genJets->at(jet).p4.mass() << std::endl;*/
-        //
-        //std::cout << "Y Jet Nr."   << jet << " : " << event.m_genJets->at(jet).p4.Rapidity() << std::endl;
-        //
-        //std::cout << "Y Jet Nr."   << jet << " : " << product.m_validGenJets.at(jet)->p4.Rapidity() << std::endl;
     }
 }
