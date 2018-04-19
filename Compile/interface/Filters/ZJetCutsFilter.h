@@ -745,6 +745,34 @@ class GenZPtCut : public ZJetFilterBase
     float zPtMin = 0;
 };
 
+//////////////////////////////
+// Leading Gen Jet Rapidity //
+//////////////////////////////
+class LeadingGenJetYCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "LeadingGenJetYCut"; }
+
+    LeadingGenJetYCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        leadingJetYMax = settings.GetCutLeadingJetYMax();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        //return (std::abs(product.m_validGenJets.at(0)->p4.Rapidity()) < leadingJetYMax);
+        return (std::abs(event.m_genJets->at(0).p4.Rapidity()) < leadingJetYMax);
+    }
+
+  private:
+    float leadingJetYMax = 0;
+};
+
 ///////////
 // GenHT //
 ///////////

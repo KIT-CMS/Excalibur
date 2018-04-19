@@ -69,7 +69,10 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(unsigned, CutJetIDFirstNJets)
 
         // LeptonSFProducer
-    IMPL_SETTING(std::string, LeptonSFRootfile)
+    //IMPL_SETTING(std::string, LeptonSFRootfile)
+    IMPL_SETTING(std::string, LeptonIDSFRootfile)
+    IMPL_SETTING(std::string, LeptonIsoSFRootfile)
+    IMPL_SETTING(std::string, LeptonTrackingSFRootfile)
     IMPL_SETTING(std::string, LeptonTriggerSFRootfile)
     IMPL_SETTING_INTLIST(TriggerSFRuns)   
     IMPL_SETTING_DEFAULT(std::string, LeptonSFVariation, "None")

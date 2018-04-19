@@ -19,13 +19,16 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
         algoName = "AK4Calo";
     }
     else{
-    	std::string algoType = KappaTools::tolower(algoNameAndType[1]);
-    	if (KappaTools::tolower(algoNameAndType[1]) == "puppi") {
-        	algoType = "Puppi";
-    	}
-    	algoName = KappaTools::toupper(algoNameAndType[0].substr(0, 2)) +
-                           algoNameAndType[0].substr(2, std::string::npos) + algoType;
-    	}
+        std::string algoType = KappaTools::tolower(algoNameAndType[1]);
+        if (KappaTools::tolower(algoNameAndType[1]) == "puppi") {
+            algoType = "Puppi";
+        }
+        algoName = KappaTools::toupper(algoNameAndType[0].substr(0, 2)) +
+                           algoNameAndType[0].substr(2, std::string::npos);
+        if (algoNameAndType.size()>1) {
+            algoName+=algoType;
+        }
+    }
     LOG(INFO) << "\t -- Jet corrections enabled for " << algoName
        	      << " jets using the following JEC files:";
 

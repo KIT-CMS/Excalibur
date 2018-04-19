@@ -25,6 +25,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
 {
     if (id == ValidZllJetsProducer().GetProducerId())
         return new ValidZllJetsProducer();
+    else if (id == ValidZllGenJetsProducer().GetProducerId())
+        return new ValidZllGenJetsProducer();
     else if (id == TypeIMETProducer().GetProducerId())
         return new TypeIMETProducer();
     else if (id == ZJetCorrectionsProducer().GetProducerId())
@@ -47,28 +49,34 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new NeutrinoCounter();
     else if (id == LeptonSFProducer().GetProducerId())
         return new LeptonSFProducer();
+    else if (id == LeptonIDSFProducer().GetProducerId())
+        return new LeptonIDSFProducer();
+    else if (id == LeptonIsoSFProducer().GetProducerId())
+        return new LeptonIsoSFProducer();
+    else if (id == LeptonTrackingSFProducer().GetProducerId())
+        return new LeptonTrackingSFProducer();
     else if (id == LeptonTriggerSFProducer().GetProducerId())
         return new LeptonTriggerSFProducer();
     else if(id == RecoZmmProducer().GetProducerId())
-	return new RecoZmmProducer();
+        return new RecoZmmProducer();
     else if(id == RecoZeeProducer().GetProducerId())
-	return new RecoZeeProducer();
+        return new RecoZeeProducer();
     else if(id == RecoZemProducer().GetProducerId())
-	return new RecoZemProducer();
+        return new RecoZemProducer();
     else if(id == RecoZeemmProducer().GetProducerId())
-	return new RecoZeemmProducer();
+        return new RecoZeemmProducer();
     else if(id == GenZmmProducer().GetProducerId())
-	return new GenZmmProducer();
+        return new GenZmmProducer();
     else if(id == ValidGenZmmProducer().GetProducerId())
-	return new ValidGenZmmProducer();	
+        return new ValidGenZmmProducer();	
     else if(id == GenZeeProducer().GetProducerId())
-	return new GenZeeProducer();
+        return new GenZeeProducer();
     else if(id == GenZemProducer().GetProducerId())
-	return new GenZemProducer();
+        return new GenZemProducer();
     else if(id == GenZeemmProducer().GetProducerId())
-	return new GenZeemmProducer();
+        return new GenZeemmProducer();
     else if(id == ZJetGenMuonProducer().GetProducerId())
-	return new ZJetGenMuonProducer();
+        return new ZJetGenMuonProducer();
     else
         return KappaFactory::createProducer(id);
 }
@@ -97,6 +105,8 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new LeadingJetPtCut();
     else if (id == LeadingJetEtaCut().GetFilterId())
         return new LeadingJetEtaCut();
+    else if (id == LeadingGenJetYCut().GetFilterId())
+        return new LeadingGenJetYCut();
     else if (id == LeadingJetYCut().GetFilterId())
         return new LeadingJetYCut();
     else if (id == ZPtCut().GetFilterId())

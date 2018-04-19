@@ -37,16 +37,17 @@ class LeptonSFProducer : public ZJetProducerBase
                         (lepton.p4.Pt()) < m_ptbins->at(index_pt + 1)) {
                         if (m_reversed_axes) {
                             return m_sf[run_index][index_pt][index_eta];
-                        } else {
+                        } 
+                        else {
                             return m_sf[run_index][index_eta][index_pt];
                         }
                     }
                 }
-		if (m_reversed_axes) {
-		    return m_sf[run_index][m_ptbins->size()-2][index_eta];
+                if (m_reversed_axes) {
+                    return m_sf[run_index][m_ptbins->size()-2][index_eta];
                 } 
                 else {
-		    return m_sf[run_index][index_eta][m_ptbins->size()-2];
+                    return m_sf[run_index][index_eta][m_ptbins->size()-2];
                 }
             }
         }
@@ -62,12 +63,42 @@ class LeptonSFProducer : public ZJetProducerBase
     }
 };
 
-class LeptonTriggerSFProducer : public LeptonSFProducer{
+class LeptonIDSFProducer : public LeptonSFProducer{
     public:
-    	std::string GetProducerId() const override;
-    	LeptonTriggerSFProducer() : LeptonSFProducer() {}
-	void Init(ZJetSettings const& settings) override;
-	void Produce(ZJetEvent const& event,
+        std::string GetProducerId() const override;
+        LeptonIDSFProducer() : LeptonSFProducer() {}
+    void Init(ZJetSettings const& settings) override;
+    void Produce(ZJetEvent const& event,
+                ZJetProduct& product,
+                ZJetSettings const& settings) const override;
+};
+
+class LeptonIsoSFProducer : public LeptonSFProducer{
+    public:
+        std::string GetProducerId() const override;
+        LeptonIsoSFProducer() : LeptonSFProducer() {}
+    void Init(ZJetSettings const& settings) override;
+    void Produce(ZJetEvent const& event,
                  ZJetProduct& product,
                  ZJetSettings const& settings) const override;
 };
+
+class LeptonTriggerSFProducer : public LeptonSFProducer{
+    public:
+        std::string GetProducerId() const override;
+        LeptonTriggerSFProducer() : LeptonSFProducer() {}
+    void Init(ZJetSettings const& settings) override;
+    void Produce(ZJetEvent const& event, 
+                ZJetProduct& product,
+                ZJetSettings const& settings) const override;
+};
+
+class LeptonTrackingSFProducer : public LeptonSFProducer{
+    public:
+        std::string GetProducerId() const override;
+        LeptonTrackingSFProducer() : LeptonSFProducer() {}
+    void Init(ZJetSettings const& settings) override;
+    void Produce(ZJetEvent const& event,
+                ZJetProduct& product,
+                ZJetSettings const& settings) const override;
+ };
