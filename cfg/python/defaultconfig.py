@@ -412,11 +412,11 @@ def mcmm(cfg, **kwargs):
     cfg['AddGenMatchedTauJets'] = False
 
 def data_2016(cfg, **kwargs):
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_03Feb2017BCD_V3_DATA/Summer16_03Feb2017BCD_V3_DATA')
+    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017BCDEFGH_V1_DATA/Summer16_07Aug2017BCDEFGH_V1_DATA')
 
 def mc_2016(cfg, **kwargs):
     #cfg['PileupWeightFile'] = os.path.join(configtools.getPath(),'data/pileup/pileup_weights_BCDEFGH_13TeV_23Sep2016ReReco_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_03Feb2017_V1_MC/Summer16_03Feb2017_V1_MC')
+    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V1_MC/Summer16_07Aug2017_V1_MC')
 
 def _2016mm(cfg, **kwargs):
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')
