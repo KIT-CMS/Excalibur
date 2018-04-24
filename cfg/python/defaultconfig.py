@@ -163,7 +163,7 @@ def mc(cfg, **kwargs):
     cfg['CrossSection'] = -1
     cfg['BaseWeight'] = 1000 # pb^-1 -> fb^-1
 
-    cfg['GenZMassRange']= 20.
+    cfg['GenZMassRange']= 20. # not used by ValidGenZFilter
 
     cfg['DeltaRRadiationJet'] = 1
     cfg['CutAlphaMax'] = 0.3
@@ -324,7 +324,7 @@ def mm(cfg, **kwargs):
         'filter:MuonPtCut',
         'filter:MuonEtaCut',
         #'filter:ZFilter',
-        'filter:ValidZCut',
+        'filter:ValidZCut', # includes Z mass cut
         'filter:ZPtCut',
         'filter:LeadingJetYCut',
         'filter:AlphaCut',
