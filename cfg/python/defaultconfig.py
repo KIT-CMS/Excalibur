@@ -412,7 +412,7 @@ def mcmm(cfg, **kwargs):
     cfg['AddGenMatchedTauJets'] = False
 
 def data_2016(cfg, **kwargs):
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017BCDEFGH_V1_DATA/Summer16_07Aug2017BCDEFGH_V1_DATA')
+    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017BCD_V1_DATA/Summer16_07Aug2017BCD_V1_DATA')
 
 def mc_2016(cfg, **kwargs):
     #cfg['PileupWeightFile'] = os.path.join(configtools.getPath(),'data/pileup/pileup_weights_BCDEFGH_13TeV_23Sep2016ReReco_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
