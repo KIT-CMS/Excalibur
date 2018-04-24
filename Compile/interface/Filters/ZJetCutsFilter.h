@@ -765,8 +765,9 @@ class LeadingGenJetYCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        //return (std::abs(event.m_genJets->at(0).p4.Rapidity()) < leadingJetYMax);
-        return (std::abs(product.m_validGenJets.at(0)->p4.Rapidity()) < leadingJetYMax);
+        return (product.m_simpleGenJets.size()>0)
+                ? (std::abs(product.m_simpleGenJets.at(0)->p4.Rapidity()) < leadingJetYMax)
+                : false;
     }
 
   private:
