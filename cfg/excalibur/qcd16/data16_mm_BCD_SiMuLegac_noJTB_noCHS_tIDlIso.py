@@ -36,7 +36,7 @@ def config():
     cfg['ValidMuonsInput'] = "corrected"
     cfg['TaggedJets'] = 'ak4PFJets' # JTB switched off, non-CHS Jets
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
-    cfg['MuonIso'] = 'loose'
+    cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
     cfg['CutMuonPtMin'] = 25.0
     cfg['CutMuonEtaMax'] = 2.4
