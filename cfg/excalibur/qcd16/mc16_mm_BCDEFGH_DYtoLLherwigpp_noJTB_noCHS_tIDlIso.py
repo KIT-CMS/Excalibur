@@ -35,7 +35,7 @@ def config():
     cfg['TaggedJets'] = 'ak4PFJets' # JTB switched off, non-CHS Jets
     cfg['GenJets'] = 'ak4GenJets'   # JTB switched off
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
-    cfg['MuonIso'] = 'loose'
+    cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
     cfg['CutMuonPtMin'] = 25.0
     cfg['CutMuonEtaMax'] = 2.4
@@ -48,8 +48,8 @@ def config():
     cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Trigger_EfficienciesAndSF_BCDEF.root")
     cfg['LeptonTrackingSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Tracking_EfficienciesAndSF_BCDEFGH.root")
 ##### MC specific properties: #####
-    cfg['NumberGeneratedEvents'] = 122055388 # from geteventsscript
-    cfg['GeneratorWeight'] =  1.0 #0.670123731536
+    cfg['NumberGeneratedEvents'] = 29813600 # from file
+    cfg['GeneratorWeight'] =  1.0
     cfg['CrossSection'] = 1921.8*3
     cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_madgraphMLM-herwigpp_RunIISummer16.root')
     return cfg
