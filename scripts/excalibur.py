@@ -622,12 +622,12 @@ def createFileList(infiles, fast=False):
 	files_list = getattr(infiles, "artus_value", infiles)
 	out_files = []	
 	if type(files_list) != list:
-		print "Not posilbe to resolve inputfiles format ",str(type(files_list))," must be a str"
+		print "Not possible to resolve inputfiles format ",str(type(files_list))," must be a str"
 	        sys.exit(1)
 	for files in files_list:
 	  if "*.root" in files:
 		print "Creating file list from", files
-		if files.split(':')[0] == 'srm':
+		if files.split(':')[0] in ['srm','root']:
 		  print "Use grid ls tools (gfal2)"
 		  gridpath = files.replace("*.root","")
 		  import gfal2
