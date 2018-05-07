@@ -162,52 +162,64 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
     if(settings.GetChannel() == "mm"){
         if(settings.GetInputIsData()){
             if(settings.GetMuonID() == "tight"){
-                if(settings.GetMuonIso() == "tight")
+                if(settings.GetMuonIso() == "tight_2016")
                     //histoname = "TightISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                     histoname = "TightISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
-                else
+                else if (settings.GetMuonIso() == "loose_2016")
                     //histoname = "LooseISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                     histoname = "LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
+                else
+                    LOG(ERROR) << "No Efficiencies for this Isolation";
                 }
             if(settings.GetMuonID() == "medium"){
-                if(settings.GetMuonIso() == "tight")
+                if(settings.GetMuonIso() == "tight_2016")
                     //histoname = "TightISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                     histoname = "TightISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
-                else
+                else if (settings.GetMuonIso() == "loose_2016")
                     //histoname = "LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                     histoname = "LooseISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
+                else
+                    LOG(ERROR) << "No Efficiencies for this Isolation";
                 }
             if(settings.GetMuonID() == "loose"){
-                if(settings.GetMuonIso() == "tight")
+                if(settings.GetMuonIso() == "tight_2016")
                     LOG(ERROR) << "No Efficiencies for loose ID and tight Iso";
-                else
+                else if (settings.GetMuonIso() == "loose_2016")
                     //histoname = "LooseISO_LooseID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                     histoname = "LooseISO_LooseID_eta/efficienciesDATA/histo_eta_DATA";
+                else
+                    LOG(ERROR) << "No Efficiencies for this Isolation";
                 }
             }
         else{
             if(settings.GetMuonID() == "tight"){
-                if(settings.GetMuonIso() == "tight")
+                if(settings.GetMuonIso() == "tight_2016")
                     //histoname = "TightISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
                     histoname = "TightISO_TightID_eta/efficienciesMC/histo_eta_MC";
-                else
+                else if (settings.GetMuonIso() == "loose_2016")
                     //histoname = "LooseISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
                     histoname = "LooseISO_TightID_eta/efficienciesMC/histo_eta_MC";
+                else
+                    LOG(ERROR) << "No Efficiencies for this Isolation";
                 }
             if(settings.GetMuonID() == "medium"){
-                if(settings.GetMuonIso() == "tight")
+                if(settings.GetMuonIso() == "tight_2016")
                     //histoname = "TightISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
                     histoname = "TightISO_MediumID_eta/efficienciesMC/histo_eta_MC";
-                else
+                else if (settings.GetMuonIso() == "loose_2016")
                     //histoname = "LooseISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
                     histoname = "LooseISO_MediumID_eta/efficienciesMC/histo_eta_MC";
+                else
+                    LOG(ERROR) << "No Efficiencies for this Isolation";
                 }
             if(settings.GetMuonID() == "loose"){
-                if(settings.GetMuonIso() == "tight")
+                if(settings.GetMuonIso() == "tight_2016")
                     LOG(ERROR) << "No Efficiencies for loose ID and tight Iso";
-                else
+                else if (settings.GetMuonIso() == "loose_2016")
                     //histoname = "LooseISO_LooseID_pt_eta/efficienciesMC/abseta_pt_MC";
                     histoname = "LooseISO_LooseID_eta/efficienciesMC/histo_eta_MC";
+                else
+                    LOG(ERROR) << "No Efficiencies for this Isolation";
                 }
             }
         }
