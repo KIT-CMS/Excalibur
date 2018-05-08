@@ -51,6 +51,7 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIDSFRootfile();
     std::string histoname;  // histoname depending on id
+    m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
     if (settings.GetLeptonSFVariation() == "up") {
         LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
@@ -60,33 +61,46 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
         error_multiplier = -1.;
     }
     if(settings.GetChannel() == "mm"){
-        if (settings.GetInputIsData()){
-            if(settings.GetMuonID() == "tight"){
-                //histoname = "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                histoname = "MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
+        if(settings.GetMuonID() == "tight"){
+            if (settings.GetInputIsData()){
+                if (m_etaonly)
+                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
+                else
+                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
             }
-            if(settings.GetMuonID() == "medium"){
-                //histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
-            }
-            if(settings.GetMuonID() == "loose"){
-                //histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
+            else {
+                if (m_etaonly)
+                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
+                else
+                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
             }
         }
-        else{
-            if(settings.GetMuonID() == "tight"){
-                //histoname = "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
-                //histoname = "MC_NUM_TightID_DEN_genTracks_PAR_pt/efficienciesMC/histo_pt_MC";
-                histoname = "MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
+        else if(settings.GetMuonID() == "medium"){
+            if (settings.GetInputIsData()){
+                if (m_etaonly)
+                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
+                else
+                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
             }
-            if(settings.GetMuonID() == "medium"){
-                //histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
-                histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
+            else {
+                if (m_etaonly)
+                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
+                else
+                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
             }
-            if(settings.GetMuonID() == "loose"){
-                //histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
-                histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
+        }
+        else if(settings.GetMuonID() == "loose"){
+            if (settings.GetInputIsData()){
+                if (m_etaonly)
+                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
+                else
+                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
+            }
+            else {
+                if (m_etaonly)
+                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
+                else
+                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
             }
         }
     }
@@ -96,7 +110,8 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
     
     m_etabins = &m_xbins;
     m_ptbins = &m_ybins;
-    //m_absoluteeta = true;
+    if (m_etaonly)
+        m_absoluteeta = false;
     //m_reversed_axes = true;
     
     // Get file
@@ -150,6 +165,7 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIsoSFRootfile();
     std::string histoname;  // histoname depending on id
+    m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
     if (settings.GetLeptonSFVariation() == "up") {
         LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
@@ -160,67 +176,89 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
     }
     
     if(settings.GetChannel() == "mm"){
-        if(settings.GetInputIsData()){
-            if(settings.GetMuonID() == "tight"){
-                if(settings.GetMuonIso() == "tight_2016")
-                    //histoname = "TightISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                    histoname = "TightISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
-                else if (settings.GetMuonIso() == "loose_2016")
-                    //histoname = "LooseISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                    histoname = "LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
-                else
-                    LOG(ERROR) << "No Efficiencies for this Isolation";
+        if(settings.GetMuonID() == "tight"){
+            if(settings.GetMuonIso() == "tight_2016"){
+                if(settings.GetInputIsData()){
+                    if (m_etaonly)
+                        histoname = "TightISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
+                    else
+                        histoname = "TightISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                 }
-            if(settings.GetMuonID() == "medium"){
-                if(settings.GetMuonIso() == "tight_2016")
-                    //histoname = "TightISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                    histoname = "TightISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
-                else if (settings.GetMuonIso() == "loose_2016")
-                    //histoname = "LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                    histoname = "LooseISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
-                else
-                    LOG(ERROR) << "No Efficiencies for this Isolation";
-                }
-            if(settings.GetMuonID() == "loose"){
-                if(settings.GetMuonIso() == "tight_2016")
-                    LOG(ERROR) << "No Efficiencies for loose ID and tight Iso";
-                else if (settings.GetMuonIso() == "loose_2016")
-                    //histoname = "LooseISO_LooseID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                    histoname = "LooseISO_LooseID_eta/efficienciesDATA/histo_eta_DATA";
-                else
-                    LOG(ERROR) << "No Efficiencies for this Isolation";
+                else {
+                    if (m_etaonly)
+                        histoname = "TightISO_TightID_eta/efficienciesMC/histo_eta_MC";
+                    else
+                        histoname = "TightISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
                 }
             }
-        else{
-            if(settings.GetMuonID() == "tight"){
-                if(settings.GetMuonIso() == "tight_2016")
-                    //histoname = "TightISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
-                    histoname = "TightISO_TightID_eta/efficienciesMC/histo_eta_MC";
-                else if (settings.GetMuonIso() == "loose_2016")
-                    //histoname = "LooseISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
-                    histoname = "LooseISO_TightID_eta/efficienciesMC/histo_eta_MC";
-                else
-                    LOG(ERROR) << "No Efficiencies for this Isolation";
+            else if (settings.GetMuonIso() == "loose_2016"){
+                if(settings.GetInputIsData()){
+                    if (m_etaonly)
+                        histoname = "LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
+                    else
+                        histoname = "LooseISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                 }
-            if(settings.GetMuonID() == "medium"){
-                if(settings.GetMuonIso() == "tight_2016")
-                    //histoname = "TightISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
-                    histoname = "TightISO_MediumID_eta/efficienciesMC/histo_eta_MC";
-                else if (settings.GetMuonIso() == "loose_2016")
-                    //histoname = "LooseISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
-                    histoname = "LooseISO_MediumID_eta/efficienciesMC/histo_eta_MC";
-                else
-                    LOG(ERROR) << "No Efficiencies for this Isolation";
+                else {
+                    if (m_etaonly)
+                        histoname = "LooseISO_TightID_eta/efficienciesMC/histo_eta_MC";
+                    else
+                        histoname = "LooseISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
                 }
-            if(settings.GetMuonID() == "loose"){
-                if(settings.GetMuonIso() == "tight_2016")
-                    LOG(ERROR) << "No Efficiencies for loose ID and tight Iso";
-                else if (settings.GetMuonIso() == "loose_2016")
-                    //histoname = "LooseISO_LooseID_pt_eta/efficienciesMC/abseta_pt_MC";
-                    histoname = "LooseISO_LooseID_eta/efficienciesMC/histo_eta_MC";
-                else
-                    LOG(ERROR) << "No Efficiencies for this Isolation";
+            }
+            else
+                LOG(ERROR) << "No Efficiencies for this Isolation";
+        }
+        if(settings.GetMuonID() == "medium"){
+            if(settings.GetMuonIso() == "tight_2016"){
+                if(settings.GetInputIsData()){
+                    if (m_etaonly)
+                        histoname = "TightISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
+                    else
+                        histoname = "TightISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
                 }
+                else {
+                    if (m_etaonly)
+                        histoname = "TightISO_MediumID_eta/efficienciesMC/histo_eta_MC";
+                    else
+                        histoname = "TightISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
+                }
+            }
+            else if (settings.GetMuonIso() == "loose_2016"){
+                if(settings.GetInputIsData()){
+                    if (m_etaonly)
+                        histoname = "LooseISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
+                    else
+                        histoname = "LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
+                }
+                else {
+                    if (m_etaonly)
+                        histoname = "LooseISO_MediumID_eta/efficienciesMC/histo_eta_MC";
+                    else
+                        histoname = "LooseISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
+                }
+            }
+            else
+                LOG(ERROR) << "No Efficiencies for this Isolation";
+        }
+        if(settings.GetMuonID() == "loose"){
+            if(settings.GetMuonIso() == "tight_2016")
+                LOG(ERROR) << "No Efficiencies for loose ID and tight Iso";
+            else if (settings.GetMuonIso() == "loose_2016"){
+                if(settings.GetInputIsData()){
+                    if (m_etaonly)
+                        histoname = "LooseISO_LooseID_eta/efficienciesDATA/histo_eta_DATA";
+                    else
+                        histoname = "LooseISO_LooseID_pt_eta/efficienciesDATA/abseta_pt_DATA";
+                }
+                else {
+                    if (m_etaonly)
+                        histoname = "LooseISO_LooseID_eta/efficienciesMC/histo_eta_MC";
+                    else
+                        histoname = "LooseISO_LooseID_pt_eta/efficienciesMC/abseta_pt_MC";
+                }
+            }
+            else
+                LOG(ERROR) << "No Efficiencies for this Isolation";
             }
         }
     else{
@@ -229,7 +267,8 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
 
     m_etabins = &m_xbins;
     m_ptbins = &m_ybins;
-    //m_absoluteeta = true;
+    if (m_etaonly)
+        m_absoluteeta = false;
     //m_reversed_axes = true;
     
     // Get file
@@ -281,9 +320,7 @@ std::string LeptonTrackingSFProducer::GetProducerId() const { return "LeptonTrac
 void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTrackingSFRootfile();
-    //m_id = settings.GetMuonID();
-    //m_iso = settings.GetMuonIso();
-    std::string histoname;   // histoname depending on id
+    std::string histoname;
     double error_multiplier = 0.;
     if (settings.GetLeptonSFVariation() == "up") {
         LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
@@ -302,16 +339,14 @@ void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
     
     m_etabins = &m_xbins;
     m_ptbins = &m_ybins;
-    //m_absoluteeta = true;
+    m_absoluteeta = false;
     //m_reversed_axes = true;
 
     // Get file
     LOG(INFO) << "Loading lepton scale factors for Tracking: File " << m_sffile
               << ", Histogram " << histoname;
     TFile file(m_sffile.c_str(), "READONLY");
-    //TH2F* sfhisto = (TH2F*)file.Get(histoname.c_str());
     TGraphAsymmErrors *sfhisto = (TGraphAsymmErrors*)file.Get(histoname.c_str());
-    //TGraphErrors *sfhisto = (TGraphErrors*)gDirectory->Get("ratio_eff_aeta_dr030e030_corr");
 
     // Get the pT and eta bin borders
     m_xbins.emplace_back(sfhisto->GetX()[0] - sfhisto->GetErrorXlow(0));
@@ -322,11 +357,8 @@ void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
     m_ybins.emplace_back(10000);
     
     // Fill the m_sf array with the values from the root histos
-    //LOG(INFO) << "x first border no." << 0 << ": "<< m_xbins[0];
     for (int ix = 1; ix <= sfhisto->GetN(); ix++) {
         m_sf[0][ix-1][0] = static_cast<float>(sfhisto->GetY()[ix-1] + error_multiplier * sfhisto->GetErrorY(ix-1));
-        //LOG(INFO) << "value: " << m_sf[0][ix-1][0];
-        //LOG(INFO) << "x upper border no."<< ix << ": "<< m_xbins[ix];
     }
     delete sfhisto;
     file.Close();
@@ -336,13 +368,11 @@ void LeptonTrackingSFProducer::Produce(ZJetEvent const& event,
                                  ZJetProduct& product,
                                  ZJetSettings const& settings) const
 {
-    //LOG(INFO) << "SF: " << m_sf[0][0][0];
+    //some old SF files already include the inverse, make sure you use them the right way!
     if(product.m_zValid){
         product.m_weights["mu1TrackingSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
         product.m_weights["mu2TrackingSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
         product.m_weights["leptonTrackingSFWeight"] =
-                //some old SF files already include the inverse, make sure you use them the right way!
-                //GetScaleFactor(0, *product.m_zLeptons.first) * GetScaleFactor(0, *product.m_zLeptons.second);
                 1/GetScaleFactor(0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, *product.m_zLeptons.second);
     }
     else
@@ -359,6 +389,7 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTriggerSFRootfile();
     std::string histoname;
+    m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
     if (settings.GetLeptonTriggerSFVariation() == "up") {
         LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
@@ -371,12 +402,16 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     
     if(settings.GetChannel() == "mm"){
         if(settings.GetInputIsData()){
-            //histoname = "IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA";
-            histoname = "IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA";
+            if (m_etaonly)
+                histoname = "IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA";
+            else
+                histoname = "IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA";
         }
         else{
-            //histoname = "IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesMC/abseta_pt_MC";
-            histoname = "IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC";
+            if (m_etaonly)
+                histoname = "IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC";
+            else
+                histoname = "IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesMC/abseta_pt_MC";
         }
     }
     else{
@@ -384,22 +419,9 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     }
     m_etabins = &m_xbins;
     m_ptbins = &m_ybins;
-    //m_absoluteeta = true;
+    if (m_etaonly)
+        m_absoluteeta = false;
     //m_reversed_axes = true;
-
-    // Get file
-    //runs = settings.GetTriggerSFRuns();
-    //std::vector<TH2F*> sfhistos;
-    //int runcount = runs.size();
-    //if(runs.size()>0){
-        //for (int i = 0; i < runcount; i++)
-            //sfhistos.push_back((TH2F*) file.Get(std::to_string(runs.at(i)).c_str()));
-    //}
-    //else{
-        //sfhistos.push_back((TH2F*) file.Get());
-        //sfhistos.push_back((TH2F*) file.Get("histoSF")); //check the TriggerSF histo names!
-        //runcount = 1;
-    //}
     
     // Get file
     LOG(INFO) << "Loading lepton scale factors for Trigger " << m_id << ": File " << m_sffile
@@ -417,14 +439,10 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
                              sfhisto->GetYaxis()->GetBinLowEdge(iy));
     }
     // Fill the m_sf array with the values from the root histo
-    //for (int i = 0; i < runcount; i++){
-    //LOG(INFO) << "x first border no." << 0 << ": "<< m_xbins[0];
     for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
         for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
             m_sf[0][ix - 1][iy - 1] = static_cast<float>(
             sfhisto->GetBinContent(ix, iy) - error_multiplier * sfhisto->GetBinError(ix, iy));
-            //LOG(INFO) << "value: " << m_sf[0][ix-1][iy-1];
-            //LOG(INFO) << "x upper border no."<< ix << ": "<< m_xbins[ix];
         }
     }    
     file.Close();

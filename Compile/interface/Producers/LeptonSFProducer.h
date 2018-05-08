@@ -25,7 +25,8 @@ class LeptonSFProducer : public ZJetProducerBase
     std::string m_id;
     std::vector<int> runs;
     bool m_reversed_axes = false;
-    bool m_absoluteeta = false;
+    bool m_absoluteeta = true;
+    bool m_etaonly;
 
     virtual float GetScaleFactor(int run_index, KLV const& lepton) const
     {
