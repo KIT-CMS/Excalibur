@@ -368,9 +368,11 @@ class LeadingJetYCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Rapidity()) < leadingJetYMax);
+        return (product.GetValidJetCount(settings, event)>0)
+                ? (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Rapidity()) < leadingJetYMax)
+                : false;
     }
-
+                
   private:
     float leadingJetYMax = 0;
 };
