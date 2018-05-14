@@ -4,11 +4,11 @@ import os
 def config():
     cfg = configtools.getConfig('data', 2016, 'mm', bunchcrossing='25ns')
     cfg["InputFiles"].set_input(
-        #ekppath='/storage/c/tberger/testfiles/skimming_output/data/ZJet_SingleMuon_Run2016D-Legacy-07Aug2017-v1_testfile.root',
-        ekppathB1='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver1-v1_noJTB/*.root',
-        ekppathB2='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver2-v1_noJTB/*.root',
-        ekppathC ='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016C-07Aug17-v1_noJTB/*.root',
-        ekppathD ='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016D-07Aug17-v1_noJTB/*.root',
+        ekppath='/storage/c/tberger/testfiles/skimming_output/data/ZJet_SingleMuon_Run2016D-Legacy-07Aug2017-v1_testfile.root',
+        #ekppathB1='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver1-v1_noJTB/*.root',
+        #ekppathB2='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver2-v1_noJTB/*.root',
+        #ekppathC ='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016C-07Aug17-v1_noJTB/*.root',
+        #ekppathD ='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016D-07Aug17-v1_noJTB/*.root',
         nafpathB1='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver1-v1_noJTB/*.root',
         nafpathB2='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver2-v1_noJTB/*.root',
         nafpathC ='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016C-07Aug17-v1_noJTB/*.root',
@@ -38,9 +38,9 @@ def config():
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
-    cfg['CutMuonPtMin'] = 25.0
+    cfg['CutMuonPtMin'] = 20.0
     cfg['CutMuonEtaMax'] = 2.4
-    cfg['ZMassRange'] = 15.0
+    cfg['ZMassRange'] = 20.0
     cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### LeptonSF files: #####

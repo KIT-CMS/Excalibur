@@ -34,9 +34,9 @@ def config():
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
-    cfg['CutMuonPtMin'] = 25.0
+    cfg['CutMuonPtMin'] = 20.0
     cfg['CutMuonEtaMax'] = 2.4
-    cfg['ZMassRange'] = 15.0
+    cfg['ZMassRange'] = 20.0
     cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### LeptonSF files: #####
