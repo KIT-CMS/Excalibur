@@ -1,3 +1,4 @@
+from Excalibur.JEC_Plotter.core.plot import _Plot1D
 from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, QUANTITIES, BinSpec, CutSet
 from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
     SAMPLES,
@@ -6,6 +7,10 @@ from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
 )
 
 from copy import deepcopy
+
+_Plot1D.Y_SUBPLOT_LABEL = "Data/MC"
+_Plot1D.Y_SUBPLOT_LIMS = [0.95, 1.05]
+
 
 _CORR_FOLDER = "L1L2L3"
 
@@ -50,13 +55,13 @@ _QUANTITY_PAIRS = [
     ('zpt_log', 'mpf'),
     ##('alpha', 'ptbalance'),
     ##('alpha', 'mpf'),
-    ('zpt_log', 'zmass'),
+    ##('zpt_log', 'zmass'),
     #('zeta_wide', 'zmass'),
-    ('abszeta_narrow', 'zmass'),
+    ##('abszeta_narrow', 'zmass'),
     #('absjet1eta_wide', 'ptbalance'),
     #('absjet1eta_wide', 'mpf'),
-    ('absjet1eta_narrow', 'ptbalance'),
-    ('absjet1eta_narrow', 'mpf'),
+    ##('absjet1eta_narrow', 'ptbalance'),
+    ##('absjet1eta_narrow', 'mpf'),
 ]
 
 _cut_final_no_eta = CutSet("basicToNoEta",
@@ -72,7 +77,7 @@ _cut_final_no_eta = CutSet("basicToNoEta",
 
 _SELECTION_CUTS = [
     SELECTION_CUTS['finalcuts'],
-    SELECTION_CUTS['basiccuts'] + _cut_final_no_eta,
+    #SELECTION_CUTS['basiccuts'] + _cut_final_no_eta,
     #SELECTION_CUTS['nocuts'],
 ]
 
@@ -132,7 +137,7 @@ def _workflow(sample_data, sample_mc, jecv):
     #for _corr_level in ('L1L2L3', 'L1L2L3Res'):
     for _corr_level in ('L1L2L3',):
         _ph = PlotHistograms2D(
-            basename="data_mc_closure_07Aug2017_JEC{}".format(jecv),
+            basename="data_mc_closure_CMS_07Aug2017_JEC{}".format(jecv),
             # there is one subplot per sample and cut in each plot
             samples=_SAMPLES,
             corrections=_corr_level,
@@ -144,12 +149,14 @@ def _workflow(sample_data, sample_mc, jecv):
             show_as_profile=True,
             show_ratio_to_first=True,
             show_cut_info_text=False,
-            jec_version_label="Summer16 JEC {}".format(jecv)
+            show_corr_folder_text=False,
+            jec_version_label="Run2016 36 fb$^{-1}$ (13 TeV)"
         )
 
         for _zpt_cut in _ADDITIONAL_CUTS_ZPT:
+            break
             _ph2 = PlotHistograms2D(
-                basename="data_mc_closure_07Aug2017_JEC{}".format(jecv),
+                basename="data_mc_closure_CMS_07Aug2017_JEC{}".format(jecv),
                 # there is one subplot per sample and cut in each plot
                 samples=_SAMPLES,
                 corrections=_corr_level,
@@ -161,9 +168,17 @@ def _workflow(sample_data, sample_mc, jecv):
                 show_as_profile=True,
                 show_ratio_to_first=True,
                 show_cut_info_text=False,
-                jec_version_label="Summer16 JEC {}".format(jecv)
+                show_corr_folder_text=False,
+                jec_version_label="Run2016 36 fb$^{-1}$ (13 TeV)"
             )
             #_phs.append(_ph2)
+
+        # add cut labels as text
+        for _p in _ph._plots:
+            _p._basic_dict['texts'].extend([r"$\\bf{CMS}$", r"$\\it{Preliminary}$"])
+            _p._basic_dict['texts_size'].extend([25, 20])
+            _p._basic_dict['texts_x'].extend([0.04, 0.04])
+            _p._basic_dict['texts_y'].extend([0.94, 0.84])
 
         _phs.append(_ph)
 
@@ -171,16 +186,8 @@ def _workflow(sample_data, sample_mc, jecv):
             _ph.make_plots()
 
 if __name__ == "__main__":
-    for _jecv in ("V6", "V6_egmUpdate"):
-    #for _jecv in ("V6_rawECAL",):
-        #for _channel in ("mm", "ee"):
-        for _channel in ("ee",):
+    for _jecv in ("V6",):
+        for _channel in ("mm", "ee"):
             _workflow(sample_data=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)],
                       sample_mc=SAMPLES['MC_Z{}_DYNJ_Summer16_JEC{}'.format(_channel, _jecv)],
                       jecv=_jecv)
-
-
-    #_jecv = "V6"
-    #_workflow(sample_data=SAMPLES['Data_Zmm_BCDEFGH_Summer16_JEC{}'.format(_jecv)],
-    #          sample_mc=SAMPLES['MC_Zmm_DYNJ_Summer16_JEC{}'.format(_jecv)],
-    #          jecv=_jecv)

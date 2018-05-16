@@ -294,6 +294,12 @@ QUANTITIES = dict(
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{Jet1}$'
     ),
+    absjet1eta=Quantity(
+        name='absjet1eta',
+        expression='abs(jet1eta)',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 5)),
+        label='$|\\\\eta^\\\\mathrm{Jet1}|$'
+    ),
     jet1eta_extended=Quantity(
         name='jet1eta_extended',
         expression='jet1eta',
@@ -460,6 +466,12 @@ QUANTITIES = dict(
         name='jetHT',
         expression='jetHT',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 0.5))
+    ),
+    jetrpf=Quantity(
+        name='jetrpf',
+        expression='jetrpf',
+        label="Jet RPF",
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 2))
     ),
     matchedgenjet1eta=Quantity(
         name='matchedgenjet1eta',

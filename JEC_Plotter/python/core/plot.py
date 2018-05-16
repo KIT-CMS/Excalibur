@@ -17,11 +17,16 @@ class _Plot1D(object):
     _INFOBOX_TOPLEFT_XY = (0.65, 0.77)
     _INFOBOX_SPACING_Y = 0.05
 
+    Y_SUBPLOT_LIMS = [0.95, 1.05]
+    Y_SUBPLOT_LABEL = "Ratio"
+
     def __init__(self, basename, quantity, selection,
                  samples, cut_sets, correction_string,
                  normalize_to_first_histo=False,
                  show_ratio_to_first=False,
+                 show_first_in_ratio=False,
                  show_cut_info_text=True,
+                 show_corr_folder_text=True,
                  stacked=False,
                  dataset_label=None,
                  y_log_scale=False):
@@ -34,7 +39,8 @@ class _Plot1D(object):
         self._cut_sets = cut_sets or [None]
         self._correction_string = correction_string
         self._normalize_to_first_histo = normalize_to_first_histo
-        self._ratio = show_ratio_to_first
+        self._dmc_comparison_type = show_ratio_to_first
+        self._show_first_in_ratio = show_first_in_ratio
         self._stacked = stacked
         self._dataset_label = dataset_label
         self._y_log_scale = y_log_scale
@@ -85,19 +91,15 @@ class _Plot1D(object):
             # texts
             "texts": [
                 CHANNEL_SPEC.get(self._channel, {}).get('label', ""),
-                r"$\\bf{{{0}}}$".format(self._correction_string)
             ],
             "texts_size": [
                 20,
-                25,
             ],
             "texts_x": [
                 0.1, #self._INFOBOX_TOPLEFT_XY[0],
-                0.68,
             ],
             "texts_y": [
                 1.08, #self._INFOBOX_TOPLEFT_XY[1],
-                0.09,
             ],
 
             'analysis_modules': [],
@@ -118,6 +120,13 @@ class _Plot1D(object):
             "subplot_fraction": 25,
             "ratio_denominator_no_errors": False,
         }
+
+        if show_corr_folder_text:
+            # add cut labels as text
+            self._basic_dict['texts'].append(r"$\\bf{{{0}}}$".format(self._correction_string))
+            self._basic_dict['texts_size'].append(25)
+            self._basic_dict['texts_x'].append(0.68)
+            self._basic_dict['texts_y'].append(0.09)
 
         if show_cut_info_text:
             # add cut labels as text
@@ -175,18 +184,22 @@ class _Plot1D(object):
             if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
                 _d['corrections'][-1] = 'L1L2L3'
 
-        if self._ratio:
+        if self._dmc_comparison_type:
             _d['analysis_modules'].append("Ratio")
-            _num_nicks = ["nick{}".format(i) for i in range(self._nsamples)]
-            _res_nicks = ["nick{}_over0".format(i) for i in range(self._nsamples)]
+            _start_index = 1
+            if self._show_first_in_ratio:
+                _start_index = 0
+            _num_nicks = ["nick{}".format(i) for i in range(_start_index, self._nsamples)]
+            _res_nicks = ["nick{}_over0".format(i) for i in range(_start_index, self._nsamples)]
+
             _d.update({
                 "ratio_numerator_nicks": _num_nicks,
                 "ratio_denominator_nicks": ["nick0"],
                 "ratio_result_nicks": _res_nicks,
                 #"subplot_lines": [],
-                "subplot_nicks": _res_nicks,  #["dummy"],  # HARRYPLOTTER!!
-                "y_subplot_label": "Ratio",
-                'y_subplot_lims': [0.85, 1.05],
+                "subplot_nicks": _res_nicks,
+                "y_subplot_label": self.Y_SUBPLOT_LABEL,
+                'y_subplot_lims': self.Y_SUBPLOT_LIMS,
                 'y_errors': _d['y_errors'] + [True] * len(_num_nicks),
                 'x_errors': _d['x_errors'] + [False] * len(_num_nicks),
                 'markers': _d['markers'] + ["s"] * len(_num_nicks),
@@ -194,10 +207,20 @@ class _Plot1D(object):
                 'line_styles': _d['line_styles'] + [""] * len(_num_nicks),
             })
 
+            # make sure subplot properties follow the main plot
+            if 'colors' in _d:
+                _d['colors'] += [_d['colors'][i] for i in range(_start_index, self._nsamples)]
+            #if 'markers' in _d:
+            #    _d['markers'] = [_d['markers'][i] for i in range(_start_index, self._nsamples)]
+            #if 'step' in _d:
+            #    _d['step'] = [_d['step'][i] for i in range(_start_index, self._nsamples)]
+            #if 'line_styles' in _d:
+            #    _d['line_styles'] = [_d['line_styles'][i] for i in range(_start_index, self._nsamples)]
+
             # need to create a 'parallel' set of stacks for the ratios
             # to avoid stacking ratios and non-rations together...
             if 'stacks' in _d:
-                _d['stacks'].extend([_stackname+'_r' for _stackname in _d['stacks']])
+                _d['stacks'].extend(['stack_'+_stackname for _stackname in _res_nicks])
 
         if self._normalize_to_first_histo and len(_d['files']) > 1:
             _d['analysis_modules'].insert(0, "NormalizeToFirstHisto")
@@ -264,6 +287,7 @@ class _Plot1DFractions(_Plot1D):
                  fraction_samples, reference_cut_set, fraction_cut_sets,
                  correction_string,
                  show_cut_info_text=True,
+                 show_corr_folder_text=True,
                  dataset_label=None):
         #
         # print len(fraction_cut_sets)
@@ -281,7 +305,9 @@ class _Plot1DFractions(_Plot1D):
             correction_string=correction_string,
             normalize_to_first_histo=False,     # always false for fraction plots
             show_ratio_to_first=True,           # always true for fraction plots
+            show_first_in_ratio=True,
             show_cut_info_text=show_cut_info_text,
+            show_corr_folder_text=True,
             stacked=True,
             dataset_label=dataset_label)
 
@@ -303,7 +329,9 @@ class _Plot1DFractions(_Plot1D):
 
             "ratio_denominator_nicks": ["nick0"],  # divide by reference
             "nicks_blacklist": ["nick0_over0", "^nick0$"],  # do not plot reference
-            "y_errors": True,  # do not plot error bars
+            "y_errors": True,
+            "x_errors": None,
+            "line_styles": None,
             "analysis_modules": ["Ratio"],
         })
 
@@ -360,6 +388,7 @@ class _Plot2D(_Plot1D):
                  normalize_to_first_histo=False,
                  show_ratio_to_first=False,
                  show_cut_info_text=True,
+                 show_corr_folder_text=True,
                  show_as_profile=False,
                  dataset_label=None):
 
@@ -367,6 +396,7 @@ class _Plot2D(_Plot1D):
             basename=basename, quantity=quantity_pair[0], selection=selection,
             samples=samples, cut_sets=cut_sets, correction_string=correction_string,
             normalize_to_first_histo=False, show_ratio_to_first=show_ratio_to_first,
+            show_corr_folder_text=show_corr_folder_text,
             dataset_label=dataset_label
         )
         del self._q
@@ -404,19 +434,19 @@ class _Plot2D(_Plot1D):
             # texts
             "texts": [
                 CHANNEL_SPEC.get(self._channel, {}).get('label', ""),
-                r"$\\bf{{{0}}}$".format(self._correction_string)
+                #r"$\\bf{{{0}}}$".format(self._correction_string)
             ],
             "texts_size": [
                 20,
-                25,
+                #25,
             ],
             "texts_x": [
                 0.1, #self._INFOBOX_TOPLEFT_XY[0],
-                0.68,
+                #0.68,
             ],
             "texts_y": [
                 1.08,  # self._INFOBOX_TOPLEFT_XY[1],
-                0.09,
+                #0.09,
             ],
             # web gallery options
             'www': _output_folder,
@@ -477,8 +507,7 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                  sample_mc,
                  sample_data,
                  correction_string,
-                 normalize_to_first_histo=False,
-                 show_ratio_to_first=False,
+                 show_data_mc_comparison_as=None,
                  stacked=False,
                  show_cut_info_text=True,
                  show_as_profile=False,
@@ -495,8 +524,9 @@ class _Plot2DQuantitiesProfile(_Plot2D):
         self._sample_data = sample_data
         self._selection = selection
         self._correction_string = correction_string
-        self._normalize_to_first_histo = normalize_to_first_histo
-        self._ratio = show_ratio_to_first
+        self._dmc_comparison_type = show_data_mc_comparison_as
+        if self._dmc_comparison_type is not None:
+            self._dmc_comparison_type = self._dmc_comparison_type.lower()
         self._stacked = stacked
         self._dataset_label = dataset_label
         self._y_log_scale = y_log_scale
@@ -581,7 +611,6 @@ class _Plot2DQuantitiesProfile(_Plot2D):
             'y_errors': [],
             'x_errors': [],
             'stacks': [],
-            #'zorder': []
         }
 
         self._profile = show_as_profile
@@ -623,7 +652,6 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                 _d['step'].append(True)
 
                 if _sample['source_type'] == 'MC':
-                    #_d['zorder'].append(1)
                     _d['nicks'].append("mc{}".format(_i))
                     _d['stacks'].append("stack_mc")
                     _d['markers'].append('bar')
@@ -632,7 +660,6 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                     _d['x_errors'].append(False)
                     _d['labels'].append("{}".format(_qy.label))
                 else:
-                    #_d['zorder'].append(0)
                     _d['nicks'].append("data{}".format(_i))
                     _d['stacks'].append("stack_data")
                     _d['markers'].append(self._markers_data[_i % len(self._markers_data)])
@@ -641,19 +668,13 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                     _d['x_errors'].append(True)
                     _d['labels'].append("{}".format(_qy.label))
 
-                # _d['step'].append(_sample._dict.get('step_flag', False))
-                # if _d['step'][-1]:
-                #     _d['line_styles'].append(_sample._dict.get('line_styles', "-"))
-                # else:
-                #     _d['line_styles'].append(_sample._dict.get('line_styles', ""))
-
                 _d['y_errors'].append(True)
 
                 # default to 'L1L2L3' for Monte Carlo
                 if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
                     _d['corrections'][-1] = 'L1L2L3'
 
-        if self._ratio:
+        if self._dmc_comparison_type == 'ratio':
             _d['analysis_modules'].append("Ratio")
             _numer_nicks = ["data{}".format(i) for i in range(len(self._qys))]
             _denom_nicks = ["mc{}".format(i) for i in range(len(self._qys))]
@@ -663,15 +684,15 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                 "ratio_numerator_nicks": _numer_nicks,
                 "ratio_denominator_nicks": _denom_nicks,
                 "ratio_result_nicks": _res_nicks,
-                # "subplot_lines": [],
-                "subplot_nicks": _res_nicks,  # ["dummy"],  # HARRYPLOTTER!!
-                "y_subplot_label": "Ratio",
+                "subplot_lines": [1.0],
+                "subplot_nicks": _res_nicks,
+                "y_subplot_label": "Data/MC",
                 # 'y_subplot_lims': [0.5, 4.1],
                 'y_subplot_lims': [0.75, 1.25],
                 'subplot_fraction': 20,
 
                 # -- extend
-                'labels': _d['labels'] + ["R"] * len(_numer_nicks),
+                'labels': _d['labels'] + [""] * len(_numer_nicks),
                 'stacks': _d['stacks'] + ["ratio_stack_{}".format(_i) for _i in range(len(_numer_nicks))],
                 'markers': _d['markers'] + [self._markers_data[_i % len(self._markers_data)] for _i in range(len(_numer_nicks))],
                 'colors': _d['colors'] +  [self._colors_mc[_i % len(self._colors_mc)] for _i in range(len(_numer_nicks))],
@@ -682,14 +703,47 @@ class _Plot2DQuantitiesProfile(_Plot2D):
 
                 'step': _d['step'] + [True] * len(_numer_nicks),
                 'line_styles': _d['line_styles'] + [""] * len(_numer_nicks),
-                #'zorder': _d['zorder'] + [0] * len(_numer_nicks),
+            })
+        elif self._dmc_comparison_type.startswith('difference'):
+            _d['analysis_modules'].append("AddHistograms")
+            _plus_nicks = ["data{}".format(i) for i in range(len(self._qys))]
+            _minus_nicks = ["mc{}".format(i) for i in range(len(self._qys))]
+            _res_nicks = ["diff{}".format(i) for i in range(len(self._qys))]
 
-
-
+            _d.update({
+                "add_nicks": ["{0} {1}".format(_pn, _mn) for _pn, _mn in zip(_plus_nicks, _minus_nicks)],
+                "add_result_nicks": _res_nicks,
+                "add_scale_factors": ["1.0 -1.0" for _ in _plus_nicks],
+                "subplot_lines": [0.0],
+                "subplot_nicks": _res_nicks,
+                "y_subplot_label": "Data-MC",
+                # 'y_subplot_lims': [0.5, 4.1],
+                'y_subplot_lims': [-0.1, 0.1],
+                'subplot_fraction': 20,
             })
 
-        if self._normalize_to_first_histo and len(_d['files']) > 1:
-            _d['analysis_modules'].insert(0, "NormalizeToFirstHisto")
+            if 'percent' in self._dmc_comparison_type:
+                _d.update({
+                    "add_scale_factors": ["100.0 -100.0" for _ in _plus_nicks],
+                    "y_subplot_label": "Data-MC (%)",
+                    'y_subplot_lims': [100 * _l for _l in _d['y_subplot_lims']],
+                })
+
+            _new_nick_dict = {}
+            _new_nick_dict['labels'] = [""] * len(_plus_nicks)
+            _new_nick_dict['stacks'] = ["difference_stack_{}".format(_i) for _i in range(len(_plus_nicks))]
+            _new_nick_dict['markers'] = [self._markers_data[_i % len(self._markers_data)] for _i in range(len(_plus_nicks))]
+            _new_nick_dict['colors'] =  [self._colors_mc[_i % len(self._colors_mc)] for _i in range(len(_plus_nicks))]
+            _new_nick_dict['alphas'] = [1.0] * len(_plus_nicks)
+            _new_nick_dict['y_errors'] = [True] * len(_plus_nicks)
+            _new_nick_dict['x_errors'] = [False] * len(_plus_nicks)
+            _new_nick_dict['step'] = [True] * len(_plus_nicks)
+            _new_nick_dict['line_styles'] = [""] * len(_plus_nicks)
+
+            for _i_input_nick in range(len(_plus_nicks)):
+                for _key in _new_nick_dict:
+                    _new_pos = len(_plus_nicks) + 2*_i_input_nick
+                    _d[_key].insert(_new_pos, _new_nick_dict[_key][_i_input_nick])
 
         return _d
 
@@ -775,9 +829,10 @@ class _PlotExtrapolation(_Plot1D):
             ## todo
             #'y_bins': self._qy.bin_spec.string if self._qy.bin_spec is not None else None,
             'y_label': "Response",
-            'y_subplot_label': "Ratio",
+            'y_subplot_label': self.Y_SUBPLOT_LABEL,
 
-            'y_subplot_lims': [0.95, 1.05],
+            #'y_subplot_lims': [0.85, 1.15],
+            'y_subplot_lims': self.Y_SUBPLOT_LIMS,
             #'y_lims': _y_range,
             'y_lims': [0.6, 1.2],
 
@@ -926,6 +981,7 @@ class PlotHistograms1D(object):
                  normalize_to_first=False,
                  show_ratio_to_first=False,
                  show_cut_info_text=True,
+                 show_corr_folder_text=True,
                  stacked=False,
                  jec_version_label=None,
                  y_log_scale=False):
@@ -950,6 +1006,7 @@ class PlotHistograms1D(object):
                         normalize_to_first_histo=normalize_to_first,
                         show_ratio_to_first=show_ratio_to_first,
                         show_cut_info_text=show_cut_info_text,
+                        show_corr_folder_text=show_corr_folder_text,
                         stacked=stacked,
                         dataset_label=jec_version_label,
                         y_log_scale=y_log_scale)
@@ -960,6 +1017,7 @@ class PlotHistograms1D(object):
         _plot_dicts = [_p.get_dict() for _p in self._plots]
         # harryinterface.harry_interface(_plot_dicts, args)
         harryinterface.harry_interface(_plot_dicts, (args or []) + ['--max-processes', '1'])
+
 
 class PlotHistograms1DFractions(PlotHistograms1D):
 
@@ -994,13 +1052,13 @@ class PlotHistograms1DFractions(PlotHistograms1D):
                 self._plots.append(_plot)
 
 
-
 class PlotHistograms2D(PlotHistograms1D):
 
     def __init__(self, samples, quantity_pairs, selection_cuts,
                  additional_cuts=None,
                  basename='hist_2d', corrections='L1L2L3Res',
                  show_cut_info_text=True,
+                 show_corr_folder_text=True,
                  show_ratio_to_first=False,
                  show_as_profile=False,
                  jec_version_label=None,):
@@ -1030,6 +1088,7 @@ class PlotHistograms2D(PlotHistograms1D):
                                 normalize_to_first_histo=False,
                                 show_ratio_to_first=show_ratio_to_first,
                                 show_cut_info_text=show_cut_info_text,
+                                show_corr_folder_text=show_corr_folder_text,
                                 show_as_profile=show_as_profile,
                                 dataset_label=jec_version_label)
 
@@ -1049,7 +1108,7 @@ class PlotHistograms2DQuantitiesProfile(PlotHistograms2D):
                  markers_data=None,
                  basename='hist_qprof', corrections='L1L2L3Res',
                  show_cut_info_text=True,
-                 show_ratio_to_first=False,
+                 show_data_mc_comparison_as=None,
                  show_as_profile=False,
                  jec_version_label=None, ):
 
@@ -1082,13 +1141,13 @@ class PlotHistograms2DQuantitiesProfile(PlotHistograms2D):
                 sample_mc=sample_mc,
                 sample_data=sample_data,
                 correction_string=corrections,
-                normalize_to_first_histo=False,
-                show_ratio_to_first=show_ratio_to_first,
+                show_data_mc_comparison_as=show_data_mc_comparison_as,
                 show_cut_info_text=show_cut_info_text,
                 show_as_profile=show_as_profile,
                 dataset_label=jec_version_label)
 
             self._plots.append(_plot)
+
 
 class PlotResponseExtrapolation(PlotHistograms2D):
 

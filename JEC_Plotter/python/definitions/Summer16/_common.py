@@ -19,6 +19,26 @@ SELECTION_CUTS = dict(
                              #r"$\\mathrm{jet1,2ID}=\\mathrm{loose}$"
                              ],
                      zjet_folder='basiccuts'),
+    noalphanoetacuts=CutSet('ZJetnoalphanoetacuts',
+                     weights=["zpt>30"],
+                     labels=[r"${\\bf ZJet}$ basic sel.",
+                             r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$",
+                             ],
+                     zjet_folder='basiccuts'),
+    noetacut=CutSet('ZJetnoalphanoetacuts',
+                     weights=["zpt>30", "alpha<0.3"],
+                     labels=[r"${\\bf ZJet}$ basic sel.",
+                             r"$\\alpha<0.3$",
+                             r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$",
+                             ],
+                     zjet_folder='basiccuts'),
+    noalphacut=CutSet('ZJetnoalphacut',
+                     weights=["zpt>30", "abs(jet1eta)<1.3"],
+                     labels=[r"${\\bf ZJet}$ basic sel.",
+                             r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$",
+                             r"$|\\eta^\\mathrm{Jet1}|<1.3$",
+                             ],
+                     zjet_folder='basiccuts'),
     finalcuts=CutSet('ZJetfinal',
                      weights=["jet1idloose==1", "jet2idloose==1"],
                      labels=[r"${\\bf ZJet}$ final sel.",
@@ -162,7 +182,7 @@ for _run_name, _run_range in _run_ranges.iteritems():
         _run_name: CutSet(
             _run_name,
             weights=[
-                "run>={}&&run<={}".format(
+                "((run>={}&&run<={})||run==1)".format(  # exclude MC from cut
                     _run_range[0],
                     _run_range[1],
                 )
@@ -188,7 +208,7 @@ for _jec_iov, _jec_iov_range in _jec_iovs.iteritems():
         _jec_iov: CutSet(
             _jec_iov,
             weights=[
-                "run>={}&&run<={}".format(
+                "((run>={}&&run<={})||run==1)".format(  # exclude MC from cut
                     _jec_iov_range[0],
                     _jec_iov_range[1],
                 )

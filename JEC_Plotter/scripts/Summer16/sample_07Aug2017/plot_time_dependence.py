@@ -1,4 +1,5 @@
-from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, CutSet
+from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, CutSet, BinSpec, QUANTITIES
+
 from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
     SAMPLES,
     SELECTION_CUTS,
@@ -12,12 +13,18 @@ _SAMPLE_NAME = "07Aug2017"
 
 _CORR_FOLDER = "L1L2L3"
 
+QUANTITIES['zmass'].bin_spec = BinSpec.make_equidistant(50, (89.5, 94.2))
+QUANTITIES['mpf'].bin_spec = BinSpec.make_equidistant(50, (0.9, 1.15))
+QUANTITIES['ptbalance'].bin_spec = BinSpec.make_equidistant(50, (0.8, 1.05))
+QUANTITIES['jet1pt_over_jet1ptraw'].bin_spec = BinSpec.make_equidistant(50, (0.97, 1.25))
+
 _QUANTITIES = [
     'mpf', 'ptbalance',
-    'npv',
-    'zpt', 'zphi', 'zmass',
-    'jet1pt', 'jet2pt', 'jet3pt',
-    'jet1phi', 'jet2phi', 'jet3phi',
+    'zmass',
+    #'zpt', 'zphi',
+    #'npv',
+    #'jet1pt', 'jet2pt', 'jet3pt',
+    #'jet1phi', 'jet2phi', 'jet3phi',
     'jet1pt_over_jet1ptraw'
 ]
 
@@ -77,21 +84,17 @@ _ADDITIONAL_CUTS = [
     }
 ]
 
+
 if __name__ == "__main__":
     #for _corr_folder in ["L1L2L3", "L1L2L3Res"]:
-    for _corr_folder in ["L1L2L3"]:
-        plot_time_dependence(sample=SAMPLES['Data_Zmm_BCDEFGH'],
-                             corrections_folder=_corr_folder,
-                             quantities=_QUANTITIES,
-                             selection_cuts=_SELECTION_CUTS,
-                             additional_cuts=_ADDITIONAL_CUTS,
-                             www_folder_label="{}".format(_SAMPLE_NAME),
-                             time_quantity=_TIME_QUANTITY)
-        
-        plot_time_dependence(sample=SAMPLES['Data_Zee_BCDEFGH'],
-                             corrections_folder=_corr_folder,
-                             quantities=_QUANTITIES,
-                             selection_cuts=_SELECTION_CUTS,
-                             additional_cuts=_ADDITIONAL_CUTS,
-                             www_folder_label="{}".format(_SAMPLE_NAME),
-                             time_quantity=_TIME_QUANTITY)
+    for _jecv in ("V6",):
+        for _channel in ("ee", "mm"):
+            for _corr_folder in ["L1L2L3"]:
+                plot_time_dependence(sample=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)],
+                                     corrections_folder=_corr_folder,
+                                     quantities=_QUANTITIES,
+                                     selection_cuts=_SELECTION_CUTS,
+                                     additional_cuts=_ADDITIONAL_CUTS,
+                                     www_folder_label="{}".format(_SAMPLE_NAME),
+                                     dataset_label="Summer16 JEC {}".format(_jecv),
+                                     time_quantity=_TIME_QUANTITY)

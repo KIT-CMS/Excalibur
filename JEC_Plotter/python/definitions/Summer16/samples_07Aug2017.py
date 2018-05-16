@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from copy import deepcopy
 
@@ -7,70 +8,122 @@ from _common import *
 
 # -- Samples: each sample is a ROOT file containing Excalibur output
 
-_SAMPLE_DIR = "/storage/c/tberger/excalibur_results_calibration/Summer16_07Aug2017_V1_2017-11-13"
+_SAMPLE_DIR_DICT = dict(
+    V1="/storage/c/tberger/excalibur_results_calibration/Summer16_07Aug2017_V1_2017-11-13",
+    V5="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+    V6="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V6_2018-03-05",
+    V6_egmUpdate="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V6_egmUpdate_2018-03-28",
+    V6_rawECAL="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V6_rawECALv2_2018-04-04",
+)
 
-SAMPLES = {
-    'Data_Zmm_BCDEFGH': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='data16_mm_BCDEFGH_DoMuLegacy.root'
-    ),
-    'Data_Zmm_BCDEFGH_JECV5': Sample.load_using_convention(
-        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
-        sample_file='data16_mm_BCDEFGH_DoMuLegacy.root'
-    ),
-    'Data_Zmm_BCD': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='data16_mm_BCD_DoMuLegacy.root'
-    ),
-    # 'MC_Zmm_DYJets_Madgraph': Sample.load_using_convention(
-    #     sample_dir=_SAMPLE_DIR,
-    #     sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph.root'
-    # ),
-    'MC_Zmm_DYNJ_Madgraph': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='mc16_mm_BCDEFGH_DYNJ_Madgraph.root'
-    ),
-    'MC_Zmm_DYJets_Madgraph_physicsflavor_71': Sample.load_using_convention(
-        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
-        sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_physicsflavor_71.root'
-    ),
-    'MC_Zmm_DYJets_Madgraph_algorithmicflavor_71': Sample.load_using_convention(
-        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
-        sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_algorithmicflavor_71.root'
-    ),
-    'MC_Zmm_DYJets_Madgraph_algorithmicflavor_1': Sample.load_using_convention(
-        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
-        sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_algorithmicflavor_1.root'
-    ),
-    'Data_Zee_BCDEFGH': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='data16_ee_BCDEFGH_DoElLegacy.root'
-    ),
-    'Data_Zee_BCD': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='data16_ee_BCD_DoElLegacy.root'
-    ),
-    # 'MC_Zee_DYJets_Madgraph': Sample.load_using_convention(
-    #     sample_dir=_SAMPLE_DIR,
-    #     sample_file='mc16_ee_BCDEFGH_DYJets_Madgraph.root'
-    # ),
-    'MC_Zee_DYNJ_Madgraph': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='mc16_ee_BCDEFGH_DYNJ_Madgraph.root'
-    ),
-    'Data_Zmm_BCD_noetaphiclean': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='data16_mm_BCD_DoMuLegacy_noetaphiclean.root'
-    ),
-    'Data_Zee_BCD_noetaphiclean': Sample.load_using_convention(
-        sample_dir=_SAMPLE_DIR,
-        sample_file='data16_ee_BCD_DoElLegacy_noetaphiclean.root'
-    ),
-    'Data_Zee_BCDEFGH_JECV5': Sample.load_using_convention(
-        sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
-        sample_file='data16_ee_BCDEFGH_DoElLegacy.root'
-    ),
-}
+SAMPLES = dict()
+
+# -- DATA
+
+for _channel in ('ee', 'mm'):
+    for _jecv, _sample_dir in _SAMPLE_DIR_DICT.iteritems():
+        for _run_period in ('B', 'C', 'D', 'EF', 'GH', 'BCD', 'BCDEFGH'):
+            if os.path.exists(os.path.join(_sample_dir, 'data16_{}_{}_07Aug2017.root'.format(_channel, _run_period))):
+                SAMPLES.update({
+                    'Data_Z{}_{}_Summer16_JEC{}'.format(_channel, _run_period, _jecv): Sample.load_using_convention(
+                        sample_dir=_sample_dir,
+                        sample_file='data16_{}_{}_07Aug2017.root'.format(_channel, _run_period)
+                    ),
+                })
+
+# -- MC
+
+for _channel in ('ee', 'mm'):
+    for _jecv, _sample_dir in _SAMPLE_DIR_DICT.iteritems():
+        for _n_jets in ('1', '2', '3', 'N'):
+            if os.path.exists(os.path.join(_sample_dir, 'mc16_{}_BCDEFGH_DY{}J_Madgraph.root'.format(_channel, _n_jets))):
+                SAMPLES.update({
+                    'MC_Z{}_DY{}J_Summer16_JEC{}'.format(_channel, _n_jets, _jecv): Sample.load_using_convention(
+                        sample_dir=_sample_dir,
+                        sample_file='mc16_{}_BCDEFGH_DY{}J_Madgraph.root'.format(_channel, _n_jets)
+                    ),
+                })
+
+# _SAMPLE_DIR = "/storage/c/tberger/excalibur_results_calibration/Summer16_07Aug2017_V1_2017-11-13"
+#
+# SAMPLES = {
+#     'Data_Zmm_BCDEFGH': Sample.load_using_convention(
+#         sample_dir=_SAMPLE_DIR,
+#         sample_file='data16_mm_BCDEFGH_DoMuLegacy.root'
+#     ),
+#     'Data_Zmm_BCDEFGH_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_mm_BCDEFGH_DoMuLegacy.root'
+#     ),
+#     'Data_Zmm_BCD_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_mm_BCD_DoMuLegacy.root'
+#     ),
+#     'Data_Zmm_EF_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_mm_EF_DoMuLegacy.root'
+#     ),
+#     'Data_Zmm_GH_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_mm_GH_DoMuLegacy.root'
+#     ),
+#     # 'MC_Zmm_DYJets_Madgraph': Sample.load_using_convention(
+#     #     sample_dir=_SAMPLE_DIR,
+#     #     sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph.root'
+#     # ),
+#     'MC_Zmm_DYNJ_Madgraph': Sample.load_using_convention(
+#         sample_dir=_SAMPLE_DIR,
+#         sample_file='mc16_mm_BCDEFGH_DYNJ_Madgraph.root'
+#     ),
+#     'MC_Zmm_DYJets_Madgraph_physicsflavor_71': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
+#         sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_physicsflavor_71.root'
+#     ),
+#     'MC_Zmm_DYJets_Madgraph_algorithmicflavor_71': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
+#         sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_algorithmicflavor_71.root'
+#     ),
+#     'MC_Zmm_DYJets_Madgraph_algorithmicflavor_1': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017",
+#         sample_file='mc16_mm_BCDEFGH_DYJets_Madgraph_algorithmicflavor_1.root'
+#     ),
+#     'Data_Zee_BCDEFGH': Sample.load_using_convention(
+#         sample_dir=_SAMPLE_DIR,
+#         sample_file='data16_ee_BCDEFGH_DoElLegacy.root'
+#     ),
+#     'Data_Zee_BCD_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_ee_BCD_DoElLegacy.root'
+#     ),
+#     'Data_Zee_EF_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_ee_EF_DoElLegacy.root'
+#     ),
+#     'Data_Zee_GH_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_ee_GH_DoElLegacy.root'
+#     ),
+#     # 'MC_Zee_DYJets_Madgraph': Sample.load_using_convention(
+#     #     sample_dir=_SAMPLE_DIR,
+#     #     sample_file='mc16_ee_BCDEFGH_DYJets_Madgraph.root'
+#     # ),
+#     'MC_Zee_DYNJ_Madgraph': Sample.load_using_convention(
+#         sample_dir=_SAMPLE_DIR,
+#         sample_file='mc16_ee_BCDEFGH_DYNJ_Madgraph.root'
+#     ),
+#     'Data_Zmm_BCD_noetaphiclean': Sample.load_using_convention(
+#         sample_dir=_SAMPLE_DIR,
+#         sample_file='data16_mm_BCD_DoMuLegacy_noetaphiclean.root'
+#     ),
+#     'Data_Zee_BCD_noetaphiclean': Sample.load_using_convention(
+#         sample_dir=_SAMPLE_DIR,
+#         sample_file='data16_ee_BCD_DoElLegacy_noetaphiclean.root'
+#     ),
+#     'Data_Zee_BCDEFGH_JECV5': Sample.load_using_convention(
+#         sample_dir="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V5_2018-01-31",
+#         sample_file='data16_ee_BCDEFGH_DoElLegacy.root'
+#     ),
+# }
 
 # -- Additional Cuts
 

@@ -34,6 +34,7 @@ ETA_BIN_EDGES_NARROW = [0.000, 0.261, 0.522, 0.783, 1.044, 1.305,
                         2.650, 2.853, 2.964, 3.139, 3.489, 3.839,
                         5.191]
 
+
 class CombinationDirect(object):
     """Create a ROOT file containing histograms for specified quantities.
 
@@ -115,8 +116,8 @@ class CombinationDirect(object):
 
         self._alpha_cut_dicts = [
             {
-                'cut_string' : '(alpha<{})'.format(_alpha_upper),
-                'label_string': 'a' + str(int(100 * _alpha_upper))
+                'cut_string' : None if _alpha_upper is None else '(alpha<{})'.format(_alpha_upper),
+                'label_string': None if _alpha_upper is None else 'a' + str(int(100 * _alpha_upper)),
             }
             for _alpha_upper in self._alpha_upper_bin_edges
         ]
@@ -146,9 +147,11 @@ class CombinationDirect(object):
                     for _quantity, _quantity_label in self._quantity_labels.iteritems():
 
                         _configuration_label = '_'.join([_quantity_label,  # TODO: assert key in dict?
-                                                         self._pu_algorithm,
-                                                         _alpha_cut_dict['label_string'],
-                                                         _eta_cut_dict['label_string']])
+                                                         self._pu_algorithm])
+                        if _alpha_cut_dict['label_string'] is not None:
+                            _configuration_label += '_' + _alpha_cut_dict['label_string']
+                        if _eta_cut_dict['label_string'] is not None:
+                            _configuration_label += '_' + _eta_cut_dict['label_string']
 
                         self._comb_dicts.append(
                             dict(
@@ -160,8 +163,8 @@ class CombinationDirect(object):
 
                                 weights='&&'.join((
                                     self._global_cuts or "1.0",
-                                    _alpha_cut_dict['cut_string'],
-                                    _eta_cut_dict['cut_string']
+                                    _alpha_cut_dict['cut_string'] or "1.0",
+                                    _eta_cut_dict['cut_string'] or "1.0"
                                 )),
                             )
                         )
@@ -173,7 +176,8 @@ class CombinationDirect(object):
                                     x_expression=_quantity[0],
                                     x_label=_quantity[0],
                                     # TODO: make more general (?)
-                                    x_bins=BinSpec.make_equidistant(25, (0.5, 25.5)),
+                                    #x_bins=BinSpec.make_equidistant(25, (0.5, 25.5)),
+                                    x_bins=BinSpec.make_equidistant(60, (0, 60)),
 
                                     y_expression=_quantity[1],
                                     y_label=_quantity[1],
@@ -366,6 +370,538 @@ class CombinationDirect(object):
         print 'Done!'
         print 'Output file is: {}'.format(self._output_filename)
         _root_file_output.Close()
+
+
+class FlavorFractionsFile(CombinationDirect):
+    """Create a ROOT file with histograms containing the MC jet flavor fractions.
+    """
+    _expr_dict_zjet = ExpressionsDictZJet()
+
+    _flavor_quantity = "jet1flavor"
+
+    _flavor_fraction_weights = {
+        "uds":        "(abs(jet1flavor)==1||abs(jet1flavor)==2||abs(jet1flavor)==3)",
+        "ud":         "(abs(jet1flavor)==1||abs(jet1flavor)==2)",
+        "glu":        "abs(jet1flavor)==21",
+        "s":          "abs(jet1flavor)==3",
+        "c":          "abs(jet1flavor)==4",
+        "b":          "abs(jet1flavor)==5",
+        "Undefined":  "abs(jet1flavor)==0",
+        "gluExt":     "(abs(jet1flavor)==21||abs(jet1flavor)==0)",
+    }
+
+    def __init__(self,
+                 sample_mc,
+                 global_selection,
+                 alpha_upper_bin_edges,
+                 eta_binnings,
+                 basename="flavor_fractions_ZJet",
+                 pileup_subtraction_algorithm='CHS'):
+        """
+
+        :param sample_mc: `jercplot.core.sample.Sample` object containing the MC
+        :type sample_mc: `jercplot.core.sample.Sample` object
+        :param global_selection: `jercplot.core.selection.CutSet` object specifying the selection cuts
+        :type global_selection: `jercplot.core.selection.CutSet` object
+        :param basename: base name of the generated output file (combination file)
+        :type basename: str
+        :param alpha_upper_bin_edges: list of upper bin edges for the inclusive alpha binning
+        :type alpha_upper_bin_edges: list of float
+        :param eta_binnings: a list of lists indicating the eta bin edges (each list must be given in ascending order!)
+        :type eta_binnings: list of float
+        :param correction_folders: list of ZJet correction levels (e.g. ``['L1L2L3']``)
+        :type correction_folders: list of str
+        :param pileup_subtraction_algorithm: name of algorithm used for pileup subtraction (e.g. ``'CHS'``) (only used as label)
+        :type pileup_subtraction_algorithm: str
+        """
+
+        self._sample_mc = sample_mc
+
+        self._channel = self._sample_mc['channel']
+
+        self._basename = basename
+        self._pu_algorithm = pileup_subtraction_algorithm
+        self._alpha_upper_bin_edges = alpha_upper_bin_edges
+        self._eta_binnings = eta_binnings
+        self._selection = global_selection
+
+        # check that the eta binning specification is correct
+        try:
+            # first two levels must be iterable
+            iter(self._eta_binnings)
+            iter(self._eta_binnings[0])
+        except ValueError:
+            raise ValueError("'eta_binnings' must be a list of lists of bin edges!")
+
+        self._global_cuts = self._selection.weights_string if self._selection is not None else None
+
+        self._alpha_cut_dicts = [
+            {
+                'cut_string' : '(alpha<{})'.format(_alpha_upper),
+                'label_string': 'a' + str(int(100 * _alpha_upper))
+            }
+            for _alpha_upper in self._alpha_upper_bin_edges
+        ]
+
+        self._eta_cut_dicts = []
+        for _eta_bin_edges in self._eta_binnings:
+            self._eta_cut_dicts += [
+                {
+                    'eta_hi': _eta_hi,  # only used for display
+                    'eta_lo': _eta_lo,  # only used for display
+                    'cut_string': "({0}<=abs(jet1eta)&&abs(jet1eta)<{1})".format(_eta_lo, _eta_hi),
+                    'label_string': "eta_{0:0>2d}_{1:0>2d}".format(int(round(10 * _eta_lo)), int(round(10 * _eta_hi))),
+                }
+                for (_eta_lo, _eta_hi) in zip(_eta_bin_edges[:-1], _eta_bin_edges[1:])
+            ]
+
+        self._output_filename = "_".join((self._basename,
+                                     self._sample_mc['channel'],
+                                     self._sample_mc['source_label'],
+                                     time.strftime("%Y-%m-%d", time.localtime()))) + ".root"
+
+    def _prepare(self):
+        '''prepare the Merlin dictionaries used for "plotting" to the ROOT file.'''
+        self._comb_dicts = []
+
+        for _alpha_cut_dict in self._alpha_cut_dicts:
+            for _eta_cut_dict in self._eta_cut_dicts:
+                for _flavor_fraction_label, _flavor_fraction_weights in self._flavor_fraction_weights.iteritems():
+
+                    self._comb_dicts.append(
+                        dict(
+                            flavor_label=_flavor_fraction_label,
+                            alpha_cut_label=_alpha_cut_dict['label_string'],
+                            eta_cut_label=_eta_cut_dict['label_string'],
+
+                            x_expression='zpt',
+                            x_label='zpt',
+                            x_bins=QUANTITIES['zpt'].bin_spec,
+
+                            global_weights='&&'.join((
+                                self._global_cuts or "1.0",
+                                _alpha_cut_dict['cut_string'],
+                                _eta_cut_dict['cut_string']
+                            )),
+                            additional_flavor_weights=_flavor_fraction_weights,
+                        )
+                    )
+
+                # raw number of events
+                self._comb_dicts.append(
+                    dict(
+                        flavor_label=None,
+                        alpha_cut_label=_alpha_cut_dict['label_string'],
+                        eta_cut_label=_eta_cut_dict['label_string'],
+
+                        x_expression='zpt',
+                        x_label='zpt',
+                        x_bins=QUANTITIES['zpt'].bin_spec,
+
+                        global_weights='&&'.join((
+                            self._global_cuts or "1.0",
+                            _alpha_cut_dict['cut_string'],
+                            _eta_cut_dict['cut_string']
+                        )),
+                        additional_flavor_weights=None,
+                    )
+                )
+
+    def run(self, require_confirmation=True):
+        """Create the combination file from the plot dicts"""
+
+        self._prepare()
+
+        _root_file_mc = ROOT.TFile(self._sample_mc['file'])
+
+        _zjet_folder = self._selection.zjet_folder
+
+        print "\nCreating flavor fractions file...\n"
+        print "Using MC sample at: {}".format(self._sample_mc['file'])
+        print "Using cut folder: {}".format(_zjet_folder)
+        print "Using global weight string: '{}'".format(self._global_cuts)
+        print "\nAlpha upper bin edges: {}".format(self._alpha_upper_bin_edges)
+        print "Eta binnings:"
+        for _ecd in self._eta_cut_dicts:
+            print "{} -> eta in [{}, {}]".format(_ecd['label_string'], _ecd['eta_lo'], _ecd['eta_hi'])
+        print "\nTotal number of objects: "
+        print "    ({} + 1) (no. of requested flavor fractions + 1 raw event number histogram)".format(len(self._flavor_fraction_weights.keys()))
+        print "  * {} (alpha bins)".format(len(self._alpha_cut_dicts))
+        print "  * {} (eta bins)".format(len(self._eta_cut_dicts))
+        print "-------------------------------"
+        print "  = {}".format(len(self._comb_dicts))
+
+        print "\nOutput file name: {}".format(self._output_filename)
+
+        if os.path.exists(self._output_filename):
+            raise IOError("File '{}' exists: will not overwrite!".format(self._output_filename))
+
+        if require_confirmation:
+            _answer = ''
+            while _answer.lower() not in ('y', 'yes', 'no', 'n'):
+                if _answer:
+                    print "Please answer 'yes'/'y' or 'no'/'n':"
+                _answer = raw_input("Is this correct? [yes/no] >")
+
+            if _answer in ('no', 'n'):
+                print "Aborted by user."
+                exit(1)
+
+        _root_file_output = ROOT.TFile(self._output_filename, "RECREATE")
+
+        _root_ntuple_mc = _root_file_mc.Get("{}_{}/ntuple".format(_zjet_folder, "L1L2L3"))
+
+        for _pd in self._comb_dicts:
+            if _pd['additional_flavor_weights'] is not None:
+                _plot_label = '_'.join(["MC",
+                                        _pd['flavor_label'],
+                                        self._pu_algorithm,
+                                        _pd['alpha_cut_label'],
+                                        _pd['eta_cut_label']])
+            else:
+                _plot_label = '_'.join(["MC",
+                                        "RawNEvents",
+                                        self._pu_algorithm,
+                                        _pd['alpha_cut_label'],
+                                        _pd['eta_cut_label']])
+
+
+            print "\tProcessing '{}'...".format(_plot_label)
+            _global_weights = self._expr_dict_zjet.replace_expressions(_pd['global_weights'])
+
+            _x_expr = self._expr_dict_zjet.replace_expressions(_pd['x_expression'])
+
+            if _pd['additional_flavor_weights'] is not None:
+                _additional_flavor_weights = self._expr_dict_zjet.replace_expressions(_pd['additional_flavor_weights'])
+
+            # -- create the 1D histos
+
+            _label_denominator = _plot_label + "_denom"
+            _obj_fraction = self._create_root_histogram(_plot_label,
+                                                        "TH1D",
+                                                        _pd['x_bins'])
+            _obj_denominator = self._create_root_histogram(_label_denominator,
+                                                              "TH1D",
+                                                              _pd['x_bins'])
+
+            # -- fill the profile histos from the TTree
+            if _pd['additional_flavor_weights'] is not None:
+                _numerator_weights = "({})&&({})".format(_global_weights, _additional_flavor_weights)
+                _root_ntuple_mc.Project(_plot_label, "{}".format(_x_expr), _numerator_weights, "goff")
+                _root_ntuple_mc.Project(_label_denominator, "{}".format(_x_expr), _global_weights, "goff")
+
+                # -- perform the division to obtain the flavor fraction
+                _obj_fraction.Divide(_obj_denominator)
+            else:
+                _root_ntuple_mc.Project(_plot_label, "{}".format(_x_expr), _global_weights, "goff")
+
+            _obj_fraction.SetTitle(_plot_label)
+
+            # -- write out fraction
+            _obj_fraction.Write()
+
+        print 'Done!'
+        print 'Output file is: {}'.format(self._output_filename)
+        _root_file_output.Close()
+
+
+class PileupSummaryFile(CombinationDirect):
+    """Create a ROOT file containing histograms for specified quantities.
+
+    This class uses ROOT directly for creating the output.
+    """
+    _expr_dict_zjet = ExpressionsDictZJet()
+
+    _quantity_labels = {
+        # 2D histograms
+        ("npumean", "rho"): "rho_vs_npumean",
+        ("npumean", "npv"): "npv_vs_npumean",
+    }
+
+    def __init__(self,
+                 sample_data,
+                 sample_mc,
+                 global_selection,
+                 zpt_binnings,
+                 eta_binnings,
+                 basename="pileupSummary_ZJet",
+                 correction_folders=('L1L2L3',),
+                 pileup_subtraction_algorithm='CHS'):
+        """
+
+        :param sample_data: `jercplot.core.sample.Sample` object containing the data
+        :type sample_data: `jercplot.core.sample.Sample` object
+        :param sample_mc: `jercplot.core.sample.Sample` object containing the MC
+        :type sample_mc: `jercplot.core.sample.Sample` object
+        :param global_selection: `jercplot.core.selection.CutSet` object specifying the selection cuts
+        :type global_selection: `jercplot.core.selection.CutSet` object
+        :param basename: base name of the generated output file (combination file)
+        :type basename: str
+        :param zpt_binnings: a list of lists indicating the zpt bin edges (each list must be given in ascending order!)
+        :type zpt_binnings: list of list of float
+        :param eta_binnings: a list of lists indicating the eta bin edges (each list must be given in ascending order!)
+        :type eta_binnings: list of list of float
+        :param correction_folders: list of ZJet correction levels (e.g. ``['L1L2L3']``)
+        :type correction_folders: list of str
+        :param pileup_subtraction_algorithm: name of algorithm used for pileup subtraction (e.g. ``'CHS'``) (only used as label)
+        :type pileup_subtraction_algorithm: str
+        :param inclusive_eta_bin: whether to include plots for the entire eta range in addition to the sub-bins.
+        :type inclusive_eta_bin: bool
+        """
+
+        self._sample_data = sample_data
+        self._sample_mc = sample_mc
+
+        self._channel = self._sample_data['channel']
+        assert self._sample_mc['channel'] == self._channel
+
+        self._basename = basename
+        self._correction_folders = correction_folders
+        self._pu_algorithm = pileup_subtraction_algorithm
+        self._zpt_binnings = zpt_binnings
+        self._eta_binnings = eta_binnings
+        self._selection = global_selection
+
+        # check that the eta binning specification is correct
+        try:
+            # first two levels must be iterable
+            iter(self._eta_binnings)
+            if self._eta_binnings[0] is not None:
+                iter(self._eta_binnings[0])
+        except ValueError:
+            raise ValueError("'eta_binnings' must be a list of lists of bin edges!")
+        
+        # check that the zpt binning specification is correct
+        try:
+            # first two levels must be iterable
+            iter(self._zpt_binnings)
+            if self._zpt_binnings[0] is not None:
+                iter(self._zpt_binnings[0])
+        except ValueError:
+            raise ValueError("'zpt_binnings' must be a list of lists of bin edges!")
+
+        self._global_cuts = self._selection.weights_string if self._selection is not None else None
+
+        self._zpt_cut_dicts = []
+        for _zpt_bin_edges in self._zpt_binnings:
+            if _zpt_bin_edges is not None:
+                self._zpt_cut_dicts += [
+                    {
+                        'zpt_hi': _zpt_hi,  # only used for display
+                        'zpt_lo': _zpt_lo,  # only used for display
+                        'cut_string': "({0}<=zpt&&zpt<{1})".format(_zpt_lo, _zpt_hi),
+                        'label_string': "zpt_{0:0>2d}_{1:0>2d}".format(int(round(_zpt_lo)), int(round(_zpt_hi))),
+                    }
+                    for (_zpt_lo, _zpt_hi) in zip(_zpt_bin_edges[:-1], _zpt_bin_edges[1:])
+                ]
+            else:
+                self._zpt_cut_dicts += [None]
+
+        self._eta_cut_dicts = []
+        for _eta_bin_edges in self._eta_binnings:
+            if _eta_bin_edges is not None:
+                self._eta_cut_dicts += [
+                    {
+                        'eta_hi': _eta_hi,  # only used for display
+                        'eta_lo': _eta_lo,  # only used for display
+                        'cut_string': "({0}<=abs(jet1eta)&&abs(jet1eta)<{1})".format(_eta_lo, _eta_hi),
+                        'label_string': "eta_{0:0>2d}_{1:0>2d}".format(int(round(10 * _eta_lo)), int(round(10 * _eta_hi))),
+                    }
+                    for (_eta_lo, _eta_hi) in zip(_eta_bin_edges[:-1], _eta_bin_edges[1:])
+                ]
+            else:
+                self._eta_cut_dicts += [None]
+
+        self._output_filename = "_".join((self._basename,
+                                     self._sample_data['channel'],
+                                     self._sample_data['source_label'],
+                                     time.strftime("%Y-%m-%d", time.localtime()))) + ".root"
+
+    def _prepare(self):
+        '''prepare the Merlin dictionaries used for "plotting" to the ROOT file.'''
+        self._comb_dicts = []
+        for _zpt_cut_dict in self._zpt_cut_dicts:
+            for _eta_cut_dict in self._eta_cut_dicts:
+                for _quantity, _quantity_label in self._quantity_labels.iteritems():
+                    assert isinstance(_quantity, tuple)  # only 2D profiles supported for pileup summary
+
+                    _configuration_label = '_'.join([_quantity_label,  # TODO: assert key in dict?
+                                                     self._pu_algorithm])
+                    if _zpt_cut_dict is not None:
+                        _configuration_label += '_' + _zpt_cut_dict['label_string']
+                    if _eta_cut_dict is not None:
+                        _configuration_label += '_' + _eta_cut_dict['label_string']
+
+                    self._comb_dicts.append(
+                        dict(
+                            configuration_label=_configuration_label,
+
+                            x_expression=_quantity[0],
+                            x_label=_quantity[0],
+                            x_bins=BinSpec.make_equidistant(60, (0, 60)),
+
+                            y_expression=_quantity[1],
+                            y_label=_quantity[1],
+
+                            weights='&&'.join((
+                                self._global_cuts or "1.0",
+                                _zpt_cut_dict['cut_string'] if _zpt_cut_dict is not None else "1.0",
+                                _eta_cut_dict['cut_string'] if _eta_cut_dict is not None else "1.0"
+                            )),
+                        )
+                    )
+
+    def run(self, require_confirmation=True):
+        """Create the combination file from the plot dicts"""
+
+        self._prepare()
+
+        _root_file_data = ROOT.TFile(self._sample_data['file'])
+        _root_file_mc = ROOT.TFile(self._sample_mc['file'])
+
+        _zjet_folder = self._selection.zjet_folder
+
+        print "\nCreating combination file...\n"
+        print "Using data sample at: {}".format(self._sample_data['file'])
+        print "Using MC sample at: {}".format(self._sample_mc['file'])
+        print "Using cut folder: {}".format(_zjet_folder)
+        print "Using global weight string: '{}'".format(self._global_cuts)
+        print "Zpt binnings:"
+        for _zcd in self._zpt_cut_dicts:
+            if _zcd is None:
+                print "+ inclusive bin in zpt"
+                continue
+            print "{} -> zpt in [{}, {}]".format(_zcd['label_string'], _zcd['zpt_lo'], _zcd['zpt_hi'])
+        print "Eta binnings:"
+        for _ecd in self._eta_cut_dicts:
+            if _ecd is None:
+                print "+ inclusive bin in eta"
+                continue
+            print "{} -> eta in [{}, {}]".format(_ecd['label_string'], _ecd['eta_lo'], _ecd['eta_hi'])
+        print "\nCorrection levels: {}".format(self._correction_folders)
+        print "\nTotal number of objects: "
+        print "    3 (data, mc, ratio)"
+        print "  * {} (no. of requested output quantities)".format(len(self._quantity_labels.keys()))
+        print "  * {} (zpt bins)".format(len(self._zpt_cut_dicts))
+        print "  * {} (eta bins)".format(len(self._eta_cut_dicts))
+        print "  * {} (correction levels)".format(len(self._correction_folders))
+        print "-------------------------------"
+        print "  = {}".format(3 * len(self._comb_dicts) * len(self._correction_folders))
+
+        print "\nOutput file name: {}".format(self._output_filename)
+
+        if os.path.exists(self._output_filename):
+            raise IOError("File '{}' exists: will not overwrite!")
+
+        if require_confirmation:
+            _answer = ''
+            while _answer.lower() not in ('y', 'yes', 'no', 'n'):
+                if _answer:
+                    print "Please answer 'yes'/'y' or 'no'/'n':"
+                _answer = raw_input("Is this correct? [yes/no] >")
+
+            if _answer in ('no', 'n'):
+                print "Aborted by user."
+                exit(1)
+
+        _root_file_output = ROOT.TFile(self._output_filename, "RECREATE")
+
+        for _corr_folder in self._correction_folders:
+            print "Processing correction level '{}'...".format(_corr_folder)
+
+            _root_ntuple_data = _root_file_data.Get("{}_{}/ntuple".format(_zjet_folder, _corr_folder))
+
+            # no residuals in MC -> use L1L2L3 instead
+            if _corr_folder == "L1L2L3Res":
+                _root_ntuple_mc = _root_file_mc.Get("{}_{}/ntuple".format(_zjet_folder, "L1L2L3"))
+            else:
+                _root_ntuple_mc = _root_file_mc.Get("{}_{}/ntuple".format(_zjet_folder, _corr_folder))
+
+            for _pd in self._comb_dicts:
+
+                _plot_label = "{}_{}".format(_pd['configuration_label'], _corr_folder)
+
+                print "\tProcessing '{}'...".format(_plot_label)
+                _weights = self._expr_dict_zjet.replace_expressions(_pd['weights'])
+                _x_expr = self._expr_dict_zjet.replace_expressions(_pd['x_expression'])
+                _y_expr = _pd.get('y_expression')
+
+                # -- distinguish two main cases: 1D histos and 2D profiles
+                if _y_expr is not None:
+                    # if y_expression given -> 2D profile
+                    _y_expr = self._expr_dict_zjet.replace_expressions(_y_expr)
+
+                    # -- create the (temporary) profile histos
+                    _data_prof_y_label = "Data_{}_y_prof".format(_plot_label)
+                    _data_prof_x_label = "Data_{}_x_prof".format(_plot_label)
+                    _data_prof_y_obj = self._create_root_histogram(_data_prof_y_label,
+                                                                   "TProfile",
+                                                                   _pd['x_bins'])
+                    _data_prof_x_obj = _data_prof_y_obj.Clone(_data_prof_x_label)
+
+                    _mc_prof_y_label = "MC_{}_y_prof".format(_plot_label)
+                    _mc_prof_x_label = "MC_{}_x_prof".format(_plot_label)
+                    _mc_prof_y_obj = self._create_root_histogram(_mc_prof_y_label,
+                                                                 "TProfile",
+                                                                 _pd['x_bins'])
+                    _mc_prof_x_obj = _mc_prof_y_obj.Clone(_mc_prof_x_label)
+
+                    # -- fill the profile histos from the TTree
+                    _root_ntuple_data.Project(_data_prof_y_label, "{}:{}".format(_y_expr, _x_expr), _weights, "prof goff")
+                    _root_ntuple_mc.Project(_mc_prof_y_label, "{}:{}".format(_y_expr, _x_expr), _weights, "prof goff")
+                    _root_ntuple_data.Project(_data_prof_x_label, "{}:{}".format(_x_expr, _x_expr), _weights, "prof goff")
+                    _root_ntuple_mc.Project(_mc_prof_x_label, "{}:{}".format(_x_expr, _x_expr), _weights, "prof goff")
+
+                    _data_prof_y = _root_file_output.Get(_data_prof_y_label)
+                    _mc_prof_y = _root_file_output.Get(_mc_prof_y_label)
+                    _data_prof_x = _root_file_output.Get(_data_prof_x_label)
+                    _mc_prof_x = _root_file_output.Get(_mc_prof_x_label)
+
+
+                    # -- create ratio histogram
+                    _ratio_obj = _data_prof_y_obj.ProjectionX().Clone("Ratio_{}".format(_plot_label))
+                    _ratio_obj.Divide(_mc_prof_y_obj.ProjectionX())
+                    _ratio_obj.SetTitle("Ratio_{}".format(_plot_label))
+
+                    # -- convert data, mc profiles to TGraphErrors
+                    _tge_data = self._profile_to_tgrapherrors("Data_{}".format(_plot_label), _data_prof_x, _data_prof_y)
+                    _tge_mc = self._profile_to_tgrapherrors("MC_{}".format(_plot_label), _mc_prof_x, _mc_prof_y)
+                else:
+                    # if y_expression not given -> 1D histogram
+
+                    # -- create the 1D histos
+                    _data_label = "Data_{}".format(_plot_label)
+                    _data_obj = self._create_root_histogram(_data_label,
+                                                            "TH1D",
+                                                            _pd['x_bins'])
+
+                    _mc_label = "MC_{}".format(_plot_label)
+                    _mc_obj = self._create_root_histogram(_mc_label,
+                                                          "TH1D",
+                                                          _pd['x_bins'])
+
+                    # -- fill the profile histos from the TTree
+                    _root_ntuple_data.Project(_data_label, "{}".format(_x_expr), _weights, "goff")
+                    _root_ntuple_mc.Project(_mc_label, "{}".format(_x_expr), _weights, "goff")
+
+                    # -- create ratio histogram
+                    _ratio_obj = _data_obj.Clone("Ratio_{}".format(_plot_label))
+                    _ratio_obj.Divide(_mc_obj)
+                    _ratio_obj.SetTitle("Ratio_{}".format(_plot_label))
+
+                    # -- convert data, mc profiles to TGraphErrors
+                    _tge_data = _data_obj
+                    _tge_mc = _mc_obj
+
+                # -- write out everything
+                _tge_data.Write()
+                _tge_mc.Write()
+                _ratio_obj.Write()
+
+        print 'Done!'
+        print 'Output file is: {}'.format(self._output_filename)
+        _root_file_output.Close()
+
 
 
 class CombinationMerlin(object):
