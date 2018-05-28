@@ -1,22 +1,20 @@
 import configtools
 import os
 
-RUN='BCD'
-CH='ee'
+RUN='GH'
+CH='mm'
 JEC='Summer16_07Aug2017'+RUN+'_V6'
 
 #_path_prefix = "/storage/gridka-nrg"
-#_path_prefix = "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user"
-_path_prefix = "root://cmsxrootd-1.gridka.de:1094///store/user"
+_path_prefix = "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user"
 
 def config():
     cfg = configtools.getConfig('data', 2016, CH, bunchcrossing='25ns')
     cfg["InputFiles"].set_input(
-        ekppathC="{}/tberger/Skimming/ZJet_DoubleElectron_Run2016C-Legacy-07Aug2017-v1/*.root".format(_path_prefix),
+        ekppathF="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016F-Legacy-07Aug2017-v1/*.root".format(_path_prefix),
+        ekppathG="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016G-Legacy-07Aug2017-v1/*.root".format(_path_prefix),
+        ekppathH="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016H-Legacy-07Aug2017-v1/*.root".format(_path_prefix),
         )
-    cfg['Pipelines']['default']['Processors'] += ['filter:EtaPhiCleaningCut']
-    cfg['CutEtaPhiCleaningFile'] = os.path.join(configtools.getPath() , 'data/cleaning/hcal-legacy-runC.root') #File used for eta-phi-cleaning, must contain a TH2D called "h2jet"
-    cfg['CutEtaPhiCleaningPt'] = 15 # minimum pt for eta-phi-cleaning
     cfg['JsonFiles'] =  [os.path.join(configtools.getPath(),'data/json/Cert_'+RUN+'_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
     cfg['Jec'] = os.path.join(configtools.getPath(),'../JECDatabase/textFiles/'+JEC+'_DATA/'+JEC+'_DATA')
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'

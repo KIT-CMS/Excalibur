@@ -424,6 +424,7 @@ def _2016mm(cfg, **kwargs):
 
 def _2016ee(cfg, **kwargs):
     # -- ZJetValidElectronsProducer
+    cfg['ElectronID'] = "user"
     cfg['ApplyElectronVID'] = True
     cfg['ElectronVIDName'] = "Summer16-80X-V1"
     cfg['ElectronVIDType'] = "cutbased"

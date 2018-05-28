@@ -35,6 +35,7 @@ def getConfig(inputtype, year, channel, **kwargs):
 	cfg = defaultconfig.getBaseConfig(**kwargs)
 
 	# iterate over all combinations and call updateConfig(single-entry tuples first):
+	print "Iterating over all combinations..."
 	for i in l:
 		updateConfig(cfg, (i), **kwargs)
 	for i in l:
@@ -55,6 +56,7 @@ def getConfig(inputtype, year, channel, **kwargs):
 def updateConfig(conf, tupl, **kwargs):
 	string = "".join(tupl)
 	if string in dir(defaultconfig):
+		print "Updating config with method '{}'".format(string)
 		getattr(defaultconfig, string)(conf, **kwargs)
 
 
