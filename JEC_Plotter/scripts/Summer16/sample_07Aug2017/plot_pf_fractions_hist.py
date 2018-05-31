@@ -1,8 +1,9 @@
-from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, QUANTITIES, BinSpec, CutSet
+from Excalibur.JEC_Plotter.core import PlotHistograms1D, QUANTITIES, BinSpec, CutSet
 from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
     SAMPLES,
     SELECTION_CUTS,
     ADDITIONAL_CUTS,
+    RUN_PERIOD_CUT_DICTS,
 )
 
 from copy import deepcopy
@@ -47,24 +48,6 @@ for _pt_cut in _PT_CUTS:
         _SELECTION_CUTS.append(SELECTION_CUTS['basiccuts'] + _abseta_cut + _pt_cut)
         _SELECTION_CUTS.append(SELECTION_CUTS['basiccuts'] + _abseta_cut)
 
-_ADDITIONAL_CUTS = [
-    {
-        'cut': ADDITIONAL_CUTS['jec_iovs']['BCD'],
-        'label': r"RunBCD",
-        'color': 'red'
-    },
-    {
-        'cut': ADDITIONAL_CUTS['jec_iovs']['EFearly'],
-        'label': r"RunEFearly",
-        'color': 'royalblue'
-    },
-    {
-        'cut': ADDITIONAL_CUTS['jec_iovs']['FlateGH'],
-        'label': r"RunFlateGH",
-        'color': 'darkgoldenrod'
-    },
-]
-
 _ADDITIONAL_CUTS_ZPT = [
     {
         'cut': CutSet(
@@ -94,7 +77,7 @@ _ADDITIONAL_CUTS_ALPHA = [
 def _workflow(sample_data, sample_mc, jecv):
     _phs = []
 
-    _add_cuts = [_ac['cut'] for _ac in _ADDITIONAL_CUTS]
+    _add_cuts = [_ac['cut'] for _ac in RUN_PERIOD_CUT_DICTS]
 
     _add_cuts.insert(0, None)
 
@@ -104,7 +87,7 @@ def _workflow(sample_data, sample_mc, jecv):
     _SAMPLES[-1]['color'] = 'k'
     _SAMPLES[-1]['source_label'] = sample_mc['source_label']
 
-    for _ac in _ADDITIONAL_CUTS:
+    for _ac in RUN_PERIOD_CUT_DICTS:
         _SAMPLES.append(deepcopy(sample_data))
         _SAMPLES[-1]['color'] = _ac['color']
         _SAMPLES[-1]['source_label'] = '{}'.format(_ac['label'])
@@ -115,16 +98,16 @@ def _workflow(sample_data, sample_mc, jecv):
             basename="pf_fractions_hist_07Aug2017_JEC{}".format(jecv),
             # there is one subplot per sample and cut in each plot
             samples=_SAMPLES,
-            corrections=_corr_level,
+            jec_correction_string=_corr_level,
             additional_cuts=_add_cuts,
             # each quantity cut generates a different plot
             quantities=_QUANTITIES,
             # each selection cut generates a new plot
             selection_cuts=_SELECTION_CUTS,
-            normalize_to_first=True,
+            normalize_to_first_histo=True,
             show_ratio_to_first=True,
             show_cut_info_text=False,
-            jec_version_label="Summer16 JEC {}".format(jecv),
+            plot_label="Summer16 JEC {}".format(jecv),
             y_log_scale=True
         )
 

@@ -10,10 +10,11 @@ from copy import deepcopy
 _CORR_FOLDER = "L1L2L3"
 
 _QUANTITY_PAIRS = [
-    ('jet1phi', 'jet1eta'),
-    ('jet2phi', 'jet2eta'),
-    ('jet3phi', 'jet3eta'),
-    ('zphi', 'zeta'),
+    #('jet1phi', 'jet1eta'),
+    #('jet2phi', 'jet2eta'),
+    #('jet3phi', 'jet3eta'),
+    #('zphi', 'zeta'),
+    ('metphi', 'met'),
 ]
 
 _cut_final_no_eta = CutSet("basicToNoEta",
@@ -29,9 +30,9 @@ _cut_final_no_eta = CutSet("basicToNoEta",
 
 _SELECTION_CUTS = [
     SELECTION_CUTS['finalcuts'],
-    SELECTION_CUTS['basiccuts'] + _cut_final_no_eta,
-    SELECTION_CUTS['basiccuts'],
-    SELECTION_CUTS['nocuts']
+    #SELECTION_CUTS['basiccuts'] + _cut_final_no_eta,
+    #SELECTION_CUTS['basiccuts'],
+    #SELECTION_CUTS['nocuts']
 ]
 
 def _workflow(sample):
@@ -42,7 +43,7 @@ def _workflow(sample):
             basename="eta_phi_occupancy_2D_17Nov2017_{}".format(_run_period_cut_name),
             # there is one subplot per sample and cut in each plot
             samples=[sample],
-            corrections=_CORR_FOLDER,
+            jec_correction_string=_CORR_FOLDER,
             additional_cuts=[_run_period_cut],
             # each quantity cut generates a different plot
             quantity_pairs=_QUANTITY_PAIRS,

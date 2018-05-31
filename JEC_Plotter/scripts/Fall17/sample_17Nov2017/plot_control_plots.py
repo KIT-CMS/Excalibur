@@ -81,7 +81,7 @@ def _workflow(sample, jecv):
         basename="control_plots_hist1d_17Nov2017",
         # there is one subplot per sample and cut in each plot
         samples=_SAMPLES,
-        corrections=_CORR_FOLDER,
+        jec_correction_string=_CORR_FOLDER,
         additional_cuts=_add_cuts,
         # each quantity cut generates a different plot
         quantities=_QUANTITIES,
@@ -89,14 +89,14 @@ def _workflow(sample, jecv):
         selection_cuts=_SELECTION_CUTS,
         show_ratio_to_first=True,
         show_cut_info_text=False,
-        jec_version_label="Fall17 JEC {}".format(jecv)
+        plot_label="Fall17 JEC {}".format(jecv)
     )
 
     _ph2 = PlotHistograms1D(
         basename="control_plots_hist1d_norm_17Nov2017",
         # there is one subplot per sample and cut in each plot
         samples=_SAMPLES,
-        corrections=_CORR_FOLDER,
+        jec_correction_string=_CORR_FOLDER,
         additional_cuts=_add_cuts,
         # each quantity cut generates a different plot
         quantities=_QUANTITIES,

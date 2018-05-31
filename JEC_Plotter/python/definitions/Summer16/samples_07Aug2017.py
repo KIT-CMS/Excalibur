@@ -201,6 +201,25 @@ ADDITIONAL_CUTS['user'].update(
     )
 )
 
+RUN_PERIOD_CUT_DICTS = [
+    {
+        'cut': ADDITIONAL_CUTS['jec_iovs']['BCD'],
+        'color': 'red',
+        'label': 'BCD'
+    },
+    {
+        'cut': ADDITIONAL_CUTS['jec_iovs']['EFearly'],
+        'color': 'royalblue',
+        'label': 'EFearly'
+    },
+    {
+        'cut': ADDITIONAL_CUTS['jec_iovs']['FlateGH'],
+        'color': 'darkgoldenrod',
+        'label': 'FlateGH'
+    },
+]
+
+
 if __name__ == "__main__":
     for _sn, _s in SAMPLES.iteritems():
         print "Sample '{}':".format(_sn)

@@ -1,5 +1,5 @@
 from Excalibur.JEC_Plotter.core import CutSet, Sample
-from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
+from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import (
     SAMPLES,
     SELECTION_CUTS,
     ADDITIONAL_CUTS,
@@ -75,24 +75,23 @@ SAMPLES_MC = dict(
     mm=SAMPLES['MC_Zmm_DYNJ_Fall17_JECV4'],
     ee=SAMPLES['MC_Zee_DYNJ_Fall17_JECV4'],
 )
-
-RUN_PERIODS = ["BCD", "EF", "GH"]
+RUN_PERIODS = ["B", "C", "D", "E", "F"]
 
 
 if __name__ == "__main__":
     for _jecv in ("V6",):
         for _channel in ("mm", "ee"):
-            _samples_data = [SAMPLES['Data_Z{}_{}_Summer16_JEC{}'.format(_channel, _run_period, _jecv)] for _run_period in RUN_PERIODS]
+            _samples_data = [SAMPLES['Data_Z{}_{}_Fall17_JEC{}'.format(_channel, _run_period, _jecv)] for _run_period in RUN_PERIODS]
             for _sample_data in _samples_data:
                 _pc = plot_pf_energy_fractions(
                     sample_data=_sample_data,
-                    sample_mc=SAMPLES_MC[_channel],
+                    sample_mc=SAMPLE_MC[_channel],
                     quantity_x=QUANTITY_X,
                     selection_cuts=_SELECTION_CUTS,
                     selection_label="Run{}".format(_sample_data['source_label']),
                     jec_correction_string="L1L2L3",
-                    data_sample_label="07Aug2017",
-                    jec_campaign_label="Summer16",
+                    data_sample_label="17Nov2017",
+                    jec_campaign_label="Fall17",
                     jec_version=_jecv,)
 
                 _pc.make_plots()

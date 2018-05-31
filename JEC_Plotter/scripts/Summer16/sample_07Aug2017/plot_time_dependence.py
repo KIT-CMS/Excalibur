@@ -4,14 +4,13 @@ from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
     SAMPLES,
     SELECTION_CUTS,
     ADDITIONAL_CUTS,
+    RUN_PERIOD_CUT_DICTS,
 )
 from Excalibur.JEC_Plotter.utilities.plot import plot_time_dependence
 
 from copy import deepcopy
 
 _SAMPLE_NAME = "07Aug2017"
-
-_CORR_FOLDER = "L1L2L3"
 
 QUANTITIES['zmass'].bin_spec = BinSpec.make_equidistant(50, (89.5, 94.2))
 QUANTITIES['mpf'].bin_spec = BinSpec.make_equidistant(50, (0.9, 1.15))
@@ -90,11 +89,14 @@ if __name__ == "__main__":
     for _jecv in ("V6",):
         for _channel in ("ee", "mm"):
             for _corr_folder in ["L1L2L3"]:
-                plot_time_dependence(sample=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)],
-                                     corrections_folder=_corr_folder,
-                                     quantities=_QUANTITIES,
-                                     selection_cuts=_SELECTION_CUTS,
-                                     additional_cuts=_ADDITIONAL_CUTS,
-                                     www_folder_label="{}".format(_SAMPLE_NAME),
-                                     dataset_label="Summer16 JEC {}".format(_jecv),
-                                     time_quantity=_TIME_QUANTITY)
+                _plot_collection = plot_time_dependence(
+                    sample=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)],
+                    jec_correction_string=_corr_folder,
+                    quantities=_QUANTITIES,
+                    selection_cuts=_SELECTION_CUTS,
+                    additional_cuts=_ADDITIONAL_CUTS,
+                    www_folder_label="{}".format(_SAMPLE_NAME),
+                    time_quantity=_TIME_QUANTITY,
+                    plot_label="Summer16 JEC {}".format(_jecv))
+
+                _plot_collection.make_plots()

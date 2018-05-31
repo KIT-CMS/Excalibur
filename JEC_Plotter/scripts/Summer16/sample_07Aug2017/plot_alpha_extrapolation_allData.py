@@ -1,5 +1,5 @@
-from Excalibur.JEC_Plotter.core import PlotExtrapolations, QUANTITIES, BinSpec, CutSet
-from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import (
+from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, PlotExtrapolations, QUANTITIES, BinSpec, CutSet
+from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
     SAMPLES,
     SELECTION_CUTS,
     ADDITIONAL_CUTS,
@@ -46,13 +46,20 @@ _SELECTION_CUTS = [
     #SELECTION_CUTS['basiccuts'] + _cut_final_no_eta
 ]
 
+RUN_PERIOD_CUT_DICTS.insert(0,
+    {
+        'cut': None,
+        'label': r"RunsBCDEFGH",
+        'color': 'black'
+    }
+)
+
 _ADDITIONAL_CUTS_ZPT = [
     {
         'cut': CutSet(
             '{:0>2d}_{}'.format(_i_z_cut, _z_cut.name),  # for sorting,
             weights=_z_cut.weights_list, labels=[]
         ),
-        #'label': r"${} < p_\\mathrm{T}^\\mathrm{Z} / GeV \\leq {}$".format(_z_cut.range[0], _z_cut.range[1]),
         'label': _z_cut.texts[0]
     }
     for _i_z_cut, _z_cut in enumerate(QUANTITIES['zpt'].make_cutsets_from_binspec())
@@ -61,47 +68,41 @@ _ADDITIONAL_CUTS_ZPT = [
 def _workflow(sample_data, sample_mc, jecv):
     _phs = []
 
-    for _corr_level in ('L1L2L3', 'L1L2L3Res'):
-    #for _corr_level in ('L1L2L3',):
+    #for _corr_level in ('L1L2L3', 'L1L2L3Res'):
+    for _corr_level in ('L1L2L3',):
         _ph = PlotExtrapolations(
-            basename='extrapolation_17Nov2017_JEC{}'.format(jecv),
+            basename='extrapolation_07Aug2017_JEC{}'.format(jecv),
             sample_data=sample_data,
             sample_mc=sample_mc,
             response_quantities=("ptbalance", "mpf"),
             selection_cuts=_SELECTION_CUTS,
             extrapolation_quantity='alpha',
             n_extrapolation_bins=6,
-            fit_function_range=(0, 0.3),
+            fit_function_range=[0.0, 0.3],
             jec_correction_string=_corr_level,
-            plot_label="Fall17 JEC {}".format(jecv),
-            additional_cut_dicts=RUN_PERIOD_CUT_DICTS,
-            y_subplot_label="Data/MC",
+            show_corr_folder_text=False,
+            plot_label="Run2016, 35.82 fb$^{-1}$ (13 TeV)",
+            additional_cut_dicts=RUN_PERIOD_CUT_DICTS[:1],
         )
-        _ph2 = PlotExtrapolations(
-            basename='extrapolation_zptbins_17Nov2017_JEC{}'.format(jecv),
-            sample_data=sample_data,
-            sample_mc=sample_mc,
-            response_quantities=("ptbalance", "mpf"),
-            selection_cuts=_SELECTION_CUTS,
-            extrapolation_quantity='alpha',
-            n_extrapolation_bins=6,
-            fit_function_range=(0, 0.3),
-            jec_correction_string=_corr_level,
-            plot_label="Fall17 JEC {}".format(jecv),
-            additional_cut_dicts=_ADDITIONAL_CUTS_ZPT,
-            y_subplot_label="Data/MC",
-        )
+
+        # add cut labels as text
+        for _p in _ph._plots:
+            _p._basic_dict['formats'] = ['pdf', 'png']
+            _p._basic_dict['y_subplot_label'] = "Data/MC"
+            _p._basic_dict['texts'].extend([r"$\\bf{CMS}$", r"$\\it{Preliminary}$"])
+            _p._basic_dict['texts_size'].extend([25, 20])
+            _p._basic_dict['texts_x'].extend([0.04, 0.04])
+            _p._basic_dict['texts_y'].extend([0.94, 0.84])
 
         _phs.append(_ph)
-        #_phs.append(_ph2)
 
-        for _ph in _phs:
-            _ph.make_plots()
+    for _ph in _phs:
+        _ph.make_plots()
 
 if __name__ == "__main__":
-    _jecv_mc = "V4"
+    _jecv_mc = "V6"
     for _jecv in ("V6",):
         for _channel in ("mm", "ee"):
-            _workflow(sample_data=SAMPLES['Data_Z{}_BCDEF_Fall17_JEC{}'.format(_channel, _jecv)],
-                      sample_mc=SAMPLES['MC_Z{}_DYNJ_Fall17_JEC{}'.format(_channel, _jecv_mc)],
+            _workflow(sample_data=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)],
+                      sample_mc=SAMPLES['MC_Z{}_DYNJ_Summer16_JEC{}'.format(_channel, _jecv_mc)],
                       jecv=_jecv)

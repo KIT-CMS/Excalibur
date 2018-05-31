@@ -1,8 +1,9 @@
-from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, PlotResponseExtrapolation, QUANTITIES, BinSpec, CutSet
+from Excalibur.JEC_Plotter.core import PlotExtrapolations, QUANTITIES, BinSpec, CutSet
 from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
     SAMPLES,
     SELECTION_CUTS,
     ADDITIONAL_CUTS,
+    RUN_PERIOD_CUT_DICTS,
 )
 
 from copy import deepcopy
@@ -45,29 +46,6 @@ _SELECTION_CUTS = [
     #SELECTION_CUTS['basiccuts'] + _cut_final_no_eta
 ]
 
-_ADDITIONAL_CUTS = [
-    {
-        'cut': None,
-        'label': r"RunsBCDEFGH",
-        'color': 'black'
-    },
-    {
-        'cut': ADDITIONAL_CUTS['jec_iovs']['BCD'],
-        'label': r"RunBCD",
-        'color': 'darkred'
-    },
-    {
-        'cut': ADDITIONAL_CUTS['jec_iovs']['EFearly'],
-        'label': r"RunEFearly",
-        'color': 'royalblue'
-    },
-    {
-        'cut': ADDITIONAL_CUTS['jec_iovs']['FlateGH'],
-        'label': r"RunFlateGH",
-        'color': 'darkgoldenrod'
-    },
-]
-
 _ADDITIONAL_CUTS_ZPT = [
     {
         'cut': CutSet(
@@ -85,7 +63,7 @@ def _workflow(sample_data, sample_mc, jecv):
 
     for _corr_level in ('L1L2L3', 'L1L2L3Res'):
     #for _corr_level in ('L1L2L3',):
-        _ph = PlotResponseExtrapolation(
+        _ph = PlotExtrapolations(
             basename='extrapolation_07Aug2017_JEC{}'.format(jecv),
             sample_data=sample_data,
             sample_mc=sample_mc,
@@ -93,11 +71,13 @@ def _workflow(sample_data, sample_mc, jecv):
             selection_cuts=_SELECTION_CUTS,
             extrapolation_quantity='alpha',
             n_extrapolation_bins=6,
-            corrections=_corr_level,
-            jec_version_label="Summer16 JEC {}".format(jecv),
-            additional_cut_dicts=_ADDITIONAL_CUTS,
+            fit_function_range=(0, 0.3),
+            jec_correction_string=_corr_level,
+            plot_label="Summer16 JEC {}".format(jecv),
+            additional_cut_dicts=RUN_PERIOD_CUT_DICTS,
+            y_subplot_label="Data/MC",
         )
-        _ph2 = PlotResponseExtrapolation(
+        _ph2 = PlotExtrapolations(
             basename='extrapolation_zptbins_07Aug2017_JEC{}'.format(jecv),
             sample_data=sample_data,
             sample_mc=sample_mc,
@@ -105,9 +85,11 @@ def _workflow(sample_data, sample_mc, jecv):
             selection_cuts=_SELECTION_CUTS,
             extrapolation_quantity='alpha',
             n_extrapolation_bins=6,
-            corrections=_corr_level,
-            jec_version_label="Summer16 JEC {}".format(jecv),
+            fit_function_range=(0, 0.3),
+            jec_correction_string=_corr_level,
+            plot_label="Summer16 JEC {}".format(jecv),
             additional_cut_dicts=_ADDITIONAL_CUTS_ZPT,
+            y_subplot_label="Data/MC",
         )
 
         _phs.append(_ph)

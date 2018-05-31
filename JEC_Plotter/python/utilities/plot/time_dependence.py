@@ -1,19 +1,20 @@
 from copy import deepcopy
 
 from ...core import (
-    PlotHistograms2D,
+    PlotProfiles,
 )
 
 __all__ = ["plot_time_dependence"]
 
+
 def plot_time_dependence(sample,
-                         corrections_folder,
+                         jec_correction_string,
                          quantities,
                          selection_cuts,
                          additional_cuts,
                          www_folder_label,
-                         dataset_label=None,
-                         time_quantity='run'):
+                         time_quantity='run',
+                         **plot_profile_kwargs):
     _samples = []
     _cuts = []
     for _ac in additional_cuts:
@@ -24,28 +25,22 @@ def plot_time_dependence(sample,
 
     _q_pairs = [(time_quantity, _q) for _q in quantities]
 
-    _ph = PlotHistograms2D(
+    _pc = PlotProfiles(
         basename="time_dependence_{}".format(www_folder_label),
         # there is one subplot per sample and cut in each plot
         samples=_samples,
-        corrections=corrections_folder,
+        jec_correction_string=jec_correction_string,
         additional_cuts=_cuts,
         # each quantity cut generates a different plot
         quantity_pairs=_q_pairs,
         # each selection cut generates a new plot
         selection_cuts=selection_cuts,
         # show_ratio_to_first=True,
-        show_as_profile=True,
-        jec_version_label=dataset_label,
+        **plot_profile_kwargs
     )
 
-    for _plot in _ph._plots:
-        try:
-            _plot._q
-            if _plot._q in ('jet1pt_over_jet1ptraw', 'mpf', 'ptbalance'):
-                _plot._basic_dict['lines'] = ['1.0']  # guide to the eye
-        except AttributeError:
-            if _plot._qy in ('jet1pt_over_jet1ptraw', 'mpf', 'ptbalance'):
-                _plot._basic_dict['lines'] = ['1.0']  # guide to the eye
+    for _plot in _pc._plots:
+        if _plot._qs[1] in ('jet1pt_over_jet1ptraw', 'mpf', 'ptbalance'):
+            _plot._basic_dict['lines'] = ['1.0']  # guide to the eye
 
-    _ph.make_plots()
+    return _pc

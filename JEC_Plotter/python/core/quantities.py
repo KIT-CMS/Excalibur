@@ -1,6 +1,7 @@
 import numpy as np
 
 from collections import OrderedDict
+from copy import deepcopy
 
 from selection import CutSet
 
@@ -189,6 +190,22 @@ class Quantity(object):
 
 # -- plottable quantities
 
+# special BinSpecs
+
+_binspec_abseta_narrow = BinSpec.make_from_bin_edges(
+    [0.000, 0.261, 0.522, 0.783, 1.044, 1.305, 1.479, 1.653, 1.930, 2.172, 2.322, 2.500,
+     2.650, 2.853, 2.964, 3.139, 3.489, 3.839, 5.191])
+_binspec_eta_narrow = BinSpec.make_from_bin_edges(
+    [-5.191, -3.839, -3.489, -3.139, -2.964, -2.853, -2.650, -2.500, -2.322, -2.172,
+     -1.930, -1.653, -1.479, -1.305, -1.044, -0.783, -0.522, -0.261, 0.000, 0.261, 0.522,
+     0.783, 1.044, 1.305, 1.479, 1.653, 1.930, 2.172, 2.322, 2.500, 2.650, 2.853, 2.964,
+     3.139, 3.489, 3.839, 5.191])
+_binspec_abseta_wide = BinSpec.make_from_bin_edges(
+    [0.000, 1.305, 2.172, 2.500, 3.139, 5.191])
+_binspec_eta_wide = BinSpec.make_from_bin_edges(
+    [-5.191, -3.139, -2.500, -2.172, -1.305, 0.000, 1.305, 2.172, 2.500, 3.139, 5.191])
+
+
 QUANTITIES = dict(
     alpha=Quantity(
         name='alpha',
@@ -243,6 +260,18 @@ QUANTITIES = dict(
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         channels=['Zee']
     ),
+    eminuseta=Quantity(
+        name='eminuseta',
+        expression='eminuseta',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-2.5, 2.5)),
+        channels=['Zee']
+    ),
+    epluseta=Quantity(
+        name='epluseta',
+        expression='epluseta',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-2.5, 2.5)),
+        channels=['Zee']
+    ),
     genjet1eta=Quantity(
         name='genjet1eta',
         expression='genjet1eta',
@@ -293,12 +322,6 @@ QUANTITIES = dict(
         expression='jet1eta',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         label='$\\\\eta^\\\\mathrm{Jet1}$'
-    ),
-    absjet1eta=Quantity(
-        name='absjet1eta',
-        expression='abs(jet1eta)',
-        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 5)),
-        label='$|\\\\eta^\\\\mathrm{Jet1}|$'
     ),
     jet1eta_extended=Quantity(
         name='jet1eta_extended',
@@ -565,6 +588,18 @@ QUANTITIES = dict(
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(0, 100)),
         channels=['Zmm']
     ),
+    muminuseta=Quantity(
+        name='muminuseta',
+        expression='muminuseta',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-2.5, 2.5)),
+        channels=['Zmm']
+    ),
+    mupluseta=Quantity(
+        name='mupluseta',
+        expression='mupluseta',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-2.5, 2.5)),
+        channels=['Zmm']
+    ),
     njets=Quantity(
         name='njets',
         expression='njets',
@@ -707,7 +742,58 @@ QUANTITIES = dict(
         label='$p_\\\\mathrm{T}^\\\\mathrm{Z}$ / GeV',
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(15, 80))
     ),
+    # -- absolute values
+    absjet1eta=Quantity(
+        name='absjet1eta',
+        expression='abs(jet1eta)',
+        label=r"$|\\eta^{Jet1}|$",
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT/2, range=(0, 5)),
+    ),
+    absjet2eta=Quantity(
+        name='absjet2eta',
+        expression='abs(jet2eta)',
+        label=r"$|\\eta^{Jet2}|$",
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT/2, range=(0, 5)),
+    ),
+    absjet3eta=Quantity(
+        name='absjet3eta',
+        expression='abs(jet3eta)',
+        label=r"$|\\eta^{Jet3}|$",
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT/2, range=(0, 5)),
+    ),
+    abszeta=Quantity(
+        name='abszeta',
+        expression='abs(zeta)',
+        label=r"$|\\eta^{Z}|$",
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT/2, range=(0, 5)),
+    )
 )
+
+# narrow eta binnings
+for _qn in ('jet1eta', 'zeta', 'absjet1eta', 'abszeta'):
+    _q_orig = QUANTITIES[_qn]
+    _qn_narrow = "{}_narrow".format(_qn)
+
+    QUANTITIES[_qn_narrow] = deepcopy(_q_orig)
+    QUANTITIES[_qn_narrow].name = _qn_narrow
+
+    if _qn.startswith('abs'):
+        QUANTITIES[_qn_narrow].bin_spec = _binspec_abseta_narrow
+    else:
+        QUANTITIES[_qn_narrow].bin_spec = _binspec_eta_narrow
+
+# wide eta binnings
+for _qn in ('jet1eta', 'zeta', 'absjet1eta', 'abszeta'):
+    _q_orig = QUANTITIES[_qn]
+    _qn_wide = "{}_wide".format(_qn)
+
+    QUANTITIES[_qn_wide] = deepcopy(_q_orig)
+    QUANTITIES[_qn_wide].name = _qn_wide
+
+    if _qn.startswith('abs'):
+        QUANTITIES[_qn_wide].bin_spec = _binspec_abseta_wide
+    else:
+        QUANTITIES[_qn_wide].bin_spec = _binspec_eta_wide
 
 # --------------------------------------------------------------
 

@@ -14,12 +14,13 @@ _CORR_FOLDER = "L1L2L3"
 
 _QUANTITIES = [
     'mpf', 'ptbalance',
-    'npv', 'rho',
-    'met'
-    'zpt', 'zphi', 'zmass',
+    #'npv', 'rho',
+    #'met'
+    #'zpt', 'zphi', 'zmass',
     'jet1pt', 'jet2pt', 'jet3pt',
-    'jet1phi', 'jet2phi', 'jet3phi',
-    'jet1pt_over_jet1ptraw'
+    #'jet1phi', 'jet2phi', 'jet3phi',
+    'jet1pt_over_jet1ptraw',
+    'jet1res',
 ]
 
 # redefine binning and plot range to values more meaningful for profiles
@@ -31,6 +32,8 @@ QUANTITIES['jet3pt'].bin_spec = BinSpec.make_equidistant(n_bins=50, range=(10., 
 QUANTITIES['npv'].bin_spec = BinSpec.make_equidistant(n_bins=50, range=(10, 70))
 QUANTITIES['zmass'].bin_spec = BinSpec.make_equidistant(n_bins=50, range=(90., 95.))
 QUANTITIES['zpt'].bin_spec = BinSpec.make_equidistant(n_bins=50, range=(50., 200.))
+
+QUANTITIES['jet1res'].bin_spec = BinSpec.make_equidistant(n_bins=50, range=(1.0, 1.1))
 
 _TIME_QUANTITY = 'run2017'
 
@@ -91,18 +94,21 @@ _ADDITIONAL_CUTS = [
 
 if __name__ == "__main__":
     for _corr_folder in ["L1L2L3"]:
-        plot_time_dependence(sample=SAMPLES['Data_Zmm_BCDEF_Fall17_V3'],
+        for _jecv in ("V5", "V6"):
+            plot_time_dependence(sample=SAMPLES['Data_Zmm_BCDEF_Fall17_JEC{}'.format(_jecv)],
                              corrections_folder=_corr_folder,
                              quantities=_QUANTITIES,
                              selection_cuts=_SELECTION_CUTS,
                              additional_cuts=_ADDITIONAL_CUTS,
-                             www_folder_label="{}".format(_SAMPLE_NAME),
-                             time_quantity=_TIME_QUANTITY)
+                             www_folder_label="{}_JEC{}".format(_SAMPLE_NAME, _jecv),
+                             time_quantity=_TIME_QUANTITY,
+                             dataset_label="Fall17 JEC {}".format(_jecv))
 
-        plot_time_dependence(sample=SAMPLES['Data_Zee_BCDEF_Fall17_V3'],
+            plot_time_dependence(sample=SAMPLES['Data_Zee_BCDEF_Fall17_JEC{}'.format(_jecv)],
                              corrections_folder=_corr_folder,
                              quantities=_QUANTITIES,
                              selection_cuts=_SELECTION_CUTS,
                              additional_cuts=_ADDITIONAL_CUTS,
-                             www_folder_label="{}".format(_SAMPLE_NAME),
-                             time_quantity=_TIME_QUANTITY)
+                             www_folder_label="{}_JEC{}".format(_SAMPLE_NAME, _jecv),
+                             time_quantity=_TIME_QUANTITY,
+                             dataset_label="Fall17 JEC {}".format(_jecv))

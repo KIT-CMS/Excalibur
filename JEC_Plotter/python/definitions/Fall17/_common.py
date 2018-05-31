@@ -1,6 +1,6 @@
 import numpy as np
 
-from Excalibur.JEC_Plotter.core import CutSet, btb_cut_factory
+from Excalibur.JEC_Plotter.core import QUANTITIES, CutSet, btb_cut_factory
 
 _Z_BOSON_MASS_GEV = 91.1876
 
@@ -8,25 +8,45 @@ _Z_BOSON_MASS_GEV = 91.1876
 
 SELECTION_CUTS = dict(
     nocuts=CutSet('ZJetnocuts',
-                  weights=["jet1idloose==1", "jet2idloose==1"],
+                  weights=["1.0"],
                   labels=[r"${\\bf ZJet}$ no sel.",
                          ],
                   zjet_folder='nocuts'),
     basiccuts=CutSet('ZJetbasic',
-                     weights=["jet1idloose==1", "jet2idloose==1"],
+                     weights=["1.0"],
                      labels=[r"${\\bf ZJet}$ basic sel.",
                              ],
                      zjet_folder='basiccuts'),
     extendedeta=CutSet('ZJetextendedeta',
-                     weights=["jet1idloose==1", "jet2idloose==1",
+                     weights=[
                               "zpt>30", "alpha<0.3"],
                      labels=[r"${\\bf ZJet}$ extended $\\eta$ sel.",
                              r"$\\alpha<0.3$",
                              r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$",
                              ],
                      zjet_folder='basiccuts'),
+    noalphanoetacuts=CutSet('ZJetnoalphanoetacuts',
+                     weights=["zpt>30"],
+                     labels=[r"${\\bf ZJet}$ basic sel.",
+                             r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$",
+                             ],
+                     zjet_folder='basiccuts'),
+    noetacut=CutSet('ZJetnoalphanoetacuts',
+                     weights=["zpt>30", "alpha<0.3"],
+                     labels=[r"${\\bf ZJet}$ basic sel.",
+                             r"$\\alpha<0.3$",
+                             r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$",
+                             ],
+                     zjet_folder='basiccuts'),
+    noalphacut=CutSet('ZJetnoalphacut',
+                     weights=["zpt>30", "abs(jet1eta)<1.3"],
+                     labels=[r"${\\bf ZJet}$ basic sel.",
+                             r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$",
+                             r"$|\\eta^\\mathrm{Jet1}|<1.3$",
+                             ],
+                     zjet_folder='basiccuts'),
     finalcuts=CutSet('ZJetfinal',
-                     weights=["jet1idloose==1", "jet2idloose==1"],
+                     weights=["1.0"],
                      labels=[r"${\\bf ZJet}$ final sel.",
                              r"$\\alpha<0.3$",
                              r"$|\\eta^\\mathrm{Jet1}|<1.3$",
@@ -54,14 +74,6 @@ ADDITIONAL_CUTS = dict(
                        weights=["alpha<0.3"],
                        labels=[r"$\\alpha<0.3$"]
                        ),
-    ),
-    zpt=dict(
-        zpt30=CutSet('zpt30',
-                     weights=["zpt>30"],
-                     labels=[r"$p_\\mathrm{T}^\\mathrm{Z}>30~GeV$"]),
-        low=CutSet('lowzpt',
-                   weights=["zpt<60"],
-                   labels=[r"$p_\\mathrm{T}^\\mathrm{Z}<60~GeV$"]),
     ),
     btb=dict(
         btb054=btb_cut_factory(0.54),

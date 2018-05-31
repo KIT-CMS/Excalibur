@@ -129,8 +129,8 @@ _flavor_fraction_cuts_miniAOD = dict(
 )
 
 
-def _get_flavor_samples_cuts(main_sample, flavors, flavor_definition="miniAOD"):
-    """return subsamples with flavor cuts applied"""
+def _get_flavor_cuts_colors_labels(flavors, flavor_definition="miniAOD"):
+    """return flavor cuts for a particular flavor definition"""
 
     if flavor_definition == 'miniAOD':
         _flavor_fraction_cuts = _flavor_fraction_cuts_miniAOD
@@ -149,20 +149,20 @@ def _get_flavor_samples_cuts(main_sample, flavors, flavor_definition="miniAOD"):
             )
         )
 
-    _samples = []
     _cuts = []
+    _colors = []
+    _labels = []
     for _flavor in flavors:
         _ac = _flavor_fraction_cuts[_flavor]
-        _samples.append(deepcopy(main_sample))
         _cuts.append(_ac['cut'])
-        _samples[-1]['color'] = _ac['color']
-        _samples[-1]['source_label'] = '{}'.format(_ac['label'])
+        _colors.append(_ac['color'])
+        _labels.append(_ac['label'])
 
-    return _samples, _cuts
+    return _cuts, _colors, _labels
 
 
 def plot_flavors(sample,
-                 corrections_folder,
+                 jec_correction_string,
                  quantities_or_quantity_pairs,
                  selection_cuts,
                  www_folder_label,
@@ -173,7 +173,7 @@ def plot_flavors(sample,
                  y_log=False):
     """Plot contributions from various jet flavors."""
 
-    _samples, _cuts = _get_flavor_samples_cuts(sample, flavors_to_include, flavor_definition=flavor_definition)
+    _cuts, _colors, _labels = _get_flavor_cuts_colors_labels(flavors_to_include, flavor_definition=flavor_definition)
 
     _qs = []
     _qpairs = []
@@ -184,13 +184,20 @@ def plot_flavors(sample,
         else:
             _qs.append(_q_or_qp)
 
+    # color each histogram by flavor
+    _samples = []
+    for _color, _label in zip(_colors, _labels):
+        _samples.append(deepcopy(sample))
+        _samples[-1]['source_label'] = _label
+        _samples[-1]['color'] = _color
+
     _ph = None
     if _qs:
         _ph = PlotHistograms1D(
             basename="flavors_{}".format(www_folder_label),
             # there is one subplot per sample and cut in each plot
             samples=_samples,
-            corrections=corrections_folder,
+            jec_correction_string=jec_correction_string,
             additional_cuts=_cuts,
             # each quantity cut generates a different plot
             quantities=_qs,
@@ -211,18 +218,17 @@ def plot_flavors(sample,
 
     _ph2 = None
     if _qpairs:
-        _ph2 = PlotHistograms2D(
+        _ph2 = PlotProfiles(
             basename="flavors_{}".format(www_folder_label),
             # there is one subplot per sample and cut in each plot
             samples=_samples,
-            corrections=corrections_folder,
+            jec_correction_string=jec_correction_string,
             additional_cuts=_cuts,
             # each quantity cut generates a different plot
             quantity_pairs=_qpairs,
             # each selection cut generates a new plot
             selection_cuts=selection_cuts,
             # show_ratio_to_first=True,
-            show_as_profile=True
         )
 
         for _plot2D in _ph2._plots:
@@ -238,7 +244,7 @@ def plot_flavors(sample,
 
 def plot_flavor_fractions(
         sample,
-        corrections_folder,
+        jec_correction_string,
         quantities,
         selection_cuts,
         www_folder_label,
@@ -247,31 +253,26 @@ def plot_flavor_fractions(
         force_n_bins=None):
     """Plot flavor composition as a fraction of total. Always stacked."""
 
-    _samples, _cuts = _get_flavor_samples_cuts(sample, flavors_to_include, flavor_definition=flavor_definition)
+    _cuts, _colors, _labels = _get_flavor_cuts_colors_labels(flavors_to_include, flavor_definition=flavor_definition)
 
     _ph = PlotHistograms1DFractions(
         basename="flavor_fractions_{}".format(www_folder_label),
         # there is one subplot per sample and cut in each plot
-        corrections=corrections_folder,
-        reference_cut=None,
-        fraction_samples=_samples,
-        fraction_cuts=_cuts,
+        jec_correction_string=jec_correction_string,
+        reference_cut_set=None,
+        sample=sample,
+        fraction_cut_sets=_cuts,
+        fraction_colors=_colors,
+        fraction_labels=_labels,
         # each quantity cut generates a different plot
         quantities=quantities,
         # each selection cut generates a new plot
         selection_cuts=selection_cuts,
+        y_label="Fraction of Total Events"
     )
 
     for _plot in _ph._plots:
-        _plot._basic_dict['y_label'] = "Fraction of Total Events"
         if force_n_bins is not None:
             _plot._basic_dict['x_bins'] = ",".join([str(force_n_bins)] + _plot._basic_dict['x_bins'].split(",")[1:])
 
-    # for _plot in _ph._plots:
-    #     print _plot.get_dict()
-    #     import json
-    #     with open('test.json', 'w') as f:
-    #         json.dump(_plot.get_dict(), f)
-    #     exit(44)
-
-    _ph.make_plots()
+    return _ph

@@ -1,5 +1,5 @@
 from Excalibur.JEC_Plotter.core import PlotHistograms1D, PlotHistograms2D, QUANTITIES, BinSpec, CutSet
-from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
+from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import (
     SAMPLES,
     SELECTION_CUTS,
     ADDITIONAL_CUTS,
@@ -96,7 +96,7 @@ def _old_workflow(sample_data, sample_mc, jecv):
     #for _corr_level in ('L1L2L3', 'L1L2L3Res'):
     for _corr_level in ('L1L2L3',):
         _ph = PlotHistograms1D(
-            basename="data_mc_hist_07Aug2017_JEC{}".format(jecv),
+            basename="data_mc_hist_17Nov2017_JEC{}".format(jecv),
             # there is one subplot per sample and cut in each plot
             samples=_SAMPLES,
             jec_correction_string=_corr_level,
@@ -108,14 +108,14 @@ def _old_workflow(sample_data, sample_mc, jecv):
             normalize_to_first=True,
             show_ratio_to_first=True,
             show_cut_info_text=False,
-            plot_label="Summer16 JEC {}".format(jecv)
+            plot_label="Fall17 JEC {}".format(jecv)
         )
         #_phs.append(_ph)
 
         for _bin_cut in _ADDITIONAL_CUTS_ETA:
             break
             _ph2 = PlotHistograms1D(
-                basename="data_mc_hist_etabins_07Aug2017_JEC{}".format(jecv),
+                basename="data_mc_hist_etabins_17Nov2017_JEC{}".format(jecv),
                 # there is one subplot per sample and cut in each plot
                 samples=_SAMPLES,
                 jec_correction_string=_corr_level,
@@ -127,14 +127,14 @@ def _old_workflow(sample_data, sample_mc, jecv):
                 normalize_to_first=True,
                 show_ratio_to_first=True,
                 show_cut_info_text=False,
-                plot_label="Summer16 JEC {}".format(jecv)
+                plot_label="Fall17 JEC {}".format(jecv)
             )
             _phs.append(_ph2)
 
         for _bin_cut in _ADDITIONAL_CUTS_ZPT:
             break
             _ph2 = PlotHistograms1D(
-                basename="data_mc_hist_zptbins_07Aug2017_JEC{}".format(jecv),
+                basename="data_mc_hist_zptbins_17Nov2017_JEC{}".format(jecv),
                 # there is one subplot per sample and cut in each plot
                 samples=_SAMPLES,
                 jec_correction_string=_corr_level,
@@ -146,14 +146,14 @@ def _old_workflow(sample_data, sample_mc, jecv):
                 normalize_to_first=True,
                 show_ratio_to_first=True,
                 show_cut_info_text=False,
-                plot_label="Summer16 JEC {}".format(jecv)
+                plot_label="Fall17 JEC {}".format(jecv)
             )
             _phs.append(_ph2)
 
         for _bin_cut_1 in _ADDITIONAL_CUTS_ETA[17:]:
             for _bin_cut_2 in _ADDITIONAL_CUTS_ZPT:
                 _ph2 = PlotHistograms1D(
-                    basename="data_mc_hist_zptbins_07Aug2017_JEC{}".format(jecv),
+                    basename="data_mc_hist_zptbins_17Nov2017_JEC{}".format(jecv),
                     # there is one subplot per sample and cut in each plot
                     samples=_SAMPLES,
                     jec_correction_string=_corr_level,
@@ -165,7 +165,7 @@ def _old_workflow(sample_data, sample_mc, jecv):
                     normalize_to_first=True,
                     show_ratio_to_first=True,
                     show_cut_info_text=False,
-                    plot_label="Summer16 JEC {}".format(jecv)
+                    plot_label="Fall17 JEC {}".format(jecv)
                 )
                 _phs.append(_ph2)
                 
@@ -176,18 +176,19 @@ def _old_workflow(sample_data, sample_mc, jecv):
 
 if __name__ == "__main__":
     #for _jecv in ("V6_rawECAL", "V6", "V6_egmUpdate"):
+    _jecv_mc = "V4"
     for _jecv in ("V6",):
         for _channel in ("mm", "ee"):
             for _corr_level in ("L1L2L3",):
                 _plot_collection = plot_data_mc_hist(
-                    sample_data=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)],
-                    sample_mc=SAMPLES['MC_Z{}_DYNJ_Summer16_JEC{}'.format(_channel, _jecv)],
+                    sample_data=SAMPLES['Data_Z{}_BCDEF_Fall17_JEC{}'.format(_channel, _jecv)],
+                    sample_mc=SAMPLES['MC_Z{}_DYNJ_Fall17_JEC{}'.format(_channel, _jecv_mc)],
                     selection_cuts=_SELECTION_CUTS,
                     subplot_cuts=RUN_PERIOD_CUT_DICTS,
                     jec_correction_string=_corr_level,
                     quantities=_QUANTITIES,
-                    sample_label="07Aug2017",
-                    jec_campaign_label="Summer16",
+                    sample_label="17Nov2017",
+                    jec_campaign_label="Fall17",
                     jec_version=_jecv,
                     normalize_to_first_histo=True,
                 )

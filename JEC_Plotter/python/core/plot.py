@@ -1,8 +1,11 @@
+import abc
+import itertools
+
 import Excalibur.Plotting.harryinterface as harryinterface
 
 from copy import deepcopy
 
-from Excalibur.JEC_Plotter.core.quantities import BinSpec, QUANTITIES
+from Excalibur.JEC_Plotter.core.quantities import BinSpec, CutSet, QUANTITIES
 
 CHANNEL_SPEC = {
     'Zmm' : {
@@ -13,80 +16,120 @@ CHANNEL_SPEC = {
     }
 }
 
-class _Plot1D(object):
-    _INFOBOX_TOPLEFT_XY = (0.65, 0.77)
+
+"""
+Private containers (one object per plot)
+"""
+
+
+class _PlotBase(object):
+    _FORBIDDEN_KWARGS = {}
+
+    DEFAULT_INFOBOX_TOPLEFT_XY = (0.65, 0.77)
     _INFOBOX_SPACING_Y = 0.05
 
-    Y_SUBPLOT_LIMS = [0.95, 1.05]
-    Y_SUBPLOT_LABEL = "Ratio"
+    DEFAULT_CORRTEXT_TOPLEFT_XY = (0.68, 0.09)
 
-    def __init__(self, basename, quantity, selection,
-                 samples, cut_sets, correction_string,
-                 normalize_to_first_histo=False,
-                 show_ratio_to_first=False,
-                 show_first_in_ratio=False,
-                 show_cut_info_text=True,
-                 show_corr_folder_text=True,
-                 stacked=False,
-                 dataset_label=None,
-                 y_log_scale=False):
-        self._nsamples = len(samples)
+    DEFAULT_Y_SUBPLOT_LIMS = [0.95, 1.05]
+    DEFAULT_Y_SUBPLOT_LABEL = "Ratio"
 
+    def __init__(self,
+                 # -- mandatory args
+                 basename,
+                 quantities,
+                 selection,
+                 samples,
+                 cut_sets,
+                 jec_correction_string,
+                 # -- optional args
+                 show_cut_info_text=True,         # show cut info?
+                 show_corr_folder_text=True,      # show JEC corr folder?
+                 plot_label=None,     # label for upper-right
+                 y_log_scale=False,   # apply log scale to y axis
+                 upload_to_www=True,  # upload plot to www?
+                 cut_info_text_topleft_xy=None,  # xy position of infobox
+                 jec_corr_text_topleft_xy=None,  # xy position of JEC correction text
+                 y_subplot_label=None,  # subplot y axis label
+                 y_subplot_range=None,  # subplot y axis label
+                 legend_position=None,  # legend position
+                 ):
+
+        # -- mandatory args
         self._basename = basename
-        self._q = quantity
-        self._samples = samples
+        self._qs = quantities
         self._selection = selection
-        self._cut_sets = cut_sets or [None]
-        self._correction_string = correction_string
-        self._normalize_to_first_histo = normalize_to_first_histo
-        self._dmc_comparison_type = show_ratio_to_first
-        self._show_first_in_ratio = show_first_in_ratio
-        self._stacked = stacked
-        self._dataset_label = dataset_label
+        self._samples = samples
+        self._cut_sets = cut_sets
+        self._jec_correction_string = jec_correction_string
+
+        # -- optional args
+        self._show_cut_info_text = show_cut_info_text
+        self._show_corr_folder_text = show_corr_folder_text
+        self._plot_label = plot_label
         self._y_log_scale = y_log_scale
+        self._upload_to_www = upload_to_www
+        self._cut_info_text_topleft_xy = cut_info_text_topleft_xy or self.DEFAULT_INFOBOX_TOPLEFT_XY
+        self._jec_corr_text_topleft_xy = jec_corr_text_topleft_xy or self.DEFAULT_CORRTEXT_TOPLEFT_XY
+        self._y_subplot_label = y_subplot_label or self.DEFAULT_Y_SUBPLOT_LABEL
+        self._y_subplot_range = y_subplot_range or self.DEFAULT_Y_SUBPLOT_LIMS
+        self._legend_position = legend_position
 
-        _ncutsets = len(cut_sets)
+        self._nsamples = len(self._samples)
+        if self._cut_sets is None or not self._cut_sets:
+            self._cut_sets = [None]
 
+        _ncutsets = len(self._cut_sets)
         if _ncutsets == 1:
-            cut_sets = [cut_sets[0]] * self._nsamples
+            self._cut_sets = [self._cut_sets[0]] * self._nsamples
 
-
-        if len(cut_sets) != self._nsamples:
+        if len(self._cut_sets) != self._nsamples:
             raise ValueError("Number of cuts ({}) must match "
-                             "the number of samples ({}) provided!".format( len(cut_sets), self._nsamples))
+                             "the number of samples ({}) provided!".format( len(self._cut_sets), self._nsamples))
 
         self._basic_weights_string = self._selection.weights_string
 
         self._channel = self._samples[0]['channel']
         assert all([_sample['channel'] == self._channel for _sample in self._samples])
 
-        _output_folder = "_".join([self._basename,
+
+        self._output_folder = "_".join([self._basename,
                                    self._channel,
-                                   self._correction_string,
+                                   self._jec_correction_string,
                                    self._selection.name])
-        _output_filename = '{0}'.format(self._q.name)
+
+        self._output_filename = self._qs[0].name
+        if len(self._qs) > 1:
+            self._output_filename = "_".join(reversed([_q.name for _q in self._qs[1:]])) + "_vs_" + self._output_filename
+
+        if not self._upload_to_www:
+            self._output_filename = "_".join([self._basename, self._output_filename])
+
+    def _validate_init_kwargs_raise(self, kwargs):
+        _kwargs_keys = set(kwargs.keys())
+        _forbidden = _kwargs_keys.intersection(self._FORBIDDEN_KWARGS)
+        if _forbidden:
+            raise ValueError("Forbidden kwargs for class '{}': {}".format(self.__class__.__name__, _forbidden))
+
+    def _init_basic_dict(self):
         self._basic_dict = {
             # data
             'zjetfolders': [self._selection.zjet_folder],
-            #'weights': [self._basic_weights_string],
-            'weights': [],
 
             # binning
-            'x_expressions': [self._q.expression],
-            'x_bins': self._q.bin_spec.string if self._q.bin_spec is not None else None,
-            'x_label': self._q.label,
+            'x_expressions': [self._qs[0].expression],
+            'x_bins': self._qs[0].bin_spec.string if self._qs[0].bin_spec is not None else None,
+            'x_label': self._qs[0].label,
 
             # formatting
-            'x_lims': list(self._q.bin_spec.range) if self._q.bin_spec is not None else None,
+            'x_lims': list(self._qs[0].bin_spec.range) if self._qs[0].bin_spec is not None else None,
             'title': None,
             'y_log': self._y_log_scale,
-            'x_log': self._q.log_scale,
+            'x_log': self._qs[0].log_scale,
 
-            'dataset_title': self._dataset_label,
+            'dataset_title': self._plot_label,
 
             # web gallery options
-            'www': _output_folder,
-            'filename': _output_filename,
+            'filename': self._output_filename,
 
             # texts
             "texts": [
@@ -96,16 +139,17 @@ class _Plot1D(object):
                 20,
             ],
             "texts_x": [
-                0.1, #self._INFOBOX_TOPLEFT_XY[0],
+                0.1, #self._cut_info_text_topleft_xy[0],
             ],
             "texts_y": [
-                1.08, #self._INFOBOX_TOPLEFT_XY[1],
+                1.08, #self._cut_info_text_topleft_xy[1],
             ],
 
             'analysis_modules': [],
 
             # -- filled in per sample/cut group
             'nicks': [],
+            'weights': [],
             'files': [],
             'labels': [],
             'corrections': [],
@@ -116,29 +160,129 @@ class _Plot1D(object):
             'y_errors': [],
             'x_errors': [],
             'stacks': [],
-
-            "subplot_fraction": 25,
-            "ratio_denominator_no_errors": False,
         }
 
-        if show_corr_folder_text:
-            # add cut labels as text
-            self._basic_dict['texts'].append(r"$\\bf{{{0}}}$".format(self._correction_string))
-            self._basic_dict['texts_size'].append(25)
-            self._basic_dict['texts_x'].append(0.68)
-            self._basic_dict['texts_y'].append(0.09)
+        # if 'y' quantity is provided:
+        if len(self._qs) > 1:
+            self._basic_dict.update({
+                # binning
+                'y_expressions': [self._qs[1].expression],
+                'y_bins': self._qs[1].bin_spec.string if self._qs[1].bin_spec is not None else None,
+                'y_label': self._qs[1].label,
 
-        if show_cut_info_text:
+                'y_lims': list(self._qs[1].bin_spec.range) if self._qs[1].bin_spec is not None else None,
+                'y_log': self._qs[1].log_scale,  # use quantity-based decision instead of kwarg
+            })
+
+        if self._legend_position:
+            self._basic_dict['legend'] = self._legend_position
+
+        if self._show_corr_folder_text:
+            # add JEC correction folder info
+            self._basic_dict['texts'].append(r"$\\bf{{{0}}}$".format(self._jec_correction_string))
+            self._basic_dict['texts_size'].append(25)
+            self._basic_dict['texts_x'].append(self._jec_corr_text_topleft_xy[0])
+            self._basic_dict['texts_y'].append(self._jec_corr_text_topleft_xy[1])
+
+        if self._show_cut_info_text:
             # add cut labels as text
             for _i, _cl in enumerate(self._selection.texts):
                 self._basic_dict['texts'].append(_cl)
                 self._basic_dict['texts_size'].append(15)
-                self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-                self._basic_dict['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
+                self._basic_dict['texts_x'].append(self._cut_info_text_topleft_xy[0])
+                self._basic_dict['texts_y'].append(self._cut_info_text_topleft_xy[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
+
+        if self._upload_to_www:
+            self._basic_dict['www'] = self._output_folder
+
+
+    @abc.abstractmethod
+    def get_dict(self):
+        raise NotImplementedError("Pure abstract method called!")
 
     @property
-    def _all_involved_quantities(self):
-        return [self._q]
+    def quantities(self):
+        return self._qs
+
+    @property
+    def basename(self):
+        return self._basename
+
+    @property
+    def selection(self):
+        return self._selection
+
+    @property
+    def samples(self):
+        return self._samples
+
+    @property
+    def jec_correction_string(self):
+        return self._jec_correction_string
+
+    @property
+    def output_filename(self):
+        return self._output_filename
+
+    @property
+    def output_folder(self):
+        return self._output_folder
+
+
+    def add_text(self, text, size, xy):
+        assert len(xy) == 2
+        self._basic_dict['texts'].append(text)
+        self._basic_dict['texts_size'].append(size)
+        self._basic_dict['texts_x'].append(xy[0])
+        self._basic_dict['texts_y'].append(xy[1])
+    
+
+    def make_plot(self, args=None):
+        _plot_dicts = [self.get_dict()]
+        harryinterface.harry_interface(_plot_dicts, (args or []) + ['--max-processes', '1'])
+
+class _Plot1D(_PlotBase):
+    _FORBIDDEN_KWARGS = {}
+
+    def __init__(self,
+                 basename,            # base name of the plot
+                 quantity,            # x-axis quantity
+                 selection,           # selection to apply to samples
+                 samples,             # data samples (N)
+                 cut_sets,            # cut sets for the samples (N)
+                 jec_correction_string,   # JEC correction string
+                 # -- Plot1D args
+                 normalize_to_first_histo=False,  # normalize all histos to first?
+                 show_ratio_to_first=False,       # show the ratio to first in lower pad?
+                 show_first_in_ratio=False,       # show the reference at 1.0 in ratio pad?
+                 stacked=False,                   # stack histograms?
+                 **kwargs):
+
+        super(_Plot1D, self).__init__(
+            basename=basename,
+            quantities=[quantity],
+            selection=selection,
+            samples=samples,
+            cut_sets=cut_sets,
+            jec_correction_string=jec_correction_string,
+            **kwargs)
+
+        self._normalize_to_first_histo = normalize_to_first_histo
+        self._show_ratio_to_first = show_ratio_to_first
+        self._show_first_in_ratio = show_first_in_ratio
+        self._stacked = stacked
+
+        self._init_basic_dict()
+
+    def _init_basic_dict(self):
+        super(_Plot1D, self)._init_basic_dict()
+
+        if self._show_ratio_to_first:
+            self._basic_dict.update({
+                'analysis_modules': ["Ratio"],
+                'ratio_denominator_no_errors': False,
+                'subplot_fraction': 25,
+            })
 
     def get_dict(self):
         _d = deepcopy(self._basic_dict)
@@ -146,23 +290,23 @@ class _Plot1D(object):
         for _i, (_sample, _cutset) in enumerate(zip(self._samples, self._cut_sets)):
 
             # skip quantities not available in certain channels
-            if not all([_q.available_for_channel(_sample['channel']) for _q in self._all_involved_quantities]):
+            if not all([_q.available_for_channel(_sample['channel']) for _q in self.quantities]):
                 continue
 
             # skip quantities not available in certain source types (data/MC)
-            if not all([_q.available_for_source_type(_sample['source_type']) for _q in self._all_involved_quantities]):
+            if not all([_q.available_for_source_type(_sample['source_type']) for _q in self.quantities]):
                 continue
 
             _d['nicks'].append("nick{}".format(_i))
             _d['files'].append(_sample['file'])
             _d['labels'].append("{source_type} ({source_label})".format(**_sample._dict))
-            _d['corrections'].append(self._correction_string)
+            _d['corrections'].append(self._jec_correction_string)
             if _cutset is not None:
                 _d['weights'].append(self._basic_weights_string + '&&' + _cutset.weights_string)
             else:
                 _d['weights'].append(self._basic_weights_string)
 
-            if self._stacked:
+            if hasattr(self, '_stacked') and self._stacked:
                 _d['stacks'].append("single_stack")
                 _d['markers'].append(_sample._dict.get('marker', 'bar'))
             else:
@@ -181,48 +325,43 @@ class _Plot1D(object):
             _d['x_errors'].append(True)
 
             # default to 'L1L2L3' for Monte Carlo
-            if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+            if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
                 _d['corrections'][-1] = 'L1L2L3'
 
-        if self._dmc_comparison_type:
-            _d['analysis_modules'].append("Ratio")
+        if hasattr(self, '_show_ratio_to_first') and self._show_ratio_to_first:
+            # determine the first index to show in the ratio plot
             _start_index = 1
             if self._show_first_in_ratio:
                 _start_index = 0
+
+            # compute the numerator and ratio result nicks
             _num_nicks = ["nick{}".format(i) for i in range(_start_index, self._nsamples)]
             _res_nicks = ["nick{}_over0".format(i) for i in range(_start_index, self._nsamples)]
 
+            # update plot dict
             _d.update({
                 "ratio_numerator_nicks": _num_nicks,
                 "ratio_denominator_nicks": ["nick0"],
                 "ratio_result_nicks": _res_nicks,
-                #"subplot_lines": [],
                 "subplot_nicks": _res_nicks,
-                "y_subplot_label": self.Y_SUBPLOT_LABEL,
-                'y_subplot_lims': self.Y_SUBPLOT_LIMS,
+                "y_subplot_label": self._y_subplot_label,
+                'y_subplot_lims': self._y_subplot_range,
                 'y_errors': _d['y_errors'] + [True] * len(_num_nicks),
                 'x_errors': _d['x_errors'] + [False] * len(_num_nicks),
-                'markers': _d['markers'] + ["s"] * len(_num_nicks),
-                'step': _d['step'] + [False] * len(_num_nicks),
-                'line_styles': _d['line_styles'] + [""] * len(_num_nicks),
             })
 
             # make sure subplot properties follow the main plot
-            if 'colors' in _d:
-                _d['colors'] += [_d['colors'][i] for i in range(_start_index, self._nsamples)]
-            #if 'markers' in _d:
-            #    _d['markers'] = [_d['markers'][i] for i in range(_start_index, self._nsamples)]
-            #if 'step' in _d:
-            #    _d['step'] = [_d['step'][i] for i in range(_start_index, self._nsamples)]
-            #if 'line_styles' in _d:
-            #    _d['line_styles'] = [_d['line_styles'][i] for i in range(_start_index, self._nsamples)]
+            for _prop in ('colors', 'markers', 'step', 'line_styles', 'labels'):
+                if _prop in _d and len(_d[_prop]) > _start_index:
+                    _d[_prop] += [_d[_prop][i] for i in range(_start_index, self._nsamples)]
 
             # need to create a 'parallel' set of stacks for the ratios
             # to avoid stacking ratios and non-rations together...
             if 'stacks' in _d:
                 _d['stacks'].extend(['stack_'+_stackname for _stackname in _res_nicks])
 
-        if self._normalize_to_first_histo and len(_d['files']) > 1:
+        if hasattr(self, '_normalize_to_first_histo') and self._normalize_to_first_histo and len(_d['files']) > 1:
+            # just insert analysis module at front of list
             _d['analysis_modules'].insert(0, "NormalizeToFirstHisto")
 
         return _d
@@ -252,7 +391,7 @@ class _Plot1D(object):
         _results = dict(files=[], weights=[], event_count=[])
         for _filename, _weight_string in zip(_filenames, _weights):
             _file = ROOT.TFile(_filename)
-            _ntuple = _file.Get("{}/ntuple".format(self._selection.zjet_folder + '_' + self._correction_string))
+            _ntuple = _file.Get("{}/ntuple".format(self._selection.zjet_folder + '_' + self._jec_correction_string))
 
             # count events after applying the `weights`
             _n_after_cuts = _ntuple.Draw(">>elist", _weight_string, "goff")
@@ -271,7 +410,6 @@ class _Plot1D(object):
                     datetime.date.today().strftime("%Y_%m_%d"),
                     (_d.get("www", None) or "")
                 )
-                #print '[DEBUG] _plot_output_dir = ', _plot_output_dir
 
             _plot_output_path = os.path.join(_plot_output_dir, _eventcount_output_filename)
 
@@ -283,47 +421,61 @@ class _Plot1D(object):
 
 
 class _Plot1DFractions(_Plot1D):
-    def __init__(self, basename, quantity, selection,
-                 fraction_samples, reference_cut_set, fraction_cut_sets,
-                 correction_string,
-                 show_cut_info_text=True,
-                 show_corr_folder_text=True,
-                 dataset_label=None):
-        #
-        # print len(fraction_cut_sets)
-        # print len(fraction_samples)
-        #
-        # print fraction_cut_sets
-        # print fraction_samples
+    _FORBIDDEN_KWARGS = {'normalize_to_first_histo', 'show_ratio_to_first', 'show_first_in_ratio', 'stacked', 'y_log_scale'}
+
+    def __init__(self,
+                 # -- PlotBase args
+                 basename,            # base name of the plot
+                 quantity,            # x-axis quantity
+                 selection,           # selection to apply to samples
+                 sample,              # *one* data sample
+                 cut_sets,            # cut sets for the different fractions
+                 cut_set_colors,      # colors for the different fractions
+                 cut_set_labels,      # labels for the different fractions
+                 jec_correction_string,   # JEC correction string
+                 # -- Plot1DFractions args
+                 reference_cut_set,
+                 y_label,
+                 **kwargs):
+
+        self._validate_init_kwargs_raise(kwargs)
+
+        assert len(cut_set_colors) == len(cut_sets)
+        assert len(cut_set_labels) == len(cut_sets)
+
+        self._ref_cut_set = reference_cut_set
+        self._y_label = y_label
 
         super(_Plot1DFractions, self).__init__(
+            # -- PlotBase args
             basename=basename,
             quantity=quantity,
             selection=selection,
-            samples=fraction_samples,
-            cut_sets=[None], # [self._reference_cut_set] + fraction_cut_sets,
-            correction_string=correction_string,
-            normalize_to_first_histo=False,     # always false for fraction plots
-            show_ratio_to_first=True,           # always true for fraction plots
+            samples=[sample] * (len(cut_sets)),
+            cut_sets=cut_sets,
+            jec_correction_string=jec_correction_string,
+            y_log_scale=False,
+            # -- Plot1D explicit args
+            normalize_to_first_histo=False,
+            show_ratio_to_first=True,
             show_first_in_ratio=True,
-            show_cut_info_text=show_cut_info_text,
-            show_corr_folder_text=True,
-            stacked=True,
-            dataset_label=dataset_label)
+            stacked=False,
+            **kwargs)
 
-        self._ref_cut_set = reference_cut_set
-        self._frac_cut_sets = fraction_cut_sets
+        self._cut_set_colors = cut_set_colors
+        self._cut_set_labels = cut_set_labels
 
-        if len(fraction_samples) > 1:
-            fraction_samples = [fraction_samples[0]] + fraction_samples  # need dummy first sample
+        self._init_basic_dict()
 
+    def _init_basic_dict(self):
+        super(_Plot1DFractions, self)._init_basic_dict()
         self._basic_dict.update({
             "subplot_fraction": 0,  # do not show lower plot axes
             "subplot_nicks": ["_dummy"],  # HARRYPLOTTER!!
             "ratio_denominator_no_errors": "false",
             "stacks": ["single_stack"],
             "markers": 'bar',
-            "y_label": "Ratio",
+            "y_label": self._y_label,
             "y_lims": [0, 1.29],
             "y_log": False,
 
@@ -333,6 +485,10 @@ class _Plot1DFractions(_Plot1D):
             "x_errors": None,
             "line_styles": None,
             "analysis_modules": ["Ratio"],
+
+            'files': [self._samples[0]['file']],
+            'step': [self._samples[0]._dict.get('step_flag', False)],
+
         })
 
     def get_dict(self):
@@ -340,24 +496,23 @@ class _Plot1DFractions(_Plot1D):
 
         # reference (total of fraction)
         _d['weights'].append(self._basic_weights_string)
-        _d['files'] = [self._samples[0]['file']]  # need sample file for reference
 
         # default to 'L1L2L3' for Monte Carlo
-        _corr_string = self._correction_string
-        if self._correction_string == 'L1L2L3Res' and self._samples[0]['source_type'] != 'Data':
+        _corr_string = self._jec_correction_string
+        if self._jec_correction_string == 'L1L2L3Res' and self._samples[0]['source_type'] != 'Data':
             _corr_string = 'L1L2L3'
-        _d['corrections'].append(_corr_string)
+        _d['corrections'] = [_corr_string]
 
         _numerator_nicks = ['nick0']
         _ratio_nicks = ['nick0_over0']
-        for _i, (_sample, _frac_cutset) in enumerate(reversed(zip(self._samples, self._frac_cut_sets))):
+        for _i, (_frac_cutset) in reversed(list(enumerate(self._cut_sets))):
             # things to add later
             _numerator_nicks.append("nick{}".format(_i+1))
             _ratio_nicks.append("nick{}_over0".format(_i+1))
 
             # default to 'L1L2L3' for Monte Carlo
-            _corr_string = self._correction_string
-            if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+            _corr_string = self._jec_correction_string
+            if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
                 _corr_string = 'L1L2L3'
 
             if _frac_cutset is not None:
@@ -365,11 +520,10 @@ class _Plot1DFractions(_Plot1D):
             else:
                 _d['weights'].append(self._basic_weights_string)
 
-            _d['files'].append(_sample['file'])
+
             _d['corrections'].append(_corr_string)
-            _d['labels'].append("{source_type} ({source_label})".format(**_sample._dict))
-            _d['step'].append(_sample._dict.get('step_flag', False))
-            _d['colors'].append(_sample['color'])
+            _d['labels'].append(self._cut_set_labels[_i])
+            _d['colors'].append(self._cut_set_colors[_i])
             #_d['y_errors'].append(True)
             _d['nicks_blacklist'].append("^{}$".format(_numerator_nicks[-1]))
 
@@ -382,249 +536,176 @@ class _Plot1DFractions(_Plot1D):
         return _d
 
 
-class _Plot2D(_Plot1D):
-    def __init__(self, basename, quantity_pair, selection,
-                 samples, cut_sets, correction_string,
-                 normalize_to_first_histo=False,
-                 show_ratio_to_first=False,
-                 show_cut_info_text=True,
-                 show_corr_folder_text=True,
-                 show_as_profile=False,
-                 dataset_label=None):
+class _Plot2D(_PlotBase):
+    _FORBIDDEN_KWARGS = {'y_log_scale', 'quantities', 'quantity'}
 
+    def __init__(self,
+                 # -- PlotBase args
+                 basename,            # base name of the plot
+                 quantity_pair,       # x- and y-axis quantities
+                 selection,           # selection to apply to samples
+                 sample,              # *one* data sample
+                 jec_correction_string,   # JEC correction string
+                 **kwargs):
+
+        self._validate_init_kwargs_raise(kwargs)
+
+        assert len(quantity_pair) == 2
         super(_Plot2D, self).__init__(
-            basename=basename, quantity=quantity_pair[0], selection=selection,
-            samples=samples, cut_sets=cut_sets, correction_string=correction_string,
-            normalize_to_first_histo=False, show_ratio_to_first=show_ratio_to_first,
-            show_corr_folder_text=show_corr_folder_text,
-            dataset_label=dataset_label
-        )
-        del self._q
-        self._qx, self._qy = quantity_pair
+            # -- PlotBase args
+            basename=basename,
+            quantities=list(quantity_pair),
+            selection=selection,
+            samples=[sample],
+            cut_sets=[None],
+            jec_correction_string=jec_correction_string,
+            **kwargs)
 
-        _output_folder = "_".join([self._basename,
-                                   self._channel,
-                                   self._correction_string,
-                                   self._selection.name])
-        _output_filename = '{0}_vs_{1}'.format(self._qy.name, self._qx.name)
-        self._basic_dict = {
-            # data
-            'zjetfolders': [self._selection.zjet_folder],
-            #'weights': [self._basic_weights_string],
-            'weights': [],
+        self._init_basic_dict()
 
-            # binning
-            'x_expressions': [self._qx.expression],
-            'x_bins': self._qx.bin_spec.string if self._qx.bin_spec is not None else None,
-            'x_label': self._qx.label,
-            'y_expressions': [self._qy.expression],
-            'y_bins': self._qy.bin_spec.string if self._qy.bin_spec is not None else None,
-            'y_label': self._qy.label,
-
-            # formatting
-            'title': None,
-            'line_styles': ['-'],
-            'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
-            'x_log': self._qx.log_scale,
-            'y_lims': list(self._qy.bin_spec.range) if self._qy.bin_spec is not None else None,
-            'y_log': self._qy.log_scale,
-
-            'dataset_title': self._dataset_label,
-
-            # texts
-            "texts": [
-                CHANNEL_SPEC.get(self._channel, {}).get('label', ""),
-                #r"$\\bf{{{0}}}$".format(self._correction_string)
-            ],
-            "texts_size": [
-                20,
-                #25,
-            ],
-            "texts_x": [
-                0.1, #self._INFOBOX_TOPLEFT_XY[0],
-                #0.68,
-            ],
-            "texts_y": [
-                1.08,  # self._INFOBOX_TOPLEFT_XY[1],
-                #0.09,
-            ],
-            # web gallery options
-            'www': _output_folder,
-            'filename': _output_filename,
-
-            'analysis_modules': [],
-
-            # -- filled in per sample/cut group
-            'nicks': [],
-            'files': [],
-            'labels': [],
-            'corrections': [],
-            'colors': [],
-            'markers': [],
-            'step': [],
-            'y_errors': [],
-            'x_errors': [],
-            'stacks': []  # TODO: adapt inheritance to better suit 2D plots
-        }
-
-        self._profile = show_as_profile
-        if show_as_profile:
-            self._basic_dict['tree_draw_options'] = 'prof'
-
-        if show_cut_info_text:
-            # add cut labels as text
-            for _i, _cl in enumerate(self._selection.texts):
-                self._basic_dict['texts'].append(_cl)
-                self._basic_dict['texts_size'].append(15)
-                self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-                self._basic_dict['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
-
-    @property
-    def _all_involved_quantities(self):
-        return [self._qx, self._qy]
+    def _init_basic_dict(self):
+        _PlotBase._init_basic_dict.im_func(self)
+        self._basic_dict.update({
+            'line_styles': ['-']
+        })
 
     def get_dict(self):
-        _d = super(_Plot2D, self).get_dict()
+        return _Plot1D.get_dict.im_func(self)  # same as 1D method
+
+
+class _PlotProfile(_PlotBase):
+    _FORBIDDEN_KWARGS = {'y_log_scale', 'normalize_to_first_histo', 'stacked'}
+
+    def __init__(self,
+                 basename,            # base name of the plot
+                 quantity_pair,       # x- and y-axis quantities
+                 selection,           # selection to apply to samples
+                 samples,             # data samples (N)
+                 cut_sets,            # cut sets for the samples (N)
+                 jec_correction_string,   # JEC correction string
+                 # -- Plot1D args
+                 show_ratio_to_first=False,       # show the ratio to first in lower pad?
+                 show_first_in_ratio=False,       # show the reference at 1.0 in ratio pad?
+                 **kwargs):
+
+        assert len(quantity_pair) == 2
+        super(_PlotProfile, self).__init__(
+            basename=basename,
+            quantities=[quantity_pair[0], quantity_pair[1]],
+            selection=selection,
+            samples=samples,
+            cut_sets=cut_sets,
+            jec_correction_string=jec_correction_string,
+            **kwargs)
+
+        self._show_ratio_to_first = show_ratio_to_first
+        self._show_first_in_ratio = show_first_in_ratio
+
+        self._init_basic_dict()
+
+    def _init_basic_dict(self):
+        _PlotBase._init_basic_dict.im_func(self)
+        self._basic_dict.update({
+            'line_styles': ['-']
+        })
+
+        # set profile option
+        self._basic_dict['tree_draw_options'] = 'prof'
+
+        # acommodate ratio
+        if self._show_ratio_to_first:
+            self._basic_dict.update({
+                'analysis_modules': ["Ratio"],
+                'ratio_denominator_no_errors': False,
+                'subplot_fraction': 25,
+            })
+
+
+    def get_dict(self):
+        _d = _Plot1D.get_dict.im_func(self)  # same as 2D method
+
         # override markers for profile
-        if self._profile:
-            _d['markers'] = ['.']
-            _d['step'] = [False]
-            _d['line_styles'] = ""
-            _d['x_errors'] = True
-            del _d['y_bins']  # HARRYPLOTTER!!!
+        _d['markers'] = ['.']
+        _d['step'] = [False]
+        _d['line_styles'] = ""
+        _d['x_errors'] = True
+        del _d['y_bins']  # HARRYPLOTTER!!!
+
         return _d
 
 
-class _Plot2DQuantitiesProfile(_Plot2D):
+class _PlotStackProfile(_PlotBase):
+    _FORBIDDEN_KWARGS = {'normalize_to_first_histo', 'stacked', 'cut_sets'}
+
     # todo: implement cycler
     _COLORS_CYCLE = ['orange', 'royalblue', 'green', 'violet', 'teal', 'brown']
     _MARKERS_CYCLE = ['o', 's', 'd', '^', '*', 'v']
-    def __init__(self, basename,
-                 quantity_x, quantities_y,
-                 y_label,
-                 y_range,
+
+    def __init__(self,
+                 basename,
+                 quantity_x,
+                 quantities_y,
                  selection,
                  sample_mc,
                  sample_data,
-                 correction_string,
+                 jec_correction_string,
+                 y_label,
+                 y_range,
                  show_data_mc_comparison_as=None,
-                 stacked=False,
-                 show_cut_info_text=True,
-                 show_as_profile=False,
-                 dataset_label=None,
-                 y_log_scale=False,
                  colors_mc=None,
-                 markers_data=None):
+                 markers_data=None,
+                 **kwargs):
 
-        self._qx = quantity_x
-        self._qys = quantities_y
+        self._validate_init_kwargs_raise(kwargs)
 
-        self._basename = basename
-        self._sample_mc = sample_mc
-        self._sample_data = sample_data
-        self._selection = selection
-        self._correction_string = correction_string
+        super(_PlotStackProfile, self).__init__(
+            basename=basename,
+            quantities=[quantity_x] + quantities_y,
+            selection=selection,
+            samples=[sample_mc, sample_data],
+            cut_sets=[None, None],
+            jec_correction_string=jec_correction_string,
+            **kwargs)
+
+        self._qx = self._qs[0]
+        self._qys = self._qs[1:]
+
+        self._sample_mc = self._samples[0]
+        self._sample_data = self._samples[1]
+
         self._dmc_comparison_type = show_data_mc_comparison_as
         if self._dmc_comparison_type is not None:
             self._dmc_comparison_type = self._dmc_comparison_type.lower()
-        self._stacked = stacked
-        self._dataset_label = dataset_label
-        self._y_log_scale = y_log_scale
+
+        #self._stacked = False
+
         self._y_label = y_label
         self._y_range = y_range
+        if self._y_range is None:
+            self._y_range = min([_q.bin_spec.range[0] for _q in self._qys]), max([_q.bin_spec.range[1] for _q in self._qys])
+
         self._colors_mc = colors_mc or self._COLORS_CYCLE
         self._markers_data = markers_data or self._MARKERS_CYCLE
 
-        self._basic_weights_string = self._selection.weights_string
+        self._init_basic_dict()
 
-        self._channel = self._sample_mc['channel']
 
-        _output_folder = "_".join([self._basename,
-                                   self._channel,
-                                   self._correction_string,
-                                   self._selection.name])
-        _output_filename = "_".join([_q.name for _q in self._qys])
-        _output_filename = '{0}_vs_{1}'.format(_output_filename, self._qx.name)
+    def _init_basic_dict(self):
+        super(_PlotStackProfile, self)._init_basic_dict()
 
-        _y_range = self._y_range
-        if _y_range is None:
-            _y_range = min([_q.bin_spec.range[0] for _q in self._qys]), max([_q.bin_spec.range[1] for _q in self._qys])
-
-        self._basic_dict = {
-            # data
-            'zjetfolders': [self._selection.zjet_folder],
-            # 'weights': [self._basic_weights_string],
-            'weights': [],
-
-            # binning
-            'x_expressions': [self._qx.expression],
-            'x_bins': self._qx.bin_spec.string if self._qx.bin_spec is not None else None,
-            'x_label': self._qx.label,
-            #'y_bins': None,
+        self._basic_dict.update({
+            'legend': "lower left",
+            'y_lims': list(self._y_range),
             'y_label': self._y_label,
 
-            # formatting
-            'title': None,
-            'line_styles': [],
-            'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
-            'x_log': self._qx.log_scale,
-            'y_lims': list(_y_range),
-            'y_log': self._y_log_scale,
-
-            'dataset_title': self._dataset_label,
-
-            'legend': "lower left",
-
-            # texts
-            "texts": [
-                CHANNEL_SPEC.get(self._channel, {}).get('label', ""),
-                r"$\\bf{{{0}}}$".format(self._correction_string)
-            ],
-            "texts_size": [
-                20,
-                25,
-            ],
-            "texts_x": [
-                0.1,  # self._INFOBOX_TOPLEFT_XY[0],
-                0.10,
-            ],
-            "texts_y": [
-                1.08,  # self._INFOBOX_TOPLEFT_XY[1],
-                0.98,
-            ],
-            # web gallery options
-            'www': _output_folder,
-            'filename': _output_filename,
-
-            'analysis_modules': [],
-
-            # -- filled in per sample/cut group
-            'nicks': [],
-            'files': [],
-            'labels': [],
-            'corrections': [],
-            'colors': [],
-            'alphas': [],
-            'markers': [],
-            'step': [],
+            # set the following for each sample/cut group in get_dict
             'y_expressions': [],
-            'y_errors': [],
-            'x_errors': [],
-            'stacks': [],
-        }
+            'line_styles': [],
+            'alphas': [],
 
-        self._profile = show_as_profile
-        if show_as_profile:
-            self._basic_dict['tree_draw_options'] = 'prof'
+            'tree_draw_options': 'prof'
+        })
 
-        if show_cut_info_text:
-            # add cut labels as text
-            for _i, _cl in enumerate(self._selection.texts):
-                self._basic_dict['texts'].append(_cl)
-                self._basic_dict['texts_size'].append(15)
-                self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-                self._basic_dict['texts_y'].append(
-                    self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
 
     def get_dict(self):
         _d = deepcopy(self._basic_dict)
@@ -641,7 +722,7 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                     continue
 
                 _d['files'].append(_sample['file'])
-                _d['corrections'].append(self._correction_string)
+                _d['corrections'].append(self._jec_correction_string)
                 _d['weights'].append(self._basic_weights_string)
 
                 #_d['markers'].append(self._sample._dict.get('marker', 'bar'))
@@ -671,7 +752,7 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                 _d['y_errors'].append(True)
 
                 # default to 'L1L2L3' for Monte Carlo
-                if self._correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
                     _d['corrections'][-1] = 'L1L2L3'
 
         if self._dmc_comparison_type == 'ratio':
@@ -745,36 +826,54 @@ class _Plot2DQuantitiesProfile(_Plot2D):
                     _new_pos = len(_plus_nicks) + 2*_i_input_nick
                     _d[_key].insert(_new_pos, _new_nick_dict[_key][_i_input_nick])
 
+        if 'y_bins' in _d:
+            del _d['y_bins']  # HARRYPLOTTER!!!
+
         return _d
 
-class _PlotExtrapolation(_Plot1D):
+
+class _PlotExtrapolation(_PlotBase):
+    _FORBIDDEN_KWARGS = {'normalize_to_first_histo', 'show_ratio_to_first', 'show_first_in_ratio', 'stacked', 'y_log_scale'}
+
     # todo: implement cycler
     _LIGHT_COLORS_CYCLE = ['orange', 'royalblue', 'green']
     _DARK_COLORS_CYCLE = ['darkred', 'darkblue', 'darkgreen']
+
     def __init__(self,
-                 basename,
-                 sample_data,
-                 sample_mc,
-                 selection,
+                 # -- PlotBase args
+                 basename,            # base name of the plot
                  response_quantities,
                  extrapolation_quantity,
+                 selection,           # selection to apply to samples
+                 sample_data,
+                 sample_mc,
+                 jec_correction_string,   # JEC correction string
+                 # -- _PlotExtrapolation args
                  fit_function_range,
                  n_extrapolation_bins,
-                 correction_string,
-                 show_cut_info_text=False,
-                 dataset_label=None,
-                 additional_cut_dict=None):
+                 additional_cut_dict=None,
+                 **kwargs):
 
-        self._basename = basename
+        self._validate_init_kwargs_raise(kwargs)
+
+        super(_PlotExtrapolation, self).__init__(
+             basename=basename,                 # base name of the plot
+             quantities=[extrapolation_quantity] + list(response_quantities),
+             selection=selection,               # selection to apply to samples
+             samples=[sample_data, sample_mc],  # data samples (N)
+             cut_sets=[None, None],             # cut sets for the samples (N)
+             jec_correction_string=jec_correction_string, # JEC correction string
+             **kwargs)
+
         self._qys = response_quantities
         self._qx = extrapolation_quantity
+
         self._sample_data = sample_data
         self._sample_mc = sample_mc
-        self._selection = selection
+
         self._add_cut_dict = additional_cut_dict
-        self._correction_string = correction_string
+
         self._function_range = fit_function_range
-        self._dataset_label = dataset_label
         assert len(self._function_range) == 2
 
         self._data_source_label = self._sample_data._dict['source_label']
@@ -785,85 +884,54 @@ class _PlotExtrapolation(_Plot1D):
         self._channel = self._sample_data['channel']
         assert self._sample_data["channel"] == self._sample_mc["channel"]
 
-        # computes y variable limits
-        _y_range = None
+        # compute y variable limits
+        self._y_range = None
         for _qy in self._qys:
             _bs = _qy.bin_spec
             if _bs is None:
                 continue
             _rg = _bs.range
-            if _y_range is None:
-                _y_range = list(_rg)
+            if self._y_range is None:
+                self._y_range = list(_rg)
             else:
                 # expand range as needed
-                _y_range[0] = min(_y_range[0], _rg[0])
-                _y_range[1] = max(_y_range[1], _rg[1])
+                self._y_range[0] = min(self._y_range[0], _rg[0])
+                self._y_range[1] = max(self._y_range[1], _rg[1])
 
-        _output_folder = "_".join([self._basename,
+        # override the output names
+        self._output_folder = "_".join([self._basename,
                                    self._channel,
-                                   self._correction_string,
+                                   self._jec_correction_string,
                                    self._selection.name])
-        _output_filename = '{}'.format(self._basename)
+        self._output_filename = '{}'.format(self._basename)
 
+        # compute total cut weight string
         _total_cut = self._selection
-        _add_cut = self._add_cut_dict.get('cut', None)
-        if _add_cut is not None:
-            _total_cut = self._selection + _add_cut
-            _output_filename += "_{}".format(_add_cut.name)
-            # replace data source label with cut label
-            self._data_source_label = self._add_cut_dict.get('label', self._data_source_label)
-            # FIXME: what about MC?
+        if self._add_cut_dict:
+            _add_cut = self._add_cut_dict.get('cut', None)
+            if _add_cut is not None:
+                _total_cut = self._selection + _add_cut
+                self._output_filename += "_{}".format(_add_cut.name)
+                # replace data source label with cut label
+                self._data_source_label = self._add_cut_dict.get('label', self._data_source_label)
+                # FIXME: what about MC?
 
         self._basic_weights_string = _total_cut.weights_string
 
-        self._basic_dict = {
-            # data
-            'zjetfolders': [self._selection.zjet_folder],
-            'weights': [self._basic_weights_string],
+        self._init_basic_dict()
 
-            # binning
-            'x_expressions': [self._qx.expression],
-            #'x_bins': self._qx.bin_spec.string if self._qx.bin_spec is not None else None,
+
+    def _init_basic_dict(self):
+        super(_PlotExtrapolation, self)._init_basic_dict()
+        self._basic_dict.update({
             'x_bins': self._bin_spec.string,
-            'x_label': self._qx.label,
-            ## todo
-            #'y_bins': self._qy.bin_spec.string if self._qy.bin_spec is not None else None,
-            'y_label': "Response",
-            'y_subplot_label': self.Y_SUBPLOT_LABEL,
-
-            #'y_subplot_lims': [0.85, 1.15],
-            'y_subplot_lims': self.Y_SUBPLOT_LIMS,
-            #'y_lims': _y_range,
+            'y_label': "Jet Response",
+            'weights': [self._basic_weights_string],
+            'y_subplot_label': self._y_subplot_label,
+            'y_subplot_lims': self._y_subplot_range,
             'y_lims': [0.6, 1.2],
 
-            # formatting
-            'title': None,
             'line_widths': '1',
-            'x_lims': list(self._qx.bin_spec.range) if self._qx.bin_spec is not None else None,
-            'x_log': self._qx.log_scale,
-
-            'dataset_title': self._dataset_label,
-
-            # texts
-            "texts": [
-                CHANNEL_SPEC.get(self._channel, {}).get('label', ""),
-                r"$\\bf{{{0}}}$".format(self._correction_string)
-            ],
-            "texts_size": [
-                20,
-                25,
-            ],
-            "texts_x": [
-                0.1, #self._INFOBOX_TOPLEFT_XY[0],
-                0.68,
-            ],
-            "texts_y": [
-                1.08,  # self._INFOBOX_TOPLEFT_XY[1],
-                0.09,
-            ],
-            # web gallery options
-            'www': _output_folder,
-            'filename': _output_filename,
 
             'analysis_modules': [
                 "Ratio",
@@ -896,27 +964,13 @@ class _PlotExtrapolation(_Plot1D):
             "ratio_numerator_nicks": [],
             "ratio_denominator_nicks": [],
 
-            'nicks': [],
-            'files': [],
-            'labels': [],
-            'corrections': [],
-            'colors': [],
-            'markers': [],
             'marker_fill_styles': [],
-            'alphas': 0.3  # transparency
-        }
+            'alphas': 0.3    # transparency
+        })
+        for _prop in ('stacks', 'step', 'y_bins', 'y_errors', 'x_errors'):
+            if _prop in self._basic_dict:
+                del self._basic_dict[_prop]
 
-        if show_cut_info_text:
-            # add cut labels as text
-            for _i, _cl in enumerate(self._selection.texts):
-                self._basic_dict['texts'].append(_cl)
-                self._basic_dict['texts_size'].append(15)
-                self._basic_dict['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-                self._basic_dict['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
-
-    @property
-    def _all_involved_quantities(self):
-        return [self._qx] + self._qys
 
     def get_dict(self):
         _d = deepcopy(self._basic_dict)
@@ -930,7 +984,7 @@ class _PlotExtrapolation(_Plot1D):
                 "{}".format(self._sample_mc['file'])
             ])
             _d['corrections'].extend([
-                "{}".format(self._correction_string),
+                "{}".format(self._jec_correction_string),
                 "L1L2L3"  # MC is always L1L2L3
             ])
             _d['nicks'].extend([
@@ -973,45 +1027,58 @@ class _PlotExtrapolation(_Plot1D):
         return _d
 
 
-class PlotHistograms1D(object):
+"""
+API classes (generation of multiple plots)
+"""
 
-    def __init__(self, samples, quantities, selection_cuts,
-                 additional_cuts=None,
-                 basename='hist_1d', corrections='L1L2L3Res',
-                 normalize_to_first=False,
-                 show_ratio_to_first=False,
-                 show_cut_info_text=True,
-                 show_corr_folder_text=True,
-                 stacked=False,
-                 jec_version_label=None,
-                 y_log_scale=False):
+
+class _HistoMultiPlotterBase(object):
+    _PLOT_CLASS = None
+
+    def __init__(self,
+                 basename,
+                 iter_specs,
+                 plot_class_kwargs):
         self._plots = []
         self._basename = basename
 
-        for _qn in quantities:
+        _keys, _transform_lambdas, _values_lists = [], [], []
+        for _key_dict in iter_specs:
+            _transform_lambda = _key_dict.get('transform_lambda')
+            _values = _key_dict['values']
+            if _transform_lambda is not None:
+                _values = map(_transform_lambda, _values)
+            _values = [_value for _value in _values if _value is not None]
+            _values_lists.append(_values)
+            _keys.append(_key_dict['key'])
 
-            _q = QUANTITIES.get(_qn, None)
-            if _q is None:
-                print "UNKONWN quantity '%s': skipping..." % (_qn,)
-                continue
+        for _values_list in itertools.product(*_values_lists):
+            _kwarg_dict = deepcopy(plot_class_kwargs)
+            for _key, _value in zip(_keys, _values_list):
+                assert _key not in _kwarg_dict
+                _kwarg_dict[_key] = _value
 
-            for _selection_cut in selection_cuts:
+            _plot = self._PLOT_CLASS(
+                basename=self._basename,
+                **_kwarg_dict
+            )
 
-                _plot = _Plot1D(basename=self._basename,
-                        quantity=_q,
-                        selection=_selection_cut,
-                        samples=samples,
-                        cut_sets=additional_cuts,
-                        correction_string=corrections,
-                        normalize_to_first_histo=normalize_to_first,
-                        show_ratio_to_first=show_ratio_to_first,
-                        show_cut_info_text=show_cut_info_text,
-                        show_corr_folder_text=show_corr_folder_text,
-                        stacked=stacked,
-                        dataset_label=jec_version_label,
-                        y_log_scale=y_log_scale)
+            self._plots.append(_plot)
 
-                self._plots.append(_plot)
+    @staticmethod
+    def _get_quantity(quantity_name):
+        _q = QUANTITIES.get(quantity_name, None)
+        if _q is None:
+            print "UNKONWN quantity '%s': skipping..." % (quantity_name,)
+        return _q
+
+    def add_text(self, text, size, xy):
+        assert len(xy) == 2
+        for _p in self._plots:
+            _p._basic_dict['texts'].append(text)
+            _p._basic_dict['texts_size'].append(size)
+            _p._basic_dict['texts_x'].append(xy[0])
+            _p._basic_dict['texts_y'].append(xy[1])
 
     def make_plots(self, args=None):
         _plot_dicts = [_p.get_dict() for _p in self._plots]
@@ -1019,576 +1086,611 @@ class PlotHistograms1D(object):
         harryinterface.harry_interface(_plot_dicts, (args or []) + ['--max-processes', '1'])
 
 
-class PlotHistograms1DFractions(PlotHistograms1D):
+class PlotHistograms1D(_HistoMultiPlotterBase):
+    _PLOT_CLASS = _Plot1D
 
-    def __init__(self, fraction_samples, quantities, selection_cuts,
-                 reference_cut, fraction_cuts,
-                 basename='hist_1d_fractions',
-                 corrections='L1L2L3Res',
+    def __init__(self, samples, quantities, selection_cuts,
+                 additional_cuts=None,
+                 basename='hist_1d',
+                 jec_correction_string='L1L2L3Res',
                  show_cut_info_text=True,
-                 jec_version_label=None,):
-        self._plots = []
-        self._basename = basename
+                 show_corr_folder_text=True,
+                 # -- Plot1D args
+                 normalize_to_first_histo=False,  # normalize all histos to first?
+                 show_ratio_to_first=False,       # show the ratio to first in lower pad?
+                 show_first_in_ratio=False,       # show the reference at 1.0 in ratio pad?
+                 stacked=False,                   # stack histograms?
+                 **kwargs):
 
-        for _qn in quantities:
+        # run over a cross product of values for the following keys
+        _iter_specs = [
+            {
+                "key": "quantity",
+                "transform_lambda": self._get_quantity,
+                "values": quantities
+            },
+            {
+                "key": "selection",
+                "values": selection_cuts
+            },
+        ]
 
-            _q = QUANTITIES.get(_qn, None)
-            if _q is None:
-                print "UNKONWN quantity '%s': skipping..." % (_qn,)
-                continue
+        plot_class_kwargs = dict(
+            samples=samples,
+            cut_sets=additional_cuts,
+            jec_correction_string=jec_correction_string,
+            show_cut_info_text=show_cut_info_text,
+            show_corr_folder_text=show_corr_folder_text,
+            # -- Plot1D args
+            normalize_to_first_histo=normalize_to_first_histo,
+            show_ratio_to_first=show_ratio_to_first,
+            show_first_in_ratio=show_first_in_ratio,
+            stacked=stacked,
+            **kwargs
+        )
 
-            for _selection_cut in selection_cuts:
-
-                _plot = _Plot1DFractions(basename=self._basename,
-                                         quantity=_q,
-                                         selection=_selection_cut,
-                                         reference_cut_set=reference_cut,
-                                         fraction_samples=fraction_samples,
-                                         fraction_cut_sets=fraction_cuts,
-                                         correction_string=corrections,
-                                         show_cut_info_text=show_cut_info_text,
-                                         dataset_label=jec_version_label)
-
-                self._plots.append(_plot)
+        super(PlotHistograms1D, self).__init__(
+            basename=basename,
+            iter_specs=_iter_specs,
+            plot_class_kwargs=plot_class_kwargs)
 
 
-class PlotHistograms2D(PlotHistograms1D):
+class PlotHistograms1DFractions(_HistoMultiPlotterBase):
+    _PLOT_CLASS = _Plot1DFractions
+
+    def __init__(self,
+                 sample,
+                 quantities, selection_cuts,  # cross-product iteration
+                 fraction_cut_sets,           # cut sets for the different fractions
+                 # -- PlotBase args           
+                 # -- Plot1DFractions         args
+                 fraction_colors,              # colors for the different fractions
+                 fraction_labels,              # labels for the different fractions
+                 reference_cut_set,
+                 y_label,
+                 basename='hist_1d_fractions',  # base name of the plot
+                 jec_correction_string='L1L2L3Res',
+                 **kwargs):
+
+        # run over a cross product of values for the following keys
+        _iter_specs = [
+            {
+                "key": "quantity",
+                "transform_lambda": self._get_quantity,
+                "values": quantities,
+            },
+            {
+                "key": "selection",
+                "values": selection_cuts
+            },
+        ]
+
+        plot_class_kwargs = dict(
+            reference_cut_set=reference_cut_set,
+            sample=sample,
+            cut_sets=fraction_cut_sets,
+            cut_set_colors=fraction_colors,
+            cut_set_labels=fraction_labels,
+            jec_correction_string=jec_correction_string,
+            y_label=y_label,
+            **kwargs
+        )
+
+        super(PlotHistograms1DFractions, self).__init__(
+            basename=basename,
+            iter_specs=_iter_specs,
+            plot_class_kwargs=plot_class_kwargs)
+
+
+class PlotHistograms2D(_HistoMultiPlotterBase):
+    _PLOT_CLASS = _Plot2D
+
+    def __init__(self, sample, quantity_pairs, selection_cuts,
+                 basename='hist_2d',
+                 jec_correction_string='L1L2L3Res',
+                 show_cut_info_text=True,
+                 show_corr_folder_text=True,
+                 **kwargs):
+
+        # run over a cross product of values for the following keys
+        _iter_specs = [
+            {
+                "key": "quantity_pair",
+                "transform_lambda": lambda l: map(self._get_quantity, list(l)),
+                "values": quantity_pairs
+            },
+            {
+                "key": "selection",
+                "values": selection_cuts
+            },
+        ]
+
+        plot_class_kwargs = dict(
+            sample=sample,
+            jec_correction_string=jec_correction_string,
+            show_cut_info_text=show_cut_info_text,
+            show_corr_folder_text=show_corr_folder_text,
+            # -- Plot1D args
+            **kwargs
+        )
+
+        super(PlotHistograms2D, self).__init__(
+            basename=basename,
+            iter_specs=_iter_specs,
+            plot_class_kwargs=plot_class_kwargs)
+
+
+class PlotProfiles(_HistoMultiPlotterBase):
+    _PLOT_CLASS = _PlotProfile
 
     def __init__(self, samples, quantity_pairs, selection_cuts,
                  additional_cuts=None,
-                 basename='hist_2d', corrections='L1L2L3Res',
+                 basename='profile',
+                 jec_correction_string='L1L2L3Res',
                  show_cut_info_text=True,
                  show_corr_folder_text=True,
-                 show_ratio_to_first=False,
-                 show_as_profile=False,
-                 jec_version_label=None,):
+                 # -- Plot1D args
+                 show_ratio_to_first=False,       # show the ratio to first in lower pad?
+                 show_first_in_ratio=False,       # show the reference at 1.0 in ratio pad?
+                 **kwargs):
 
-        self._plots = []
-        self._basename = basename
+        # run over a cross product of values for the following keys
+        _iter_specs = [
+            {
+                "key": "quantity_pair",
+                "transform_lambda": lambda l: map(self._get_quantity, l),
+                "values": quantity_pairs
+            },
+            {
+                "key": "selection",
+                "values": selection_cuts
+            },
+        ]
 
-        for _qxn, _qyn in quantity_pairs:
+        plot_class_kwargs = dict(
+            samples=samples,
+            cut_sets=additional_cuts,
+            jec_correction_string=jec_correction_string,
+            show_cut_info_text=show_cut_info_text,
+            show_corr_folder_text=show_corr_folder_text,
+            # -- Plot1D args
+            show_ratio_to_first=show_ratio_to_first,
+            show_first_in_ratio=show_first_in_ratio,
+            **kwargs
+        )
 
-            _qx = QUANTITIES.get(_qxn, None)
-            if _qx is None:
-                print "UNKONWN 'x' quantity '%s': skipping..." % (_qxn,)
-                continue
-
-            _qy = QUANTITIES.get(_qyn, None)
-            if _qy is None:
-                print "UNKONWN 'y' quantity '%s': skipping..." % (_qyn,)
-                continue
-
-            for _selection_cut in selection_cuts:
-                _plot = _Plot2D(basename=self._basename,
-                                quantity_pair=(_qx, _qy),
-                                selection=_selection_cut,
-                                samples=samples,
-                                cut_sets=additional_cuts,
-                                correction_string=corrections,
-                                normalize_to_first_histo=False,
-                                show_ratio_to_first=show_ratio_to_first,
-                                show_cut_info_text=show_cut_info_text,
-                                show_corr_folder_text=show_corr_folder_text,
-                                show_as_profile=show_as_profile,
-                                dataset_label=jec_version_label)
-
-                self._plots.append(_plot)
+        super(PlotProfiles, self).__init__(
+            basename=basename,
+            iter_specs=_iter_specs,
+            plot_class_kwargs=plot_class_kwargs)
 
 
-class PlotHistograms2DQuantitiesProfile(PlotHistograms2D):
+class PlotStackProfiles(_HistoMultiPlotterBase):
+    _PLOT_CLASS = _PlotStackProfile
 
-    def __init__(self,
-                 sample_mc,
-                 sample_data,
-                 quantity_x, quantities_y,
+    def __init__(self, sample_mc, sample_data, quantity_x, quantities_y, selection_cuts,
                  y_label,
-                 selection_cuts,
-                 y_range=None,
+                 y_range,
+                 basename='stackprofile',
+                 jec_correction_string='L1L2L3Res',
+                 show_cut_info_text=True,
+                 show_corr_folder_text=True,
+                 # -- Plot1D args
+                 show_data_mc_comparison_as=None,
                  colors_mc=None,
                  markers_data=None,
-                 basename='hist_qprof', corrections='L1L2L3Res',
-                 show_cut_info_text=True,
-                 show_data_mc_comparison_as=None,
-                 show_as_profile=False,
-                 jec_version_label=None, ):
-
-        self._plots = []
-        self._basename = basename
-
-        _qx = QUANTITIES.get(quantity_x, None)
-        if _qx is None:
-            print "UNKONWN 'x' quantity '%s': skipping..." % (quantity_x,)
-            return
-
-        _qys = []
-        for _qyn in quantities_y:
-            _qy = QUANTITIES.get(_qyn, None)
-            if _qy is None:
-                print "UNKONWN 'y' quantity '%s': skipping..." % (_qyn,)
-                continue
-            _qys.append(_qy)
-
-        for _selection_cut in selection_cuts:
-            _plot = _Plot2DQuantitiesProfile(
-                basename=self._basename,
-                quantity_x=_qx,
-                quantities_y=_qys,
-                y_label=y_label,
-                y_range=y_range,
-                colors_mc=colors_mc,
-                markers_data=markers_data,
-                selection=_selection_cut,
-                sample_mc=sample_mc,
-                sample_data=sample_data,
-                correction_string=corrections,
-                show_data_mc_comparison_as=show_data_mc_comparison_as,
-                show_cut_info_text=show_cut_info_text,
-                show_as_profile=show_as_profile,
-                dataset_label=jec_version_label)
-
-            self._plots.append(_plot)
+                 **kwargs):
 
 
-class PlotResponseExtrapolation(PlotHistograms2D):
+        # run over a cross product of values for the following keys
+        _iter_specs = [
+            {
+                "key": "selection",
+                "values": selection_cuts
+            },
+        ]
 
-    def __init__(self,
-                 sample_data,
-                 sample_mc,
-                 response_quantities,
-                 selection_cuts,
-                 extrapolation_quantity='alpha',
-                 fit_function_range=(0, 0.3),
-                 n_extrapolation_bins=6,
+        plot_class_kwargs = dict(
+            sample_data=sample_data,
+            sample_mc=sample_mc,
+            quantity_x=self._get_quantity(quantity_x),
+            quantities_y=[self._get_quantity(_qn) for _qn in quantities_y],
+            y_label=y_label,
+            y_range=y_range,
+            jec_correction_string=jec_correction_string,
+            show_cut_info_text=show_cut_info_text,
+            show_corr_folder_text=show_corr_folder_text,
+            # -- Plot1D args
+            show_data_mc_comparison_as=show_data_mc_comparison_as,
+            colors_mc=colors_mc,
+            markers_data=markers_data,
+            **kwargs
+        )
+
+        super(PlotStackProfiles, self).__init__(
+            basename=basename,
+            iter_specs=_iter_specs,
+            plot_class_kwargs=plot_class_kwargs)
+
+
+class PlotExtrapolations(_HistoMultiPlotterBase):
+    _PLOT_CLASS = _PlotExtrapolation
+
+    def __init__(self, 
+                 sample_data, sample_mc, extrapolation_quantity, response_quantities, selection_cuts,
+                 fit_function_range,
+                 n_extrapolation_bins,
                  basename='extrapolation',
-                 corrections='L1L2L3Res',
-                 jec_version_label=None,
-                 additional_cut_dicts=None,):  # one plot per add. cut
-        self._plots = []
-        self._basename = basename
+                 jec_correction_string='L1L2L3Res',
+                 show_cut_info_text=True,
+                 show_corr_folder_text=True,
+                 # -- PlotExtrapolation args
+                 additional_cut_dicts=None,
+                 **kwargs):
 
-        _qx = QUANTITIES.get(extrapolation_quantity, None)
-        if _qx is None:
-            raise ValueError("UNKONWN extrapolation quantity '%s'!" % (extrapolation_quantity,))
+        # run over a cross product of values for the following keys
+        _iter_specs = [
+            {
+                "key": "selection",
+                "values": selection_cuts
+            },
+        ]
 
-        _qys = []
-        for _qyn in response_quantities:
-            _qy = QUANTITIES.get(_qyn, None)
-            if _qy is None:
-                print "UNKONWN response quantity '%s': skipping..." % (_qyn,)
-                continue
-            _qys.append(_qy)
+        if additional_cut_dicts is not None:
+            _iter_specs.append({
+                    "key": "additional_cut_dict",
+                    "values": additional_cut_dicts
+                })
+        else:
+            kwargs['additional_cut_dict'] = None
 
-            for _selection_cut in selection_cuts:
-                for _ac_dict in additional_cut_dicts:
-                    _plot = _PlotExtrapolation(
-                        basename=self._basename,
-                        sample_data=sample_data,
-                        sample_mc=sample_mc,
-                        selection=_selection_cut,
-                        response_quantities=_qys,
-                        extrapolation_quantity=_qx,
-                        fit_function_range=fit_function_range,
-                        n_extrapolation_bins=n_extrapolation_bins,
-                        correction_string=corrections,
-                        show_cut_info_text=False,
-                        dataset_label=jec_version_label,
-                        additional_cut_dict=_ac_dict)
+        plot_class_kwargs = dict(
+                 sample_data=sample_data,
+                 sample_mc=sample_mc,
+                 extrapolation_quantity=self._get_quantity(extrapolation_quantity),
+                 response_quantities=[self._get_quantity(_qn) for _qn in response_quantities],
+                 fit_function_range=fit_function_range,
+                 n_extrapolation_bins=n_extrapolation_bins,
+                 jec_correction_string=jec_correction_string,
+                 **kwargs)
 
-                    self._plots.append(_plot)
+        super(PlotExtrapolations, self).__init__(
+            basename=basename,
+            iter_specs=_iter_specs,
+            plot_class_kwargs=plot_class_kwargs)
 
-# class PlotHistograms1DCompareCuts:
-#     _INFOBOX_TOPLEFT_XY = (0.05, 0.46)
-#     _INFOBOX_SPACING_Y = 0.05
-#
-#     def __init__(self, basename, quantities, sample, subplot_cuts,
-#                  sample_variant="eventBased",
-#                  selection_cuts=[SELECTIONS['finalcuts']], corrections='L1L2L3'):
-#         self._plots = []
-#         self._basename = basename
-#         _corrections = corrections
-#
-#         for _q in quantities:
-#             _labels = []
-#             _subplot_additional_weights = []
-#             _colors = []
-#             _markers = []
-#             _step_flags = []
-#             _stacks = []
-#             if _q not in QUANTITIES:
-#                 print "UNKONWN quantity '%s': skipping..." % (_q,)
-#                 continue
-#             _qd = QUANTITIES[_q]
-#
-#             try:
-#                 sample_dict = Sample(sample, variant=sample_variant)._dict
-#             except IOError as e:
-#                 print "Error reading file for sample '%s': skipping..." % (_sample,)
-#                 continue
-#
-#             # don't plot quantities for channels for which they are not available
-#             if "channels" in _qd and sample_dict['channel'] not in _qd["channels"]:
-#                 print "Quantity '{}' unavailable for channel '{}': skipping...".format(_q, sample_dict['channel'])
-#                 continue
-#
-#             # don't plot quantities for source types for which they are not available
-#             if "source_types" in _qd and sample_dict['source_type'] not in _qd["source_types"]:
-#                 print "Quantity '{}' unavailable for source type '{}': skipping...".format(_q,
-#                                                                                            sample_dict['source_type'])
-#                 continue
-#
-#             # sample_dict = SAMPLE_SPEC[_sample]
-#             for _scut in subplot_cuts:
-#                 if _scut not in GENMATCHING_CUT_SPEC:
-#                     print "UNKONWN subplot cut '%s': skipping..." % (_scut,)
-#                     continue
-#                 scut_dict = GENMATCHING_CUT_SPEC[_scut]
-#
-#                 _labels.append("{0} ({label})".format(sample_dict['source_type'], **scut_dict))
-#                 _subplot_additional_weights.append("&&".join(scut_dict['cuts']))
-#                 _colors.append(scut_dict.get('color', None))
-#                 _markers.append(scut_dict.get('marker', '_'))
-#                 _step_flags.append(scut_dict.get('step_flag', False))
-#                 _stacks.append(scut_dict.get('stack', None))
-#
-#             if all([c is None for c in _colors]):
-#                 _colors = None
-#             print _colors
-#
-#             for _sel_cutset in selection_cuts:
-#                 selection_dict = _sel_cutset.plot_dict
-#                 _output_folder = "_".join([self._basename,
-#                                            sample_dict['channel'],
-#                                            _corrections, sample_variant,
-#                                            _sel_cutset.name])
-#                 _output_filename = '{0}'.format(_q)
-#
-#                 _d = {
-#                     # get data
-#                     'files': sample_dict['file'],
-#                     'zjetfolders': selection_dict['zjetfolders'],
-#                     'corrections': [_corrections],
-#                     'weights': [_sel_cutset.weights_string + "&&" + _sw for _sw in _subplot_additional_weights],
-#
-#                     # binning
-#                     'x_expressions': [_qd.get("expression", _q)],
-#                     'x_bins': ",".join(_qd.get("bins")) if "bins" in _qd else None,
-#                     'x_label': _qd.get("label", None),
-#
-#                     # formatting
-#                     "canvas_width": 600,
-#                     "canvas_height": 480,
-#                     "markers": _markers,
-#                     'step': _step_flags,
-#                     'line_styles': '-',
-#                     'colors': _colors,
-#                     'x_lims': map(float, _qd['bins'][1:]) if "bins" in _qd else None,
-#                     'filename': _output_filename,
-#                     'title': None,
-#                     'labels': _labels,
-#                     'y_log': _qd.get('log_scale', False),
-#                     "stacks": _stacks,
-#
-#                     # texts
-#                     "texts": [
-#                         CHANNEL_SPEC.get(sample_dict['channel'], {}).get('label', ""),
-#                         r"$\\bf{{{0}}}$".format(_corrections)
-#                     ],
-#                     "texts_size": [
-#                         20,
-#                         25,
-#                     ],
-#                     "texts_x": [
-#                         self._INFOBOX_TOPLEFT_XY[0],
-#                         0.68,
-#                     ],
-#                     "texts_y": [
-#                         self._INFOBOX_TOPLEFT_XY[1],
-#                         0.09,
-#                     ],
-#
-#                     # web gallery options
-#                     'www': _output_folder,
-#                 }
-#
-#                 # add variant label as text
-#                 _d['texts'].append(sample_dict['variant_label'])
-#                 _d['texts_size'].append(15)
-#                 _d['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-#                 _d['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07)
-#
-#                 # add cut labels as text
-#                 for _i, _cl in enumerate(selection_dict['texts']):
-#                     _d['texts'].append(_cl)
-#                     _d['texts_size'].append(15)
-#                     _d['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-#                     _d['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
-#
-#                 if DEBUG_MODE:
-#                     _d['log_level'] = 'debug'
-#
-#                 self._plots.append(_d)
-#
-#     def make_plots(self, args=None):
-#         harryinterface.harry_interface(self._plots, args)
-#
-#
-# class PlotHistograms1DCompareCutsRatio(PlotHistograms1DCompareCuts):
-#     def __init__(self, basename, quantities, sample, numerator_cuts, denominator_cut,
-#                  sample_variant="eventBased",
-#                  selection_cuts=[SELECTIONS['finalcuts']], corrections='L1L2L3',
-#                  title=None, y_label=None):
-#         self._plots = []
-#         self._basename = basename
-#         _corrections = corrections
-#         self._force_z_log = False
-#
-#         # subplot_cuts = [numerator_cuts, denominator_cuts]
-#         z_log = False
-#
-#         for _qx in quantities:
-#             _labels = []
-#             _subplot_additional_weights = []
-#             _colors = []
-#             _markers = []
-#             _step_flags = []
-#             _nicks = []
-#             _num_nicks = []
-#             _ratio_result_nicks = []
-#             _colormap = None
-#             if _qx not in QUANTITIES:
-#                 print "UNKONWN 'x' quantity '%s': skipping..." % (_qx,)
-#                 continue
-#             _qxd = QUANTITIES[_qx]
-#
-#             try:
-#                 sample_dict = Sample(sample, variant=sample_variant)._dict
-#             except IOError as e:
-#                 print "Error reading file for sample '%s': skipping..." % (_sample,)
-#                 continue
-#
-#             # don't plot quantities for channels for which they are not available
-#             if ("channels" in _qxd and sample_dict['channel'] not in _qxd["channels"]):
-#                 print "Quantity '{}' unavailable for channel '{}': skipping...".format(_qx, sample_dict['channel'])
-#                 continue
-#
-#             # don't plot quantities for source types for which they are not available
-#             if "source_types" in _qxd and sample_dict['source_type'] not in _qxd["source_types"]:
-#                 print "Quantity '{}' unavailable for source type '{}': skipping...".format(_qx,
-#                                                                                            sample_dict['source_type'])
-#                 continue
-#
-#             # add denom nick
-#             if denominator_cut not in GENMATCHING_CUT_SPEC:
-#                 print "UNKONWN subplot cut '%s': skipping..." % (denominator_cut,)
-#                 continue
-#             denom_scut_dict = GENMATCHING_CUT_SPEC[denominator_cut]
-#             _nicks.append("nick_denom")
-#             _subplot_additional_weights.append("&&".join(denom_scut_dict['cuts']))
-#
-#             # sample_dict = SAMPLE_SPEC[_sample]
-#             for _i, _scut in enumerate(numerator_cuts):
-#                 if _scut not in GENMATCHING_CUT_SPEC:
-#                     print "UNKONWN subplot cut '%s': skipping..." % (_scut,)
-#                     continue
-#                 scut_dict = GENMATCHING_CUT_SPEC[_scut]
-#
-#                 _nicks.append("nick{}_num".format(_i))
-#                 _ratio_result_nicks.append("ratio{}".format(_i))
-#                 _num_nicks.append("nick{}_num".format(_i))
-#                 _subplot_additional_weights.append("&&".join(scut_dict['cuts']))
-#
-#                 _labels.append("{0} ({label})".format(sample_dict['source_type'], **scut_dict))
-#                 _colors.append(scut_dict.get('color', None))
-#                 _markers.append(scut_dict.get('marker', '_'))
-#                 _step_flags.append(scut_dict.get('step_flag', False))
-#                 if _colormap is None:
-#                     _colormap = scut_dict.get('colormap', _colormap)
-#
-#             if all([c is None for c in _colors]):
-#                 _colors = None
-#
-#             for _sel_cutset in selection_cuts:
-#                 selection_dict = _sel_cutset.plot_dict
-#                 _output_folder = "_".join([self._basename,
-#                                            sample_dict['channel'],
-#                                            _corrections, sample_variant,
-#                                            _sel_cutset.name])
-#                 _output_filename = '{0}'.format(_qx)
-#                 if self._force_z_log:
-#                     _output_filename += '_log'
-#
-#                 _d = {
-#                     # get data
-#                     'files': sample_dict['file'],
-#                     'zjetfolders': selection_dict['zjetfolders'],
-#                     'corrections': [_corrections],
-#                     'weights': [_sel_cutset.weights_string + "&&" + _sw for _sw in _subplot_additional_weights],
-#
-#                     # binning
-#                     'x_expressions': [_qxd.get("expression", _qx)],
-#                     'x_bins': ",".join(_qxd.get("bins")) if "bins" in _qxd else None,
-#                     'x_label': _qxd.get("label", None),
-#
-#                     # formatting
-#                     "canvas_width": 640,
-#                     "canvas_height": 480,
-#                     "markers": _markers,
-#                     'step': _step_flags,
-#                     'line_styles': '-',
-#                     'x_lims': map(float, _qxd['bins'][1:]) if "bins" in _qxd else None,
-#                     'y_tick_labels': None,  # suppress tick marks in main plot
-#                     'colors': _colors if _colormap is None else None,
-#                     'colormap': _colormap if _colormap is not None else "afmhot",
-#                     # 'alpha': 0.3,
-#                     'filename': _output_filename,
-#                     'title': title or "",
-#                     'labels': _labels,
-#                     'stacks': [
-#                         "fractions"
-#                     ],
-#                     # 'z_log': self._force_z_log or _qyd.get('log_scale', False) or _qxd.get('log_scale', False),
-#                     'nicks': _nicks,
-#                     'nicks_blacklist': _num_nicks + ["nick_denom"],
-#                     'nicks_whitelist': ["ratio"],
-#
-#                     # ratio
-#                     "analysis_modules": ["Ratio"],
-#                     "ratio_numerator_nicks": _num_nicks,
-#                     "ratio_denominator_nicks": ["nick_denom"],
-#                     "ratio_result_nicks": _ratio_result_nicks,
-#                     "ratio_denominator_no_errors": "false",
-#                     "subplot_fraction": 0,
-#                     "subplot_lines": [],
-#                     "subplot_nicks": ["dummy"],  # HARRYPLOTTER!!
-#                     "y_subplot_label": "",
-#                     "y_subplot_label": y_label or "Ratio",
-#                     "y_label": y_label or "Ratio",
-#                     'y_subplot_lims': [0., 1.],
-#                     'y_lims': [0., 1.25],
-#                     'y_errors': False,
-#
-#                     # texts
-#                     "texts": [
-#                         # CHANNEL_SPEC.get(sample_dict['channel'], {}).get('label', ""),
-#                         r"$\\bf{{{0}}}$".format(_corrections)
-#                     ],
-#                     "texts_size": [
-#                         # 20,
-#                         25,
-#                     ],
-#                     "texts_x": [
-#                         # self._INFOBOX_TOPLEFT_XY[0],
-#                         0.68,
-#                     ],
-#                     "texts_y": [
-#                         # self._INFOBOX_TOPLEFT_XY[1],
-#                         0.09,
-#                     ],
-#
-#                     # web gallery options
-#                     'www': _output_folder,
-#                 }
-#
-#                 # add variant label as text
-#                 _d['texts'].append(sample_dict['variant_label'])
-#                 _d['texts_size'].append(15)
-#                 _d['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-#                 _d['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07)
-#
-#                 # add variant label as text
-#                 _d['texts'].append(CHANNEL_SPEC.get(sample_dict['channel'], {}).get('label', ""))
-#                 _d['texts_size'].append(20)
-#                 _d['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-#                 _d['texts_y'].append(1.07)
-#
-#                 # add cut labels as text
-#                 for _i, _cl in enumerate(selection_dict['texts']):
-#                     _d['texts'].append(_cl)
-#                     _d['texts_size'].append(15)
-#                     _d['texts_x'].append(self._INFOBOX_TOPLEFT_XY[0])
-#                     _d['texts_y'].append(self._INFOBOX_TOPLEFT_XY[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
-#
-#                 if DEBUG_MODE:
-#                     _d['log_level'] = 'debug'
-#
-#                 with open("dump.json", 'w') as f:
-#                     json.dump(_d, f, indent=4)
-#                 self._plots.append(_d)
-#
-#     def make_plots(self, args=None):
-#         harryinterface.harry_interface(self._plots, args)
-#
-#
-# if __name__ == "__main__":
-#     _qs = [
-#         # 'jet1pt_extended_log',  'jet2pt_extended_log',  'jet3pt_extended_log',
-#         # 'jet1pt',  'jet2pt',  'jet3pt',
-#         # 'jet1eta', 'jet2eta', 'jet3eta',
-#         # 'jet1eta_extended', 'jet2eta_extended', 'jet3eta_extended',
-#         # 'metphi', 'met',
-#         # 'alpha', 'ptbalance', 'mpf',
-#         # 'jet1pt', 'jet2pt', 'jet3pt',
-#         # 'zpt',
-#         # 'jet1eta', 'jet2eta', 'jet3eta',
-#         # 'zeta',
-#         'jet1phi', 'jet2phi', 'jet3phi',
-#     ]
-#     _samples = [
-#         'data16_mm_BCD_DoMuLegacy.root',
-#         # 'data16_mm_BCD_DoMuLegacy_etaphiclean.root',
-#         # 'mc16_mm_BCDEFGH_DYJets_Madgraph.root',
-#     ]
-#     _selections = [
-#         SELECTIONS['finalcuts'],
-#         SELECTIONS['finalcuts'] + CUT_GROUPS['user']['adhocEtaPhiBCD'],
-#     ]
-#
-#     ph_legacy = PlotHistograms1D(quantities=_qs,
-#                                  samples=_samples,
-#                                  selection_cuts=_selections,
-#                                  normalized=False,
-#                                  sample_variant="Summer16_07Aug2017_V1")
-#     ph_legacy.make_plots()
-#
-#     exit(43)
-#
-#     # ph_legacy_compareEtaPhiCuts = PlotHistograms1D(
-#     #    quantities=_qs,
-#     #    samples=_samples,
-#     #    cuts=_selections,
-#     #    normalized=False,
-#     #    sample_variant="Summer16_07Aug2017_V1"
-#     # )
-#     # ph_legacy_compareEtaPhiCuts.make_plots()
-#
-#     # ph_remini = PlotHistograms1D(quantities=_qs,
-#     #                             samples=_samples,
-#     #                             cuts=_selections,
-#     #                             normalized=False,
-#     #                             sample_variant="Summer16_03Feb2017BCD_V3")
-#     # ph_remini.make_plots()
-#
-#     _qs = ['jet2phi']
-#     _sample = 'data16_mm_BCD_DoMuLegacy.root'
-#     _subplot_cut_formats = [
-#         'genMatch_deltaR{dr}_pT{dptpt}_bar',
-#         'genMatch_DeltaR{dr}_nopT{dptpt}_bar',
-#         'genMatch_noDeltaR{dr}_bar',
-#     ]
-#
-#     _txt_dr = "{:02d}".format(int(10 * 0.3))
-#     _txt_dptpt = "{:02d}".format(int(10 * 0.3))
-#     _subplot_cuts = [_fmt.format(dr=_txt_dr, dptpt=_txt_dptpt) for _fmt
-#                      in _subplot_cut_formats]
-#
-#     ph_legacy_compareEtaPhiCuts = PlotHistograms1DCompareCuts(
-#         basename="compareEtaPhi_1D",
-#         quantities=_qs,
-#         sample=_sample,
-#         sample_variant="eventBased",
-#         subplot_cuts=_subplot_cuts,
-#         selection_cuts=_selections
-#     )
-#     ph_legacy_compareEtaPhiCuts.make_plots()
 
+def _test_plots():
+
+    from Excalibur.JEC_Plotter.core import CutSet, QUANTITIES
+    from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import SAMPLES, SELECTION_CUTS
+    from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import SAMPLES as SAMPLES_2017
+    from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import SELECTION_CUTS as SELECTION_CUTS_2017
+    
+    #from Excalibur.JEC_Plotter.utilities.plot import _flavor_fraction_cuts_miniAOD
+
+    SAMPLES['Data_Zee_BCD_Summer16_JECV6']['color'] = 'darkred'
+    SAMPLES['Data_Zee_EF_Summer16_JECV6']['color'] = 'royalblue'
+    SAMPLES['Data_Zee_GH_Summer16_JECV6']['color'] = 'orange'
+
+    _common_dict = dict(
+        selection = SELECTION_CUTS["finalcuts"],
+        plot_label = "Test Plot",
+        jec_correction_string = "L1L2L3",
+        upload_to_www=False
+    )
+
+    _plot1d = _Plot1D(
+        basename="test_plot1d",
+        quantity=QUANTITIES["jet1pt"],
+        samples=[SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'], SAMPLES['Data_Zee_BCD_Summer16_JECV6'], SAMPLES['Data_Zee_EF_Summer16_JECV6'], SAMPLES['Data_Zee_GH_Summer16_JECV6']],
+        cut_sets=[None],
+        # -- Plot1D args
+        normalize_to_first_histo=True,
+        show_ratio_to_first=False,
+        show_first_in_ratio=False,
+        stacked=False,
+        **_common_dict)
+
+
+    _flavor_fraction_cuts_miniAOD = dict(
+        u={
+            'cut': CutSet(name='u',
+                          weights=["abs(jet1flavor)==2"],
+                          labels=[]),
+            'label': r"u",
+            'color': 'pink'
+        },
+        d={
+            'cut': CutSet(name='d',
+                          weights=["abs(jet1flavor)==1"],
+                          labels=[]),
+            'label': r"d",
+            'color': 'darkred'
+        },
+        ud={
+            'cut': CutSet(name='ud',
+                          weights=["(abs(jet1flavor)==2||abs(jet1flavor)==1)"],
+                          labels=[]),
+            'label': r"ud",
+            'color': 'red'
+        },
+        s={
+            'cut': CutSet(name='s',
+                          weights=["abs(jet1flavor)==3"],
+                          labels=[]),
+            'label': r"s",
+            'color': 'green'
+        },
+        c={
+            'cut': CutSet(name='c',
+                          weights=["abs(jet1flavor)==4"],
+                          labels=[]),
+            'label': r"c",
+            'color': 'violet'
+        },
+        b={
+            'cut': CutSet(name='b',
+                          weights=["abs(jet1flavor)==5"],
+                          labels=[]),
+            'label': r"b",
+            'color': 'cornflowerblue'
+        },
+        g={
+            'cut': CutSet(name='g',
+                          weights=["abs(jet1flavor)==21"],
+                          labels=[]),
+            'label': r"g",
+            'color': 'orange'
+        },
+        undef={
+            'cut': CutSet(name='undef',
+                          weights=["abs(jet1flavor)==0"],
+                          labels=[]),
+            'label': r"undef",
+            'color': 'lightgray'
+        },
+    )
+
+    _flavor_cut_sets = []
+    _flavor_cut_set_colors = []
+    _flavor_cut_set_labels = []
+    for _flav in ('ud', 's', 'c', 'b', 'g', 'undef'):
+        _flavor_cut_sets.append(_flavor_fraction_cuts_miniAOD[_flav]['cut'])
+        _flavor_cut_set_colors.append(_flavor_fraction_cuts_miniAOD[_flav]['color'])
+        _flavor_cut_set_labels.append(_flavor_fraction_cuts_miniAOD[_flav]['label'])
+
+    _plot1dfrac = _Plot1DFractions(
+        basename="test_plot1dfrac",
+        quantity=QUANTITIES["jet1pt"],
+        sample=SAMPLES_2017['MC_Zee_DYNJ_Fall17_JECV4'],
+        cut_sets=_flavor_cut_sets,
+        cut_set_labels=_flavor_cut_set_labels,
+        cut_set_colors=_flavor_cut_set_colors,
+        # -- Plot1DFraction args
+        y_label="Flavor fraction",
+        reference_cut_set=[None],
+        selection = SELECTION_CUTS_2017["finalcuts"],
+        plot_label = "Test Plot",
+        jec_correction_string = "L1L2L3",
+        upload_to_www=False
+    )
+
+    _plot2d = _Plot2D(
+        # -- PlotBase args
+        basename="test_plot2d",
+        quantity_pair=(QUANTITIES["alpha"], QUANTITIES["ptbalance"]),
+        sample=SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'],
+        **_common_dict)
+
+
+    _plotprof = _PlotProfile(
+        basename="test_profile",
+        quantity_pair=(QUANTITIES["zpt"], QUANTITIES["ptbalance"]),
+        samples=[SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'], SAMPLES['Data_Zee_BCD_Summer16_JECV6'], SAMPLES['Data_Zee_EF_Summer16_JECV6'], SAMPLES['Data_Zee_GH_Summer16_JECV6']],
+        cut_sets=None,
+        # -- Plot1D args
+        show_ratio_to_first=True,
+        show_first_in_ratio=False,
+        **_common_dict)
+
+    _plotsp = _PlotStackProfile(
+        basename="test_stackprofile",
+        quantity_x=QUANTITIES['zpt'],
+        quantities_y=[QUANTITIES['jet1chf'], QUANTITIES['jet1nhf']],
+        sample_mc=SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'],
+        sample_data=SAMPLES['Data_Zee_BCD_Summer16_JECV6'],
+        y_label="My Y Label",
+        y_range=None,
+        # -- Plot1D args
+        show_data_mc_comparison_as='percent',
+        colors_mc=None,
+        markers_data=None,
+        **_common_dict)
+
+    _plotex = _PlotExtrapolation(
+        basename="test_extrapolation",
+        extrapolation_quantity=QUANTITIES['alpha'],
+        response_quantities=[QUANTITIES['ptbalance'], QUANTITIES['mpf']],
+        sample_mc=SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'],
+        sample_data=SAMPLES['Data_Zee_BCDEFGH_Summer16_JECV6'],
+        cut_sets=None,
+        n_extrapolation_bins=6,
+        fit_function_range=(0.0, 0.3),
+        # -- Plot1D args
+        additional_cut_dict=None,
+        **_common_dict)
+
+    for _p in (_plot1d, _plot1dfrac, _plot2d, _plotprof, _plotsp, _plotex):
+        _p.make_plot()
+
+def _test_multiplots():
+
+    from Excalibur.JEC_Plotter.core import CutSet, QUANTITIES
+    from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import SAMPLES, SELECTION_CUTS
+    from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import SAMPLES as SAMPLES_2017
+    from Excalibur.JEC_Plotter.definitions.Fall17.samples_17Nov2017 import SELECTION_CUTS as SELECTION_CUTS_2017
+    
+    #from Excalibur.JEC_Plotter.utilities.plot import _flavor_fraction_cuts_miniAOD
+
+    SAMPLES['Data_Zee_BCD_Summer16_JECV6']['color'] = 'darkred'
+    SAMPLES['Data_Zee_EF_Summer16_JECV6']['color'] = 'royalblue'
+    SAMPLES['Data_Zee_GH_Summer16_JECV6']['color'] = 'orange'
+
+    _common_dict = dict(
+        selection_cuts = [SELECTION_CUTS["finalcuts"], SELECTION_CUTS["basiccuts"]],
+        plot_label = "Test Plot",
+        jec_correction_string = "L1L2L3",
+        upload_to_www=False
+    )
+
+    _plot1d = PlotHistograms1D(
+        basename="test_multi_plot1d",
+        quantities=("jet1pt", "jet2pt"),
+        samples=[SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'], SAMPLES['Data_Zee_BCD_Summer16_JECV6'], SAMPLES['Data_Zee_EF_Summer16_JECV6'], SAMPLES['Data_Zee_GH_Summer16_JECV6']],
+        additional_cuts=[None],
+        # -- Plot1D args
+        normalize_to_first_histo=True,
+        show_ratio_to_first=False,
+        show_first_in_ratio=False,
+        stacked=False,
+        **_common_dict)
+
+
+    _flavor_fraction_cuts_miniAOD = dict(
+        u={
+            'cut': CutSet(name='u',
+                          weights=["abs(jet1flavor)==2"],
+                          labels=[]),
+            'label': r"u",
+            'color': 'pink'
+        },
+        d={
+            'cut': CutSet(name='d',
+                          weights=["abs(jet1flavor)==1"],
+                          labels=[]),
+            'label': r"d",
+            'color': 'darkred'
+        },
+        ud={
+            'cut': CutSet(name='ud',
+                          weights=["(abs(jet1flavor)==2||abs(jet1flavor)==1)"],
+                          labels=[]),
+            'label': r"ud",
+            'color': 'red'
+        },
+        s={
+            'cut': CutSet(name='s',
+                          weights=["abs(jet1flavor)==3"],
+                          labels=[]),
+            'label': r"s",
+            'color': 'green'
+        },
+        c={
+            'cut': CutSet(name='c',
+                          weights=["abs(jet1flavor)==4"],
+                          labels=[]),
+            'label': r"c",
+            'color': 'violet'
+        },
+        b={
+            'cut': CutSet(name='b',
+                          weights=["abs(jet1flavor)==5"],
+                          labels=[]),
+            'label': r"b",
+            'color': 'cornflowerblue'
+        },
+        g={
+            'cut': CutSet(name='g',
+                          weights=["abs(jet1flavor)==21"],
+                          labels=[]),
+            'label': r"g",
+            'color': 'orange'
+        },
+        undef={
+            'cut': CutSet(name='undef',
+                          weights=["abs(jet1flavor)==0"],
+                          labels=[]),
+            'label': r"undef",
+            'color': 'lightgray'
+        },
+    )
+
+    _flavor_cut_sets = []
+    _flavor_cut_set_colors = []
+    _flavor_cut_set_labels = []
+    for _flav in ('ud', 's', 'c', 'b', 'g', 'undef'):
+        _flavor_cut_sets.append(_flavor_fraction_cuts_miniAOD[_flav]['cut'])
+        _flavor_cut_set_colors.append(_flavor_fraction_cuts_miniAOD[_flav]['color'])
+        _flavor_cut_set_labels.append(_flavor_fraction_cuts_miniAOD[_flav]['label'])
+
+    _plot1dfrac = PlotHistograms1DFractions(
+        basename="test_multi_plot1dfrac",
+        quantities=("jet1pt", "jet2pt"),
+        sample=SAMPLES_2017['MC_Zee_DYNJ_Fall17_JECV4'],
+        fraction_cut_sets=_flavor_cut_sets,
+        fraction_labels=_flavor_cut_set_labels,
+        fraction_colors=_flavor_cut_set_colors,
+        # -- Plot1DFraction args
+        y_label="Flavor fraction",
+        reference_cut_set=[None],
+        selection = SELECTION_CUTS_2017["finalcuts"],
+        plot_label = "Test Plot",
+        jec_correction_string = "L1L2L3",
+        upload_to_www=False
+    )
+
+    # _plot2d = PlotHistograms2D(
+    #     # -- PlotBase args
+    #     basename="test_multi_plot2d",
+    #     quantity_pair=(QUANTITIES["alpha"], QUANTITIES["ptbalance"]),
+    #     sample=SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'],
+    #     **_common_dict)
+    # 
+    # 
+    # _plotprof = PlotProfiles(
+    #     basename="test_multi_profile",
+    #     quantity_pair=(QUANTITIES["zpt"], QUANTITIES["ptbalance"]),
+    #     samples=[SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'], SAMPLES['Data_Zee_BCD_Summer16_JECV6'], SAMPLES['Data_Zee_EF_Summer16_JECV6'], SAMPLES['Data_Zee_GH_Summer16_JECV6']],
+    #     cut_sets=None,
+    #     # -- Plot1D args
+    #     show_ratio_to_first=True,
+    #     show_first_in_ratio=False,
+    #     **_common_dict)
+    # 
+    # _plotsp = PlotStackProfiles(
+    #     basename="test_multi_stackprofile",
+    #     quantity_x=QUANTITIES['zpt'],
+    #     quantities_y=[QUANTITIES['jet1chf'], QUANTITIES['jet1nhf']],
+    #     sample_mc=SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'],
+    #     sample_data=SAMPLES['Data_Zee_BCD_Summer16_JECV6'],
+    #     y_label="My Y Label",
+    #     y_range=None,
+    #     # -- Plot1D args
+    #     show_data_mc_comparison_as='percent',
+    #     colors_mc=None,
+    #     markers_data=None,
+    #     **_common_dict)
+    # 
+    # _plotex = PlotExtrapolations(
+    #     basename="test_multi_extrapolation",
+    #     extrapolation_quantity=QUANTITIES['alpha'],
+    #     response_quantities=[QUANTITIES['ptbalance'], QUANTITIES['mpf']],
+    #     sample_mc=SAMPLES['MC_Zee_DYNJ_Summer16_JECV6'],
+    #     sample_data=SAMPLES['Data_Zee_BCDEFGH_Summer16_JECV6'],
+    #     cut_sets=None,
+    #     n_extrapolation_bins=6,
+    #     fit_function_range=(0.0, 0.3),
+    #     # -- Plot1D args
+    #     additional_cut_dict=None,
+    #     **_common_dict)
+
+    #for _p in (_plot1d, _plot1dfrac, _plot2d, _plotprof, _plotsp, _plotex):
+    for _p in (_plot1d, _plot1dfrac,):
+        _p.make_plots()
+
+if __name__ == "__main__":
+
+    #_test_plots()
+    _test_multiplots()
 

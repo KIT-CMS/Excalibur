@@ -3,6 +3,7 @@ from Excalibur.JEC_Plotter.definitions.Summer16.samples_07Aug2017 import (
     SAMPLES,
     SELECTION_CUTS,
     ADDITIONAL_CUTS,
+    RUN_PERIOD_CUT_DICTS,
 )
 
 from copy import deepcopy
@@ -67,9 +68,9 @@ def _workflow(sample):
     for _run_period_cut_name, _run_period_cut in _run_period_cuts.iteritems():
 
         if _run_period_cut is None:
-            _add_cuts = [_ac['cut'] for _ac in _ADDITIONAL_CUTS]
+            _add_cuts = [_ac['cut'] for _ac in RUN_PERIOD_CUT_DICTS]
         else:
-            _add_cuts = [(_ac['cut'] + _run_period_cut) if _ac['cut'] is not None else _run_period_cut for _ac in _ADDITIONAL_CUTS]
+            _add_cuts = [(_ac['cut'] + _run_period_cut) if _ac['cut'] is not None else _run_period_cut for _ac in RUN_PERIOD_CUT_DICTS]
 
         _source_label = "{}".format(_run_period_cut_name)
 
@@ -83,7 +84,7 @@ def _workflow(sample):
             basename="adhoc_etaphiveto_jetpthist_07Aug2017_{}".format(_source_label),
             # there is one subplot per sample and cut in each plot
             samples=_SAMPLES,
-            corrections=_CORR_FOLDER,
+            jec_correction_string=_CORR_FOLDER,
             additional_cuts=_add_cuts,
             # each quantity cut generates a different plot
             quantities=_QUANTITIES,
