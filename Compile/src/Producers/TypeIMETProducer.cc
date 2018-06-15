@@ -45,6 +45,15 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
             KLV* corrJet = (SafeMap::Get(product.m_correctedZJets, m_corrLevels[corrLevelIndex])
                                 .at(jetIndex)).get();
 
+            // TypeI MET modification for 2017
+            if (settings.GetEnableTypeIModification()) {
+                if ((corrJet->p4.Pt() < settings.GetTypeIModExcludeJetPtMax()) &&
+                    (abs(corrJet->p4.Eta()) > settings.GetTypeIModExcludeJetAbsEtaMin()) &&
+                    (abs(corrJet->p4.Eta()) < settings.GetTypeIModExcludeJetAbsEtaMax())) {
+                    continue;  // do not include this jet in the TypeI MET correction
+                }
+            }
+
             // Only consider jets with Pt above TypeIJetPtMin
             if (corrJet->p4.Pt() > settings.GetTypeIJetPtMin()) {
                 KLV* l1Jet = (SafeMap::Get(product.m_correctedZJets, m_l1Corr).at(jetIndex)).get();

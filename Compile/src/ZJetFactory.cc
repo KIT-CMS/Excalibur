@@ -5,6 +5,7 @@
 #include "Excalibur/Compile/interface/Producers/TypeIMETProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetCorrectionsProducer.h"
 #include "Excalibur/Compile/interface/Producers/JetSorter.h"
+#include "Excalibur/Compile/interface/Producers/JetCleaner.h"
 #include "Excalibur/Compile/interface/Producers/JetRecoilProducer.h"
 #include "Excalibur/Compile/interface/Producers/RecoJetGenPartonMatchingProducer.h"
 #include "Excalibur/Compile/interface/Producers/RecoJetGenJetMatchingProducer.h"
@@ -33,6 +34,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new ZJetCorrectionsProducer();
     else if (id == JetSorter().GetProducerId())
         return new JetSorter();
+    else if (id == JetEtaPhiCleaner().GetProducerId())
+        return new JetEtaPhiCleaner();
     else if (id == JetRecoilProducer().GetProducerId())
         return new JetRecoilProducer();
     else if (id == RecoJetGenPartonMatchingProducer().GetProducerId())

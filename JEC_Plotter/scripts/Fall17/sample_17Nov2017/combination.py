@@ -41,8 +41,8 @@ if __name__ == "__main__":
                    help="Eta binning ('wide', 'narrow', 'barrel', 'all')")
     args = p.parse_args()
 
-    _JECV_DATA = 'V5'
-    _JECV_MC = 'V4'
+    _JECV_DATA = 'V10'
+    _JECV_MC = 'V10'
 
     for _ch in args.channels: #('mm', 'ee'):
         for _runperiod in args.run_periods: #('B', 'C', 'D', 'E', 'F', 'BCDEF'):
@@ -58,7 +58,7 @@ if __name__ == "__main__":
             _c = CombinationDirect(
                 sample_data=SAMPLES['Data_Z{}_{}_Fall17_JEC{}'.format(_ch, _runperiod, _JECV_DATA)],
                 sample_mc=SAMPLES['MC_Z{}_DYNJ_Fall17_JEC{}'.format(_ch, _JECV_MC)],
-                correction_folders=('L1L2L3Res',),
+                correction_folders=('L1L2L3',),
                 global_selection=SELECTION_CUTS['noalphanoetacuts'],
                 alpha_upper_bin_edges=ALPHA_UPPER_BIN_EDGES,
                 eta_binnings=_eta_binnings,

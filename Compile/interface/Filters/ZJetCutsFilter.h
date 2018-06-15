@@ -314,7 +314,9 @@ class LeadingJetPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.GetValidPrimaryJet(settings, event)->p4.Pt() > leadingJetPtMin);
+        return (product.GetValidJetCount(settings, event) > 0)
+                ? (product.GetValidPrimaryJet(settings, event)->p4.Pt() > leadingJetPtMin)
+                : false;
     }
 
   private:
@@ -341,7 +343,9 @@ class LeadingJetEtaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Eta()) < leadingJetEtaMax);
+        return (product.GetValidJetCount(settings, event) > 0)
+                ? (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Eta()) < leadingJetEtaMax)
+                : false;
     }
 
   private:
@@ -368,11 +372,11 @@ class LeadingJetYCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.GetValidJetCount(settings, event)>0)
+        return (product.GetValidJetCount(settings, event) > 0)
                 ? (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Rapidity()) < leadingJetYMax)
                 : false;
     }
-                
+
   private:
     float leadingJetYMax = 0;
 };

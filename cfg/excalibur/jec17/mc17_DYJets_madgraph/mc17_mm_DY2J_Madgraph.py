@@ -3,7 +3,7 @@ import os
 
 RUN = 'BCDEFGH'
 CH = 'mm'
-JEC = 'Fall17_17Nov2017_V4'
+JEC = 'Fall17_17Nov2017_V10'
 
 def config():
     cfg = configtools.getConfig('mc', 2017, CH)

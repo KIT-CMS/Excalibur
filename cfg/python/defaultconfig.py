@@ -211,6 +211,25 @@ def _2017(cfg, **kwargs):
     cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2017_13TeV.txt')
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
 
+def data_2017(cfg, **kwargs):
+    # -- modifications for JEC V10 (jun. 2018 JERC)
+
+    # Type-I MET modification (recommended jun. 2018)
+    # -> do not consider jets with pt < 75 GeV in a particular abs(eta) region
+    #    when calculating Type-I MET
+    cfg['EnableTypeIModification'] = True
+    cfg['TypeIModExcludeJetPtMax'] = 75
+    cfg['TypeIModExcludeJetAbsEtaMin'] = 2.650
+    cfg['TypeIModExcludeJetAbsEtaMax'] = 3.139
+
+    # object-based eta-phi cleaning (recommended jun. 2018)
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+
+
 def ee(cfg, **kwargs):
     cfg['Electrons'] = 'electrons'
     cfg['ElectronMetadata'] = 'electronMetadata'

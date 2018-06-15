@@ -12,6 +12,11 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, TypeIJetPtMin)
     IMPL_SETTING_DEFAULT(bool, EnableMetPhiCorrection, false)
     IMPL_SETTING_DOUBLELIST(MetPhiCorrectionParameters)
+    // Type-I MET modification (recommended jun. 2018 for 2017 JECs)
+    IMPL_SETTING_DEFAULT(bool, EnableTypeIModification, false)
+    IMPL_SETTING_DEFAULT(float, TypeIModExcludeJetPtMax, 0.0)
+    IMPL_SETTING_DEFAULT(float, TypeIModExcludeJetAbsEtaMin, 0.0)
+    IMPL_SETTING_DEFAULT(float, TypeIModExcludeJetAbsEtaMax, 0.0)
 
     // JetRecoilProducer
     IMPL_SETTING(float, JetRecoilMinPtThreshold)
@@ -47,7 +52,7 @@ class ZJetSettings : public KappaSettings
     // ZJetCutsFilter
     IMPL_SETTING(unsigned, CutNLeptonsMin)
     IMPL_SETTING(unsigned, CutNLeptonsMax)
-    IMPL_SETTING(float, CutLeadingLeptonPtMin)   
+    IMPL_SETTING(float, CutLeadingLeptonPtMin)
     IMPL_SETTING(unsigned, CutNMuonsMin)
     IMPL_SETTING(unsigned, CutNMuonsMax)
     IMPL_SETTING(float, CutMuonPtMin)
@@ -68,17 +73,22 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, CutJetIDVersion)
     IMPL_SETTING(unsigned, CutJetIDFirstNJets)
 
-        // LeptonSFProducer
+    // LeptonSFProducer
     IMPL_SETTING_DEFAULT(bool, LeptonSFetaonly, false)
     IMPL_SETTING(std::string, LeptonIDSFRootfile)
     IMPL_SETTING(std::string, LeptonIsoSFRootfile)
     IMPL_SETTING(std::string, LeptonTrackingSFRootfile)
     IMPL_SETTING(std::string, LeptonTriggerSFRootfile)
-    IMPL_SETTING_INTLIST(TriggerSFRuns)   
+    IMPL_SETTING_INTLIST(TriggerSFRuns)
     IMPL_SETTING_DEFAULT(std::string, LeptonSFVariation, "None")
     IMPL_SETTING_DEFAULT(std::string, LeptonTriggerSFVariation, "None")
     IMPL_SETTING_DEFAULT(std::string, Channel, "mm")
 
     //GenZProducers
     //IMPL_SETTING_DEFAULT(float, GenZMassRange, 20.0)
+
+    // JetEtaPhiCleaner
+    IMPL_SETTING(std::string, JetEtaPhiCleanerFile)
+    IMPL_SETTING_STRINGLIST(JetEtaPhiCleanerHistogramNames)
+    IMPL_SETTING(double, JetEtaPhiCleanerHistogramValueMaxValid)
 };

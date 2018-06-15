@@ -3,7 +3,7 @@ import os
 
 RUN='B'
 CH='mm'
-JEC='Fall17_17Nov2017'+RUN+'_V5'
+JEC='Fall17_17Nov2017'+RUN+'_V10'
 
 def config():
     cfg = configtools.getConfig('data', 2017, CH)
@@ -15,6 +15,6 @@ def config():
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_DATA/'+JEC+'_DATA')
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
-    cfg['ProvideL2ResidualCorrections'] = False
-    cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2L3Res'])
+    cfg['ProvideL2ResidualCorrections'] = True
+    cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
     return cfg
