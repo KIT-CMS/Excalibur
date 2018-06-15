@@ -26,27 +26,20 @@ class JetCleanerBase : public ZJetProducerBase {
     void Produce(ZJetEvent const& event,
                  ZJetProduct& product,
                  ZJetSettings const& settings) const override {
+
         // Iterate over all JEC levels
-        //for (std::map<std::string, std::vector<std::shared_ptr<KJet>>>::const_iterator itlevel = product.m_correctedZJets.begin();
-        //     itlevel != product.m_correctedZJets.end(); ++itlevel) {
         for (std::pair<const std::string, std::vector<std::shared_ptr<KJet>>>& jecLevelJetCollection : product.m_correctedZJets) {
-            // iterate over all jets in a collection
-            for (size_t iJet = 0; iJet < jecLevelJetCollection.second.size(); ++iJet) {
-                //if (!this->DoesJetPass(jecLevelJetCollection.second[iJet].get())) {
-                //    //product.m_correctedZJets[itlevel->first].erase(product.m_correctedZJets[itlevel->first].begin() + iJet);
-                //    jecLevelJetCollection.second.erase(jecLevelJetCollection.second.begin() + iJet);
-                //}
-                jecLevelJetCollection.second.erase(
-                    std::remove_if(
-                        jecLevelJetCollection.second.begin(),
-                        jecLevelJetCollection.second.end(),
-                        [this](auto jetSharedPtr){
-                            return !this->DoesJetPass(jetSharedPtr.get());
-                        }
-                    ),
-                    jecLevelJetCollection.second.end()
-                );
-            }
+            // remove all jets for which DoesJetPass() returns false
+            jecLevelJetCollection.second.erase(
+                std::remove_if(
+                    jecLevelJetCollection.second.begin(),
+                    jecLevelJetCollection.second.end(),
+                    [this](auto jetSharedPtr){
+                        return !this->DoesJetPass(jetSharedPtr.get());
+                    }
+                ),
+                jecLevelJetCollection.second.end()
+            );
         }
     };
 
