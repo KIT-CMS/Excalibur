@@ -21,7 +21,7 @@ void JetEtaPhiCleaner::Init(ZJetSettings const& settings) {
     }
 }
 
-bool JetEtaPhiCleaner::DoesJetPass(const KJet* jet) const {
+bool JetEtaPhiCleaner::DoesJetPass(const KJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
 
     for (auto& hist : m_cleaningHistograms) {
         // if the bin value is above threshold, invalidate jet

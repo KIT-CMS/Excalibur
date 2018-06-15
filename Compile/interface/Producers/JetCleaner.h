@@ -34,8 +34,8 @@ class JetCleanerBase : public ZJetProducerBase {
                 std::remove_if(
                     jecLevelJetCollection.second.begin(),
                     jecLevelJetCollection.second.end(),
-                    [this](auto jetSharedPtr){
-                        return !this->DoesJetPass(jetSharedPtr.get());
+                    [&, this](auto jetSharedPtr){
+                        return !this->DoesJetPass(jetSharedPtr.get(), event, product, settings);
                     }
                 ),
                 jecLevelJetCollection.second.end()
@@ -43,7 +43,7 @@ class JetCleanerBase : public ZJetProducerBase {
         }
     };
 
-    virtual bool DoesJetPass(const KJet* jet) const = 0;
+    virtual bool DoesJetPass(const KJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const = 0;
 
 };
 
@@ -69,7 +69,7 @@ class JetEtaPhiCleaner : public JetCleanerBase {
 
     void Init(ZJetSettings const& settings);
 
-    virtual bool DoesJetPass(const KJet* jet) const;
+    virtual bool DoesJetPass(const KJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const;
 
   protected:
 
