@@ -15,7 +15,7 @@ def config():
         nafpathD ='srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016D-07Aug17-v1_noJTB/*.root',
         #nafpath='/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/testfiles/ZJet_SingleMuon_Run2016D-Legacy-07Aug2017-v1_testfile.root',
     )
-    cfg = configtools.expand(cfg, ['nocuts', 'zcuts'], ['None'])#, True),'L1L2L3','L1L2L3Res'
+    cfg = configtools.expand(cfg, ['nocuts', 'leptoncuts'], ['None'])#, True),'L1L2L3','L1L2L3Res'
     configtools.remove_quantities(cfg, ['jet1ptl1l2l3', 'jet1res', 'jet1rc'])
     configtools.add_quantities(cfg, [   'mu1IDSFWeight', 'mu2IDSFWeight', 'leptonIDSFWeight',
                                         'mu1IsoSFWeight','mu2IsoSFWeight','leptonIsoSFWeight',
