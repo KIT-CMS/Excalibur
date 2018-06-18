@@ -10,11 +10,14 @@ from copy import deepcopy
 _CORR_FOLDER = "L1L2L3"
 
 _QUANTITY_PAIRS = [
-    #('jet1phi', 'jet1eta'),
-    #('jet2phi', 'jet2eta'),
-    #('jet3phi', 'jet3eta'),
+    ('jet1phi', 'jet1eta_narrow'),
+    ('jet1phi', 'jet1eta'),
+    ('jet2phi', 'jet2eta'),
+    ('jet3phi', 'jet3eta'),
+    #('jet2phi', 'jet2eta_narrow'),
+    #('jet3phi', 'jet3eta_narrow'),
     #('zphi', 'zeta'),
-    ('metphi', 'met'),
+    #('metphi', 'met'),
 ]
 
 _cut_final_no_eta = CutSet("basicToNoEta",
@@ -29,9 +32,9 @@ _cut_final_no_eta = CutSet("basicToNoEta",
 )
 
 _SELECTION_CUTS = [
-    SELECTION_CUTS['finalcuts'],
+    #SELECTION_CUTS['finalcuts'],
     #SELECTION_CUTS['basiccuts'] + _cut_final_no_eta,
-    #SELECTION_CUTS['basiccuts'],
+    SELECTION_CUTS['basiccuts'],
     #SELECTION_CUTS['nocuts']
 ]
 
@@ -42,13 +45,12 @@ def _workflow(sample):
         _ph = PlotHistograms2D(
             basename="eta_phi_occupancy_2D_17Nov2017_{}".format(_run_period_cut_name),
             # there is one subplot per sample and cut in each plot
-            samples=[sample],
+            sample=sample,
             jec_correction_string=_CORR_FOLDER,
-            additional_cuts=[_run_period_cut],
             # each quantity cut generates a different plot
             quantity_pairs=_QUANTITY_PAIRS,
             # each selection cut generates a new plot
-            selection_cuts=_SELECTION_CUTS,
+            selection_cuts=[_sel_cut + _run_period_cut for _sel_cut in _SELECTION_CUTS],
             # show_ratio_to_first=True
         )
 
@@ -58,5 +60,21 @@ def _workflow(sample):
         _ph.make_plots()
 
 if __name__ == "__main__":
-    _workflow(SAMPLES['Data_Zmm_BCDEF_Fall17_V3'])
-    _workflow(SAMPLES['Data_Zee_BCDEF_Fall17_V3'])
+    for _jecv in ('V6', 'V10'):
+        for _channel in ('ee', 'mm'):
+            for _run_period in ('B', 'C', 'D', 'E', 'F', 'BCDEF'):
+                #_workflow(SAMPLES['Data_Z{}_{}_Fall17_JEC{}'.format(_channel, _jecv)])
+                _ph = PlotHistograms2D(
+                    basename="eta_phi_occupancy_2D_17Nov2017_JEC{}_run{}".format(_jecv, _run_period),
+                    # there is one subplot per sample and cut in each plot
+                    sample=SAMPLES['Data_Z{}_{}_Fall17_JEC{}'.format(_channel, _run_period, _jecv)],
+                    jec_correction_string=_CORR_FOLDER,
+                    # each quantity cut generates a different plot
+                    quantity_pairs=_QUANTITY_PAIRS,
+                    # each selection cut generates a new plot
+                    #selection_cuts=[_sel_cut + _run_period_cut for _sel_cut in _SELECTION_CUTS],
+                    selection_cuts=_SELECTION_CUTS,
+                    # show_ratio_to_first=True
+                    plot_label="Run2017{} (JEC {})".format(_run_period, _jecv)
+                )
+                _ph.make_plots()

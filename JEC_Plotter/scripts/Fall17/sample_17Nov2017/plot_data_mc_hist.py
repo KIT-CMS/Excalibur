@@ -94,7 +94,7 @@ def _old_workflow(sample_data, sample_mc, jecv):
         _SAMPLES[-1]['source_label'] = '{}'.format(_ac['label'])
 
     #for _corr_level in ('L1L2L3', 'L1L2L3Res'):
-    for _corr_level in ('L1L2L3',):
+    for _corr_level in ('L1L2L3', 'L1L2Res'):
         _ph = PlotHistograms1D(
             basename="data_mc_hist_17Nov2017_JEC{}".format(jecv),
             # there is one subplot per sample and cut in each plot
@@ -152,6 +152,7 @@ def _old_workflow(sample_data, sample_mc, jecv):
 
         for _bin_cut_1 in _ADDITIONAL_CUTS_ETA[17:]:
             for _bin_cut_2 in _ADDITIONAL_CUTS_ZPT:
+                break
                 _ph2 = PlotHistograms1D(
                     basename="data_mc_hist_zptbins_17Nov2017_JEC{}".format(jecv),
                     # there is one subplot per sample and cut in each plot
@@ -176,12 +177,13 @@ def _old_workflow(sample_data, sample_mc, jecv):
 
 if __name__ == "__main__":
     #for _jecv in ("V6_rawECAL", "V6", "V6_egmUpdate"):
-    _jecv_mc = "V4"
-    for _jecv in ("V6",):
+    for _jecv_data, _jecv_mc in [("V10", "V10"), ("V6", "V4")]:
         for _channel in ("mm", "ee"):
-            for _corr_level in ("L1L2L3",):
+            for _corr_level in ("L1L2L3", "L1L2Res"):
+                if _corr_level == 'L1L2Res' and _jecv_data != "V10":
+                    continue
                 _plot_collection = plot_data_mc_hist(
-                    sample_data=SAMPLES['Data_Z{}_BCDEF_Fall17_JEC{}'.format(_channel, _jecv)],
+                    sample_data=SAMPLES['Data_Z{}_BCDEF_Fall17_JEC{}'.format(_channel, _jecv_data)],
                     sample_mc=SAMPLES['MC_Z{}_DYNJ_Fall17_JEC{}'.format(_channel, _jecv_mc)],
                     selection_cuts=_SELECTION_CUTS,
                     subplot_cuts=RUN_PERIOD_CUT_DICTS,
@@ -189,7 +191,7 @@ if __name__ == "__main__":
                     quantities=_QUANTITIES,
                     sample_label="17Nov2017",
                     jec_campaign_label="Fall17",
-                    jec_version=_jecv,
+                    jec_version=_jecv_data,
                     normalize_to_first_histo=True,
                 )
 

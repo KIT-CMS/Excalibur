@@ -327,6 +327,8 @@ class _Plot1D(_PlotBase):
             # default to 'L1L2L3' for Monte Carlo
             if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
                 _d['corrections'][-1] = 'L1L2L3'
+            elif self._jec_correction_string == 'L1L2Res' and _sample['source_type'] != 'Data':
+                _d['corrections'][-1] = 'L1L2L3'
 
         if hasattr(self, '_show_ratio_to_first') and self._show_ratio_to_first:
             # determine the first index to show in the ratio plot
@@ -501,6 +503,8 @@ class _Plot1DFractions(_Plot1D):
         _corr_string = self._jec_correction_string
         if self._jec_correction_string == 'L1L2L3Res' and self._samples[0]['source_type'] != 'Data':
             _corr_string = 'L1L2L3'
+        elif self._jec_correction_string == 'L1L2Res' and self._samples[0]['source_type'] != 'Data':
+            _corr_string = 'L1L2L3'
         _d['corrections'] = [_corr_string]
 
         _numerator_nicks = ['nick0']
@@ -513,6 +517,8 @@ class _Plot1DFractions(_Plot1D):
             # default to 'L1L2L3' for Monte Carlo
             _corr_string = self._jec_correction_string
             if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                _corr_string = 'L1L2L3'
+            elif self._jec_correction_string == 'L1L2Res' and _sample['source_type'] != 'Data':
                 _corr_string = 'L1L2L3'
 
             if _frac_cutset is not None:
@@ -753,6 +759,8 @@ class _PlotStackProfile(_PlotBase):
 
                 # default to 'L1L2L3' for Monte Carlo
                 if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                    _d['corrections'][-1] = 'L1L2L3'
+                elif self._jec_correction_string == 'L1L2Res' and _sample['source_type'] != 'Data':
                     _d['corrections'][-1] = 'L1L2L3'
 
         if self._dmc_comparison_type == 'ratio':
