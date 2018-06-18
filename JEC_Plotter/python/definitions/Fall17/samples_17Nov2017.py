@@ -44,8 +44,6 @@ for _channel in ('ee', 'mm'):
                 sample_dir=_SAMPLE_DIR_DICT[_jecv],
                 sample_file=_filename
             ),
-        })
-
 # -- Additional Cuts
 
 RUN_PERIOD_CUT_DICTS = [

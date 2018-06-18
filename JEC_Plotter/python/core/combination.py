@@ -281,7 +281,7 @@ class CombinationDirect(object):
             _root_ntuple_data = _root_file_data.Get("{}_{}/ntuple".format(_zjet_folder, _corr_folder))
 
             # no residuals in MC -> use L1L2L3 instead
-            if _corr_folder == "L1L2L3Res":
+            if _corr_folder in ["L1L2L3Res", "L1L2Res"]:
                 _root_ntuple_mc = _root_file_mc.Get("{}_{}/ntuple".format(_zjet_folder, "L1L2L3"))
             else:
                 _root_ntuple_mc = _root_file_mc.Get("{}_{}/ntuple".format(_zjet_folder, _corr_folder))

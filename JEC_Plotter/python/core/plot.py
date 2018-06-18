@@ -104,6 +104,9 @@ class _PlotBase(object):
         if not self._upload_to_www:
             self._output_filename = "_".join([self._basename, self._output_filename])
 
+        self._fits = []
+        self._show_fit_info_text = False
+
     def _validate_init_kwargs_raise(self, kwargs):
         _kwargs_keys = set(kwargs.keys())
         _forbidden = _kwargs_keys.intersection(self._FORBIDDEN_KWARGS)
@@ -145,6 +148,7 @@ class _PlotBase(object):
                 1.08, #self._cut_info_text_topleft_xy[1],
             ],
 
+            'plot_modules': ["PlotMplZJet"],
             'analysis_modules': [],
 
             # -- filled in per sample/cut group
@@ -192,6 +196,36 @@ class _PlotBase(object):
                 self._basic_dict['texts_x'].append(self._cut_info_text_topleft_xy[0])
                 self._basic_dict['texts_y'].append(self._cut_info_text_topleft_xy[1] - 0.07 - (_i + 1) * self._INFOBOX_SPACING_Y)
 
+        if self._fits:
+            if 'FunctionPlot' not in self._basic_dict['analysis_modules']:
+                self._basic_dict['analysis_modules'].append('FunctionPlot')
+
+            _show_at_least_one = any([_f['show'] for _f in self._fits])
+            if _show_at_least_one:
+                if 'PlotFitText' not in self._basic_dict['plot_modules']:
+                    self._basic_dict['plot_modules'].append('PlotFitText')
+                    # FIXME?
+                    self._basic_dict['fit_text_npar'] = min([_f['npar'] for _f in self._fits])
+                    self._basic_dict['fit_text_parameter_names'] = ["p{}".format(_i) for _i in range(self._basic_dict['fit_text_npar'])]
+
+                # add cut labels as text
+                for _i, _f in enumerate(self._fits):
+                    self._basic_dict.setdefault('function_fit', []).append(_f['input_nick'])
+                    self._basic_dict.setdefault('function_nicknames', []).append(_f['nick'])
+                    self._basic_dict.setdefault('function_parameters', []).append(",".join([str(_p) for _p in _f['initial_parameters']]))
+                    self._basic_dict.setdefault('function_ranges', []).append(_f['range'])
+                    self._basic_dict.setdefault('functions', []).append(_f['formula'])
+
+                    if _f['show']:
+                        self._basic_dict.setdefault('fit_text_nicks', []).append(_f['nick'])
+                        self._basic_dict.setdefault('fit_text_colors', []).append(_f['color'])
+                        if 'x' in _f and 'y' in _f:
+                            self._basic_dict.setdefault('fit_text_position_x', []).append(_f['x'])
+                            self._basic_dict.setdefault('fit_text_position_y', []).append(_f['y'])
+                        else:
+                            self._basic_dict.setdefault('fit_text_position_x', []).append(None)
+                            self._basic_dict.setdefault('fit_text_position_y', []).append(None)
+
         if self._upload_to_www:
             self._basic_dict['www'] = self._output_folder
 
@@ -228,18 +262,32 @@ class _PlotBase(object):
     def output_folder(self):
         return self._output_folder
 
-
     def add_text(self, text, size, xy):
         assert len(xy) == 2
         self._basic_dict['texts'].append(text)
         self._basic_dict['texts_size'].append(size)
         self._basic_dict['texts_x'].append(xy[0])
         self._basic_dict['texts_y'].append(xy[1])
-    
+
+    def add_fit(self, input_nick, output_nick, formula, initial_parameters, range, show_info=False, info_xy=None):
+        self._fits.append(dict(
+            input_nick=input_nick,
+            nick=output_nick,
+            formula=formula,
+            initial_parameters=initial_parameters,
+            range=range,
+            npar=len(initial_parameters),
+            color='k',
+            show=show_info,
+        ))
+        if info_xy is not None:
+            self._fits[-1]['x'] = info_xy[0]
+            self._fits[-1]['y'] = info_xy[1]
 
     def make_plot(self, args=None):
         _plot_dicts = [self.get_dict()]
         harryinterface.harry_interface(_plot_dicts, (args or []) + ['--max-processes', '1'])
+
 
 class _Plot1D(_PlotBase):
     _FORBIDDEN_KWARGS = {}
@@ -326,6 +374,8 @@ class _Plot1D(_PlotBase):
 
             # default to 'L1L2L3' for Monte Carlo
             if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                _d['corrections'][-1] = 'L1L2L3'
+            elif self._jec_correction_string == 'L1L2Res' and _sample['source_type'] != 'Data':
                 _d['corrections'][-1] = 'L1L2L3'
 
         if hasattr(self, '_show_ratio_to_first') and self._show_ratio_to_first:
@@ -501,6 +551,8 @@ class _Plot1DFractions(_Plot1D):
         _corr_string = self._jec_correction_string
         if self._jec_correction_string == 'L1L2L3Res' and self._samples[0]['source_type'] != 'Data':
             _corr_string = 'L1L2L3'
+        elif self._jec_correction_string == 'L1L2Res' and self._samples[0]['source_type'] != 'Data':
+            _corr_string = 'L1L2L3'
         _d['corrections'] = [_corr_string]
 
         _numerator_nicks = ['nick0']
@@ -513,6 +565,8 @@ class _Plot1DFractions(_Plot1D):
             # default to 'L1L2L3' for Monte Carlo
             _corr_string = self._jec_correction_string
             if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                _corr_string = 'L1L2L3'
+            elif self._jec_correction_string == 'L1L2Res' and _sample['source_type'] != 'Data':
                 _corr_string = 'L1L2L3'
 
             if _frac_cutset is not None:
@@ -630,6 +684,7 @@ class _PlotProfile(_PlotBase):
         _d['line_styles'] = ""
         _d['x_errors'] = True
         del _d['y_bins']  # HARRYPLOTTER!!!
+        del _d['stacks']  # use "PlotStackProfile" for stacked profile plots
 
         return _d
 
@@ -753,6 +808,8 @@ class _PlotStackProfile(_PlotBase):
 
                 # default to 'L1L2L3' for Monte Carlo
                 if self._jec_correction_string == 'L1L2L3Res' and _sample['source_type'] != 'Data':
+                    _d['corrections'][-1] = 'L1L2L3'
+                elif self._jec_correction_string == 'L1L2Res' and _sample['source_type'] != 'Data':
                     _d['corrections'][-1] = 'L1L2L3'
 
         if self._dmc_comparison_type == 'ratio':
@@ -1072,13 +1129,20 @@ class _HistoMultiPlotterBase(object):
             print "UNKONWN quantity '%s': skipping..." % (quantity_name,)
         return _q
 
+    def add_fit(self, input_nick, output_nick, formula, initial_parameters, range, show_info=False, info_xy=None):
+        for _p in self._plots:
+            _p.add_fit(input_nick=input_nick,
+                       output_nick=output_nick,
+                       formula=formula,
+                       initial_parameters=initial_parameters,
+                       range=range,
+                       show_info=show_info,
+                       info_xy=info_xy)
+
     def add_text(self, text, size, xy):
         assert len(xy) == 2
         for _p in self._plots:
-            _p._basic_dict['texts'].append(text)
-            _p._basic_dict['texts_size'].append(size)
-            _p._basic_dict['texts_x'].append(xy[0])
-            _p._basic_dict['texts_y'].append(xy[1])
+            _p.add_text(text=text, size=size, xy=xy)
 
     def make_plots(self, args=None):
         _plot_dicts = [_p.get_dict() for _p in self._plots]
