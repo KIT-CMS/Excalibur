@@ -18,74 +18,29 @@ std::string ValidZllJetsProducer::GetProducerId() const { return "ValidZllJetsPr
 void ValidZllJetsProducer::Init(ZJetSettings const& settings)
 {
     minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
+    minPUJetID = settings.GetMinPUJetID();
 }
 
-void ValidZllJetsProducer::Produce(ZJetEvent const& event,
-                                   ZJetProduct& product,
-                                   ZJetSettings const& settings) const
-{
-    /*
-    veto jets too close to leptons from Z decay to be considered actual jets
-
-    Relies on the assumptation that the deltaR veto is tight enough to allow for
-    only one jet vetoed by every lepton.
-    */
-    // nothing to do if there are no Zlls
-    if (!product.m_zValid)
-        return;
-
-    std::size_t zl1_idx = -1u;
-    std::size_t zl2_idx = -1u;
-    for (std::size_t i = 0; i < product.m_validJets.size(); ++i) {
-        if (ROOT::Math::VectorUtil::DeltaR(product.m_validJets.at(i)->p4,
-                                           product.m_zLeptons.first->p4) < minZllJetDeltaRVeto) {
-            zl1_idx = i;
-            if (zl2_idx < product.m_validJets.size()) {
-                break;
-            }
-        } else if (ROOT::Math::VectorUtil::DeltaR(product.m_validJets.at(i)->p4,
-                                                  product.m_zLeptons.second->p4) <
-                   minZllJetDeltaRVeto) {
-            zl2_idx = i;
-            if (zl1_idx < product.m_validJets.size()) {
-                break;
-            }
+bool ValidZllJetsProducer::DoesntJetPass(const KBasicJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
+    
+    bool validjet = true;
+    
+    if (product.m_zValid) {
+        validjet &= (ROOT::Math::VectorUtil::DeltaR(jet->p4,product.m_zLeptons.first->p4) > minZllJetDeltaRVeto)
+                && (ROOT::Math::VectorUtil::DeltaR(jet->p4,product.m_zLeptons.second->p4) > minZllJetDeltaRVeto);
+    }
+    
+    // unnecessary loop over jets to find the index
+    for (unsigned int it = 0; it < product.m_validJets.size(); ++it) {
+        if (jet == product.m_validJets[it]) {
+            validjet &= static_cast<KJet*>(product.GetValidJet(settings, event, it))->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata) > minPUJetID;
         }
     }
     
-    // zl1 has higher pT, i.e. likely vetoes a higher pT jet that should be erased last
-    if (zl1_idx > zl2_idx)
-        std::swap(zl1_idx, zl2_idx);
-    if (zl2_idx < product.m_validJets.size())
-        product.m_validJets.erase(product.m_validJets.begin() + zl2_idx);
-    if (zl1_idx < product.m_validJets.size())
-        product.m_validJets.erase(product.m_validJets.begin() + zl1_idx);
-    
-	std::size_t invzl1_idx = -1u;
-    std::size_t invzl2_idx = -1u;
-	for (std::size_t i = 0; i < product.m_invalidJets.size(); ++i) {
-        if (ROOT::Math::VectorUtil::DeltaR(product.m_invalidJets.at(i)->p4,
-                                           product.m_zLeptons.first->p4) < minZllJetDeltaRVeto) {
-            invzl1_idx = i;
-            if (invzl2_idx < product.m_invalidJets.size()) {
-                break;
-            }
-        } else if (ROOT::Math::VectorUtil::DeltaR(product.m_invalidJets.at(i)->p4,
-                                                  product.m_zLeptons.second->p4) < minZllJetDeltaRVeto) {
-            invzl2_idx = i;
-            if (invzl1_idx < product.m_invalidJets.size()) {
-                break;
-            }
-        }
-    }
-    
-    if (invzl2_idx < product.m_invalidJets.size())
-        product.m_invalidJets.erase(product.m_invalidJets.begin() + invzl2_idx);
-    if (invzl1_idx < product.m_invalidJets.size())
-        product.m_invalidJets.erase(product.m_invalidJets.begin() + invzl1_idx);
-        
+    return validjet;
     
 }
+
 std::string ValidZllGenJetsProducer::GetProducerId() const { return "ValidZllGenJetsProducer"; }
 
 void ValidZllGenJetsProducer::Init(ZJetSettings const& settings)
@@ -108,3 +63,4 @@ void ValidZllGenJetsProducer::Produce(ZJetEvent const& event,
         }
     }
 }
+
