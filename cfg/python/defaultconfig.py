@@ -86,11 +86,11 @@ def getBaseConfig(tagged=False, **kwargs):
         # Processors
         'Processors': [
             'producer:ValidTaggedJetsProducer',
-            'producer:ValidZllJetsProducer',
             'producer:ZJetCorrectionsProducer',
             'producer:TypeIMETProducer',
             'producer:JetSorter',
             'producer:JetRecoilProducer',
+            'producer:ValidZllJetsProducer',
             ],
         # Wire Kappa objects
         'EventMetadata' : 'eventInfo',
@@ -176,6 +176,10 @@ def mc(cfg, **kwargs):
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = 2016
     cfg['CutJetIDFirstNJets'] = 2
