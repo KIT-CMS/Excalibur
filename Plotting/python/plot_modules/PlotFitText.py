@@ -42,7 +42,7 @@ class PlotFitText(plotbase.PlotBase):
 
 	def run(self, plotData):
 		size = plotData.plotdict["fit_text_size"]
-		ax = plotData.plot.axes['main']
+		ax = plotData.plot.axes[0]
 		npar = plotData.plotdict["fit_text_npar"]
 		parameter_names = plotData.plotdict["fit_text_parameter_names"]
 		#name_length=len(max(parameter_names, key=lambda s: len(s) if s is not None else 0))
