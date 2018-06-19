@@ -11,7 +11,7 @@ def getBaseConfig(tagged=False, **kwargs):
         'FirsEvent': 0,
         'Processors': [],
         'InputFiles': [],  # Overwritten by (data/mc).py, excalibur.py, json_modifier.py (if run in batch mode)
-        'OutputPath': 'out', # Overwritten by excalibur.py		
+        'OutputPath': 'out', # Overwritten by excalibur.py
         # ZJetCorrectionsProducer Settings
         'Jec': '', # Path for JEC data, please set this later depending on input type
         'L1Correction': 'L1FastJet',
@@ -184,6 +184,7 @@ def _2016(cfg, **kwargs):
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
+    cfg['MinPUJetID'] = -1.5
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely
@@ -440,6 +441,11 @@ def mc_2016(cfg, **kwargs):
 def _2016mm(cfg, **kwargs):
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')
     cfg['MuonEnergyCorrection'] = 'rochcorr2016'
+    ### Get Root file from POG ### https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults ###
+    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/ID_EfficienciesAndSF_BCDEF.root")
+    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Iso_EfficienciesAndSF_BCDEF.root")
+    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Trigger_EfficienciesAndSF_BCDEF.root")
+    cfg['LeptonTrackingSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Tracking_EfficienciesAndSF_BCDEFGH.root")
 
 def _2016ee(cfg, **kwargs):
     # -- ZJetValidElectronsProducer
@@ -473,14 +479,22 @@ def _2017mm(cfg, **kwargs):
     ]
 
 def data_2016mm(cfg, **kwargs):
-    cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFData_ICHEP.root")
-    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFTriggerData.root")
-    cfg['TriggerSFRuns'] = [274094,276097]
-
+    #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFData_ICHEP.root")
+    #cfg['TriggerSFRuns'] = [274094,276097]
+    ### Check if chosen histogram is consistent with ID & Isolation choice!
+    cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA'
+    cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA'
+    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA'
+    cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
+    
 def mc_2016mm(cfg, **kwargs):
-    cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_Moriond.root")
-    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFTriggerMC_Moriond.root")
-
+    #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_Moriond.root")
+    ### Check if chosen histogram is consistent with ID & Isolation choice!
+    cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC'
+    cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesMC/histo_eta_MC'
+    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC'
+    cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
+    
 
 
 

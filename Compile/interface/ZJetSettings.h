@@ -7,6 +7,7 @@ class ZJetSettings : public KappaSettings
   public:
     // ValidZllJetsProducer
     IMPL_SETTING(float, MinZllJetDeltaRVeto)
+    IMPL_SETTING(float, MinPUJetID)
 
     // TypeIMETProducer
     IMPL_SETTING(float, TypeIJetPtMin)
@@ -79,6 +80,10 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, LeptonIsoSFRootfile)
     IMPL_SETTING(std::string, LeptonTrackingSFRootfile)
     IMPL_SETTING(std::string, LeptonTriggerSFRootfile)
+    IMPL_SETTING(std::string, LeptonIDSFHistogramName)
+    IMPL_SETTING(std::string, LeptonIsoSFHistogramName)
+    IMPL_SETTING(std::string, LeptonTrackingSFHistogramName)
+    IMPL_SETTING(std::string, LeptonTriggerSFHistogramName)
     IMPL_SETTING_INTLIST(TriggerSFRuns)
     IMPL_SETTING_DEFAULT(std::string, LeptonSFVariation, "None")
     IMPL_SETTING_DEFAULT(std::string, LeptonTriggerSFVariation, "None")

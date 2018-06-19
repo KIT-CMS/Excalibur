@@ -239,7 +239,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet1puidraw", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
                        ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
-                             ->getTag("puJetIDFullDiscriminant", event.m_jetMetadata)
+                             ->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
     

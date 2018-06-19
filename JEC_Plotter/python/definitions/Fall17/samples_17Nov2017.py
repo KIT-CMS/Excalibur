@@ -43,7 +43,8 @@ for _channel in ('ee', 'mm'):
                 'MC_Z{}_DYNJ_Fall17_JEC{}'.format(_channel, _jecv): Sample.load_using_convention(
                 sample_dir=_SAMPLE_DIR_DICT[_jecv],
                 sample_file=_filename
-            ),
+                ),
+            })
 # -- Additional Cuts
 
 RUN_PERIOD_CUT_DICTS = [
