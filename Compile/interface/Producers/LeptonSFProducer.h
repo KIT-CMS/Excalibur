@@ -23,6 +23,7 @@ class LeptonSFProducer : public ZJetProducerBase
     std::vector<float>* m_ptbins = {};
     std::string m_sffile;
     std::string m_id;
+    std::string histoname;
     std::vector<int> runs;
     bool m_reversed_axes = false;
     bool m_absoluteeta = true;

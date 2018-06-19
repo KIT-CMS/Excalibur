@@ -32,6 +32,7 @@ std::string LeptonSFProducer::GetProducerId() const { return "LeptonSFProducer";
 void LeptonSFProducer::Init(ZJetSettings const& settings)
 {
    
+    
 }
 
 void LeptonSFProducer::Produce(ZJetEvent const& event,
@@ -50,7 +51,6 @@ std::string LeptonIDSFProducer::GetProducerId() const { return "LeptonIDSFProduc
 void LeptonIDSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIDSFRootfile();
-    std::string histoname;  // histoname depending on id
     m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
     if (settings.GetLeptonSFVariation() == "up") {
@@ -61,48 +61,7 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
         error_multiplier = -1.;
     }
     if(settings.GetChannel() == "mm"){
-        if(settings.GetMuonID() == "tight"){
-            if (settings.GetInputIsData()){
-                if (m_etaonly)
-                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
-                else
-                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
-            }
-            else {
-                if (m_etaonly)
-                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
-                else
-                    histoname = "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
-            }
-        }
-        else if(settings.GetMuonID() == "medium"){
-            if (settings.GetInputIsData()){
-                if (m_etaonly)
-                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
-                else
-                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
-            }
-            else {
-                if (m_etaonly)
-                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
-                else
-                    histoname = "MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
-            }
-        }
-        else if(settings.GetMuonID() == "loose"){
-            if (settings.GetInputIsData()){
-                if (m_etaonly)
-                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA";
-                else
-                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA";
-            }
-            else {
-                if (m_etaonly)
-                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC";
-                else
-                    histoname = "MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC";
-            }
-        }
+        histoname = settings.GetLeptonIDSFHistogramName();
     }
     else{
         LOG(ERROR) << "LeptonIsoSFProducer not implemented for this channel";
@@ -164,7 +123,6 @@ std::string LeptonIsoSFProducer::GetProducerId() const { return "LeptonIsoSFProd
 void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIsoSFRootfile();
-    std::string histoname;  // histoname depending on id
     m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
     if (settings.GetLeptonSFVariation() == "up") {
@@ -176,91 +134,8 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
     }
     
     if(settings.GetChannel() == "mm"){
-        if(settings.GetMuonID() == "tight"){
-            if(settings.GetMuonIso() == "tight_2016"){
-                if(settings.GetInputIsData()){
-                    if (m_etaonly)
-                        histoname = "TightISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
-                    else
-                        histoname = "TightISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                }
-                else {
-                    if (m_etaonly)
-                        histoname = "TightISO_TightID_eta/efficienciesMC/histo_eta_MC";
-                    else
-                        histoname = "TightISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
-                }
-            }
-            else if (settings.GetMuonIso() == "loose_2016"){
-                if(settings.GetInputIsData()){
-                    if (m_etaonly)
-                        histoname = "LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA";
-                    else
-                        histoname = "LooseISO_TightID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                }
-                else {
-                    if (m_etaonly)
-                        histoname = "LooseISO_TightID_eta/efficienciesMC/histo_eta_MC";
-                    else
-                        histoname = "LooseISO_TightID_pt_eta/efficienciesMC/abseta_pt_MC";
-                }
-            }
-            else
-                LOG(ERROR) << "No Efficiencies for this Isolation";
-        }
-        if(settings.GetMuonID() == "medium"){
-            if(settings.GetMuonIso() == "tight_2016"){
-                if(settings.GetInputIsData()){
-                    if (m_etaonly)
-                        histoname = "TightISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
-                    else
-                        histoname = "TightISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                }
-                else {
-                    if (m_etaonly)
-                        histoname = "TightISO_MediumID_eta/efficienciesMC/histo_eta_MC";
-                    else
-                        histoname = "TightISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
-                }
-            }
-            else if (settings.GetMuonIso() == "loose_2016"){
-                if(settings.GetInputIsData()){
-                    if (m_etaonly)
-                        histoname = "LooseISO_MediumID_eta/efficienciesDATA/histo_eta_DATA";
-                    else
-                        histoname = "LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                }
-                else {
-                    if (m_etaonly)
-                        histoname = "LooseISO_MediumID_eta/efficienciesMC/histo_eta_MC";
-                    else
-                        histoname = "LooseISO_MediumID_pt_eta/efficienciesMC/abseta_pt_MC";
-                }
-            }
-            else
-                LOG(ERROR) << "No Efficiencies for this Isolation";
-        }
-        if(settings.GetMuonID() == "loose"){
-            if(settings.GetMuonIso() == "tight_2016")
-                LOG(ERROR) << "No Efficiencies for loose ID and tight Iso";
-            else if (settings.GetMuonIso() == "loose_2016"){
-                if(settings.GetInputIsData()){
-                    if (m_etaonly)
-                        histoname = "LooseISO_LooseID_eta/efficienciesDATA/histo_eta_DATA";
-                    else
-                        histoname = "LooseISO_LooseID_pt_eta/efficienciesDATA/abseta_pt_DATA";
-                }
-                else {
-                    if (m_etaonly)
-                        histoname = "LooseISO_LooseID_eta/efficienciesMC/histo_eta_MC";
-                    else
-                        histoname = "LooseISO_LooseID_pt_eta/efficienciesMC/abseta_pt_MC";
-                }
-            }
-            else
-                LOG(ERROR) << "No Efficiencies for this Isolation";
-            }
-        }
+        histoname = settings.GetLeptonIsoSFHistogramName();
+    }
     else{
         LOG(ERROR) << "LeptonIsoSFProducer not implemented for this channel";
     }
@@ -320,7 +195,6 @@ std::string LeptonTrackingSFProducer::GetProducerId() const { return "LeptonTrac
 void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTrackingSFRootfile();
-    std::string histoname;
     double error_multiplier = 0.;
     if (settings.GetLeptonSFVariation() == "up") {
         LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
@@ -331,7 +205,7 @@ void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
     }
     
     if(settings.GetChannel() == "mm"){
-        histoname = "ratio_eff_eta3_dr030e030_corr";
+        histoname = settings.GetLeptonTrackingSFHistogramName();
     }
     else{
         LOG(ERROR) << "LeptonTrackingSFProducer not implemented for this channel";
@@ -388,7 +262,6 @@ std::string LeptonTriggerSFProducer::GetProducerId() const { return "LeptonTrigg
 void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTriggerSFRootfile();
-    std::string histoname;
     m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
     if (settings.GetLeptonTriggerSFVariation() == "up") {
@@ -401,18 +274,7 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     }
     
     if(settings.GetChannel() == "mm"){
-        if(settings.GetInputIsData()){
-            if (m_etaonly)
-                histoname = "IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA";
-            else
-                histoname = "IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA";
-        }
-        else{
-            if (m_etaonly)
-                histoname = "IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC";
-            else
-                histoname = "IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesMC/abseta_pt_MC";
-        }
+        histoname = settings.GetLeptonTriggerSFHistogramName();
     }
     else{
         LOG(ERROR) << "LeptonTriggerSFProducer not implemented for this channel";
