@@ -242,7 +242,6 @@ def ee(cfg, **kwargs):
     # The order of these producers is important!
     cfg['Processors'] = [	
                             'producer:ZJetValidElectronsProducer',
-                            'producer:RecoZmmProducer',
                             'producer:ZeeProducer',	
                             ]+cfg['Processors']
         
@@ -307,12 +306,12 @@ def mcee(cfg, **kwargs):
     ]
     # reco-gen electron matching producer
     cfg['Processors'] += ['producer:GenZeeProducer', 'producer:RecoElectronGenParticleMatchingProducer']
-    cfg['RecoElectronMatchingGenParticleStatus'] = 3
+    cfg['RecoElectronMatchingGenParticleStatus'] = 1  # take Pythia8 status 1 as default here
     cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.3
     cfg["RecoElectronMatchingGenParticlePdgIds"] = [11, -11]
     cfg["InvalidateNonGenParticleMatchingRecoElectrons"] = False
     cfg['GenParticleTypes'] += ['genElectron']
-    cfg['GenElectronStatus'] = 3
+    cfg['GenElectronStatus'] = 1  # take Pythia8 status 1 as default here
     # KappaCollectionsConsumer: dont add taus or taujets:
     cfg['BranchGenMatchedElectrons'] = True
     cfg['AddGenMatchedTaus'] = False
