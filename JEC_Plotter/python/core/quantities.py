@@ -218,6 +218,12 @@ QUANTITIES = dict(
         bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
         channels=['Zee']
     ),
+    e2eta=Quantity(
+        name='e2eta',
+        expression='e2eta',
+        bin_spec=BinSpec.make_equidistant(n_bins=_N_BINS_DEFAULT, range=(-5, 5)),
+        channels=['Zee']
+    ),
     e1iso=Quantity(
         name='e1iso',
         expression='e1iso',
