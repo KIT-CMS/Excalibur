@@ -86,11 +86,11 @@ def getBaseConfig(tagged=False, **kwargs):
         # Processors
         'Processors': [
             'producer:ValidTaggedJetsProducer',
+            'producer:ValidZllJetsProducer',  # needs to run before the 'ZJetCorrectionsProducer'
             'producer:ZJetCorrectionsProducer',
             'producer:TypeIMETProducer',
             'producer:JetSorter',
             'producer:JetRecoilProducer',
-            'producer:ValidZllJetsProducer',
             ],
         # Wire Kappa objects
         'EventMetadata' : 'eventInfo',
@@ -207,6 +207,7 @@ def _2017(cfg, **kwargs):
     cfg['Year'] = 2017
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2017  # for object-based JetID
+    cfg['MinPUJetID'] = -9999  # no PUJetID for 2017
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely
@@ -305,7 +306,8 @@ def mcee(cfg, **kwargs):
         #'genParticleMatchDeltaR',
     ]
     # reco-gen electron matching producer
-    cfg['Processors'] += ['producer:GenZeeProducer', 'producer:RecoElectronGenParticleMatchingProducer']
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZeeProducer',)
+    cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
     cfg['RecoElectronMatchingGenParticleStatus'] = 1  # take Pythia8 status 1 as default here
     cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.3
     cfg["RecoElectronMatchingGenParticlePdgIds"] = [11, -11]
@@ -335,8 +337,7 @@ def mm(cfg, **kwargs):
     # The order of these producers is important!
     cfg['Processors'] = [	#'producer:MuonCorrectionsProducer',
                             'producer:ValidMuonsProducer',
-                            'producer:ZmmProducer', # seems to destroy GenZ
-                            'producer:RecoZmmProducer',
+                            'producer:ZmmProducer',
                             ]+cfg['Processors']
     cfg['Pipelines']['default']['Processors'] = [
         'filter:ValidJetsFilter',
