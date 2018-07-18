@@ -122,8 +122,9 @@ def mc(cfg, **kwargs):
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
         'run','lumi','event','npu',
-        'genjet1pt','genjet1eta','genjet1y','genjet1phi','uncleanedgenjet1pt','uncleanedgenjet1eta',
-        'genjet2pt','genjet2eta','genjet2y','genjet2phi','uncleanedgenjet2pt','uncleanedgenjet2eta',
+        'genjet1pt','genjet1eta','genjet1y','genjet1phi',
+        'genjet2pt','genjet2eta','genjet2y','genjet2phi',
+        'genjet3pt','genjet3eta','genjet3y','genjet3phi',
         'jet1flavor',
         'ngenjets','ngenjets10','ngenjets30',
         'genHT',
@@ -132,8 +133,8 @@ def mc(cfg, **kwargs):
         'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
         'genphistareta',
-        'genzlepton1pt','genzlepton1eta','genzlepton1phi',
-        'genzlepton2pt','genzlepton2eta','genzlepton2phi',
+        'genzl1pt','genzl1eta','genzl1phi',
+        'genzl2pt','genzl2eta','genzl2phi',
         'genzfound','validgenzfound',
         'deltarzgenz',
         'ngenneutrinos',
@@ -176,15 +177,14 @@ def mc(cfg, **kwargs):
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
-    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
-    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
-    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
-    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
+    # switch cleaning on if necessary (check cleaning masks!)
+    #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    #cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+    #cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_23Sep2016_ReReco/hotjets-runBCDEFGH.root")
+    #cfg['JetEtaPhiCleanerHistogramNames'] = ["h2jet"]
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = 2016
     cfg['CutJetIDFirstNJets'] = 2
-    cfg['CutEtaPhiCleaningFile'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning, must contain a TH2D called "h2jet"
-    cfg['CutEtaPhiCleaningPt'] = 15 # minimum jet pt for eta-phi-cleaning
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
@@ -289,7 +289,7 @@ def ee(cfg, **kwargs):
     cfg['CutElectronEtaMax'] = 2.4
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
-    cfg['CutLeadingJetYMax'] = 2.5
+    cfg['CutLeadingJetYMax'] = 2.4
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -340,7 +340,7 @@ def mm(cfg, **kwargs):
                             'producer:ZmmProducer',
                             ]+cfg['Processors']
     cfg['Pipelines']['default']['Processors'] = [
-        'filter:ValidJetsFilter',
+        #'filter:ValidJetsFilter',
         'filter:LeadingJetPtCut',
         'filter:LeadingJetEtaCut',
         'filter:MinNMuonsCut',
@@ -382,7 +382,7 @@ def mm(cfg, **kwargs):
     cfg['CutMuonEtaMax'] = 2.3
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
-    cfg['CutLeadingJetYMax'] = 2.5
+    cfg['CutLeadingJetYMax'] = 2.4
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
