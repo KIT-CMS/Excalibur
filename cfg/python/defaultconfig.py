@@ -337,7 +337,7 @@ def mm(cfg, **kwargs):
     # The order of these producers is important!
     cfg['Processors'] = [	#'producer:MuonCorrectionsProducer',
                             'producer:ValidMuonsProducer',
-                            'producer:ZmmProducer',
+                            'producer:RecoZmmProducer',
                             ]+cfg['Processors']
     cfg['Pipelines']['default']['Processors'] = [
         #'filter:ValidJetsFilter',
