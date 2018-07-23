@@ -42,9 +42,17 @@ void RecoJetGenJetMatchingProducer::MatchCollection(ZJetEvent const& event,
         recoJets[jetIndex] =
             *(static_cast<KJet*>(product.GetValidJet(settings, event, jetIndex, corrLevel)));
     }
+    // Iterate over all gen jets to copy them in local object since they are shared pointers
+    unsigned long genJetCount = product.m_simpleGenJets.size();
+    KLVs genJets(genJetCount);
+    for (unsigned long jetIndex = 0; jetIndex < genJetCount; ++jetIndex) {
+        genJets[jetIndex] =
+            //*(static_cast<KLV*>(product.GetValidJet(settings, event, jetIndex, corrLevel)));
+            *(static_cast<KLV*>(product.m_simpleGenJets[jetIndex]));
+    }
 
     // Make use of KappaTools matcher
-    std::vector<int> matchResult = matchSort_Matrix<KLV, KJet>(*((KLVs*)event.m_genJets), event.m_genJets->size(), recoJets, recoJets.size(), deltaR);
+    std::vector<int> matchResult = matchSort_Matrix<KLV, KJet>(genJets, genJetCount, recoJets, jetCount, deltaR);
     // Store result in product
     product.m_matchedGenJets[corrLevel] = matchResult;
 }

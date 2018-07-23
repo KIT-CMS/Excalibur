@@ -113,11 +113,11 @@ def data(cfg, **kwargs):
 def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
     cfg['Processors'] += [
+        'producer:GenParticleProducer',
+        'producer:ValidZllGenJetsProducer',
         'producer:RecoJetGenPartonMatchingProducer',
         'producer:RecoJetGenJetMatchingProducer',
-        'producer:GenParticleProducer',
         'producer:NeutrinoCounter',
-        'producer:ValidZllGenJetsProducer',
         ]
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
