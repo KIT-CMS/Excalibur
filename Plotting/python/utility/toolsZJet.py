@@ -181,7 +181,7 @@ def basiccutlabel(args, d,CH,ZPT,ALPHA,ETA,RES):
 	elif len(ZPT)==1:
 		zptlabel=r"$\\mathrm{p}^Z_T/GeV>%s$"%ZPT[0]
 	if CH=='ee':
-		channellabel=r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"		
+		channellabel=r"$\\mathrm{\\bf{Z \\rightarrow} e e}$"
 	elif CH=='mm':
 		channellabel=r"$\\mathrm{\\bf{Z \\rightarrow} \\mu \\mu}$"
 		
@@ -195,22 +195,76 @@ def basiccutlabel(args, d,CH,ZPT,ALPHA,ETA,RES):
 	return d
 
 def get_lumis(args, d, RUN, YEAR):
-	if YEAR==2016:
-		if RUN=='BCD':
-			d.update({	'lumis'		: [12.93]	})	# ICHEP Dataset
-		elif RUN=='EF':
-			d.update({	'lumis'		: [6.89]	})
-		elif RUN=='G':
-			d.update({	'lumis'		: [8.13]	})
-		elif RUN=='H':
-			d.update({	'lumis'		: [8.86]	})
-		elif RUN=='BCDEFGH':
-			d.update({	'lumis'		: [35.87]	})
-	elif YEAR==2017:
-		if RUN=='BCD':
-			d.update({	'lumis'		: [17.8]	})
-	return d
+    if YEAR==2016:
+        if RUN=='BCD':
+            d.update({  'lumis' : [12.6]})# ICHEP Dataset
+        elif RUN=='EF':
+            d.update({  'lumis' : [6.7]})
+        elif RUN=='G':
+            d.update({  'lumis' : [8.13]})
+        elif RUN=='H':
+            d.update({  'lumis' : [8.86]})
+        elif RUN=='BCDEF':
+            d.update({ 'lumis' : [19.7]})
+        elif RUN=='BCDEFG':
+            d.update({ 'lumis' : [27.2]})
+        elif RUN=='BCDEFGH':
+            d.update({ 'lumis' : [35.8]})
+        elif RUN=='GH':
+            d.update({ 'lumis' : [16.5]})
+    elif YEAR==2017:
+        if RUN=='BCD':
+            d.update({  'lumis' : [17.8]})
 
+def cutlabel(args,d,cut):
+    if cut == '_mupt25':
+        d.update({ 'texts': [r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$'],
+                    'texts_y': [0.98],
+                    })
+    elif cut == '_mupt25_zmass20':
+        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
+                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$'],
+                    'texts_y': [0.98,0.91],
+                    })
+    elif cut == '_mupt25_zmass20_zpt30':
+        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
+                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                                r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$'],
+                    'texts_y': [0.98,0.91,0.84],
+                    })
+    elif cut == '_mupt25_zmass20_jetpt30':
+        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
+                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                                r'$\\mathrm{p^{jet1}_T}>30\\mathrm{GeV}$'],
+                    'texts_y': [0.98,0.91,0.84],
+                    })
+    elif cut == '_mupt25_zmass20_phistareta08':
+        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
+                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                                r'$\\mathrm{\\Phi^*_\\eta}>0.8$'],
+                    'texts_y': [0.98,0.91,0.84],
+                    })
+    elif cut == '_mupt25_zmass20_zpt30_jet24':
+        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
+                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                                r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$',
+                                r'|$\\mathrm{y^{jet1}}$|$<2.4$'],
+                    'texts_y': [0.98,0.91,0.84,0.77],
+                    })
+    elif cut == '_mupt25_zmass20_jetpt30_jet24':
+        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, $\\mathrm{\\eta^\\mu}<2.4$',
+                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                                r'$\\mathrm{p^{jet1}_T}>30\\mathrm{GeV}$',
+                                r'|$\\mathrm{y^{jet1}}$|$<2.4$'],
+                    'texts_y': [0.98,0.91,0.84,0.77],
+                    })
+    elif cut == '_mupt25_zmass20_phistareta08_jet24':
+        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, $\\mathrm{\\eta^\\mu}<2.4$',
+                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                                r'$\\mathrm{\\Phi^*_\\eta}>0.8$',
+                                r'|$\\mathrm{y^{jet1}}$|$<2.4$'],
+                    'texts_y': [0.98,0.91,0.84,0.75],
+                    })
 
 class JECfile(object):
 	"""Class to handle JEC files and create ROOT histograms with the correction factors"""
