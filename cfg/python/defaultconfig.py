@@ -188,7 +188,7 @@ def _2016(cfg, **kwargs):
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
-    cfg['MinPUJetID'] = -1.5
+    cfg['MinPUJetID'] = -1000#-0.4
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely
@@ -422,6 +422,7 @@ def mcmm(cfg, **kwargs):
         'filter:ValidGenZCut',
         'filter:GenZPtCut',
         'filter:LeadingGenJetYCut',
+        'filter:LeadingGenJetPtCut',
         ]
     cfg['RecoMuonMatchingGenParticleStatus'] = 1
     cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable

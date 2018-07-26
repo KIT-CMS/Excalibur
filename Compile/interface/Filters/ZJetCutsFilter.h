@@ -711,6 +711,35 @@ class GenZPtCut : public ZJetFilterBase
     float zPtMin = 0;
 };
 
+////////////////////
+// Leading Jet Pt //
+////////////////////
+class LeadingGenJetPtCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "LeadingGenJetPtCut"; }
+
+    LeadingGenJetPtCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        leadingJetPtMin = settings.GetCutLeadingJetPtMin();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (product.m_simpleGenJets.size()>0)
+                ? (product.m_simpleGenJets.at(0)->p4.Pt() > leadingJetPtMin)
+                : false;
+    }
+
+  private:
+    float leadingJetPtMin = 0;
+};
+
 //////////////////////////////
 // Leading Gen Jet Rapidity //
 //////////////////////////////
