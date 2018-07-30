@@ -71,6 +71,18 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "zmass",
         [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.mass(): DefaultValues::UndefinedFloat);
 	});
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "ystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_zValid && (product.GetValidJetCount(settings, event) > 0) 
+                ? std::abs(product.m_z.p4.Rapidity() - product.GetValidPrimaryJet(settings, event)->p4.Rapidity())
+                : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "yboost", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_zValid && (product.GetValidJetCount(settings, event) > 0) 
+                ? std::abs(product.m_z.p4.Rapidity() + product.GetValidPrimaryJet(settings, event)->p4.Rapidity())
+                : DefaultValues::UndefinedFloat);
+        });
     // Gen Z
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzpt",
@@ -101,7 +113,19 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (product.m_genBosonLVFound ? ROOT::Math::VectorUtil::DeltaR(product.m_genBosonLV, product.m_z.p4)
                                      : DefaultValues::UndefinedFloat);
 	});
-	
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genBosonLVFound && (product.m_simpleGenJets.size() > 0)
+                ? std::abs(product.m_genBosonLV.Rapidity() - product.m_simpleGenJets.at(0)->p4.Rapidity())
+                : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genyboost", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genBosonLVFound && (product.m_simpleGenJets.size() > 0)
+                ? std::abs(product.m_genBosonLV.Rapidity() + product.m_simpleGenJets.at(0)->p4.Rapidity())
+                : DefaultValues::UndefinedFloat);
+        });
+        
     //////////
     // Jets //
     //////////

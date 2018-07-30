@@ -53,7 +53,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'run', 'lumi', 'event',
                     # Z quantities
                     'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
-                    'phistareta', 
+                    'phistareta', 'ystar', 'yboost',
                     'zl1pt', 'zl1eta', 'zl1phi',
                     'zl2pt', 'zl2eta', 'zl2phi',
                     # Leading jet
@@ -132,7 +132,7 @@ def mc(cfg, **kwargs):
         'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1phi',
         'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
-        'genphistareta',
+        'genphistareta', 'genystar', 'genyboost',
         'genzl1pt','genzl1eta','genzl1phi',
         'genzl2pt','genzl2eta','genzl2phi',
         'genzfound','validgenzfound',
