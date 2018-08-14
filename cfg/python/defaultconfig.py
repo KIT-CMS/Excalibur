@@ -336,7 +336,7 @@ def mm(cfg, **kwargs):
     cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
     # The order of these producers is important!
     cfg['Processors'] = [   #'producer:MuonCorrectionsProducer',
-                            'producer:PFCandidatesProducer',
+                            #'producer:PFCandidatesProducer',
                             'producer:ValidMuonsProducer',
                             'producer:RecoZmmProducer',
                             ]+cfg['Processors']
