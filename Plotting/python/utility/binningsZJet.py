@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 from Artus.HarryPlotter.utility.binnings import BinningsDict
 
 """
-	This module contains a dictionary for binnings.
+    This module contains a dictionary for binnings and a function for rebinning in rapidity bins.
 """
 class BinningsDictZJet(BinningsDict):
 
@@ -26,9 +26,9 @@ class BinningsDictZJet(BinningsDict):
             'deltaphijet1jet2': '25,-0,3.14159',
             'deltaetajet1jet2': '20,0,5',
             'deltarjet1jet2': '40,0,7',
-            'deltaphizjet1': '100,0,3.14159',
             'deltayzjet1': '100,0,10',
-            'deltaRzjet1': '100,0,6',
+            'deltaphizjet1': '30,0,3.14159',
+            'deltaRzjet1': '30,0,6',
             'deltaphimuminusmuplus': '30,0,3.14159',
             'deltaRmuminusmuplus': '30,0,5',
             'jet1match': '100,0,6',
@@ -63,13 +63,16 @@ class BinningsDictZJet(BinningsDict):
             'jet1pt':       '5 10 20 30 50 75 125 175 225 300 400',
             'jet2pt':       '5 10 20 30 40 50 75 125 175 250',
             'jet3pt':       '5 10 20 30 40 50 75 125 175 250',
-            'jet1y':        '30,-3,3',
+            #'jet1pt':       '39,1,30',
+            #'jet2pt':       '39,1,30',
+            #'jet3pt':       '39,1,30',
+            'jet1y':        '30,-5.4,5.4',
             'jet2y':        '30,-5.4,5.4',
             'jet3y':        '30,-5.4,5.4',
             'jzb':          '20,-200,200',
             
-            'ystar':    '60,0,3',#'6,0,3',#
-            'yboost':   '60,0,3',#'6,0,3',#
+            'ystar':    '6,0,3',#'6,0,3',#
+            'yboost':   '6,0,3',#'6,0,3',#
             
             'npv':      '80,0,80',
             'npumean':  '80,0,80',
@@ -84,8 +87,6 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
     if obs=='zpt':
         d.update({'x_ticks': [40,60,100,200,400,1000]})
         # zpt standard binning: ['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 300 400 1000',]
-        #if ((BINSTAR==[0.0,0.5] and BINBOOST==[2.0,2.5]) or (BINSTAR==[0.5,1.0] and BINBOOST==[1.5,2.0]) or (BINSTAR==[1.5,2.0] and BINBOOST==[0.0,0.5])):
-         #   d.update({'x_bins': ['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 300 400 1000'],['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 190 240 300 400'],})
         if (   (ystarbin==(0.0,0.5) and yboostbin==(2.0,2.5)) 
             or (ystarbin==(0.5,1.0) and yboostbin==(1.5,2.0))
             or (ystarbin==(1.0,1.5) and yboostbin==(1.0,1.5))# to be checked!
@@ -96,19 +97,17 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
             d.update({
                 'x_bins': ['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 300 1000'],
                 'y_bins': ['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 300 1000'],
-                })#['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 300 400'],})
+                })
         elif ystarbin==(1.5,2.0) and yboostbin==(0.5,1.0):
             print obs+" binning changed"
             d.update({
                 'x_bins': ['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 400'],
                 'y_bins': ['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 400'],
                 'x_ticks': [40,60,100,200,400],
-                })#     ['30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 400'],})
+                })
         elif ystarbin==(2.0,2.5) and yboostbin==(0.0,0.5):
             print obs+" binning changed"
             d.update({
-                #'x_bins': ['30 40 50 60 80 100 140 180 240 300'],
-                #'y_bins': ['30 40 50 60 80 100 140 180 240 300'],
                 'x_bins': ['30 40 50 60 80 100 150 300'],
                 'y_bins': ['30 40 50 60 80 100 150 300'],
                 'x_ticks': [40,60,100,200],
@@ -123,12 +122,10 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
             'x_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 300'],
             'y_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 300'],
             })
-    if obs == 'jet1pt':
-        d.update({'x_bins': ['5 10 20 30 50 75 125 175 225 300 400'] })
+    #if obs == 'jet1pt':
+     #   d.update({'x_bins': ['5 10 20 30 50 75 125 175 225 300 400'] })
     if obs=='phistareta':
         d.update({'x_ticks': [1, 2, 4, 10, 25, 100]})
-        #if BINSTAR==[1.5,2.0] and (BINBOOST==[0.0,0.5] or BINBOOST==[0.5,1.0]):
-        #    d.update({'x_bins': ['0.8 0.9 1.0 1.25 1.5 2 3 4 6 12 25 100'],})
         if ystarbin==(0.0,0.5) and yboostbin==(2.0,2.5):
             print obs+" binning changed"
             d.update({  'x_bins': ['0.8 0.9 1.0 1.2 1.5 2 3 4 6 12 50'],
