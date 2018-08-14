@@ -34,7 +34,7 @@ def getBaseConfig(tagged=False, **kwargs):
         'TaggedJets' : 'ak4PFJetsCHS',
         # PU
         'PileupDensity' : 'pileupDensity',
-        
+        'PackedPFCandidates': 'pfCandidates',
         # Pipelines
         'Pipelines': {
             'default': {
@@ -335,7 +335,8 @@ def mm(cfg, **kwargs):
     cfg['Muons'] = 'muons'
     cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
     # The order of these producers is important!
-    cfg['Processors'] = [	#'producer:MuonCorrectionsProducer',
+    cfg['Processors'] = [   #'producer:MuonCorrectionsProducer',
+                            'producer:PFCandidatesProducer',
                             'producer:ValidMuonsProducer',
                             'producer:RecoZmmProducer',
                             ]+cfg['Processors']
@@ -356,21 +357,22 @@ def mm(cfg, **kwargs):
         ]
     cfg['Pipelines']['default']['Consumers'] += ['KappaMuonsConsumer',]
     # In case of Muon Corrections
-    #cfg['ValidMuonsInput'] = "corrected"
+    #cfg['ValidMuonsInput'] = "corrected" # is this really doing something???
     
     # validMuonsProducer
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
     cfg['MuonIsoType'] = 'pf'
     #cfg['UseHighPtID'] = True
-    
+    cfg['MaxZJetDressedMuonDeltaR'] = 0.1
+
     cfg['Pipelines']['default']['Quantities'] += [
-        'mupluspt', 'mupluseta', 'muplusphi', 'muplusiso',
-        'muminuspt', 'muminuseta', 'muminusphi', 'muminusiso',
-        'mu1pt', 'mu1eta', 'mu1phi',
+        'mupluspt', 'mupluseta', 'muplusphi', 'muplusmass', 'muplusiso',
+        'muminuspt', 'muminuseta', 'muminusphi', 'muminusmass', 'muminusiso',
+        'mu1pt', 'mu1eta', 'mu1phi', 'mu1mass',
         'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
-        'mu2pt', 'mu2eta', 'mu2phi',
-        'mu3pt', 'mu3eta', 'mu3phi',
+        'mu2pt', 'mu2eta', 'mu2phi', 'mu2mass',
+        'mu3pt', 'mu3eta', 'mu3phi', 'mu3mass',
         'nmuons', 'validz',
         'leptonSFWeight','leptonTriggerSFWeight',
         'mu1idloose','mu1idmedium','mu1idtight',
@@ -403,10 +405,10 @@ def mcmm(cfg, **kwargs):
         'matchedgenmuon1pt',#'matchedgenmuon1eta','matchedgenmuon1phi',
         'matchedgenmuon2pt',#'matchedgenmuon2eta','matchedgenmuon2phi',
         'ngenmuons',
-        'genmupluspt','genmupluseta','genmuplusphi',
-        'genmuminuspt','genmuminuseta','genmuminusphi',
-        'genmu1pt','genmu1eta','genmu1phi',
-        'genmu2pt','genmu2eta','genmu2phi',
+        'genmupluspt', 'genmupluseta', 'genmuplusphi', 'genmuplusmass',
+        'genmuminuspt','genmuminuseta','genmuminusphi','genmuminusmass',
+        'genmu1pt','genmu1eta','genmu1phi','genmu1mass',
+        'genmu2pt','genmu2eta','genmu2phi','genmu2mass',
         ]
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZmmProducer',)
     cfg['Processors'] += [
