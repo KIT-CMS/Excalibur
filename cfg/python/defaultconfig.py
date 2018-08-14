@@ -34,7 +34,7 @@ def getBaseConfig(tagged=False, **kwargs):
         'TaggedJets' : 'ak4PFJetsCHS',
         # PU
         'PileupDensity' : 'pileupDensity',
-        'PackedPFCandidates': 'pfCandidates',
+        #'PackedPFCandidates': 'pfCandidates',
         # Pipelines
         'Pipelines': {
             'default': {
