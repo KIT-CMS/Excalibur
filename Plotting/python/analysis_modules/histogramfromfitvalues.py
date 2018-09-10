@@ -56,3 +56,5 @@ class HistogramFromFitValues(analysisbase.AnalysisBase):
 			nick = plotData.plotdict['histogram_from_fit_newnick'][hist_id]
 			plotData.plotdict['nicks'].append(nick)
 			plotData.plotdict['root_objects'][nick] = hist
+
+
