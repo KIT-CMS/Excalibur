@@ -18,13 +18,13 @@ def generate_dict(args=None, additional_dictionary=None, channel_dict="m"):
         'alpha': ['40,0,1'],
         'jet1area': ['40,0.3,0.9'],
         'jet1eta': ['20,-1.5,1.5'],
-        'jet1phi': ['20,-3.1415,3.1415',],
+        'jet1phi': ['20,-3.1415,3.1415', ],
         'jet1pt': ['40,0,250'],
         'jet2eta': ['20,-5,5'],
-        'jet2phi': ['20,-3.1415,3.1415',],
+        'jet2phi': ['20,-3.1415,3.1415', ],
         'jet2pt': ['30,0,75'],
         'met': ['40,0,100'],
-        'metphi': ['20,-3.1415,3.1415',],
+        'metphi': ['20,-3.1415,3.1415', ],
         'mpf': ['40,0,2'],
         'npu': ['31,-0.5,30.5'],
         'npumean': ['40,0,40'],
@@ -78,17 +78,21 @@ def generate_dict(args=None, additional_dictionary=None, channel_dict="m"):
     return x_dict
 
 
-def profplot_datamc(args=None, additional_dictionary=None, only_normalized=False, channel='m'):
+def profplot_datamc(args=None, additional_dictionary=None, channel='m'):
     """Profile Plot of RMS quantity in bins of alpha"""
     plots = []
     x_dict = generate_dict(channel_dict=channel)
 
     cut_quantity = 'alpha'  # x_quantity on the plot
+    x_range = [0.0, 2.0]  # range of resolutions
     # cut_binnings=['0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2 0.225 0.25 0.275 0.3'] # x_bins in plot
     cut_binning = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]  # x_bins in plot
 
     # plots_list = ['all', 'JER', 'PLI', 'ZRes', 'PTBal']
     plots_list = ['PLI', 'JER', 'ZRes', 'PTBal']
+    rms_quantities = []
+    rms_quantities_labels = []
+    rms_quantities_colors = []
 
     for plot_type in plots_list:
         if plot_type == 'JER':
@@ -153,15 +157,15 @@ def profplot_datamc(args=None, additional_dictionary=None, only_normalized=False
             label_list += [str(rms_quantities_labels[index2])]
             for index in range(len(cut_binning)-1):
                 nick = 'nick_' + str(rms_quantity) + '_' + str(index)
-                weight = cut_quantity + '>' + str(cut_binning[index]) + '&&' + \
-                         cut_quantity + '<' + str(cut_binning[index + 1])
+                weight = cut_quantity + '>' + str(cut_binning[index]) + '&&' + cut_quantity + '<' + str(
+                    cut_binning[index + 1])
                 d.update({
                     'x_expressions': d['x_expressions'] + [rms_quantity],  # y_expression in the plot
                     'nicks': d['nicks'] + [nick],
                     'labels': d['labels'] + [str(rms_quantities_labels[index2])
                                              # + r'$ \\mathit{\\rightarrow} \\mathrm{\\alpha}$'
                                              + '[' + str(cut_binning[index])
-                                             + ',' + str(cut_binning[index + 1])+ ']'],
+                                             + ',' + str(cut_binning[index + 1]) + ']'],
                     'colors': d['colors'] + [str(rms_quantities_colors[index2])],
                 })
                 if rms_quantity in x_dict:
@@ -184,7 +188,7 @@ def profplot_datamc(args=None, additional_dictionary=None, only_normalized=False
     return [PlottingJob(plots=plots, args=args)]
 
 
-def rms_profplot_datamc(args=None, additional_dictionary=None, only_normalized=False, channel='m'):
+def rms_profplot_datamc(args=None, additional_dictionary=None, channel='m'):
     """Profile Plot of RMS quantity in bins of alpha"""
     plots = []
     x_dict = generate_dict(channel_dict=channel)
@@ -194,6 +198,9 @@ def rms_profplot_datamc(args=None, additional_dictionary=None, only_normalized=F
     cut_binning = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]  # x_bins in plot
 
     plots_list = ['all', 'without_JER', 'JER', 'PLI', 'ZRes', 'PTBal']
+    rms_quantities = []
+    rms_quantities_labels = []
+    rms_quantities_colors = []
 
     for plot_type in plots_list:
         if plot_type == 'JER':
@@ -264,13 +271,13 @@ def rms_profplot_datamc(args=None, additional_dictionary=None, only_normalized=F
             nick_list = []
             for index in range(len(cut_binning)-1):
                 nick = 'nick_' + str(rms_quantity) + '_' + str(index)
-                weight = cut_quantity + '>' + str(cut_binning[index]) + '&&' + \
-                         cut_quantity + '<' + str(cut_binning[index + 1])
+                weight = cut_quantity + '>' + str(cut_binning[index]) + '&&' + cut_quantity + '<' + str(
+                    cut_binning[index + 1])
                 d.update({
                     'x_expressions': d['x_expressions'] + [rms_quantity],  # y_expression in the plot
                     'nicks': d['nicks'] + [nick],
                     # 'labels': d['labels'] + [nick],
-                    #'colors': d['colors'] + [str(rms_quantities_colors[index2])],
+                    # 'colors': d['colors'] + [str(rms_quantities_colors[index2])],
                 })
 
                 # update x range from predefined values:
@@ -379,8 +386,8 @@ def jer_determination_data_mc_zll(args=None):
             d['files'] = ['/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_2018-06-13/data17_ee_BCDEF_17Nov2017.root',
                           '/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_2018-06-13/mc17_ee_DYNJ_Madgraph.root']
 
-        plotting_jobs += rms_profplot_datamc(args, d, only_normalized=False, channel=channel)
-        plotting_jobs += profplot_datamc(args, d, only_normalized=False, channel=channel)
+        plotting_jobs += rms_profplot_datamc(args, d, channel=channel)
+        plotting_jobs += profplot_datamc(args, d, channel=channel)
 
         text_size = 15
         text_factor = 0.022
