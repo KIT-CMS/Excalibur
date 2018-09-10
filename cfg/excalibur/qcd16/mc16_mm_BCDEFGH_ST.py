@@ -4,12 +4,16 @@ import os
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', bunchcrossing='25ns')
     cfg["InputFiles"].set_input(
-        #ekppath='/storage/c/tberger/testfiles/skimming_output/mc/ZJet_DYJetsToLL_amcatnloFXFX-pythia8_RunIISummer16_testfile.root',
-        #bmspath='/storage/c/tberger/testfiles/skimming_output/mc/ZJet_DYJetsToLL_amcatnloFXFX-pythia8_RunIISummer16_localtestfile.root',
-        #ekppath='/storage/c/tberger/testfiles/skimming_output/mc/ZJet_DYJetsToLL_amcatnloFXFX-pythia8_RunIISummer16_inclPFcand_testfile.root',
-        bmspath="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberg-er/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISummer16/*.root",
-        nafpath="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISummer16/*.root",
-        #nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/testfiles/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16_testfile_noJTB.root",
+        bmspathtW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_top_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        bmspathtbarW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_antitop_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        #bmspaths="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_s-channel_inclusiveDecays_13TeV-amcatnlo-pythia8_RunIISummer16_noJTB/*.root",
+        #bmspathtt="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_top_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
+        #bmspathttbar="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_antitop_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
+        nafpathtW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_top_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        nafpathtbarW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_antitop_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        #nafpaths="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_s-channel_inclusiveDecays_13TeV-amcatnlo-pythia8_RunIISummer16_noJTB/*.root",
+        #nafpathtt="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_top_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
+        #nafpathttbar="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_antitop_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','leptoncuts','genleptoncuts', 'allleptoncuts','zjetcuts','genzjetcuts','allzjetcuts'],
@@ -53,8 +57,8 @@ def config():
     cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Trigger_EfficienciesAndSF_BCDEF.root")
     cfg['LeptonTrackingSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Tracking_EfficienciesAndSF_BCDEFGH.root")
 ##### MC specific properties: #####
-    cfg['NumberGeneratedEvents'] = 122055388 # from geteventsscript
-    cfg['GeneratorWeight'] =  0.670123731536
-    cfg['CrossSection'] = 1921.8*3
-    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
+    cfg['NumberGeneratedEvents'] = 6952830+6933094 #+2989199+67240808+38811017 
+    cfg['GeneratorWeight'] = 1.0 ## 0.624375 for s-channel +10.12*2989199+0.0*67240808+0.0*38811017
+    cfg['CrossSection'] = (38.09*6952830+38.06*6933094)/(6952830+6933094) ###### no xsec for last two sets available
+    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_TTJets_madgraphMLM-pythia8_RunIISummer16.root')
     return cfg

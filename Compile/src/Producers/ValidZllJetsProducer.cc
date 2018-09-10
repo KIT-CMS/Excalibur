@@ -1,66 +1,58 @@
 #include "Excalibur/Compile/interface/Producers/ValidZllJetsProducer.h"
 
-/**
-    \brief Producer for valid jets given the constraints of Z->ll+Jet analyses
 
-    This producer modifies the collection of valid jets to conform to the specific
-    requirements of the Z->ll+Jets analyses.
-    This producer should be run after any ValidJetsProducers, as it vetoes previously
-    produced jets.
-
-    Configuration settings:
-
-    MinZllJetDeltaRVeto (type: float) required distance between jets and leptons from Z decay
-*/
+// -- ValidZllJetsProducer
 
 std::string ValidZllJetsProducer::GetProducerId() const { return "ValidZllJetsProducer"; }
 
-void ValidZllJetsProducer::Init(ZJetSettings const& settings)
-{
+void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
+
     minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
     minPUJetID = settings.GetMinPUJetID();
 }
 
-bool ValidZllJetsProducer::DoesntJetPass(const KBasicJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
-    
-    bool validjet = true;
-    
+bool ValidZllJetsProducer::DoesJetPass(const KBasicJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
+
+    // check if the leptons from the Z boson decay are too near the jet
     if (product.m_zValid) {
-        validjet &= (ROOT::Math::VectorUtil::DeltaR(jet->p4,product.m_zLeptons.first->p4) > minZllJetDeltaRVeto)
-                && (ROOT::Math::VectorUtil::DeltaR(jet->p4,product.m_zLeptons.second->p4) > minZllJetDeltaRVeto);
-    }
-    
-    // unnecessary loop over jets to find the index
-    for (unsigned int it = 0; it < product.m_validJets.size(); ++it) {
-        if (jet == product.m_validJets[it]) {
-            validjet &= static_cast<KJet*>(product.GetValidJet(settings, event, it))->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata) > minPUJetID;
+        if ((ROOT::Math::VectorUtil::DeltaR(jet->p4, product.m_zLeptons.first->p4) < minZllJetDeltaRVeto) ||
+            (ROOT::Math::VectorUtil::DeltaR(jet->p4, product.m_zLeptons.second->p4) < minZllJetDeltaRVeto)) {
+            return false;
         }
     }
-    
-    return validjet;
-    
+
+    // check that PUJetID is above configured minimal value
+    const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...
+    if (kJet) {
+        if (kJet->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata) < minPUJetID) {
+            return false;
+        }
+    }
+
+    // all checks passed -> jet is valid
+    return true;
 }
+
+
+// -- ValidZllGenJetsProducer
 
 std::string ValidZllGenJetsProducer::GetProducerId() const { return "ValidZllGenJetsProducer"; }
 
-void ValidZllGenJetsProducer::Init(ZJetSettings const& settings)
-{
+void ValidZllGenJetsProducer::Init(ZJetSettings const& settings) {
+
     minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
 }
 
-void ValidZllGenJetsProducer::Produce(ZJetEvent const& event,
-                                   ZJetProduct& product,
-                                   ZJetSettings const& settings) const
-{
-    assert(event.m_genJets);
-    for (unsigned int jet=0; jet < ((KLVs*) event.m_genJets)->size(); ++jet) {
-        bool validjet = true;
-        for (unsigned int lep=0; lep<product.m_genLeptonsFromBosonDecay.size(); ++lep) {
-            validjet = validjet && ROOT::Math::VectorUtil::DeltaR( ((KLVs*) event.m_genJets)->at(jet).p4, product.m_genLeptonsFromBosonDecay[lep]->p4) > minZllJetDeltaRVeto;
-        }
-        if (validjet) {
-            product.m_simpleGenJets.push_back(&((KLVs*) event.m_genJets)->at(jet));
+bool ValidZllGenJetsProducer::DoesJetPass(const KLV& genJet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
+
+    // check if the leptons from the gen Z boson decay are too near the gen jet
+    if (product.m_genBosonLVFound) {
+        for (const auto& lep : product.m_genLeptonsFromBosonDecay) {
+            if (ROOT::Math::VectorUtil::DeltaR(genJet.p4, lep->p4) < minZllJetDeltaRVeto)
+                return false;
         }
     }
-}
 
+    // all checks passed -> genjet is valid
+    return true;
+}

@@ -15,6 +15,7 @@
 #include "Excalibur/Compile/interface/Producers/NeutrinoCounter.h"
 #include "Excalibur/Compile/interface/Producers/LeptonSFProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZProducer.h"
+#include "Excalibur/Compile/interface/Producers/ZJetDressedMuonsProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetGenParticleProducer.h"
 // filters
 #include "Excalibur/Compile/interface/Filters/ZJetCutsFilter.h"
@@ -68,6 +69,12 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new RecoZemProducer();
     else if(id == RecoZeemmProducer().GetProducerId())
         return new RecoZeemmProducer();
+    else if(id == ZJetDressedMuonsProducer().GetProducerId())
+        return new ZJetDressedMuonsProducer();
+    else if(id == ZJetDressedGenMuonsProducer().GetProducerId())
+        return new ZJetDressedGenMuonsProducer();
+    else if(id == ZJetGenPhotonsProducer().GetProducerId())
+        return new ZJetGenPhotonsProducer();
     else if(id == GenZmmProducer().GetProducerId())
         return new GenZmmProducer();
     else if(id == ValidGenZmmProducer().GetProducerId())
@@ -106,6 +113,8 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new ElectronEtaCut();
     else if (id == LeadingJetPtCut().GetFilterId())
         return new LeadingJetPtCut();
+    else if (id == LeadingGenJetPtCut().GetFilterId())
+        return new LeadingGenJetPtCut();
     else if (id == LeadingJetEtaCut().GetFilterId())
         return new LeadingJetEtaCut();
     else if (id == LeadingGenJetYCut().GetFilterId())
@@ -120,8 +129,6 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
 		return new GenHTCut();
 	else if (id == BackToBackCut().GetFilterId())
         return new BackToBackCut();
-    else if (id == EtaPhiCleaningCut().GetFilterId())
-        return new EtaPhiCleaningCut();
     else if (id == JetIDCut().GetFilterId())
         return new JetIDCut();
     else if (id == MinNMuonsCut().GetFilterId())

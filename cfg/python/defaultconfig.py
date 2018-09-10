@@ -34,7 +34,7 @@ def getBaseConfig(tagged=False, **kwargs):
         'TaggedJets' : 'ak4PFJetsCHS',
         # PU
         'PileupDensity' : 'pileupDensity',
-        
+        #'PackedPFCandidates': 'pfCandidates',
         # Pipelines
         'Pipelines': {
             'default': {
@@ -53,7 +53,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'run', 'lumi', 'event',
                     # Z quantities
                     'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
-                    'phistareta', 
+                    'phistareta', 'ystar', 'yboost',
                     'zl1pt', 'zl1eta', 'zl1phi',
                     'zl2pt', 'zl2eta', 'zl2phi',
                     # Leading jet
@@ -86,11 +86,11 @@ def getBaseConfig(tagged=False, **kwargs):
         # Processors
         'Processors': [
             'producer:ValidTaggedJetsProducer',
+            'producer:ValidZllJetsProducer',  # needs to run before the 'ZJetCorrectionsProducer'
             'producer:ZJetCorrectionsProducer',
             'producer:TypeIMETProducer',
             'producer:JetSorter',
             'producer:JetRecoilProducer',
-            'producer:ValidZllJetsProducer',
             ],
         # Wire Kappa objects
         'EventMetadata' : 'eventInfo',
@@ -113,17 +113,18 @@ def data(cfg, **kwargs):
 def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
     cfg['Processors'] += [
+        'producer:GenParticleProducer',
+        'producer:ValidZllGenJetsProducer',
         'producer:RecoJetGenPartonMatchingProducer',
         'producer:RecoJetGenJetMatchingProducer',
-        'producer:GenParticleProducer',
         'producer:NeutrinoCounter',
-        'producer:ValidZllGenJetsProducer',
         ]
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
         'run','lumi','event','npu',
-        'genjet1pt','genjet1eta','genjet1y','genjet1phi','uncleanedgenjet1pt','uncleanedgenjet1eta',
-        'genjet2pt','genjet2eta','genjet2y','genjet2phi','uncleanedgenjet2pt','uncleanedgenjet2eta',
+        'genjet1pt','genjet1eta','genjet1y','genjet1phi',
+        'genjet2pt','genjet2eta','genjet2y','genjet2phi',
+        'genjet3pt','genjet3eta','genjet3y','genjet3phi',
         'jet1flavor',
         'ngenjets','ngenjets10','ngenjets30',
         'genHT',
@@ -131,9 +132,9 @@ def mc(cfg, **kwargs):
         'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1phi',
         'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
-        'genphistareta',
-        'genzlepton1pt','genzlepton1eta','genzlepton1phi',
-        'genzlepton2pt','genzlepton2eta','genzlepton2phi',
+        'genphistareta', 'genystar', 'genyboost',
+        'genzl1pt','genzl1eta','genzl1phi',
+        'genzl2pt','genzl2eta','genzl2phi',
         'genzfound','validgenzfound',
         'deltarzgenz',
         'ngenneutrinos',
@@ -176,19 +177,18 @@ def mc(cfg, **kwargs):
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
-    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
-    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
-    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
-    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
+    # switch cleaning on if necessary (check cleaning masks!)
+    #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    #cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+    #cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_23Sep2016_ReReco/hotjets-runBCDEFGH.root")
+    #cfg['JetEtaPhiCleanerHistogramNames'] = ["h2jet"]
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = 2016
     cfg['CutJetIDFirstNJets'] = 2
-    cfg['CutEtaPhiCleaningFile'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning, must contain a TH2D called "h2jet"
-    cfg['CutEtaPhiCleaningPt'] = 15 # minimum jet pt for eta-phi-cleaning
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
-    cfg['MinPUJetID'] = -1.5
+    cfg['MinPUJetID'] = -1000#-0.4
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely
@@ -207,6 +207,7 @@ def _2017(cfg, **kwargs):
     cfg['Year'] = 2017
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2017  # for object-based JetID
+    cfg['MinPUJetID'] = -9999  # no PUJetID for 2017
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely
@@ -242,7 +243,6 @@ def ee(cfg, **kwargs):
     # The order of these producers is important!
     cfg['Processors'] = [	
                             'producer:ZJetValidElectronsProducer',
-                            'producer:RecoZmmProducer',
                             'producer:ZeeProducer',	
                             ]+cfg['Processors']
         
@@ -289,7 +289,7 @@ def ee(cfg, **kwargs):
     cfg['CutElectronEtaMax'] = 2.4
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
-    cfg['CutLeadingJetYMax'] = 2.5
+    cfg['CutLeadingJetYMax'] = 2.4
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -306,13 +306,14 @@ def mcee(cfg, **kwargs):
         #'genParticleMatchDeltaR',
     ]
     # reco-gen electron matching producer
-    cfg['Processors'] += ['producer:GenZeeProducer', 'producer:RecoElectronGenParticleMatchingProducer']
-    cfg['RecoElectronMatchingGenParticleStatus'] = 3
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZeeProducer',)
+    cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
+    cfg['RecoElectronMatchingGenParticleStatus'] = 1  # take Pythia8 status 1 as default here
     cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.3
     cfg["RecoElectronMatchingGenParticlePdgIds"] = [11, -11]
     cfg["InvalidateNonGenParticleMatchingRecoElectrons"] = False
     cfg['GenParticleTypes'] += ['genElectron']
-    cfg['GenElectronStatus'] = 3
+    cfg['GenElectronStatus'] = 1  # take Pythia8 status 1 as default here
     # KappaCollectionsConsumer: dont add taus or taujets:
     cfg['BranchGenMatchedElectrons'] = True
     cfg['AddGenMatchedTaus'] = False
@@ -334,13 +335,13 @@ def mm(cfg, **kwargs):
     cfg['Muons'] = 'muons'
     cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
     # The order of these producers is important!
-    cfg['Processors'] = [	#'producer:MuonCorrectionsProducer',
+    cfg['Processors'] = [   #'producer:MuonCorrectionsProducer',
+                            #'producer:PFCandidatesProducer',
                             'producer:ValidMuonsProducer',
-                            'producer:ZmmProducer', # seems to destroy GenZ
                             'producer:RecoZmmProducer',
                             ]+cfg['Processors']
     cfg['Pipelines']['default']['Processors'] = [
-        'filter:ValidJetsFilter',
+        #'filter:ValidJetsFilter',
         'filter:LeadingJetPtCut',
         'filter:LeadingJetEtaCut',
         'filter:MinNMuonsCut',
@@ -356,21 +357,22 @@ def mm(cfg, **kwargs):
         ]
     cfg['Pipelines']['default']['Consumers'] += ['KappaMuonsConsumer',]
     # In case of Muon Corrections
-    #cfg['ValidMuonsInput'] = "corrected"
+    #cfg['ValidMuonsInput'] = "corrected" # is this really doing something???
     
     # validMuonsProducer
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
     cfg['MuonIsoType'] = 'pf'
     #cfg['UseHighPtID'] = True
-    
+    cfg['MaxZJetDressedMuonDeltaR'] = 0.1
+
     cfg['Pipelines']['default']['Quantities'] += [
-        'mupluspt', 'mupluseta', 'muplusphi', 'muplusiso',
-        'muminuspt', 'muminuseta', 'muminusphi', 'muminusiso',
-        'mu1pt', 'mu1eta', 'mu1phi',
+        'mupluspt', 'mupluseta', 'muplusphi', 'muplusmass', 'muplusiso',
+        'muminuspt', 'muminuseta', 'muminusphi', 'muminusmass', 'muminusiso',
+        'mu1pt', 'mu1eta', 'mu1phi', 'mu1mass',
         'mu1iso', 'mu1sumchpt', 'mu1sumnhet', 'mu1sumpet', 'mu1sumpupt',
-        'mu2pt', 'mu2eta', 'mu2phi',
-        'mu3pt', 'mu3eta', 'mu3phi',
+        'mu2pt', 'mu2eta', 'mu2phi', 'mu2mass',
+        'mu3pt', 'mu3eta', 'mu3phi', 'mu3mass',
         'nmuons', 'validz',
         'leptonSFWeight','leptonTriggerSFWeight',
         'mu1idloose','mu1idmedium','mu1idtight',
@@ -382,7 +384,7 @@ def mm(cfg, **kwargs):
     cfg['CutMuonEtaMax'] = 2.3
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
-    cfg['CutLeadingJetYMax'] = 2.5
+    cfg['CutLeadingJetYMax'] = 2.4
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -403,10 +405,10 @@ def mcmm(cfg, **kwargs):
         'matchedgenmuon1pt',#'matchedgenmuon1eta','matchedgenmuon1phi',
         'matchedgenmuon2pt',#'matchedgenmuon2eta','matchedgenmuon2phi',
         'ngenmuons',
-        'genmupluspt','genmupluseta','genmuplusphi',
-        'genmuminuspt','genmuminuseta','genmuminusphi',
-        'genmu1pt','genmu1eta','genmu1phi',
-        'genmu2pt','genmu2eta','genmu2phi',
+        'genmupluspt', 'genmupluseta', 'genmuplusphi', 'genmuplusmass',
+        'genmuminuspt','genmuminuseta','genmuminusphi','genmuminusmass',
+        'genmu1pt','genmu1eta','genmu1phi','genmu1mass',
+        'genmu2pt','genmu2eta','genmu2phi','genmu2mass',
         ]
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZmmProducer',)
     cfg['Processors'] += [
@@ -422,6 +424,7 @@ def mcmm(cfg, **kwargs):
         'filter:ValidGenZCut',
         'filter:GenZPtCut',
         'filter:LeadingGenJetYCut',
+        'filter:LeadingGenJetPtCut',
         ]
     cfg['RecoMuonMatchingGenParticleStatus'] = 1
     cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5 # TODO: check if lower cut is more reasonable

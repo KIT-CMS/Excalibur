@@ -10,14 +10,15 @@ def config():
         nafpath="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_RunIISummer16/*.root",
         #nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/testfiles/Zll_DYJetsToLL_M-50_madgraphMLM-herwigpp_RunIISummer16_testfile_noJTB.root",
         )
-    cfg = configtools.expand(cfg, ['nocuts', 'zcuts', 'allzcuts', 'genzcuts'], ['None'])#,'L1L2L3''leptoncuts','genleptoncuts', 'allleptoncuts'
+cfg = configtools.expand(cfg, 
+                                ['nocuts','leptoncuts','genleptoncuts', 'allleptoncuts','zjetcuts','genzjetcuts','allzjetcuts'],
+                                ['None','L1','L1L2L3'])#,'zcuts','genzcuts','allzcuts'
     configtools.remove_quantities(cfg, ['jet1flavor','jet1rc'])
     configtools.add_quantities(cfg, [   'mu1IDSFWeight', 'mu2IDSFWeight', 'leptonIDSFWeight',
                                         'mu1IsoSFWeight','mu2IsoSFWeight','leptonIsoSFWeight',
-                                        'mu1TrackingSFWeight','mu2TrackingSFWeight','leptonTrackingSFWeight',
-                                        'mu1TriggerSFWeight','mu2TriggerSFWeight','leptonTriggerSFWeight',
-                                        #'leptonSFWeight','leptonTriggerSFWeight',
-                                        #'jet1puidraw',
+                                        'mu1TrackingSFWeight','mu2TrackingSFWeight','leptonTrackingSFWeight',  
+                                        'mu1TriggerSFWeight','mu2TriggerSFWeight','leptonTriggerSFWeight',     
+                                        'jet1puidraw',
                                         ])
 ##### Add Producers: #####
     cfg['Processors'] = [  'producer:MuonTriggerMatchingProducer',
@@ -32,14 +33,17 @@ def config():
 ##### Specify input sources for Jets & Muons: #####
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
     cfg['ValidMuonsInput'] = "corrected"
-    cfg['TaggedJets'] = 'ak4PFJets' # JTB switched off, non-CHS Jets
     cfg['GenJets'] = 'ak4GenJets'   # JTB switched off
+    cfg['TaggedJets'] = 'ak4PFJetsCHS'
+    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V11_MC/Summer16_07Aug2017_V11_MC')
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
-    cfg['CutMuonPtMin'] = 20.0
+    cfg['CutMuonPtMin'] = 25.0
     cfg['CutMuonEtaMax'] = 2.4
     cfg['ZMassRange'] = 20.0
+    cfg['CutLeadingJetPtMin'] = 15.0
+    cfg['MinPUJetID'] = -0.4
     cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### LeptonSF files: #####

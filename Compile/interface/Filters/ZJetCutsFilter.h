@@ -498,46 +498,6 @@ class AlphaCut : public ZJetFilterBase
   private:
     float alphaMax = 0;
 };
-////////////////////
-// EtaPhiCleaning //
-////////////////////
-class EtaPhiCleaningCut : public ZJetFilterBase
-{
-  public:
-    std::string GetFilterId() const override { return "EtaPhiCleaningCut"; }
-    
-    EtaPhiCleaningCut() : ZJetFilterBase() {}
-    
-    void Init(ZJetSettings const& settings) override
-    {
-        ZJetFilterBase::Init(settings);
-        EtaPhiPath = settings.GetCutEtaPhiCleaningFile();
-        EtaPhiPt = settings.GetCutEtaPhiCleaningPt();
-        const char * EtaPhiFile = EtaPhiPath.c_str();
-        TFile *f = new TFile(EtaPhiFile,"READ");
-        assert(f && !f->IsZombie());		
-        h2jet = (TH2D*)f->Get("h2jet"); assert(h2jet);
-    }
-    
-    bool DoesEventPass(ZJetEvent const& event,
-                        ZJetProduct const& product,
-                        ZJetSettings const& settings) const override
-    {
-    bool jet_clean = true;
-    for(unsigned int i = 0; i < product.GetValidJetCount(settings, event);i++){
-        if (jet_clean && product.GetValidJet(settings, event, i)->p4.Pt()>EtaPhiPt){
-            jet_clean = (h2jet->GetBinContent(h2jet->FindBin(
-                        product.GetValidJet(settings, event, i)->p4.Eta(),
-                        product.GetValidJet(settings, event, i)->p4.Phi() )) < 0);
-            }
-        }
-    return(jet_clean);
-    }
-    private:
-        TH2D *h2jet;
-        std::string EtaPhiPath;
-        float EtaPhiPt;
-};
 
 ///////////
 // JetID //
@@ -749,6 +709,35 @@ class GenZPtCut : public ZJetFilterBase
 
   private:
     float zPtMin = 0;
+};
+
+////////////////////
+// Leading Jet Pt //
+////////////////////
+class LeadingGenJetPtCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "LeadingGenJetPtCut"; }
+
+    LeadingGenJetPtCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        leadingJetPtMin = settings.GetCutLeadingJetPtMin();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (product.m_simpleGenJets.size()>0)
+                ? (product.m_simpleGenJets.at(0)->p4.Pt() > leadingJetPtMin)
+                : false;
+    }
+
+  private:
+    float leadingJetPtMin = 0;
 };
 
 //////////////////////////////

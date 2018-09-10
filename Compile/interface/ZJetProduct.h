@@ -49,6 +49,9 @@ class ZJetProduct : public KappaProduct
 
     // Added by NeutrinoCounter
     long n_neutrinos = 0;
+    
+    // Added by ZJetDressedMuonsProducer
+    std::vector<KGenParticle*> m_genPhotons;
 
     /////////////////////////////
     // Functions for Consumers //
