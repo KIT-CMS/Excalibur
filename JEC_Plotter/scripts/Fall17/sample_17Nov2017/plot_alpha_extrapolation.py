@@ -99,8 +99,8 @@ def _workflow(sample_data, sample_mc, jecv):
             _ph.make_plots()
 
 if __name__ == "__main__":
-    _jecv_mc = "V4"
-    for _jecv in ("V6",):
+    _jecv_mc = "V10"
+    for _jecv in ("V10",):
         for _channel in ("mm", "ee"):
             _workflow(sample_data=SAMPLES['Data_Z{}_BCDEF_Fall17_JEC{}'.format(_channel, _jecv)],
                       sample_mc=SAMPLES['MC_Z{}_DYNJ_Fall17_JEC{}'.format(_channel, _jecv_mc)],

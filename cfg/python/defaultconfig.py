@@ -309,6 +309,7 @@ def mcee(cfg, **kwargs):
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZeeProducer',)
     cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
     cfg['RecoElectronMatchingGenParticleStatus'] = 1  # take Pythia8 status 1 as default here
+    # cfg['RecoElectronMatchingGenParticleStatus'] = 3
     cfg['DeltaRMatchingRecoElectronGenParticle'] = 0.3
     cfg["RecoElectronMatchingGenParticlePdgIds"] = [11, -11]
     cfg["InvalidateNonGenParticleMatchingRecoElectrons"] = False
