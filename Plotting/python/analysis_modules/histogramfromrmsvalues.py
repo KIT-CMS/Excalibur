@@ -23,7 +23,8 @@ class HistogramFromRMSValues(analysisbase.AnalysisBase):
         self.histogram_from_rmsvalues_options.add_argument("--histogram-from-rms-x-values", type=str, nargs="+",
                                                            default=[], help="x-values of the new histogram.")
         self.histogram_from_rmsvalues_options.add_argument("--histogram-from-rms-truncations", type=str, nargs="+",
-                                                           default=[], help="Remaining percentage of truncated RMS for each nick, e.g. 98.5%.")
+                                                           default=[], help="Remaining percentage of truncated RMS for \
+                                                           each nick, e.g. 98.5%.")
 
     def run(self, plot_data=None):
         for hist_id in xrange(max(len(plot_data.plotdict['histogram_from_rms_newnicks']),
@@ -47,16 +48,30 @@ class HistogramFromRMSValues(analysisbase.AnalysisBase):
                     # rms_error = root_hist.GetRMSError()
                     integral_total = root_hist.Integral()
                     mean_bin = root_hist.GetXaxis().FindBin(mean)
-                    width_bins = 0
+                    bin_distance_from_mean = 0  # Start value for scanning width
+                    first_bin = 0
+                    last_bin = root_hist.GetNbinsX() - 1
                     deviation = 100.0
-                    while deviation > (100.0 - float(truncation)) and width_bins <= mean_bin:
-                        width_bins += 1
-                        integral_new = root_hist.Integral(mean_bin - width_bins, mean_bin + width_bins)
+
+                    while deviation > (100.0 - float(truncation)) and (mean_bin - bin_distance_from_mean) > first_bin \
+                            and (mean_bin + bin_distance_from_mean) < last_bin:
+                        bin_distance_from_mean += 1
+                        integral_new = root_hist.Integral(mean_bin - bin_distance_from_mean, mean_bin +
+                                                          bin_distance_from_mean)
                         deviation = (integral_total - integral_new) / integral_total * 100
+
+                    x_bin_min = mean_bin - bin_distance_from_mean
+                    x_bin_max = mean_bin + bin_distance_from_mean
+                    x_value_min = root_hist.GetBinCenter(x_bin_min)
+                    x_value_max = root_hist.GetBinCenter(x_bin_max)
+
                     print 'Reached ' + str(100.0-deviation) + '% RMS truncation of specified ' + str(truncation) + '%:'
-                    print '    -> Using bins [' + str(mean_bin - width_bins) + ',' + str(mean_bin + width_bins) + ']'
-                    root_hist.SetAxisRange(root_hist.GetBinCenter(mean_bin - width_bins), root_hist.GetBinCenter(
-                        mean_bin + width_bins))
+                    print '    -> Using bins [' + str(x_bin_min) + ',' + str(x_bin_max) + '] with values [' + str(
+                        x_value_min) + ',' + str(x_value_max) + ']'
+
+                    # root_hist.SetAxisRange(x_value_min, x_value_max)  # same effect as GetXaxis().SetRange()
+                    root_hist.GetXaxis().SetRange(x_bin_min, x_bin_max)
+
                 hist.SetBinContent(index+1, root_hist.GetRMS())
                 hist.SetBinError(index+1, root_hist.GetRMSError())
                 # hist.GetXaxis().SetBinLabel(index+1, nick)
