@@ -85,7 +85,7 @@ elif [ $USER = "afriedel" ]; then
     export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/afriedel/Excalibur"
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
-    if [[ $HOSTNAME = *ekpbms* ]]; then 
+    if [[ $HOSTNAME = *bms* ]]; then 
         #export EXCALIBUR_WORK=/home/tberger/excalibur_work/
         export EXCALIBUR_WORK=/storage/c/tberger/excalibur_work/
     else 

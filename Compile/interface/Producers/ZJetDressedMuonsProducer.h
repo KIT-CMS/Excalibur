@@ -45,7 +45,8 @@ class ZJetDressedGenMuonsProducer : public ZJetProducerBase
     void Produce(ZJetEvent const& event,
                  ZJetProduct& product,
                  ZJetSettings const& settings) const override;
-
+                 
+    int FindMom(int idx, ZJetEvent const& event) const;
 };
 
 class ZJetGenPhotonsProducer : public ZJetProducerBase
