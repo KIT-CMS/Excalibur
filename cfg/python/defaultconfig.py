@@ -95,7 +95,7 @@ def getBaseConfig(tagged=False, **kwargs):
         # Wire Kappa objects
         'EventMetadata' : 'eventInfo',
         'LumiMetadata' : 'lumiInfo',
-        'VertexSummary': 'offlinePrimaryVerticesSummary', # What is the difference to 'goodOfflinePrimaryVerticesSummary'?
+        'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
     }
 
     if tagged:
@@ -177,18 +177,23 @@ def mc(cfg, **kwargs):
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
+
     # switch cleaning on if necessary (check cleaning masks!)
     #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     #cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
     #cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_23Sep2016_ReReco/hotjets-runBCDEFGH.root")
     #cfg['JetEtaPhiCleanerHistogramNames'] = ["h2jet"]
+
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = 2016
     cfg['CutJetIDFirstNJets'] = 2
+    #cfg['CutEtaPhiCleaningFile'] = os.path.join(configtools.getPath() , 'data/hotjets-runBCDEFGH.root') #File used for eta-phi-cleaning, must contain a TH2D called "h2jet"
+    #cfg['CutEtaPhiCleaningPt'] = 15 # minimum jet pt for eta-phi-cleaning
+
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
-    cfg['MinPUJetID'] = -1000#-0.4
+    cfg['MinPUJetID'] = -9999
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
     # create empty containers to allow using references prematurely
@@ -440,11 +445,22 @@ def mcmm(cfg, **kwargs):
     cfg['AddGenMatchedTauJets'] = False
 
 def data_2016(cfg, **kwargs):
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017BCD_V1_DATA/Summer16_07Aug2017BCD_V1_DATA')
+    _jec_string = kwargs['JEC']  # mandatory kwarg indicating JEC
+    _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (for selecting the right jet eta-phi cleaning file)
+    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
+
+    # object-based eta-phi cleaning (recommended jul. 2018)
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_07Aug2017_Legacy/hotjets-run{}.root".format(_jec_iov))
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+
 
 def mc_2016(cfg, **kwargs):
     #cfg['PileupWeightFile'] = os.path.join(configtools.getPath(),'data/pileup/pileup_weights_BCDEFGH_13TeV_23Sep2016ReReco_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V1_MC/Summer16_07Aug2017_V1_MC')
+    _jec_string = kwargs['JEC']  # mandatory kwarg indicating JEC
+    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_MC/{0}_MC'.format(_jec_string))
 
 def _2016mm(cfg, **kwargs):
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')

@@ -1,0 +1,7 @@
+ROOT files for cleaning "hot towers" due to noisy ECAL/HCAL.
+Provided May 17, 2018 by Hannu Siikonen [http://hsiikone.web.cern.ch/hsiikone/hotcoldjets/17-17Nov17ReReco/rootfiles/hotjets-17runBCDEF.root]
+
+Also includes an additional map to exclude the following regions:
+
+    (eta, phi) in {[-2.964, -2.853] + [2.853, 2.964]} x {[-2.6, -2.2] + [0.6, 1.0] + [2.2, 2.6] + [2.9, 3.1]}
+
