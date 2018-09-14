@@ -1,16 +1,21 @@
 import configtools
 import os
+import sys
 
-RUN = 'BCDEFGH'
-CH = 'mm'
-JEC = 'Summer16_07Aug2017_V11'
+# -- import common information
+sys.path.append(os.path.dirname(__file__))
+from common import JEC_BASE, JEC_VERSION, SE_PATH_PREFIXES
+
+RUN='BCDEFGH'
+CH='mm'
+JEC='{}_{}'.format(JEC_BASE, JEC_VERSION)
+
 
 def config():
 	cfg = configtools.getConfig('mc', 2016, CH, JEC=JEC)
 	cfg["InputFiles"].set_input(
-		#ekpath="file:///storage/c/dsavoiu/skimming-test/mc/RunIISummer16/DY2JetsToLL/Zll_DY2JetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16_job_13310_skim8026_jtb_met.root",
-		bmspath="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DY2JetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16/*.root",
-		nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/MC-Summer16_metfix/Zll_DY2JetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16/*.root",
+		bmspath="{}/tberger/Skimming/MC-Summer16_metfix/Zll_DY2JetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16/*.root".format(SE_PATH_PREFIXES['srm_desy_dcache']),
+		nafpath="{}/tberger/Skimming/MC-Summer16_metfix/Zll_DY2JetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16/*.root".format(SE_PATH_PREFIXES['local_desy_dcache']),
 	)
 
 	cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
