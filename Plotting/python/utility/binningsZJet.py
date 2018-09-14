@@ -22,7 +22,7 @@ class BinningsDictZJet(BinningsDict):
             'eta':" ".join([str(y) for y in [-i for i in [float(x) for x in absetabins.split(" ")][7:0:-1]]+[float(x) for x in absetabins.split(" ")]]),
             'phi': '30,-3.14159,3.14159',
             'abseta': absetabins,
-            
+            'alpha': '20,0,2',
             'deltaphijet1jet2': '25,-0,3.14159',
             'deltaetajet1jet2': '20,0,5',
             'deltarjet1jet2': '40,0,7',
@@ -53,7 +53,7 @@ class BinningsDictZJet(BinningsDict):
             'zy':           '30,-3,3',
             'abs(zy)':      '12,0,2.4',
             'zmass':        '40,71,111',
-            
+            'zphi':         '30,-3.14159,3.14159',
             'njets':        '10,0,10',
             'njets30':      '10,0,10',
             'jet1eta':      '30,-3,3',
@@ -63,12 +63,12 @@ class BinningsDictZJet(BinningsDict):
             'jet1pt':       '5 10 20 30 50 75 125 175 225 300 400',
             'jet2pt':       '5 10 20 30 40 50 75 125 175 250',
             'jet3pt':       '5 10 20 30 40 50 75 125 175 250',
-            #'jet1pt':       '39,1,30',
-            #'jet2pt':       '39,1,30',
-            #'jet3pt':       '39,1,30',
             'jet1y':        '30,-5.4,5.4',
             'jet2y':        '30,-5.4,5.4',
             'jet3y':        '30,-5.4,5.4',
+            'jet1phi':      '31,-3.142,3.142',
+            'jet2phi':      '31,-3.142,3.142',
+            'jet3phi':      '31,-3.142,3.142',
             'jzb':          '20,-200,200',
             
             'ystar':    '6,0,3',#'6,0,3',#
@@ -119,11 +119,15 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
                 })
     if obs == 'mupluspt' or obs == 'muminuspt':
         d.update({
-            'x_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 300'],
-            'y_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 300'],
+            'x_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 350'],
+            'y_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 350'],
             })
-    #if obs == 'jet1pt':
-     #   d.update({'x_bins': ['5 10 20 30 50 75 125 175 225 300 400'] })
+    if obs == 'zy' or obs =='jet1y':
+        d.update({'x_bins': ['-3.0 -2.8 -2.6 -2.4 -2.2 -2.0 -1.8 -1.6 -1.4 -1.2 -1.00 -0.8 -0.6 -0.4 -0.2 0.0 0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0']})
+    if obs == 'jet1pt':
+        d.update({'x_bins': ['5 10 20 30 50 75 125 175 225 300 400'] })
+    if obs == 'yboost' or obs=='ystar':
+        d.update({'x_bins': ['0.0 0.5 1.0 1.5 2.0 2.5']})
     if obs=='phistareta':
         d.update({'x_ticks': [1, 2, 4, 10, 25, 100]})
         if ystarbin==(0.0,0.5) and yboostbin==(2.0,2.5):
