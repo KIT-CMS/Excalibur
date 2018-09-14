@@ -59,17 +59,18 @@ _ADDITIONAL_CUTS_ZPT = [
 
 
 if __name__ == "__main__":
-    for _jecv_mc, _jecv_data in [("V10", "V10"), ("V4", "V6")]:
+    #for _jecv_mc, _jecv_data in [("V10", "V10")]:
+    for _jecv_mc, _jecv_data in [("V24", "V24")]:
         for _channel in ("mm", "ee"):
             #for _corr_level in ("L1L2L3", "L1L2L3Res", "L1L2Res"):
-            for _corr_level in ("L1L2Res",):
-                if _corr_level == "L1L2Res" and _jecv_data != "V10":
+            for _corr_level in ("L1L2L3", "L1L2L3Res"):
+                if _corr_level == "L1L2Res" and _jecv_data not in ("V10", "V24"):
                     continue
                 _plot_collection = plot_data_mc_profiles(
                     sample_data=SAMPLES['Data_Z{}_BCDEF_Fall17_JEC{}'.format(_channel, _jecv_data)],
                     sample_mc=SAMPLES['MC_Z{}_DYNJ_Fall17_JEC{}'.format(_channel, _jecv_mc)],
                     selection_cuts=_SELECTION_CUTS,
-                    subplot_cuts=RUN_PERIOD_CUT_DICTS,
+                    subplot_cuts=RUN_PERIOD_CUT_DICTS, #[4:5],
                     jec_correction_string=_corr_level,
                     quantity_pairs=_QUANTITY_PAIRS,
                     sample_label="17Nov2017",

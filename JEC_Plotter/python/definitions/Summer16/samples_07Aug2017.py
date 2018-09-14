@@ -14,6 +14,10 @@ _SAMPLE_DIR_DICT = dict(
     V6="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V6_2018-03-05",
     V6_egmUpdate="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V6_egmUpdate_2018-03-28",
     V6_rawECAL="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V6_rawECALv2_2018-04-04",
+    V12_noEGMss="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V12_noEGMss_2018-07-15",
+    V12_backportEGMss="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V12_backportEGMss_2018-07-27",
+    V12_backportEGMss_npvGood="/storage/c/dsavoiu/excalibur_results_calibration/Summer16/07Aug2017_V12_backportEGMss_npvGood_2018-08-04",
+    V15="/ceph/dsavoiu/JEC/Summer16/07Aug2017_V15_2018-09-14",
 )
 
 SAMPLES = dict()

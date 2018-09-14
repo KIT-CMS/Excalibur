@@ -59,13 +59,14 @@ _cut_final_no_eta = CutSet("basicToNoEta",
 _SELECTION_CUTS = [
     SELECTION_CUTS['finalcuts'],
     SELECTION_CUTS['basiccuts'] + _cut_final_no_eta,
-    SELECTION_CUTS['basiccuts'],
-    SELECTION_CUTS['nocuts']
+    #SELECTION_CUTS['basiccuts'],
+    #SELECTION_CUTS['nocuts']
 ]
 
 def _workflow(sample, jecv):
     _phs = []
-    for _run_period_cut_name, _run_period_cut in ADDITIONAL_CUTS['run_periods'].iteritems():
+    for _run_period_cut_name, _run_period_cut in ADDITIONAL_CUTS['jec_iovs'].iteritems():
+    #for _run_period_cut_name, _run_period_cut in ADDITIONAL_CUTS['run_periods'].iteritems():
 
         _ph = PlotHistograms2D(
             basename="eta_phi_occupancy_2D_07Aug2017_{}".format(_run_period_cut_name),
@@ -86,7 +87,7 @@ def _workflow(sample, jecv):
         _ph.make_plots()
 
 if __name__ == "__main__":
-    for _jecv in ("V6",):
+    for _jecv in ("V12_backportEGMss",):
         for _channel in ("mm", "ee"):
             _workflow(sample=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)], jecv=_jecv)
 

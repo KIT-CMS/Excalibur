@@ -10,6 +10,7 @@ import os
 
 _SAMPLE_DIR_DICT = dict(
     V10="/storage/c/dsavoiu/excalibur_results_calibration/Fall17/09May2018_V10_2018-06-22",
+    V10_noMETmodification="/storage/c/dsavoiu/excalibur_results_calibration/Fall17/09May2018_V10_noMETmodification_2018-07-11",
 )
 
 SAMPLES = dict()
