@@ -63,6 +63,11 @@ if [ -d "/storage/a/$USER/zjet" ]; then
     export EXCALIBUR_WORK=/storage/a/$USER/zjet
 fi
 
+if [[ $HOSTNAME = *bms* ]]; then
+         export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
+         export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
+    fi
+
 # Set some user specific variables
 if [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
