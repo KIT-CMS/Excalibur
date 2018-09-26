@@ -7,7 +7,6 @@ export ARTUSPATH=$EXCALIBURPATH/../Artus
 export PLOTCONFIGS=$EXCALIBURPATH/Plotting/configs
 export PYTHONLINKDIR=$EXCALIBURPATH/../python-links
 export PATH=$PATH:$CMSSW_BASE/../grid-control:$CMSSW_BASE/../grid-control/scripts
-source /cvmfs/grid.cern.ch/emi3ui-latest/etc/profile.d/setup-ui-example.sh
 
 # source Artus ini script
 source $ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh
@@ -72,22 +71,8 @@ if [[ $HOSTNAME = *bms* ]]; then
 if [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
     export EXCALIBUR_WORK=/portal/ekpbms2/home/cheidecker/zjets/
-elif [ $USER = "wayand" ]; then
-    echo "Hallo Stefan, schoen dich zu sehen "
-    #export EXCALIBUR_WORK=/storage/8/wayand/zjets/
-    export EXCALIBUR_WORK=/portal/ekpbms1/home/wayand/JEC/
-    export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
-elif [ $USER = "swayand" ]; then
-    echo "Hallo Stefan, schoen dich auf der NAF zu sehen "
-    export EXCALIBUR_WORK=/nfs/dust/cms/user/swayand/JEC/
-    export EXCALIBUR_SE="srm://dgridsrm-fzk.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/dcms/disk-only/store/user/swayand/excalibur/"
-    export EXCALIBURBRILSSH="swayand@lxplus.cern.ch"
-    export HARRY_REMOTE_USER="wayand"
-    export HARRY_USERPC="ekplx23.physik.uni-karlsruhe.de"
-elif [ $USER = "afriedel" ]; then
-    export EXCALIBURBRILSSH="afriedel@lxplus.cern.ch"
-    export EXCALIBUR_WORK=/storage/a/afriedel/zjets/
-    export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/afriedel/Excalibur"
+    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/cheidecker/Excalibur"
+    export HARRY_USERPC="lx26.etp.kit.edu"
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     if [[ $HOSTNAME = *bms* ]]; then 
