@@ -59,9 +59,15 @@ _ADDITIONAL_CUTS_ZPT = [
 
 
 if __name__ == "__main__":
-    for _jecv in ("V6",):
-        for _channel in ("mm", "ee"):
-            for _corr_level in ("L1L2L3",):
+    #for _jecv in ("V6", "V12_noEGMss",):
+    #for _jecv in ("V12_noEGMss", "V12_backportEGMss"):
+    #for _jecv in ("V12_backportEGMss", "V12_backportEGMss_npvGood"):
+    for _jecv in ("V15",):
+        #for _channel in ("mm", "ee"):
+        for _channel in ("mm",):
+            for _corr_level in ("L1L2L3", "L1L2Res",):
+                if _corr_level == "L1L2Res" and _jecv not in ("V12_noEGMss", "V12_backportEGMss", "V12_backportEGMss_npvGood", "V15"):
+                    continue
                 _plot_collection = plot_data_mc_profiles(
                     sample_data=SAMPLES['Data_Z{}_BCDEFGH_Summer16_JEC{}'.format(_channel, _jecv)],
                     sample_mc=SAMPLES['MC_Z{}_DYNJ_Summer16_JEC{}'.format(_channel, _jecv)],

@@ -56,6 +56,8 @@ class ValidZllJetsProducer : public ZJetProducerBase {
   private:
     float minZllJetDeltaRVeto;
     float minPUJetID;
+    float maxLeadingJetY;
+    bool  objectJetY;
 };
 
 
@@ -103,4 +105,6 @@ class ValidZllGenJetsProducer : public ZJetProducerBase {
 
   private:
     float minZllJetDeltaRVeto;
+    float maxLeadingJetY;
+    bool  objectJetY;
 };

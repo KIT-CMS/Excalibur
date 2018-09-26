@@ -63,9 +63,11 @@ if __name__ == "__main__":
     args = p.parse_args()
 
     #_JECV_DATA = 'V6_rawECAL'
-    _JECV_DATA = 'V6'
+    #_JECV_DATA = 'V12_noEGMss'
+    #_JECV_DATA = 'V12_backportEGMss'
     #_JECV_DATA = 'V6_egmUpdate'
 
+    _JECV_DATA = 'V15'
     _JECV_MC = _JECV_DATA
 
     for _ch in args.channels: #('mm', 'ee'):
@@ -82,7 +84,7 @@ if __name__ == "__main__":
             _c = CombinationDirect(
                 sample_data=SAMPLES['Data_Z{}_{}_Summer16_JEC{}'.format(_ch, _runperiod, _JECV_DATA)],
                 sample_mc=SAMPLES['MC_Z{}_DYNJ_Summer16_JEC{}'.format(_ch, _JECV_MC)],
-                correction_folders=('L1L2L3',),
+                correction_folders=('L1L2Res',),
                 global_selection=SELECTION_CUTS['noalphanoetacuts'],
                 alpha_upper_bin_edges=ALPHA_UPPER_BIN_EDGES,
                 eta_binnings=_eta_binnings,

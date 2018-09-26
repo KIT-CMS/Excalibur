@@ -27,11 +27,17 @@ def config():
                             'producer:LeptonSFProducer',
                             ]
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:PFCandidatesProducer',)
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer',)
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:RecoMuonGenParticleMatchingProducer')+1, 'producer:ZJetGenPhotonsProducer',)
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:RecoMuonGenParticleMatchingProducer')+1, 'producer:ZJetDressedGenMuonsProducer',)
 ##### Specify input sources for Jets & Muons: #####
+    #cfg['PackedPFCandidates'] = 'pfCandidates'
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
     cfg['ValidMuonsInput'] = "corrected"
     cfg['GenJets'] = 'ak4GenJets'   # JTB switched off
     cfg['TaggedJets'] = 'ak4PFJetsCHS'
+    cfg['UseObjectJetYCut'] = True
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V11_MC/Summer16_07Aug2017_V11_MC')
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
@@ -39,8 +45,8 @@ def config():
     cfg['CutMuonPtMin'] = 25.0
     cfg['CutMuonEtaMax'] = 2.4
     cfg['ZMassRange'] = 20.0
-    cfg['CutLeadingJetPtMin'] = 15.0
-    cfg['MinPUJetID'] = -0.4
+    cfg['CutLeadingJetPtMin'] = 10.0
+    cfg['MinPUJetID'] = -0.2
     cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### LeptonSF files: #####

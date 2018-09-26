@@ -217,61 +217,20 @@ def get_lumis(args, d, RUN, YEAR):
             d.update({  'lumis' : [17.8]})
 
 def cutlabel(args,d,cut):
-    if cut == '_mupt25':
-        d.update({ 'texts': [r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$'],
-                    'texts_y': [0.98],
-                    })
-    elif cut == '_mupt25_zmass20':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$'],
-                    'texts_y': [0.98,0.91],
-                    })
-    elif cut == '_mupt25_zmass20_zpt30':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                                r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$'],
-                    'texts_y': [0.98,0.91,0.84],
-                    })
-    elif cut == '_mupt25_zmass20_jetpt30':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                                r'$\\mathrm{p^{jet1}_T}>30\\mathrm{GeV}$'],
-                    'texts_y': [0.98,0.91,0.84],
-                    })
-    elif cut == '_mupt25_zmass20_phistareta08':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                                r'$\\mathrm{\\Phi^*_\\eta}>0.8$'],
-                    'texts_y': [0.98,0.91,0.84],
-                    })
-    elif cut == '_mupt25_zmass20_zpt30_jet24':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                                r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$',
-                                r'|$\\mathrm{y^{jet1}}$|$<2.4$'],
-                    'texts_y': [0.98,0.91,0.84,0.77],
-                    })
-    elif cut == '_mupt25_zmass20_zpt30_jetpt15_jet24':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                                r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$, $\\mathrm{p^{Jet1}_T}>15\\mathrm{GeV}$',
-                                r'|$\\mathrm{y^{jet1}}$|$<2.4$'],
-                    'texts_y': [0.98,0.91,0.84,0.77],
-                    })
-    elif cut == '_mupt25_zmass20_jetpt30_jet24':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, $\\mathrm{\\eta^\\mu}<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                                r'$\\mathrm{p^{jet1}_T}>30\\mathrm{GeV}$',
-                                r'|$\\mathrm{y^{jet1}}$|$<2.4$'],
-                    'texts_y': [0.98,0.91,0.84,0.77],
-                    })
-    elif cut == '_mupt25_zmass20_phistareta08_jet24':
-        d.update({  'texts': [  r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, $\\mathrm{\\eta^\\mu}<2.4$',
-                                r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                                r'$\\mathrm{\\Phi^*_\\eta}>0.8$',
-                                r'|$\\mathrm{y^{jet1}}$|$<2.4$'],
-                    'texts_y': [0.98,0.91,0.84,0.75],
-                    })
+    d.update({  'texts': [r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$']})
+    if cut == '_zpt30':
+        d['texts'] += [ r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$, |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$']
+    elif cut == '_phistareta08':
+        d['texts'] += [ r'$\\mathrm{\\Phi^*_\\eta}>0.8$,  |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$']
+    elif cut == '_jet1pt30':
+        d['texts'] += [ r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                        r'$\\mathrm{p^{jet1}_T}>30\\mathrm{GeV}$, |$\\mathrm{y^{jet}}$|$<2.4$'],
+    elif cut == '_zpt30_jet1pt10':
+        d['texts'] += [ r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$, |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                        r'$\\mathrm{p^{jet1}_T}>10\\mathrm{GeV}$, |$\\mathrm{y^{jet}}$|$<2.4$'],
+    elif cut == '_phistareta08_jet1pt10':
+        d['texts'] += [ r'$\\mathrm{\\Phi^*_\\eta}>0.8$,  |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
+                        r'$\\mathrm{p^{jet1}_T}>10\\mathrm{GeV}$, |$\\mathrm{y^{jet}}$|$<2.4$']
 
 class JECfile(object):
 	"""Class to handle JEC files and create ROOT histograms with the correction factors"""

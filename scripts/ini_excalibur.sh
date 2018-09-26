@@ -63,6 +63,11 @@ if [ -d "/storage/a/$USER/zjet" ]; then
     export EXCALIBUR_WORK=/storage/a/$USER/zjet
 fi
 
+if [[ $HOSTNAME = *bms* ]]; then
+         export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
+         export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
+    fi
+
 # Set some user specific variables
 if [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
@@ -85,7 +90,7 @@ elif [ $USER = "afriedel" ]; then
     export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/afriedel/Excalibur"
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
-    if [[ $HOSTNAME = *ekpbms* ]]; then 
+    if [[ $HOSTNAME = *bms* ]]; then 
         #export EXCALIBUR_WORK=/home/tberger/excalibur_work/
         export EXCALIBUR_WORK=/storage/c/tberger/excalibur_work/
     else 
@@ -99,7 +104,8 @@ elif [ $USER = "tberger" ]; then
 elif [ $USER = "dsavoiu" ]; then
     export EXCALIBURBRILSSH="dsavoiu@lxplus.cern.ch"
     #export EXCALIBUR_WORK=/portal/ekpbms1/home/dsavoiu/excalibur_work
-    export EXCALIBUR_WORK=/storage/c/dsavoiu/excalibur_work
+    #export EXCALIBUR_WORK=/storage/c/dsavoiu/excalibur_work
+    export EXCALIBUR_WORK=/ceph/dsavoiu/work
     #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/dsavoiu/Excalibur"
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Excalibur"
     export HARRY_REMOTE_USER="dsavoiu"

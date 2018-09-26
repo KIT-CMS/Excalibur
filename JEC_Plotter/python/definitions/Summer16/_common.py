@@ -197,8 +197,8 @@ for _run_name, _run_range in _run_ranges.iteritems():
 _jec_iovs = dict(
     BCD=(272007, 276811),
     EFearly=(276831, 278801),
-    FlateG=(278802, 280385),
-    H=(280919, 284044),
+    #FlateG=(278802, 280385),
+    #H=(280919, 284044),
     FlateGH=(278802, 284044),
 )
 

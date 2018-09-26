@@ -14,6 +14,8 @@ _SAMPLE_DIR_DICT = dict(
     V5="/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V5_2018-02-22",
     V6="/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V6_2018-02-22",
     V10="/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_2018-06-13",
+    V10_noMETmodification="/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_noMETmodification_2018-07-11",
+    V24="/ceph/dsavoiu/JEC/Fall17/17Nov2017_V24_2018-09-14",
 )
 
 SAMPLES = dict()
@@ -33,7 +35,7 @@ for _channel in ('ee', 'mm'):
                 })
 
 # -- MC
-_JECVS_MC = ['V3', 'V4', 'V10']
+_JECVS_MC = ['V3', 'V4', 'V10', 'V24']
 for _channel in ('ee', 'mm'):
     for _jecv in _JECVS_MC:
         _sample_dir = _SAMPLE_DIR_DICT[_jecv]

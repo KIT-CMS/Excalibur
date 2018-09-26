@@ -72,55 +72,61 @@ def changeNamingScheme(cfg, old=True):
 
 
 def expand(config, cutModes, corrLevels, sfmodes = False, default="default"):
-	"""create pipelines for each cut mode and correction level"""
-	pipelines = config['Pipelines']
-	p = config['Pipelines'][default]
-	# define cut variations and copy default pipeline for different cut variations
-	# ATTENTION: the modes dictionary contains the cuts which are REMOVED for a certain pipeline
-	modes = {
-		'nocuts':           ['LeadingJetEta', 'Alpha', 'ZPt', 'BackToBack',     'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidZ', 'ValidGenZ', 'MinNMuons', 'MaxNMuons', 'MuonPt', 'MuonEta', 'MinNElectrons', 'MaxNElectrons', 'ElectronPt', 'ElectronEta', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons', 'MaxNGenMuons','JetID','LeadingJetPt','ValidJets','ZFilter'],
-		'noalphanoetacuts': ['LeadingJetEta', 'Alpha',                          'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
-		'noalphacuts':      [                 'Alpha',                          'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
-		'noetacuts':        ['LeadingJetEta',                                   'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
-		'basiccuts':        ['LeadingJetEta', 'Alpha', 'ZPt',                   'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
-		'nobacktobackcuts': ['LeadingJetEta', 'Alpha', 'ZPt', 'BackToBack',     'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
-		'finalcuts':                                                           ['LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
-		'leptoncuts':     ['MinNGenMuons','GenMuonPt','GenMuonEta','ZPt','GenZPt','ValidZ','ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'genleptoncuts' : [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt','GenZPt','ValidZ','ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'allleptoncuts' : [                                        'ZPt','GenZPt','ValidZ','ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'zcuts':          ['MinNGenMuons','GenMuonPt','GenMuonEta',      'GenZPt',         'ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'genzcuts' :      [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt',         'ValidZ',            'LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'allzcuts' :                                                                                  ['LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'zjetcuts':       ['MinNGenMuons','GenMuonPt','GenMuonEta',      'GenZPt',         'ValidGenZ',              'LeadingGenJetY',               'LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'genzjetcuts' :   [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt',         'ValidZ',            'LeadingJetY',                 'LeadingJetPt',                  'MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-		'allzjetcuts' :                                                                                                                                               ['MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-	}
-	for cutMode in cutModes:
-		if cutMode not in modes:
-			print "cutMode", cutMode, "not defined!"
-			sys.exit(1)
-		pipelines[cutMode] = copy.deepcopy(p)
-		for cut in ["filter:%sCut" % m for m in modes[cutMode]]:
-			if cut in pipelines[cutMode]['Processors']:
-				pipelines[cutMode]['Processors'].remove(cut)
-		
-	# remove template pipeline
-	pipelines.pop(default)
-	# copy pipelines with different correction levels, naming scheme: cut + _CorrectionLevel
-	for name, p in pipelines.items():
-		for corrLevel in corrLevels:
-			pipelinename = name + ('' if corrLevel == 'None' else "_" + corrLevel)
-			pipelines[pipelinename] = copy.deepcopy(p)
-			pipelines[pipelinename]['CorrectionLevel'] = corrLevel
-			
-	if sfmodes:
-		for name, p in pipelines.items():
-			for addname, ID, Trigger in zip(['mean', 'IDup','IDdown', 'Triggerup', 'Triggerdown'], ['none', 'up', 'down', 'none', 'none'],['none',  'none', 'none','up', 'down']):		
-				pipelinename = name+'_'+addname	
-				pipelines[pipelinename] = copy.deepcopy(p)
-				pipelines[pipelinename]['LeptonSFVariation'] = ID	
-				pipelines[pipelinename]['LeptonTriggerSFVariation'] = Trigger
-	return config
+    """create pipelines for each cut mode and correction level"""
+    pipelines = config['Pipelines']
+    p = config['Pipelines'][default]
+    # define cut variations and copy default pipeline for different cut variations
+    # ATTENTION: the modes dictionary contains the cuts which are REMOVED for a certain pipeline
+    modes = {
+        'nocuts':           ['LeadingJetEta', 'Alpha', 'ZPt', 'BackToBack',     'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidZ', 'ValidGenZ', 'MinNMuons', 'MaxNMuons', 'MuonPt', 'MuonEta', 'MinNElectrons', 'MaxNElectrons', 'ElectronPt', 'ElectronEta', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons', 'MaxNGenMuons','JetID','LeadingJetPt','ValidJets','ZFilter'],
+        'noalphanoetacuts': ['LeadingJetEta', 'Alpha',                          'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
+        'noalphacuts':      [                 'Alpha',                          'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
+        'noetacuts':        ['LeadingJetEta',                                   'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
+        'basiccuts':        ['LeadingJetEta', 'Alpha', 'ZPt',                   'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
+        'nobacktobackcuts': ['LeadingJetEta', 'Alpha', 'ZPt', 'BackToBack',     'LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
+        'finalcuts':                                                           ['LeadingJetY', 'LeadingGenJetY', 'LeadingGenJetPt', 'GenZPt', 'ValidGenZ', 'GenMuonPt', 'GenMuonEta', 'MinNGenMuons','MaxNGenMuons'],
+        'leptoncuts':     ['MinNGenMuons','GenMuonPt','GenMuonEta','ZPt','GenZPt','ValidZ','ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'genleptoncuts' : [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt','GenZPt','ValidZ','ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'allleptoncuts' : [                                        'ZPt','GenZPt','ValidZ','ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'zcuts':          ['MinNGenMuons','GenMuonPt','GenMuonEta',      'GenZPt',         'ValidGenZ','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'genzcuts' :      [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt',         'ValidZ',            'LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'allzcuts' :                                                                                  ['LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'zjetcuts':       ['MinNGenMuons','GenMuonPt','GenMuonEta',      'GenZPt',         'ValidGenZ',              'LeadingGenJetY',               'LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'genzjetcuts' :   [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt',         'ValidZ',            'LeadingJetY',                 'LeadingJetPt',                  'MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'allzjetcuts' :                                                                                                                                               ['MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+    }
+    for cutMode in cutModes:
+        if cutMode not in modes:
+            print "cutMode", cutMode, "not defined!"
+            sys.exit(1)
+        pipelines[cutMode] = copy.deepcopy(p)
+        for cut in ["filter:%sCut" % m for m in modes[cutMode]]:
+            if cut in pipelines[cutMode]['Processors']:
+                pipelines[cutMode]['Processors'].remove(cut)
+        
+    # remove template pipeline
+    pipelines.pop(default)
+    # copy pipelines with different correction levels, naming scheme: cut + _CorrectionLevel
+    for name, p in pipelines.items():
+        for corrLevel in corrLevels:
+            pipelinename = name + ('' if corrLevel == 'None' else "_" + corrLevel)
+            pipelines[pipelinename] = copy.deepcopy(p)
+            pipelines[pipelinename]['CorrectionLevel'] = corrLevel
+            
+    if sfmodes:
+        for name, p in pipelines.items():
+            for addname, ID, Iso, Tracking, Trigger in zip( ['IDUp','IDDown','IsoUp','IsoDown','TrackingUp','TrackingDown','TriggerUp','TriggerDown'],
+                                                            ['up', 'down'] + 6*['none'],
+                                                            2*['none'] + ['up', 'down'] + 4*['none'],
+                                                            4*['none'] + ['up', 'down'] + 2*['none'],
+                                                            6*['none'] + ['up', 'down']):
+                pipelinename = name+'_'+addname	
+                pipelines[pipelinename] = copy.deepcopy(p)
+                pipelines[pipelinename]['LeptonIDSFVariation'] = ID
+                pipelines[pipelinename]['LeptonIsoSFVariation'] = Iso
+                pipelines[pipelinename]['LeptonTrackingSFVariation'] = Tracking
+                pipelines[pipelinename]['LeptonTriggerSFVariation'] = Trigger
+    return config
 
 
 def pipelinediff(config, to=None):

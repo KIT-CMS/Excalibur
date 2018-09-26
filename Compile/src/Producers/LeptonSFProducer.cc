@@ -12,8 +12,10 @@ necessary to account for the different formats of the ROOT files containing
 the scale factors (different axes, binning in absolute eta)
 
 needed tags:
-- LeptonSFVariation      Vary SF by error. Choices: up, down, None
-
+- LeptonIDSFVariation           Vary IDSF by error. Choices: up, down, None
+- LeptonIsoSFVariation          Vary IsoSF by error. Choices: up, down, None
+- LeptonTrackingSFVariation     Vary TrackingSF by error. Choices: up, down, None
+- LeptonTriggerSFVariation      Vary TriggerSF by error. Choices: up, down, None
 
 maybe also relevant:
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentification (SF files for MVA
@@ -53,11 +55,11 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
     m_sffile = settings.GetLeptonIDSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
-    if (settings.GetLeptonSFVariation() == "up") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
+    if (settings.GetLeptonIDSFVariation() == "up") {
+        LOG(WARNING) << "LeptonIDSFProducer: varying scale factor UP one sigma";
         error_multiplier = 1.;
-    } else if (settings.GetLeptonSFVariation() == "down") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor DOWN one sigma";
+    } else if (settings.GetLeptonIDSFVariation() == "down") {
+        LOG(WARNING) << "LeptonIDSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = -1.;
     }
     if(settings.GetChannel() == "mm"){
@@ -125,11 +127,11 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
     m_sffile = settings.GetLeptonIsoSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
-    if (settings.GetLeptonSFVariation() == "up") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
+    if (settings.GetLeptonIsoSFVariation() == "up") {
+        LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor UP one sigma";
         error_multiplier = 1.;
-    } else if (settings.GetLeptonSFVariation() == "down") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor DOWN one sigma";
+    } else if (settings.GetLeptonIsoSFVariation() == "down") {
+        LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = -1.;
     }
     
@@ -196,11 +198,11 @@ void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTrackingSFRootfile();
     double error_multiplier = 0.;
-    if (settings.GetLeptonSFVariation() == "up") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
+    if (settings.GetLeptonTrackingSFVariation() == "up") {
+        LOG(WARNING) << "LeptonTrackingSFProducer: varying scale factor UP one sigma";
         error_multiplier = 1.;
-    } else if (settings.GetLeptonSFVariation() == "down") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor DOWN one sigma";
+    } else if (settings.GetLeptonTrackingSFVariation() == "down") {
+        LOG(WARNING) << "LeptonTrackingSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = -1.;
     }
     
@@ -265,11 +267,11 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     m_etaonly = settings.GetLeptonSFetaonly();
     double error_multiplier = 0.;
     if (settings.GetLeptonTriggerSFVariation() == "up") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor UP one sigma";
+        LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor UP one sigma";
         error_multiplier = 1.;
     } 
     else if (settings.GetLeptonTriggerSFVariation() == "down") {
-        LOG(WARNING) << "LeptonSFProducer: varying scale factor DOWN one sigma";
+        LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = -1.;
     }
     

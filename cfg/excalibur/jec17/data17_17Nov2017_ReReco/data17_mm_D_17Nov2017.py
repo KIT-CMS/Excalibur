@@ -1,15 +1,21 @@
 import configtools
 import os
+import sys
+
+# -- import common information
+sys.path.append(os.path.dirname(__file__))
+from common import JEC_BASE, JEC_VERSION, SE_PATH_PREFIXES
 
 RUN='D'
 CH='mm'
-JEC='Fall17_17Nov2017'+RUN+'_V10'
+JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
+
 
 def config():
     cfg = configtools.getConfig('data', 2017, CH)
     cfg["InputFiles"].set_input(
-        ekppathD="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Skimming/ZJet_DoubleMuon_Run2017D-17Nov2017-v1-r2/*.root",
-        #ekppathD="/storage/gridka-nrg/dsavoiu/Skimming/ZJet_DoubleMuon_Run2017D-17Nov2017-v1-r2/*.root",
+        bmspathD="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2017D-17Nov2017-v1-r2/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
+        #bmspathD="/storage/gridka-nrg/dsavoiu/Skimming/ZJet_DoubleMuon_Run2017D-17Nov2017-v1-r2/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_DATA/'+JEC+'_DATA')

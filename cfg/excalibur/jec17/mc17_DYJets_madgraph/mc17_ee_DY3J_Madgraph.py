@@ -1,15 +1,21 @@
 import configtools
 import os
+import sys
 
-RUN = 'BCDEFGH'
-CH = 'ee'
-JEC = 'Fall17_17Nov2017_V10'
+# -- import common information
+sys.path.append(os.path.dirname(__file__))
+from common import JEC_BASE, JEC_VERSION, SE_PATH_PREFIXES
+
+RUN='BCDEFGH'
+CH='ee'
+JEC='{}_{}'.format(JEC_BASE, JEC_VERSION)
+
 
 def config():
     cfg = configtools.getConfig('mc', 2017, CH)
     cfg["InputFiles"].set_input(
-        ekppathB="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Skimming/ZJet_DY3JetsToLL_Fall17-madgraphMLM_realistic_v10-v2/*.root",
-        #ekppathB="/storage/gridka-nrg/dsavoiu/Skimming/ZJet_DY3JetsToLL_Fall17-madgraphMLM_realistic_v10-v2/*.root",
+        bmspathB="{}/dsavoiu/Skimming/ZJet_DY3JetsToLL_Fall17-madgraphMLM_realistic_v10-v2/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
+        #bmspathB="/storage/gridka-nrg/dsavoiu/Skimming/ZJet_DY3JetsToLL_Fall17-madgraphMLM_realistic_v10-v2/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_MC/'+JEC+'_MC')
@@ -18,6 +24,8 @@ def config():
     cfg['NumberGeneratedEvents'] = 4779068
     cfg['GeneratorWeight'] = 1.0
     cfg['CrossSection'] = 101.8*1.23  # from mc16 config
+
+    cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
     cfg['ElectronID'] = 'user'  # old ID no longer written out in new skim
     cfg['ApplyElectronVID'] = True

@@ -1,5 +1,4 @@
 #include "Excalibur/Compile/interface/Producers/ZJetDressedMuonsProducer.h"
-
 /*
  * ZJetDressedMuonsProducer
  * ==========================
@@ -58,25 +57,70 @@ void ZJetDressedGenMuonsProducer::Init(ZJetSettings const& settings)
     
 }
 
+int ZJetDressedGenMuonsProducer::FindMom(int idx, ZJetEvent const& event) const{
+    
+    for (unsigned int ip=0; ip < event.m_genParticles->size(); ip++) {
+        for (unsigned int id=0; id < event.m_genParticles->at(ip).nDaughters(); id++) {
+            if(event.m_genParticles->at(ip).daughterIndex(id) == idx) {
+                return ip;
+            }
+        }
+    }
+    return -1000;
+}
+
 void ZJetDressedGenMuonsProducer::Produce(ZJetEvent const& event,
                                  ZJetProduct& product,
                                  ZJetSettings const& settings) const
 {
-    std::cout << "no. of genParticles: " << event.m_genParticles->size() << std::endl;
-    std::cout << "no. of genPhotons: " << product.m_genPhotons.size() << std::endl;
-    
+    //std::cout << "no. of genParticles: " << event.m_genParticles->size() << std::endl;
+    //std::cout << "no. of genPhotons: " << product.m_genPhotons.size() << std::endl;
+    int im=0;
     // loop over genMuons
     for (unsigned int imu=0; imu < product.m_genMuons.size(); imu++) {
+        //std::cout << "muon no. " << imu << std::endl;
         // loop over genParticles
         for (unsigned int ip=0; ip < event.m_genParticles->size(); ip++) {
-            // find the genMuons' mother particle
-            if (event.m_genParticles->at(ip).nDaughters()>1 && 
+            //std::cout << event.m_genParticles->at(ip).pdgId << std::endl;
+            // find the genMuons' mother particle index
+            if (event.m_genParticles->at(ip).p4 == product.m_genMuons[imu]->p4) {
+                im = ip;
+                //std::cout << event.m_eventInfo->nEvent << std::endl;
+                assert(abs(event.m_genParticles->at(im).pdgId) == 13);
+                //std::cout << "particle at index " << im << " with pdgId " << event.m_genParticles->at(im).pdgId << std::endl;
+                //std::cout << event.m_genParticles->at(im).p4 << std::endl;
+                while (FindMom(im, event) != -1000 && abs(event.m_genParticles->at(FindMom(im, event)).pdgId) == 13) {
+                    im = FindMom(im, event);
+                    //std::cout << "new mom found at index " << im << " with pdgId " << event.m_genParticles->at(im).pdgId << std::endl;
+                    //std::cout << event.m_genParticles->at(im).p4 << std::endl;
+                    //std::cout << FindMom(im, event) << std::endl;
+                    /*if (FindMom(im, event) == -1000){
+                        break;
+                    }*/
+                    
+                    /*im = FindMom(im, event);
+                    std::cout << "new mom found at index " << im << " with pdgId " << event.m_genParticles->at(im).pdgId << std::endl;
+                    std::cout << event.m_genParticles->at(im).p4 << std::endl;
+                    im = FindMom(im, event);
+                    std::cout << "new mom found at index " << im << " with pdgId " << event.m_genParticles->at(im).pdgId << std::endl;
+                    std::cout << event.m_genParticles->at(im).p4 << std::endl;
+                */
+                    //im = FindMom(im, event);
+                    //std::cout << std::endl << "found new mom: " << event.m_genParticles->at(im).p4;
+                }
+                //product.m_genz.p4 = event.m_genParticles->at(im).p4;
+                //std::cout << event.m_genParticles->at(im).p4 << std::endl;
+                product.m_genMuons[imu]->p4 = event.m_genParticles->at(im).p4;
+            }
+            /*if (event.m_genParticles->at(ip).nDaughters()>1 && 
                 event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(0)).p4 == product.m_genMuons[imu]->p4 &&
                 event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(1)).pdgId == 22) {
-                    product.m_genMuons[imu]->p4 += event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(1)).p4;
-            }
+                    assert(abs(event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(0)).pdgId) == 13);
+                    //product.m_genMuons[imu]->p4 += event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(1)).p4;
+                    product.m_genMuons[imu]->p4 = event.m_genParticles->at(ip).p4; // assumes that each muon radiates at most once!
+            }*/
                     
-                    
+                    /*
                     std::cout << "genParticle no " << ip << " with pdgId "
                     << event.m_genParticles->at(ip).pdgId << ", status "
                     << event.m_genParticles->at(ip).status() << " and p4="
@@ -87,7 +131,7 @@ void ZJetDressedGenMuonsProducer::Produce(ZJetEvent const& event,
                         << event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(id)).pdgId << ", status "
                         << event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(id)).status() << " and p4="
                         << event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(id)).p4 << std::endl;
-                    }
+                    }*/
         /*if (event.m_genParticles->at(ip).status()==1 || event.m_genParticles->at(ip).nDaughters() ==0) {
             std::cout << "final state genParticle candidate: " << ip << " pdgId, status, nDaughters: " 
                 << event.m_genParticles->at(ip).pdgId << " "
