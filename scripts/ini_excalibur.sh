@@ -99,6 +99,12 @@ elif [ $USER = "dsavoiu" ]; then
          export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/dsavoiu/public_html/plots_archive/{subdir}"
          export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/dsavoiu/public_html/plots_archive/{subdir}"
     fi
+elif [ $USER = "msauter" ]; then
+    echo "Profil: msauter"
+    export EXCALIBURBRILSSH="msauter@lxplus.cern.ch"
+    export EXCALIBUR_WORK=/portal/ekpbms2/home/msauter/zjets/
+    export HARRY_REMOTE_USER="msauter"
+    export HARRY_USERPC="ekplx32.ekp.kit.edu"
 fi
 source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
