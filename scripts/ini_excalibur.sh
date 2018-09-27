@@ -5,7 +5,7 @@ export EXCALIBURPATH=$(dirname $(dirname $(readlink -mf ${BASH_SOURCE[0]})))
 export EXCALIBURCONFIGS=$EXCALIBURPATH/cfg/excalibur
 export ARTUSPATH=$EXCALIBURPATH/../Artus
 export PLOTCONFIGS=$EXCALIBURPATH/Plotting/configs
-export PYTHONLINKDIR=$EXCALIBURPATH/../python-links
+export PYTHONLINKDIR=$EXCALIBURPATH/../python-links 
 export PATH=$PATH:$CMSSW_BASE/../grid-control:$CMSSW_BASE/../grid-control/scripts
 
 # source Artus ini script
@@ -105,7 +105,15 @@ elif [ $USER = "msauter" ]; then
     export EXCALIBUR_WORK=/portal/ekpbms2/home/msauter/zjets/
     export HARRY_REMOTE_USER="msauter"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
+
+elif [ $USER = "mschnepf" ]; then
+    echo "Profil: mschnepf"
+    export EXCALIBUR_WORK=/ceph/mschnepf
+    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/mschnepf/Excalibur"
+    GCPATH=/usr/users/mschnepf/htcondor/grid-control
+    export PATH=$PATH:$GCPATH:$GCPATH/scripts
 fi
+
 source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
 
