@@ -295,6 +295,7 @@ def ee(cfg, **kwargs):
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
     cfg['CutLeadingJetYMax'] = 2.4
+    cfg['UseObjectJetYCut'] = False
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -391,6 +392,7 @@ def mm(cfg, **kwargs):
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
     cfg['CutLeadingJetYMax'] = 2.4
+    cfg['UseObjectJetYCut'] = False
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
