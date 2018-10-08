@@ -381,6 +381,35 @@ class LeadingJetYCut : public ZJetFilterBase
     float leadingJetYMax = 0;
 };
 
+////////////////
+// Phistareta //
+////////////////
+class PhistaretaCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "PhistaretaCut"; }
+
+    PhistaretaCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        phistaretaMin = settings.GetCutPhistaretaMin();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (product.m_zValid) 
+                    ? (product.GetPhiStarEta(event) > phistaretaMin)
+                    : false;
+    }
+
+  private:
+    float phistaretaMin = 0;
+};
+
 //////////
 // Z Pt //
 //////////
@@ -683,6 +712,34 @@ class GenMuonEtaCut : public ZJetFilterBase
     float muonEtaMax = 0;
 };
 
+///////////////////
+// GenPhistareta //
+///////////////////
+class GenPhistaretaCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "GenPhistaretaCut"; }
+
+    GenPhistaretaCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        phistaretaMin = settings.GetCutPhistaretaMin();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        return (product.m_genBosonLVFound)
+                    ? (product.GetGenPhiStarEta(event) > phistaretaMin)
+                    : false;
+    }
+
+  private:
+    float phistaretaMin = 0;
+};
 
 //////////////
 // Gen Z Pt //

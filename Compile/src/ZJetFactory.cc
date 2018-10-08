@@ -73,6 +73,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new ZJetDressedMuonsProducer();
     else if(id == ZJetDressedGenMuonsProducer().GetProducerId())
         return new ZJetDressedGenMuonsProducer();
+    else if(id == ZJetTrueGenMuonsProducer().GetProducerId())
+        return new ZJetTrueGenMuonsProducer();
     else if(id == ZJetGenPhotonsProducer().GetProducerId())
         return new ZJetGenPhotonsProducer();
     else if(id == GenZmmProducer().GetProducerId())
@@ -125,9 +127,13 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new ZPtCut();
     else if (id == GenZPtCut().GetFilterId())
         return new GenZPtCut();
+    else if (id == PhistaretaCut().GetFilterId())
+        return new PhistaretaCut();
+    else if (id == GenPhistaretaCut().GetFilterId())
+        return new GenPhistaretaCut();
     else if (id == GenHTCut().GetFilterId())
-		return new GenHTCut();
-	else if (id == BackToBackCut().GetFilterId())
+        return new GenHTCut();
+    else if (id == BackToBackCut().GetFilterId())
         return new BackToBackCut();
     else if (id == JetIDCut().GetFilterId())
         return new JetIDCut();

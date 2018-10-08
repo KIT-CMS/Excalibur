@@ -34,7 +34,7 @@ def getBaseConfig(tagged=False, **kwargs):
         'TaggedJets' : 'ak4PFJetsCHS',
         # PU
         'PileupDensity' : 'pileupDensity',
-        #'PackedPFCandidates': 'pfCandidates',
+        'PackedPFCandidates': 'pfCandidates',
         # Pipelines
         'Pipelines': {
             'default': {
@@ -52,7 +52,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'njets', 'njetsinv', 'njets30', # number of valid and invalid jets
                     'run', 'lumi', 'event',
                     # Z quantities
-                    'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
+                    'zpt', 'zeta', 'zy', 'zphi', 'zmass',
                     'phistareta', 'ystar', 'yboost',
                     'zl1pt', 'zl1eta', 'zl1phi',
                     'zl2pt', 'zl2eta', 'zl2phi',
@@ -177,7 +177,13 @@ def mc(cfg, **kwargs):
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
-
+    cfg['Pipelines']['default']['Processors'] += [
+                            'producer:LeptonIDSFProducer',
+                            'producer:LeptonIsoSFProducer',
+                            'producer:LeptonTrackingSFProducer',
+                            'producer:LeptonTriggerSFProducer',
+                            'producer:LeptonSFProducer',
+                            ]
     # switch cleaning on if necessary (check cleaning masks!)
     #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     #cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
@@ -358,6 +364,7 @@ def mm(cfg, **kwargs):
         #'filter:ZFilter',
         'filter:ValidZCut', # includes Z mass cut
         'filter:ZPtCut',
+        'filter:PhistaretaCut',
         'filter:LeadingJetYCut',
         'filter:AlphaCut',
         'filter:BackToBackCut',
@@ -396,6 +403,7 @@ def mm(cfg, **kwargs):
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
+    cfg['CutPhistaretaMin'] = 0.0
 
 #Efficiency calculation
     cfg["InvalidateNonMatchingMuons"] = False
@@ -431,6 +439,7 @@ def mcmm(cfg, **kwargs):
         'filter:GenMuonEtaCut',
         'filter:ValidGenZCut',
         'filter:GenZPtCut',
+        'filter:GenPhistaretaCut',
         'filter:LeadingGenJetYCut',
         'filter:LeadingGenJetPtCut',
         ]
