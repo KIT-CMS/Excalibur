@@ -16,11 +16,13 @@ def config():
     cfg["InputFiles"].set_input(
         bmspathE="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016E-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIX),
         bmspathF="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016F-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIX),
+        ekppathE="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016E-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIX),
+        ekppathF="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016F-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIX),
         )
     cfg['JsonFiles'] =  [os.path.join(configtools.getPath(),'data/json/Cert_{}_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'.format(RUN))]
 
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'  # above skims do not contain 'goodOfflinePrimaryVerticesSummary'
     cfg['ProvideL2ResidualCorrections'] = True
-    cfg = configtools.expand(cfg, ['nocuts', 'basiccuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res'])
+    cfg = configtools.expand(cfg, ['nocuts', 'basiccuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
     return cfg

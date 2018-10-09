@@ -18,10 +18,14 @@ def config():
         bmspathB2="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016B-Legacy-07Aug2017_ver2-v2_egmSSbackport/*.root".format(SE_PATH_PREFIX),
         bmspathC="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016C-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIX),
         bmspathD="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016D-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIX),
+        ekppathB1="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016B-Legacy-07Aug2017_ver1-v1_egmSSbackport/*.root".format(SE_PATH_PREFIX),
+        ekppathB2="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016B-Legacy-07Aug2017_ver2-v2_egmSSbackport/*.root".format(SE_PATH_PREFIX),
+        ekppathC="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016C-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIX),
+        ekppathD="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016D-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIX),
         )
     cfg['JsonFiles'] =  [os.path.join(configtools.getPath(),'data/json/Cert_{}_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'.format(RUN))]
 
     cfg['ProvideL2ResidualCorrections'] = True
-    cfg = configtools.expand(cfg, ['nocuts', 'basiccuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res'])
+    cfg = configtools.expand(cfg, ['nocuts', 'basiccuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
     return cfg
