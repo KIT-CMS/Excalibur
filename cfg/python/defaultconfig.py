@@ -34,8 +34,9 @@ def getBaseConfig(tagged=False, **kwargs):
         'TaggedJets' : 'ak4PFJetsCHS',
         # PU
         'PileupDensity' : 'pileupDensity',
-        'PackedPFCandidates': 'pfCandidates',
+        #'PackedPFCandidates': 'pfCandidates',
         # Pipelines
+        'UseObjectJetYCut' : False,
         'Pipelines': {
             'default': {
                 'CorrectionLevel': '', # Overwritten by expand function, set levels in data.py or mc.py
@@ -63,7 +64,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
                     'jet1area',
                     'jet1l1', 'jet1rc', 'jet1l2',
-                    'jet1ptraw', 'jet1ptl1', 
+                    'jet1ptraw', 'jet1ptl1',
                     #'jet1unc',  # Leading jet uncertainty
                     # Second jet
                     'jet2pt', 'jet2eta', 'jet2y', 'jet2phi',
@@ -176,14 +177,8 @@ def mc(cfg, **kwargs):
     cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 
 def _2016(cfg, **kwargs):
-    cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
-    cfg['Pipelines']['default']['Processors'] += [
-                            'producer:LeptonIDSFProducer',
-                            'producer:LeptonIsoSFProducer',
-                            'producer:LeptonTrackingSFProducer',
-                            'producer:LeptonTriggerSFProducer',
-                            'producer:LeptonSFProducer',
-                            ]
+    cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
+
     # switch cleaning on if necessary (check cleaning masks!)
     #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     #cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
@@ -252,11 +247,11 @@ def ee(cfg, **kwargs):
     cfg['ElectronMetadata'] = 'electronMetadata'
     cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL']
     # The order of these producers is important!
-    cfg['Processors'] = [	
+    cfg['Processors'] = [
                             'producer:ZJetValidElectronsProducer',
-                            'producer:ZeeProducer',	
+                            'producer:ZeeProducer',
                             ]+cfg['Processors']
-        
+
     cfg['Pipelines']['default']['Processors'] = [
         'filter:MinElectronsCountFilter',
         'filter:MaxElectronsCountFilter',
@@ -273,7 +268,7 @@ def ee(cfg, **kwargs):
         'filter:BackToBackCut',
         ]
     cfg['Pipelines']['default']['Consumers'] += ['KappaElectronsConsumer',]
-    
+
     cfg['ElectronID'] = 'tight' # OLD electron ID code: set to 'none' or 'user' if using VID (s. below)
     cfg['ElectronIsoType'] = 'none'
     cfg['ElectronIso'] = 'none'
@@ -288,9 +283,9 @@ def ee(cfg, **kwargs):
     cfg['Pipelines']['default']['Quantities'] += [
         'epluspt','epluseta','eplusphi','eplusiso',
         'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
-        'e1pt', 'e1eta', 'e1phi', 
+        'e1pt', 'e1eta', 'e1phi',
         'e1idloose', 'e1idmedium', 'e1idtight', 'e1idveto', 'e1idloose95', 'e1idmedium95', 'e1idtight95','e1idveto95',# 'e1mvanontrig', 'e1mvatrig',
-        'e2pt', 'e2eta', 'e2phi', 
+        'e2pt', 'e2eta', 'e2phi',
         'e2idloose', 'e2idmedium', 'e2idtight', 'e2idveto', 'e2idloose95', 'e2idmedium95', 'e2idtight95','e2idveto95',# 'e2mvanontrig', 'e2mvatrig',
         'nelectrons', 'validz',
         ]
@@ -301,7 +296,6 @@ def ee(cfg, **kwargs):
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
     cfg['CutLeadingJetYMax'] = 2.4
-    cfg['UseObjectJetYCut'] = False
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -331,13 +325,13 @@ def mcee(cfg, **kwargs):
     cfg['BranchGenMatchedElectrons'] = True
     cfg['AddGenMatchedTaus'] = False
     cfg['AddGenMatchedTauJets'] = False
-    
+
     # not sure about the status codes in aMCatNLO/MG5. theres usually an e+/e-
     # pair with status 1 in each event, so take this number for now
     # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
     #cfg['RecoElectronMatchingGenParticleStatus'] = 1
     #cfg[''] = 1
-    
+
     cfg['Pipelines']['default']['Processors'] += [
             'filter:ValidGenZCut',
             'filter:GenZPtCut',
@@ -364,7 +358,6 @@ def mm(cfg, **kwargs):
         #'filter:ZFilter',
         'filter:ValidZCut', # includes Z mass cut
         'filter:ZPtCut',
-        'filter:PhistaretaCut',
         'filter:LeadingJetYCut',
         'filter:AlphaCut',
         'filter:BackToBackCut',
@@ -372,7 +365,7 @@ def mm(cfg, **kwargs):
     cfg['Pipelines']['default']['Consumers'] += ['KappaMuonsConsumer',]
     # In case of Muon Corrections
     #cfg['ValidMuonsInput'] = "corrected" # is this really doing something???
-    
+
     # validMuonsProducer
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
@@ -399,11 +392,9 @@ def mm(cfg, **kwargs):
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
     cfg['CutLeadingJetYMax'] = 2.4
-    cfg['UseObjectJetYCut'] = False
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
-    cfg['CutPhistaretaMin'] = 0.0
 
 #Efficiency calculation
     cfg["InvalidateNonMatchingMuons"] = False
@@ -439,7 +430,6 @@ def mcmm(cfg, **kwargs):
         'filter:GenMuonEtaCut',
         'filter:ValidGenZCut',
         'filter:GenZPtCut',
-        'filter:GenPhistaretaCut',
         'filter:LeadingGenJetYCut',
         'filter:LeadingGenJetPtCut',
         ]
@@ -521,7 +511,7 @@ def data_2016mm(cfg, **kwargs):
     cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA'
     cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA'
     cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
-    
+
 def mc_2016mm(cfg, **kwargs):
     #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_Moriond.root")
     ### Check if chosen histogram is consistent with ID & Isolation choice!
@@ -529,7 +519,3 @@ def mc_2016mm(cfg, **kwargs):
     cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesMC/histo_eta_MC'
     cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC'
     cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
-    
-
-
-
