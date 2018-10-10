@@ -14,6 +14,7 @@
 <use name="Artus/Configuration"/>
 <use name="Artus/Consumer"/>
 <use name="Artus/Utility"/>
+<use name="JetMETCorrections/Modules"/>
 
 
 <flags ADD_SUBDIR="1"/>
