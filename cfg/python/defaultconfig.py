@@ -111,6 +111,16 @@ def data(cfg, **kwargs):
     #cfg['ProvideL2ResidualCorrections'] = True
     cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
 
+    # -- process keyword arguments
+
+    # 'JEC': if provided, point to JEC file in ../JECDatabase
+    try:
+        _jec_string = kwargs['JEC']
+    except KeyError:
+        print " WARNING! Keyword argument `JEC` to `getBaseConfig` was not given. cfg['Jec'] must be set manually..."
+    else:
+        cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
+
 def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
     cfg['Processors'] += [
@@ -175,6 +185,26 @@ def mc(cfg, **kwargs):
     # insert Generator producer before EventWeightProducer:
     cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
     cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
+
+    # -- process keyword arguments
+
+    # 'JEC': if provided, point to JEC file in ../JECDatabase
+    try:
+        _jec_string = kwargs['JEC']
+    except KeyError:
+        print " WARNING! Keyword argument `JEC` to `getBaseConfig` was not given. cfg['Jec'] must be set manually..."
+    else:
+        cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_MC/{0}_MC'.format(_jec_string))
+
+    # 'JER': if provided, point to JER file in ../JRDatabase
+    _jer_string = kwargs.get('JER', None)
+    if _jer_string is not None:
+        cfg['JER'] = os.path.join(configtools.getPath(), '../JRDatabase/textFiles/{0}_MC/{0}_MC'.format(_jer_string))
+        cfg['JERMethod'] = "hybrid"
+        cfg['JERSmearerSeed'] = 92837465
+
+        # insert smearer and sorter after the matching producer
+        cfg['Processors'][cfg['Processors'].index("producer:RecoJetGenJetMatchingProducer")+1:1] = ["producer:JERSmearer", "producer:JetSorter"]
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
@@ -446,9 +476,7 @@ def mcmm(cfg, **kwargs):
     cfg['AddGenMatchedTauJets'] = False
 
 def data_2016(cfg, **kwargs):
-    _jec_string = kwargs['JEC']  # mandatory kwarg indicating JEC
     _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (for selecting the right jet eta-phi cleaning file)
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
 
     # object-based eta-phi cleaning (recommended jul. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
@@ -460,8 +488,7 @@ def data_2016(cfg, **kwargs):
 
 def mc_2016(cfg, **kwargs):
     #cfg['PileupWeightFile'] = os.path.join(configtools.getPath(),'data/pileup/pileup_weights_BCDEFGH_13TeV_23Sep2016ReReco_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
-    _jec_string = kwargs['JEC']  # mandatory kwarg indicating JEC
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_MC/{0}_MC'.format(_jec_string))
+    pass
 
 def _2016mm(cfg, **kwargs):
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')
