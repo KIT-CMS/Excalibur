@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 #include "Excalibur/Compile/interface/ZJetTypes.h"
 
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
