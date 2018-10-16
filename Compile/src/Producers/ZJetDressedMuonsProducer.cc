@@ -147,7 +147,7 @@ void ZJetTrueGenMuonsProducer::Produce(ZJetEvent const& event,
                 }
                 //product.m_genz.p4 = event.m_genParticles->at(im).p4;
                 //std::cout << event.m_genParticles->at(im).p4 << std::endl;
-                product.m_validGenMuons[imu]->p4 = event.m_genParticles->at(im).p4;
+                product.m_genMuons[imu]->p4 = event.m_genParticles->at(im).p4;
             }
             /*if (event.m_genParticles->at(ip).nDaughters()>1 && 
                 event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(0)).p4 == product.m_genMuons[imu]->p4 &&
