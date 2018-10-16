@@ -9,14 +9,14 @@ def config():
     cfg = configtools.getConfig('data', 2016, 'mm', JEC=JEC, IOV=RUN)
     cfg["InputFiles"].set_input(
         #ekppath='/storage/c/tberger/testfiles/skimming_output/data/ZJet_SingleMuon_Run2016D-Legacy-07Aug2017-v1_testfile.root',
-        bmspathB1='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver1-v1/*.root',
-        bmspathB2='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver2-v1/*.root',
-        bmspathC ='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016C-07Aug17-v1/*.root',
-        bmspathD ='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016D-07Aug17-v1/*.root',
-        nafpathB1='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver1-v1/*.root',
-        nafpathB2='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver2-v1/*.root',
-        nafpathC ='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016C-07Aug17-v1/*.root',
-        nafpathD ='root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016D-07Aug17-v1/*.root',
+        bmspathB1='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver1-v1/*.root',
+        bmspathB2='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver2-v1/*.root',
+        bmspathC ='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016C-07Aug17-v1/*.root',
+        bmspathD ='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016D-07Aug17-v1/*.root',
+        nafpathB1='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver1-v1/*.root',
+        nafpathB2='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016B-07Aug17_ver2-v1/*.root',
+        nafpathC ='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016C-07Aug17-v1/*.root',
+        nafpathD ='root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_SingleMuon_Run2016D-07Aug17-v1/*.root',
         #nafpath='/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/testfiles/ZJet_SingleMuon_Run2016D-Legacy-07Aug2017-v1_testfile.root',
     )
     cfg = configtools.expand(cfg, 

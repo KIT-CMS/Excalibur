@@ -9,8 +9,8 @@ def config():
         #ekppath='/storage/gridka-nrg/tberger/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISummer16_noJTB/*.root',
         #bmspath='/storage/c/tberger/testfiles/skimming_output/mc/ZJet_DYJetsToLL_amcatnloFXFX-pythia8_RunIISummer16_localtestfile.root',
         #ekppath='/storage/c/tberger/testfiles/skimming_output/mc/Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16_testfile_noJTB.root',
-        bmspath="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_RunIISummer16/*.root",
-        nafpath="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_RunIISummer16/*.root",
+        bmspath="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_RunIISummer16/*.root",
+        nafpath="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_RunIISummer16/*.root",
         #nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/testfiles/Zll_DYJetsToLL_M-50_madgraphMLM-herwigpp_RunIISummer16_testfile_noJTB.root",
         )
     cfg = configtools.expand(cfg, 
@@ -45,6 +45,7 @@ def config():
     #cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer',)
     #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetGenPhotonsProducer',)
     #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetDressedGenMuonsProducer',)
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetTrueGenMuonsProducer',)
 ##### Specify input sources for Jets & Muons: #####
     #cfg['PackedPFCandidates'] = 'pfCandidates'
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'

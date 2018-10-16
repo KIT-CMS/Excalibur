@@ -6,8 +6,8 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        bmspath="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16/*.root",
-        nafpath="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16/*.root",
+        bmspath="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16/*.root",
+        nafpath="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16/*.root",
         #nafpath="/pnfs/desy.de/cms/tier2/store/user/tberger/Skimming/testfiles//ZJet_TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16_noJTB_testfile.root",
         )
     cfg = configtools.expand(cfg, 
@@ -42,6 +42,7 @@ def config():
     #cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer',)
     #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetGenPhotonsProducer',)
     #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetDressedGenMuonsProducer',)
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetTrueGenMuonsProducer',)
 ##### Specify input sources for Jets & Muons: #####
     #cfg['PackedPFCandidates'] = 'pfCandidates'
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'

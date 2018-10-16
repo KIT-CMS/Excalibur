@@ -6,13 +6,13 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        bmspathtW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_top_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
-        bmspathtbarW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_antitop_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        bmspathtW="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_top_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        bmspathtbarW="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_antitop_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
         #bmspaths="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_s-channel_inclusiveDecays_13TeV-amcatnlo-pythia8_RunIISummer16_noJTB/*.root",
         #bmspathtt="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_top_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
         #bmspathttbar="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_antitop_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
-        nafpathtW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_top_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
-        nafpathtbarW="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_antitop_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        nafpathtW="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_top_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
+        nafpathtbarW="root://cmsxrootd-kit.gridka.de//pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_tW_antitop_inclusiveDecays_13TeV-powheg-pythia8_RunIISummer16/*.root",
         #nafpaths="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_s-channel_inclusiveDecays_13TeV-amcatnlo-pythia8_RunIISummer16_noJTB/*.root",
         #nafpathtt="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_top_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
         #nafpathttbar="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_antitop_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
@@ -49,6 +49,7 @@ def config():
     #cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer',)
     #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetGenPhotonsProducer',)
     #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetDressedGenMuonsProducer',)
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetTrueGenMuonsProducer',)
 ##### Specify input sources for Jets & Muons: #####
     #cfg['PackedPFCandidates'] = 'pfCandidates'
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
