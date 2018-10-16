@@ -208,7 +208,7 @@ def mc(cfg, **kwargs):
 
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
-
+    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTrackingSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
     # switch cleaning on if necessary (check cleaning masks!)
     #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     #cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
