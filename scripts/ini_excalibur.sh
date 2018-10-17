@@ -62,11 +62,6 @@ if [ -d "/storage/a/$USER/zjet" ]; then
     export EXCALIBUR_WORK=/storage/a/$USER/zjet
 fi
 
-if [[ $HOSTNAME = *bms* ]]; then
-         export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
-         export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
-    fi
-
 # Set some user specific variables
 if [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
@@ -75,14 +70,16 @@ if [ $USER = "cheidecker" ]; then
     export HARRY_USERPC="lx26.etp.kit.edu"
 elif [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
+    export HARRY_REMOTE_USER="tberger"
+    export HARRY_USERPC="ekplx32.ekp.kit.edu"
     if [[ $HOSTNAME = *bms* ]]; then 
-        #export EXCALIBUR_WORK=/home/tberger/excalibur_work/
-        export EXCALIBUR_WORK=/storage/c/tberger/excalibur_work/
+        #export EXCALIBUR_WORK=/storage/c/tberger/excalibur_work/
+        export EXCALIBUR_WORK=/ceph/tberger/excalibur_work/
+        export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
+        export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
     else 
         export EXCALIBUR_WORK=~/storage/working/
     fi
-    export HARRY_REMOTE_USER="tberger"
-    export HARRY_USERPC="ekplx32.ekp.kit.edu"
     #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Excalibur"
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Excalibur"
     #export EXCALIBUR_SE="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Excalibur"
