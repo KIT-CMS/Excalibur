@@ -220,17 +220,11 @@ def cutlabel(args,d,cut):
     d.update({  'texts': [r'$\\mathrm{p^\\mu_T}>25\\mathrm{GeV}$, |$\\mathrm{\\eta^\\mu}$|$<2.4$']})
     if cut == '_zpt30':
         d['texts'] += [ r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$, |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$']
-    elif cut == '_phistareta08':
-        d['texts'] += [ r'$\\mathrm{\\Phi^*_\\eta}>0.8$,  |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$']
-    elif cut == '_jet1pt30':
+    elif cut == '_phistareta04':
+        d['texts'] += [ r'$\\mathrm{\\Phi^*_\\eta}>0.4$,  |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$']
+    elif cut == '_jet1pt20':
         d['texts'] += [ r'|$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                        r'$\\mathrm{p^{jet1}_T}>30\\mathrm{GeV}$, |$\\mathrm{y^{jet}}$|$<2.4$'],
-    elif cut == '_zpt30_jet1pt10':
-        d['texts'] += [ r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$, |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                        r'$\\mathrm{p^{jet1}_T}>10\\mathrm{GeV}$, |$\\mathrm{y^{jet}}$|$<2.4$'],
-    elif cut == '_phistareta08_jet1pt10':
-        d['texts'] += [ r'$\\mathrm{\\Phi^*_\\eta}>0.8$,  |$\\mathrm{m^Z}-\\mathrm{m^Z_{PDG}}$|$<20\\mathrm{GeV}$',
-                        r'$\\mathrm{p^{jet1}_T}>10\\mathrm{GeV}$, |$\\mathrm{y^{jet}}$|$<2.4$']
+                        r'$\\mathrm{p^{jet1}_T}>20\\mathrm{GeV}$, |$\\mathrm{y^{jet}}$|$<2.4$'],
 
 class JECfile(object):
 	"""Class to handle JEC files and create ROOT histograms with the correction factors"""
