@@ -54,14 +54,14 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIDSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
-    double error_multiplier = 1.0;
-    if (settings.GetLeptonIDSFVariation() == "up") {
-        LOG(WARNING) << "LeptonIDSFProducer: varying scale factor UP one sigma";
-        error_multiplier = 1.01;
-    } else if (settings.GetLeptonIDSFVariation() == "down") {
+    if (settings.GetLeptonSFVariation() == true) {
+        LOG(WARNING) << "LeptonIDSFProducer: varying scale factor UP and DOWN one sigma + 1.0%";
+        error_multiplier[0] = 1.01;
+        error_multiplier[2] = 0.99;
+    } /*else if (settings.GetLeptonIDSFVariation() == "down") {
         LOG(WARNING) << "LeptonIDSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = 0.99;
-    }
+    }*/
     if(settings.GetChannel() == "mm"){
         histoname = settings.GetLeptonIDSFHistogramName();
     }
@@ -91,8 +91,10 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
     // Fill the m_sf array with the values from the root histo
     for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
         for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
-            m_sf[0][ix - 1][iy - 1] = static_cast<float>(
-                error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
+            m_sf[0][ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinContent(ix, iy));
+            m_er[0][ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinError(ix, iy));
+            //m_sf[0][ix - 1][iy - 1] = static_cast<float>(
+              //  error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
         }
     }
     delete sfhisto;
@@ -108,12 +110,21 @@ void LeptonIDSFProducer::Produce(ZJetEvent const& event,
         product.m_weights["leptonIDSFWeight"] =
                 //some old SF files already include the inverse, make sure you use them the right way!
                 //GetScaleFactor(0, *product.m_zLeptons.first) * GetScaleFactor(0, *product.m_zLeptons.second);
-                1/GetScaleFactor(0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, *product.m_zLeptons.second);
-        product.m_weights["mu1IDSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        product.m_weights["mu2IDSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+                1/GetScaleFactor(0, 1, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 1, *product.m_zLeptons.second);
+        if (settings.GetLeptonSFVariation() == true) {
+            product.m_weights["leptonIDSFWeightUp"] =
+                1/GetScaleFactor(0, 0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 0, *product.m_zLeptons.second);
+            product.m_weights["leptonIDSFWeightDown"] =
+                1/GetScaleFactor(0, 2, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 2, *product.m_zLeptons.second);
+        }
+        product.m_weights["mu1IDSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.first);
+        product.m_weights["mu2IDSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.second);
     }
-    else
+    else {
         product.m_weights["leptonIDSFWeight"] = 0;
+        product.m_weights["leptonIDSFWeightUp"] = 0;
+        product.m_weights["leptonIDSFWeightDown"] = 0;
+    }
 }
 
 /////////////////
@@ -126,14 +137,17 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIsoSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
-    double error_multiplier = 1.0;
-    if (settings.GetLeptonIsoSFVariation() == "up") {
+    if (settings.GetLeptonSFVariation() == true) {
+        LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor UP and DOWN one sigma + 0.5%";
+        error_multiplier[0] = 1.005;
+        error_multiplier[2] = 0.995;
+    } /*if (settings.GetLeptonIsoSFVariation() == "up") {
         LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor UP one sigma";
         error_multiplier = 1.005;
     } else if (settings.GetLeptonIsoSFVariation() == "down") {
         LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = 0.995;
-    }
+    }*/
     
     if(settings.GetChannel() == "mm"){
         histoname = settings.GetLeptonIsoSFHistogramName();
@@ -164,8 +178,10 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
     // Fill the m_sf array with the values from the root histo
     for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
         for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
-            m_sf[0][ix - 1][iy - 1] = static_cast<float>(
-                error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
+            m_sf[0][ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinContent(ix, iy));
+            m_er[0][ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinError(ix, iy));
+            //m_sf[0][ix - 1][iy - 1] = static_cast<float>(
+              //  error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
                 //sfhisto->GetBinContent(ix, iy) + error_multiplier * sfhisto->GetBinError(ix, iy));
         }
     }
@@ -178,15 +194,26 @@ void LeptonIsoSFProducer::Produce(ZJetEvent const& event,
                                  ZJetSettings const& settings) const
 {
     if(product.m_zValid){
-        product.m_weights["mu1IsoSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        product.m_weights["mu2IsoSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        product.m_weights["mu1IsoSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.first);
+        product.m_weights["mu2IsoSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.second);
         product.m_weights["leptonIsoSFWeight"] =
                 //some old SF files already include the inverse, make sure you use them the right way!
                 //GetScaleFactor(0, *product.m_zLeptons.first) * GetScaleFactor(0, *product.m_zLeptons.second);
-                1/GetScaleFactor(0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, *product.m_zLeptons.second);
+                1/GetScaleFactor(0, 1, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 1, *product.m_zLeptons.second);
+        if (settings.GetLeptonSFVariation() == true) {
+            product.m_weights["leptonIsoSFWeightUp"] =
+                1/GetScaleFactor(0, 0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 0, *product.m_zLeptons.second);
+            product.m_weights["leptonIsoSFWeightDown"] =
+                1/GetScaleFactor(0, 2, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 2, *product.m_zLeptons.second);
+        }
     }
-    else
+    else {
         product.m_weights["leptonIsoSFWeight"] = 0;
+        if (settings.GetLeptonSFVariation() == true) {
+            product.m_weights["leptonIsoSFWeightUp"] = 0;
+            product.m_weights["leptonIsoSFWeightDown"] = 0;
+        }
+    }
 }
 
 //////////////////////
@@ -198,14 +225,17 @@ std::string LeptonTrackingSFProducer::GetProducerId() const { return "LeptonTrac
 void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTrackingSFRootfile();
-    double error_multiplier = 0.;
+    if (settings.GetLeptonSFVariation() == true) {
+        LOG(WARNING) << "LeptonTrackingSFProducer: varying scale factor UP and DOWN one sigma";
+    } 
+    /*double error_multiplier = 0.;
     if (settings.GetLeptonTrackingSFVariation() == "up") {
         LOG(WARNING) << "LeptonTrackingSFProducer: varying scale factor UP one sigma";
         error_multiplier = 1.;
     } else if (settings.GetLeptonTrackingSFVariation() == "down") {
         LOG(WARNING) << "LeptonTrackingSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = -1.;
-    }
+    }*/
     
     if(settings.GetChannel() == "mm"){
         histoname = settings.GetLeptonTrackingSFHistogramName();
@@ -235,7 +265,9 @@ void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
     
     // Fill the m_sf array with the values from the root histos
     for (int ix = 1; ix <= sfhisto->GetN(); ix++) {
-        m_sf[0][ix-1][0] = static_cast<float>(sfhisto->GetY()[ix-1] + error_multiplier * sfhisto->GetErrorY(ix-1));
+        m_sf[0][ix - 1][0] = static_cast<float>(sfhisto->GetY()[ix-1]);
+        m_er[0][ix - 1][0] = static_cast<float>(sfhisto->GetErrorY(ix-1));
+        //m_sf[0][ix-1][0] = static_cast<float> + error_multiplier * ;
     }
     delete sfhisto;
     file.Close();
@@ -247,13 +279,24 @@ void LeptonTrackingSFProducer::Produce(ZJetEvent const& event,
 {
     //some old SF files already include the inverse, make sure you use them the right way!
     if(product.m_zValid){
-        product.m_weights["mu1TrackingSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        product.m_weights["mu2TrackingSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        product.m_weights["mu1TrackingSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.first);
+        product.m_weights["mu2TrackingSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.second);
         product.m_weights["leptonTrackingSFWeight"] =
-                1/GetScaleFactor(0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, *product.m_zLeptons.second);
+                1/GetScaleFactor(0, 1, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 1, *product.m_zLeptons.second);
+        if (settings.GetLeptonSFVariation() == true) {
+            product.m_weights["leptonTrackingSFWeightUp"] =
+                1/GetScaleFactor(0, 0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 0, *product.m_zLeptons.second);
+            product.m_weights["leptonTrackingSFWeightDown"] =
+                1/GetScaleFactor(0, 2, *product.m_zLeptons.first) * 1/GetScaleFactor(0, 2, *product.m_zLeptons.second);
+        }
     }
-    else
+    else {
         product.m_weights["leptonTrackingSFWeight"] = 0;
+        if (settings.GetLeptonSFVariation() == true) {
+            product.m_weights["leptonTrackingSFWeightUp"] = 0;
+            product.m_weights["leptonTrackingSFWeightDown"] = 0;
+        }
+    }
 }
 
 /////////////////////
@@ -266,15 +309,18 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTriggerSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
-    double error_multiplier = 1.0;
-    if (settings.GetLeptonTriggerSFVariation() == "up") {
+    if (settings.GetLeptonSFVariation() == true) {
+        LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor UP and DOWN one sigma + 0.5%";
+        error_multiplier[0] = 1.005;
+        error_multiplier[2] = 0.995;
+    } /*if (settings.GetLeptonTriggerSFVariation() == "up") {
         LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor UP one sigma";
         error_multiplier = 1.005;
     } 
     else if (settings.GetLeptonTriggerSFVariation() == "down") {
         LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor DOWN one sigma";
         error_multiplier = 0.995;
-    }
+    }*/
     
     if(settings.GetChannel() == "mm"){
         histoname = settings.GetLeptonTriggerSFHistogramName();
@@ -306,9 +352,11 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     // Fill the m_sf array with the values from the root histo
     for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
         for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
-            m_sf[0][ix - 1][iy - 1] = static_cast<float>(
-                error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
-                //sfhisto->GetBinContent(ix, iy) - error_multiplier * sfhisto->GetBinError(ix, iy));
+            m_sf[0][ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinContent(ix, iy));
+            m_er[0][ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinError(ix, iy));
+                //error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
+                
+                
         }
     }    
     file.Close();
@@ -319,11 +367,22 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
                                  ZJetSettings const& settings) const
 {
     if(product.m_zValid){
-        product.m_weights["mu1TriggerSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        product.m_weights["mu2TriggerSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        product.m_weights["mu1TriggerSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.first);
+        product.m_weights["mu2TriggerSFWeight"] = 1/GetScaleFactor(0, 1, *product.m_zLeptons.second);
         product.m_weights["leptonTriggerSFWeight"] =
-            1/(1-(1-GetScaleFactor(0, *product.m_zLeptons.first)) * (1-GetScaleFactor(0, *product.m_zLeptons.second)));
+            1/(1-(1-GetScaleFactor(0, 1, *product.m_zLeptons.first)) * (1-GetScaleFactor(0, 1, *product.m_zLeptons.second)));
+        if (settings.GetLeptonSFVariation() == true) {
+            product.m_weights["leptonTriggerSFWeightUp"] =
+                1/(1-(1-GetScaleFactor(0, 0, *product.m_zLeptons.first)) * (1-GetScaleFactor(0, 0, *product.m_zLeptons.second)));
+            product.m_weights["leptonTriggerSFWeightDown"] =
+                1/(1-(1-GetScaleFactor(0, 2, *product.m_zLeptons.first)) * (1-GetScaleFactor(0, 2, *product.m_zLeptons.second)));
+        }
     }
-    else
+    else {
         product.m_weights["leptonTriggerSFWeight"] = 0;
+        if (settings.GetLeptonSFVariation() == true) {
+            product.m_weights["leptonTriggerSFWeightUp"] = 0;
+            product.m_weights["leptonTriggerSFWeightDown"] = 0;
+        }
+    }
 }
