@@ -65,7 +65,7 @@ fi
 # Set some user specific variables
 if [ $USER = "cheidecker" ]; then
     export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
-    export EXCALIBUR_WORK=/portal/ekpbms2/home/cheidecker/zjets/
+    export EXCALIBUR_WORK=/portal/ekpbms3/home/cheidecker/zjets/
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/cheidecker/Excalibur"
     export HARRY_USERPC="lx26.etp.kit.edu"
 elif [ $USER = "tberger" ]; then
