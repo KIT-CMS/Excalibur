@@ -34,8 +34,9 @@ def getBaseConfig(tagged=False, **kwargs):
         'TaggedJets' : 'ak4PFJetsCHS',
         # PU
         'PileupDensity' : 'pileupDensity',
-        #'PackedPFCandidates': 'pfCandidates',
+        'PackedPFCandidates': 'pfCandidates',
         # Pipelines
+        'UseObjectJetYCut' : False,
         'Pipelines': {
             'default': {
                 'CorrectionLevel': '', # Overwritten by expand function, set levels in data.py or mc.py
@@ -52,7 +53,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'njets', 'njetsinv', 'njets30', # number of valid and invalid jets
                     'run', 'lumi', 'event',
                     # Z quantities
-                    'zpt', 'zeta', 'zeta', 'zy', 'zphi', 'zmass',
+                    'zpt', 'zeta', 'zy', 'zphi', 'zmass',
                     'phistareta', 'ystar', 'yboost',
                     'zl1pt', 'zl1eta', 'zl1phi',
                     'zl2pt', 'zl2eta', 'zl2phi',
@@ -63,7 +64,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
                     'jet1area',
                     'jet1l1', 'jet1rc', 'jet1l2',
-                    'jet1ptraw', 'jet1ptl1', 
+                    'jet1ptraw', 'jet1ptl1',
                     #'jet1unc',  # Leading jet uncertainty
                     # Second jet
                     'jet2pt', 'jet2eta', 'jet2y', 'jet2phi',
@@ -109,6 +110,16 @@ def data(cfg, **kwargs):
     cfg['ProvideL2L3ResidualCorrections'] = True
     #cfg['ProvideL2ResidualCorrections'] = True
     cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
+
+    # -- process keyword arguments
+
+    # 'JEC': if provided, point to JEC file in ../JECDatabase
+    try:
+        _jec_string = kwargs['JEC']
+    except KeyError:
+        print " WARNING! Keyword argument `JEC` to `getBaseConfig` was not given. cfg['Jec'] must be set manually..."
+    else:
+        cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
 
 def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
@@ -175,9 +186,29 @@ def mc(cfg, **kwargs):
     cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:GeneratorWeightProducer')
     cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), 'producer:PUWeightProducer')
 
-def _2016(cfg, **kwargs):
-    cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg 
+    # -- process keyword arguments
 
+    # 'JEC': if provided, point to JEC file in ../JECDatabase
+    try:
+        _jec_string = kwargs['JEC']
+    except KeyError:
+        print " WARNING! Keyword argument `JEC` to `getBaseConfig` was not given. cfg['Jec'] must be set manually..."
+    else:
+        cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_MC/{0}_MC'.format(_jec_string))
+
+    # 'JER': if provided, point to JER file in ../JRDatabase
+    _jer_string = kwargs.get('JER', None)
+    if _jer_string is not None:
+        cfg['JER'] = os.path.join(configtools.getPath(), '../JRDatabase/textFiles/{0}_MC/{0}_MC'.format(_jer_string))
+        cfg['JERMethod'] = "hybrid"
+        cfg['JERSmearerSeed'] = 92837465
+
+        # insert smearer and sorter after the matching producer
+        cfg['Processors'][cfg['Processors'].index("producer:RecoJetGenJetMatchingProducer")+1:1] = ["producer:JERSmearer", "producer:JetSorter"]
+
+def _2016(cfg, **kwargs):
+    cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
+    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTrackingSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
     # switch cleaning on if necessary (check cleaning masks!)
     #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     #cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
@@ -246,11 +277,11 @@ def ee(cfg, **kwargs):
     cfg['ElectronMetadata'] = 'electronMetadata'
     cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL']
     # The order of these producers is important!
-    cfg['Processors'] = [	
+    cfg['Processors'] = [
                             'producer:ZJetValidElectronsProducer',
-                            'producer:ZeeProducer',	
+                            'producer:ZeeProducer',
                             ]+cfg['Processors']
-        
+
     cfg['Pipelines']['default']['Processors'] = [
         'filter:MinElectronsCountFilter',
         'filter:MaxElectronsCountFilter',
@@ -267,7 +298,7 @@ def ee(cfg, **kwargs):
         'filter:BackToBackCut',
         ]
     cfg['Pipelines']['default']['Consumers'] += ['KappaElectronsConsumer',]
-    
+
     cfg['ElectronID'] = 'tight' # OLD electron ID code: set to 'none' or 'user' if using VID (s. below)
     cfg['ElectronIsoType'] = 'none'
     cfg['ElectronIso'] = 'none'
@@ -282,9 +313,9 @@ def ee(cfg, **kwargs):
     cfg['Pipelines']['default']['Quantities'] += [
         'epluspt','epluseta','eplusphi','eplusiso',
         'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
-        'e1pt', 'e1eta', 'e1phi', 
+        'e1pt', 'e1eta', 'e1phi',
         'e1idloose', 'e1idmedium', 'e1idtight', 'e1idveto', 'e1idloose95', 'e1idmedium95', 'e1idtight95','e1idveto95',# 'e1mvanontrig', 'e1mvatrig',
-        'e2pt', 'e2eta', 'e2phi', 
+        'e2pt', 'e2eta', 'e2phi',
         'e2idloose', 'e2idmedium', 'e2idtight', 'e2idveto', 'e2idloose95', 'e2idmedium95', 'e2idtight95','e2idveto95',# 'e2mvanontrig', 'e2mvatrig',
         'nelectrons', 'validz',
         ]
@@ -295,7 +326,6 @@ def ee(cfg, **kwargs):
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
     cfg['CutLeadingJetYMax'] = 2.4
-    cfg['UseObjectJetYCut'] = False
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -325,13 +355,13 @@ def mcee(cfg, **kwargs):
     cfg['BranchGenMatchedElectrons'] = True
     cfg['AddGenMatchedTaus'] = False
     cfg['AddGenMatchedTauJets'] = False
-    
+
     # not sure about the status codes in aMCatNLO/MG5. theres usually an e+/e-
     # pair with status 1 in each event, so take this number for now
     # see also http://www.phy.pku.edu.cn/~qhcao/resources/CTEQ/MCTutorial/Day1.pdf
     #cfg['RecoElectronMatchingGenParticleStatus'] = 1
     #cfg[''] = 1
-    
+
     cfg['Pipelines']['default']['Processors'] += [
             'filter:ValidGenZCut',
             'filter:GenZPtCut',
@@ -365,7 +395,7 @@ def mm(cfg, **kwargs):
     cfg['Pipelines']['default']['Consumers'] += ['KappaMuonsConsumer',]
     # In case of Muon Corrections
     #cfg['ValidMuonsInput'] = "corrected" # is this really doing something???
-    
+
     # validMuonsProducer
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
@@ -392,7 +422,6 @@ def mm(cfg, **kwargs):
     cfg['CutLeadingJetPtMin'] = 12.0
     cfg['CutLeadingJetEtaMax'] = 1.3
     cfg['CutLeadingJetYMax'] = 2.4
-    cfg['UseObjectJetYCut'] = False
     cfg['CutBackToBack'] = 0.34
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
@@ -447,9 +476,7 @@ def mcmm(cfg, **kwargs):
     cfg['AddGenMatchedTauJets'] = False
 
 def data_2016(cfg, **kwargs):
-    _jec_string = kwargs['JEC']  # mandatory kwarg indicating JEC
     _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (for selecting the right jet eta-phi cleaning file)
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
 
     # object-based eta-phi cleaning (recommended jul. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
@@ -461,8 +488,7 @@ def data_2016(cfg, **kwargs):
 
 def mc_2016(cfg, **kwargs):
     #cfg['PileupWeightFile'] = os.path.join(configtools.getPath(),'data/pileup/pileup_weights_BCDEFGH_13TeV_23Sep2016ReReco_Zll_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
-    _jec_string = kwargs['JEC']  # mandatory kwarg indicating JEC
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_MC/{0}_MC'.format(_jec_string))
+    pass
 
 def _2016mm(cfg, **kwargs):
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')
@@ -512,7 +538,7 @@ def data_2016mm(cfg, **kwargs):
     cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA'
     cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA'
     cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
-    
+
 def mc_2016mm(cfg, **kwargs):
     #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_Moriond.root")
     ### Check if chosen histogram is consistent with ID & Isolation choice!
@@ -520,7 +546,3 @@ def mc_2016mm(cfg, **kwargs):
     cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesMC/histo_eta_MC'
     cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC'
     cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
-    
-
-
-

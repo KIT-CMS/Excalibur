@@ -45,6 +45,22 @@ class ZJetDressedGenMuonsProducer : public ZJetProducerBase
     void Produce(ZJetEvent const& event,
                  ZJetProduct& product,
                  ZJetSettings const& settings) const override;
+private:
+    float maxZJetDressedMuonDeltaR;
+};
+
+class ZJetTrueGenMuonsProducer : public ZJetProducerBase
+{
+  public:
+    ZJetTrueGenMuonsProducer() : ZJetProducerBase() {}
+
+    void Init(ZJetSettings const& settings) override;
+
+    std::string GetProducerId() const override;
+
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override;
                  
     int FindMom(int idx, ZJetEvent const& event) const;
 };

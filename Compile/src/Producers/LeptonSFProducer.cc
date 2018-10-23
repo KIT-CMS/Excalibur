@@ -54,13 +54,13 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIDSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
-    double error_multiplier = 0.;
+    double error_multiplier = 1.0;
     if (settings.GetLeptonIDSFVariation() == "up") {
         LOG(WARNING) << "LeptonIDSFProducer: varying scale factor UP one sigma";
-        error_multiplier = 1.;
+        error_multiplier = 1.01;
     } else if (settings.GetLeptonIDSFVariation() == "down") {
         LOG(WARNING) << "LeptonIDSFProducer: varying scale factor DOWN one sigma";
-        error_multiplier = -1.;
+        error_multiplier = 0.99;
     }
     if(settings.GetChannel() == "mm"){
         histoname = settings.GetLeptonIDSFHistogramName();
@@ -92,7 +92,7 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
     for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
         for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
             m_sf[0][ix - 1][iy - 1] = static_cast<float>(
-                sfhisto->GetBinContent(ix, iy) + error_multiplier * sfhisto->GetBinError(ix, iy));
+                error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
         }
     }
     delete sfhisto;
@@ -126,13 +126,13 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIsoSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
-    double error_multiplier = 0.;
+    double error_multiplier = 1.0;
     if (settings.GetLeptonIsoSFVariation() == "up") {
         LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor UP one sigma";
-        error_multiplier = 1.;
+        error_multiplier = 1.005;
     } else if (settings.GetLeptonIsoSFVariation() == "down") {
         LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor DOWN one sigma";
-        error_multiplier = -1.;
+        error_multiplier = 0.995;
     }
     
     if(settings.GetChannel() == "mm"){
@@ -165,7 +165,8 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
     for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
         for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
             m_sf[0][ix - 1][iy - 1] = static_cast<float>(
-                sfhisto->GetBinContent(ix, iy) + error_multiplier * sfhisto->GetBinError(ix, iy));
+                error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
+                //sfhisto->GetBinContent(ix, iy) + error_multiplier * sfhisto->GetBinError(ix, iy));
         }
     }
     delete sfhisto;
@@ -265,14 +266,14 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTriggerSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
-    double error_multiplier = 0.;
+    double error_multiplier = 1.0;
     if (settings.GetLeptonTriggerSFVariation() == "up") {
         LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor UP one sigma";
-        error_multiplier = 1.;
+        error_multiplier = 1.005;
     } 
     else if (settings.GetLeptonTriggerSFVariation() == "down") {
         LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor DOWN one sigma";
-        error_multiplier = -1.;
+        error_multiplier = 0.995;
     }
     
     if(settings.GetChannel() == "mm"){
@@ -306,7 +307,8 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
         for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
             m_sf[0][ix - 1][iy - 1] = static_cast<float>(
-            sfhisto->GetBinContent(ix, iy) - error_multiplier * sfhisto->GetBinError(ix, iy));
+                error_multiplier * sfhisto->GetBinContent(ix, iy) + (error_multiplier-1.0)/std::abs(error_multiplier-1.0+1e-10) * sfhisto->GetBinError(ix, iy));
+                //sfhisto->GetBinContent(ix, iy) - error_multiplier * sfhisto->GetBinError(ix, iy));
         }
     }    
     file.Close();

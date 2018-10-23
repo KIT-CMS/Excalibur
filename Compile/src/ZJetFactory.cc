@@ -4,6 +4,7 @@
 #include "Excalibur/Compile/interface/Producers/ValidZllJetsProducer.h"
 #include "Excalibur/Compile/interface/Producers/TypeIMETProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetCorrectionsProducer.h"
+#include "Excalibur/Compile/interface/Producers/JERSmearer.h"
 #include "Excalibur/Compile/interface/Producers/JetSorter.h"
 #include "Excalibur/Compile/interface/Producers/JetCleaner.h"
 #include "Excalibur/Compile/interface/Producers/JetRecoilProducer.h"
@@ -33,6 +34,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new TypeIMETProducer();
     else if (id == ZJetCorrectionsProducer().GetProducerId())
         return new ZJetCorrectionsProducer();
+    else if (id == JERSmearer().GetProducerId())
+        return new JERSmearer();
     else if (id == JetSorter().GetProducerId())
         return new JetSorter();
     else if (id == JetEtaPhiCleaner().GetProducerId())
@@ -73,6 +76,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new ZJetDressedMuonsProducer();
     else if(id == ZJetDressedGenMuonsProducer().GetProducerId())
         return new ZJetDressedGenMuonsProducer();
+    else if(id == ZJetTrueGenMuonsProducer().GetProducerId())
+        return new ZJetTrueGenMuonsProducer();
     else if(id == ZJetGenPhotonsProducer().GetProducerId())
         return new ZJetGenPhotonsProducer();
     else if(id == GenZmmProducer().GetProducerId())
@@ -125,9 +130,13 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new ZPtCut();
     else if (id == GenZPtCut().GetFilterId())
         return new GenZPtCut();
+    else if (id == PhistaretaCut().GetFilterId())
+        return new PhistaretaCut();
+    else if (id == GenPhistaretaCut().GetFilterId())
+        return new GenPhistaretaCut();
     else if (id == GenHTCut().GetFilterId())
-		return new GenHTCut();
-	else if (id == BackToBackCut().GetFilterId())
+        return new GenHTCut();
+    else if (id == BackToBackCut().GetFilterId())
         return new BackToBackCut();
     else if (id == JetIDCut().GetFilterId())
         return new JetIDCut();

@@ -32,6 +32,11 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(bool, ProvideL2ResidualCorrections, false)
     IMPL_SETTING_DEFAULT(bool, ProvideL2L3ResidualCorrections, false)
 
+    // JERSmearer
+    IMPL_SETTING(std::string, JER)
+    IMPL_SETTING(std::string, JERMethod)
+    IMPL_SETTING(int, JERSmearerSeed)
+
     // RecoJetGenJetMatchingProducer
     IMPL_SETTING_DEFAULT(double, DeltaRMatchingRecoJetGenJet, 0.25)
 
@@ -65,6 +70,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, CutLeadingJetEtaMax)
     IMPL_SETTING(float, CutLeadingJetYMax)
     IMPL_SETTING(float, CutZPtMin)
+    IMPL_SETTING(float, CutPhistaretaMin)
     IMPL_SETTING(float, CutBackToBack)
     IMPL_SETTING(float, CutAlphaMax)
     IMPL_SETTING(float, CutEtaPhiCleaningPt)
