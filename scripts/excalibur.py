@@ -659,7 +659,7 @@ def createFileList(infiles, fast=False):
                 myclient = client.FileSystem(gridserver)
                 print 'Getting file list from XRootD server'
                 status, listing = myclient.dirlist(gridpath, DirListFlags.STAT, timeout=10)
-                if status == '':
+                if  listing is not None:
                     for entry in listing:
                         if entry.name.endswith('.root') and not entry.name == '':
                             out_files.append(gridserver + '/' + gridpath + entry.name)
