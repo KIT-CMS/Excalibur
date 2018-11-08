@@ -91,10 +91,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, LeptonIsoSFHistogramName)
     IMPL_SETTING(std::string, LeptonTrackingSFHistogramName)
     IMPL_SETTING(std::string, LeptonTriggerSFHistogramName)
-    IMPL_SETTING_DEFAULT(std::string, LeptonIDSFVariation, "None")
-    IMPL_SETTING_DEFAULT(std::string, LeptonIsoSFVariation, "None")
-    IMPL_SETTING_DEFAULT(std::string, LeptonTrackingSFVariation, "None")
-    IMPL_SETTING_DEFAULT(std::string, LeptonTriggerSFVariation, "None")
+    IMPL_SETTING_DEFAULT(bool, LeptonSFVariation, false)
     IMPL_SETTING_DEFAULT(std::string, Channel, "mm")
     IMPL_SETTING_INTLIST(TriggerSFRuns)
    

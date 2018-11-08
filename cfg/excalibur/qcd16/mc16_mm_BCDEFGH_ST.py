@@ -18,9 +18,8 @@ def config():
         #nafpathttbar="root://cmsxrootd-kit.gridka.de/pnfs/gridka.de/cms/disk-only/store/user/tberger/Skimming/ZJet_ST_t-channel_antitop_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_RunIISummer16_noJTB/*.root",
         )
     cfg = configtools.expand(cfg, 
-                                ['nocuts','zjetcuts','genzjetcuts','allzjetcuts'],
-                                ['None','L1L2L3'],
-                                False)
+                                ['nocuts','zjetcuts','genzjetcuts'],
+                                ['None','L1L2L3'])
     configtools.remove_quantities(cfg, [
         'jet1rc','npv', 'rho','njets', 'njetsinv', 'njets30','njets10',
         'jet1chf', 'jet1nhf', 'jet1ef','jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf','jet1area',
@@ -39,7 +38,10 @@ def config():
         ])
     configtools.add_quantities(cfg, [   #'mu1IDSFWeight','mu1IsoSFWeight','mu1TrackingSFWeight','mu1TriggerSFWeight',
                                         #'mu2IDSFWeight','mu2IsoSFWeight','mu2TrackingSFWeight','mu2TriggerSFWeight',
-                                        'leptonIDSFWeight','leptonIsoSFWeight','leptonTrackingSFWeight','leptonTriggerSFWeight',     
+                                        'leptonIDSFWeight','leptonIDSFWeightUp','leptonIDSFWeightDown',
+                                        'leptonIsoSFWeight','leptonIsoSFWeightUp','leptonIsoSFWeightDown',
+                                        'leptonTrackingSFWeight','leptonTrackingSFWeightUp','leptonTrackingSFWeightDown',
+                                        'leptonTriggerSFWeight','leptonTriggerSFWeightUp','leptonTriggerSFWeightDown',
                                         #'jet1puidraw',
                                         ])
 ##### Add Producers: #####
@@ -70,6 +72,7 @@ def config():
     cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### LeptonSF files: #####
+    cfg['LeptonSFVariation'] = True
     cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/ID_EfficienciesAndSF_BCDEF.root")
     cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Iso_EfficienciesAndSF_BCDEF.root")
     cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Trigger_EfficienciesAndSF_BCDEF.root")

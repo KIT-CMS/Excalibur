@@ -191,6 +191,8 @@ class LabelsDictZJet(labels.LabelsDict):
             'tagflavour': 'Flavour (from Tagging)',
             'unc': 'Jet1 Uncertainty',
             'phistareta': '$\mathit{\Phi}^{*}_{\eta}$',
+            'recophistareta': '$\mathit{\Phi}^{*,Reco}_{\eta}$',
+            'genphistareta': '$\mathit{\Phi}^{*,Gen}_{\eta}$',
             'ystar': '$y^*$',#=\frac{1}{2}|y^Z-\eta^{Jet1}|$',
             'yboost': '$y_b$',#=\frac{1}{2}|y^Z+\eta^{Jet1}|$',
             'genystar': '$y^{*,Gen}$',#=\frac{1}{2}|y^Z-\eta^{Jet1}|$',

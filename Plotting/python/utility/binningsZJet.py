@@ -133,7 +133,6 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
         if (yboostbin==(0.0,0.5) and ystarbin==(2.0,2.5)):
             print obs+" binning changed"
             d.update({  'x_ticks': [0.5, 1, 2, 4],
-                        'y_ticks': [0.5, 1, 2, 4],
                         'x_bins': ['0.4 0.6 0.8 1.0 5'],
                         'y_bins': ['0.4 0.6 0.8 1.0 5'],
                         #'x_bins': ['0.4 0.5 0.6 0.7 0.8 1.0 5.0'],
@@ -147,7 +146,6 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
             ):
             print obs+" binning changed"
             d.update({  'x_ticks': [0.5, 1, 2, 4, 10, 30],
-                        'y_ticks': [0.5, 1, 2, 4, 10, 30],
                         'x_bins': ['0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 5 10 50'],
                         'y_bins': ['0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 5 10 50'],
                         #'x_bins': ['0.4 0.5 0.6 0.7 0.8 0.9 1.0 3.0 5.0 7.0 50'],
@@ -155,7 +153,6 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
                         })
         else: # use standard binning            
             d.update({  'x_ticks': [0.5, 1, 2, 4, 10, 30],
-                        'y_ticks': [0.5, 1, 2, 4, 10, 30],
                         'x_bins': ['0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 4 5 7 10 15 20 30 50'],
                         'y_bins': ['0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 4 5 7 10 15 20 30 50'],
                         #'x_bins':['0.4 0.5 0.6 0.7 0.8 0.9 1.0 3.0 5.0 7.0 10 20 30 50'],

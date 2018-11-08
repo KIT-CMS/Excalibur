@@ -71,7 +71,7 @@ def changeNamingScheme(cfg, old=True):
 	cfg['PileupDensity'] = 'KT6Area' if old else 'pileupDensity'
 
 
-def expand(config, cutModes, corrLevels, sfmodes = False, default="default"):
+def expand(config, cutModes, corrLevels, default="default"):
     """create pipelines for each cut mode and correction level"""
     pipelines = config['Pipelines']
     p = config['Pipelines'][default]
@@ -119,19 +119,6 @@ def expand(config, cutModes, corrLevels, sfmodes = False, default="default"):
             pipelines[pipelinename] = copy.deepcopy(p)
             pipelines[pipelinename]['CorrectionLevel'] = corrLevel
             
-    if sfmodes:
-        for name, p in pipelines.items():
-            for addname, ID, Iso, Tracking, Trigger in zip( ['IDUp','IDDown','IsoUp','IsoDown','TrackingUp','TrackingDown','TriggerUp','TriggerDown'],
-                                                            ['up', 'down'] + 6*['none'],
-                                                            2*['none'] + ['up', 'down'] + 4*['none'],
-                                                            4*['none'] + ['up', 'down'] + 2*['none'],
-                                                            6*['none'] + ['up', 'down']):
-                pipelinename = name+'_'+addname
-                pipelines[pipelinename] = copy.deepcopy(p)
-                pipelines[pipelinename]['LeptonIDSFVariation'] = ID
-                pipelines[pipelinename]['LeptonIsoSFVariation'] = Iso
-                pipelines[pipelinename]['LeptonTrackingSFVariation'] = Tracking
-                pipelines[pipelinename]['LeptonTriggerSFVariation'] = Trigger
     return config
 
 

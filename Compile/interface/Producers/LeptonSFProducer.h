@@ -17,6 +17,8 @@ class LeptonSFProducer : public ZJetProducerBase
 
   protected:
     float m_sf[12][12][12] = {};
+    float m_er[12][12][12] = {};
+    float error_multiplier[3] = {1.0,1.0,1.0};
     std::vector<float> m_xbins = {};
     std::vector<float> m_ybins = {};
     std::vector<float>* m_etabins = {};
@@ -29,7 +31,7 @@ class LeptonSFProducer : public ZJetProducerBase
     bool m_absoluteeta = true;
     bool m_etaonly;
 
-    virtual float GetScaleFactor(int run_index, KLV const& lepton) const
+    virtual float GetScaleFactor(int run_index, int err_index, KLV const& lepton) const
     {
         for (unsigned int index_eta = 0; index_eta < m_etabins->size() - 1; ++index_eta) {
             if (GetEta(lepton) >= m_etabins->at(index_eta) &&
@@ -38,24 +40,37 @@ class LeptonSFProducer : public ZJetProducerBase
                     if ((lepton.p4.Pt()) >= m_ptbins->at(index_pt) &&
                         (lepton.p4.Pt()) < m_ptbins->at(index_pt + 1)) {
                         if (m_reversed_axes) {
-                            return m_sf[run_index][index_pt][index_eta];
+                            //return m_sf[run_index][index_pt][index_eta]
+                            return error_multiplier[err_index]*m_sf[run_index][index_pt][index_eta]
+                                +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][index_pt][index_eta];
+                            //return m_sf[run_index][index_pt][index_eta];
                         } 
                         else {
-                            return m_sf[run_index][index_eta][index_pt];
+                            //return m_sf[run_index][index_eta][index_pt]
+                            return error_multiplier[err_index]*m_sf[run_index][index_eta][index_pt]
+                                +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][index_eta][index_pt];
+                            //return m_sf[run_index][index_eta][index_pt]+error_multiplier[err_index]*m_er[run_index][index_eta][index_pt];
                         }
                     }
                 }
                 if (m_reversed_axes) {
-                    return m_sf[run_index][m_ptbins->size()-2][index_eta];
+                    //return m_sf[run_index][m_ptbins->size()-2][index_eta]
+                    return error_multiplier[err_index]*m_sf[run_index][m_ptbins->size()-2][index_eta]
+                        +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][m_ptbins->size()-2][index_eta];
+                    //return m_sf[run_index][m_ptbins->size()-2][index_eta];
                 } 
                 else {
-                    return m_sf[run_index][index_eta][m_ptbins->size()-2];
+                    //return m_sf[run_index][index_eta][m_ptbins->size()-2]
+                    return error_multiplier[err_index]*m_sf[run_index][index_eta][m_ptbins->size()-2]
+                        +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][index_eta][m_ptbins->size()-2];
+                    //return m_sf[run_index][index_eta][m_ptbins->size()-2]
                 }
             }
         }
         return 1.0f;
     }
-
+    
+    
     virtual float GetEta(KLV const& l) const
     {
         if (m_absoluteeta)
