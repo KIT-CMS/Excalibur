@@ -84,7 +84,13 @@ class BinningsDictZJet(BinningsDict):
             'run':      '200,276200,276400',
             'jet1puidraw': '100,-1,1',
             'met':      '70,0,350',
-            
+
+            'jet1pt/genjet1pt': '4000,0.,2.',  # JER gen
+            'jet1pt/zpt':       '4000,0.,2.',  # ptbalance gen
+            'genjet1pt/genzpt': '4000,0.,2.',  # PLI gen
+            'genzpt/zpt':       '4000,0.,2.',  # ZRes gen
+            'ptbalance':        '4000,0.,2.',  # ptbalance data
+
         })
     
 def rebinning(args,d,obs,yboostbin,ystarbin):

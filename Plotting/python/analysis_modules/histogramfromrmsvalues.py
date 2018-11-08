@@ -58,7 +58,7 @@ class HistogramFromRMSValues(analysisbase.AnalysisBase):
                         bin_distance_from_mean += 1
                         integral_new = root_hist.Integral(mean_bin - bin_distance_from_mean, mean_bin +
                                                           bin_distance_from_mean)
-                        deviation = (integral_total - integral_new) / integral_total * 100
+                        deviation = (integral_total - integral_new) / integral_total * 100.
 
                     x_bin_min = mean_bin - bin_distance_from_mean
                     x_bin_max = mean_bin + bin_distance_from_mean
