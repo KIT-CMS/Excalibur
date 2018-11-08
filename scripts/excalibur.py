@@ -658,13 +658,15 @@ def createFileList(infiles, fast=False):
                 from XRootD.client.flags import DirListFlags, OpenFlags, MkDirFlags, QueryCode
                 myclient = client.FileSystem(gridserver)
                 print 'Getting file list from XRootD server'
-                status, listing = myclient.dirlist(gridpath, DirListFlags.STAT, timeout=10)
-                if status == '':
+                status, listing = myclient.dirlist(gridpath, DirListFlags.LOCATE, timeout=10)
+                if status == '' or listing != None:
                     for entry in listing:
                         if entry.name.endswith('.root') and not entry.name == '':
                             out_files.append(gridserver + '/' + gridpath + entry.name)
+                    print "Successfully queried " + str(len(out_files)) + " files!"
                 else:
-                    print status
+                    print "Error getting list of files!"
+                    print status, listing
                     exit(1)
             # use local file system for getting input file list
             else:
