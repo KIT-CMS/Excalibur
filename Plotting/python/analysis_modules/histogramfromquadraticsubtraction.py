@@ -46,21 +46,28 @@ class HistogramFromQuadraticSubtraction(analysisbase.AnalysisBase):
             hist = ROOT.TH1D(self.__class__.__name__, self.__class__.__name__, nbins, xlow, xup)
 
             for bin in range(nbins + 1):
+                if bin == 0:
+                    continue
                 # Determine result of quadratic subtraction for BinContent
                 bin_value = pow(minuend_hist.GetBinContent(bin), 2)
                 for subtrahend in subtrahend_nicks:
                     bin_value -= pow(plot_data.plotdict["root_objects"][subtrahend].GetBinContent(bin), 2)
-                bin_value = pow(bin_value, 0.5) if bin_value > 0. else -999
-                # Calculate uncertainty for BinError
-                if bin_value != 0.:
-                    bin_error = pow(minuend_hist.GetBinContent(bin) * minuend_hist.GetBinError(bin) / bin_value, 2)
+                if bin_value < 0.:
+                    continue
+                bin_value = pow(bin_value, 0.5)
 
-                    for subtrahend in subtrahend_nicks:
-                        bin_error += pow(plot_data.plotdict["root_objects"][subtrahend].GetBinContent(bin) *
-                                         plot_data.plotdict["root_objects"][subtrahend].GetBinError(bin) / bin_value, 2)
-                    bin_error = pow(bin_error, 0.5) if bin_error > 0. else -999
-                else:
-                    bin_error = 0.
+                # Calculate uncertainty for BinError
+                if bin_value == 0.:
+                    continue
+                bin_error = pow(minuend_hist.GetBinContent(bin) * minuend_hist.GetBinError(bin) / bin_value, 2)
+
+                for subtrahend in subtrahend_nicks:
+                    bin_error += pow(plot_data.plotdict["root_objects"][subtrahend].GetBinContent(bin) *
+                                     plot_data.plotdict["root_objects"][subtrahend].GetBinError(bin) / bin_value, 2)
+                if bin_error < 0.:
+                    continue
+                bin_error = pow(bin_error, 0.5)
+
                 hist.SetBinContent(bin, bin_value)
                 hist.SetBinError(bin, bin_error)
 

@@ -8,9 +8,10 @@ import datetime
 from jer_comparisons import general_comparison
 from jer_functionfits import fit_function
 from jer_profplots import rms_profplot_datamc
-from jer_truncationscan import jer_extrapolation, jer_extrapolation_truncation_scan  # rms_profplot_datamc,
-from jer_subtraction import rms_subtraction_datamc
-from jer_truncations import rms_profplot_datamc_truncationscan
+from jer_truncationscan import jer_truncation_scan_without_JER, jer_truncation_scan_JER
+# from jer_subtraction import rms_subtraction_datamc
+# from jer_truncations import rms_profplot_datamc_truncationscan
+from jer_extrapolation import jer_extrapolation
 
 # 'jet1pt': '40,0,400',  # '5 10 20 30 50 75 125 175 225 300 400',
 # 'jet2pt': '40,0,250',  # '5 10 20 30 40 50 75 125 175 250',
@@ -77,17 +78,16 @@ def jer_determination_data_mc_zll(args=None):
                 ]
 
         # Plotting Data and MC without corrections label
-        if True:
+        if False:
             # Plotting cross check plots for RMS determination
             plotting_jobs += rms_profplot_datamc(args, d, channel=channel)
-
+        if True:
             # Plotting RMS extrapolations
-            # plotting_jobs += rms_subtraction_datamc(args, d, channel=channel)
             plotting_jobs += jer_extrapolation(args, d, channel=channel)
-
+        if True:
             # Plotting RMS truncation scans
-            # plotting_jobs += jer_extrapolation_truncation_scan(args, d, channel=channel)
-            plotting_jobs += rms_profplot_datamc_truncationscan(args, d, channel=channel)
+            plotting_jobs += jer_truncation_scan_JER(args, d, channel=channel)
+            plotting_jobs += jer_truncation_scan_without_JER(args, d, channel=channel)
 
         text_size = 15
         text_factor = 0.022
