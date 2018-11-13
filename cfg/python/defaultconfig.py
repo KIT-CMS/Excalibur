@@ -14,70 +14,72 @@ def getBaseConfig(tagged=False, **kwargs):
         'OutputPath': 'out', # Overwritten by excalibur.py
         # ZJetCorrectionsProducer Settings
         'Jec': '', # Path for JEC data, please set this later depending on input type
-        'L1Correction': 'L1FastJet',
-        'RC': True,  # Also provide random cone offset JEC, and use for type-I
+        'L1Correction': 'L1FastJet',  # default L1 correction naming
+        'RC': True,  # Also provide random cone offset JEC, and use for type-I, residual corrections only
         'FlavourCorrections': False,  # Calculate additional MC flavour corrections
         # ZProducer Settings
-        'ZMassRange': 20.,
+        'ZMassRange': 20.,  # maybe not default for generated jets
         'VetoMultipleZs' : False,
         # TypeIMETProducer Settings
-        'Met' : 'met', # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
+        'Met' : 'met',  # metCHS will be selected automaticly if CHS jets are requested in TaggedJets
         'TypeIJetPtMin': 15.,
         'EnableMetPhiCorrection': False,
         'MetPhiCorrectionParameters': [], # Please set this later depending on input type
         # JetRecoilProducer Settings
-        'JetRecoilMinPtThreshold': 15.,
-        # Valid Jet Selection	'ValidJetsInput': 'uncorrected',
+        'JetRecoilMinPtThreshold': 15.,  # currently not in use
+        # Valid Jet Selection
+        # 'ValidJetsInput': 'uncorrected',  # set to default
         'JetID' : 'none', # object-based specification, 'none' if you want to use the event-based ID filter
-        #'PuJetIDs' : ['2:puJetIDFullTight'],
-        'JetMetadata' : 'jetMetadata',
-        'TaggedJets' : 'ak4PFJetsCHS',
+        #'PuJetIDs' : ['2:puJetIDFullTight'],  # TODO: change value due to different KAPPA naming
+        'JetMetadata' : 'jetMetadata',  # folder to look for jet variables in KAPPA files
+        'TaggedJets' : 'ak4PFJetsCHS',  # default folder to look for saved jets in KAPPA files
         # PU
-        'PileupDensity' : 'pileupDensity',
-        # 'PackedPFCandidates': 'pfCandidates',
+        'PileupDensity' : 'pileupDensity',  # rho, label for skim collection in KAPPA files
+        # 'PackedPFCandidates': 'pfCandidates',  # please do not comment in when not available in Kappa files
         # Pipelines
-        'UseObjectJetYCut' : False,
+        'UseObjectJetYCut' : False,  # default object-based rapidity cut
         'Pipelines': {
             'default': {
                 'CorrectionLevel': '', # Overwritten by expand function, set levels in data.py or mc.py
                                         # No correction at all equals 'None', not ''
                 'Consumers': [
-                    'ZJetTreeConsumer',
-                    'cutflow_histogram',
+                    'ZJetTreeConsumer',  # writes out ntuples into root file
+                    'cutflow_histogram',  # writes out cutflow into root file
                     ],
-                'EventWeight': 'eventWeight',
+                'EventWeight': 'eventWeight',  # new weight that sums up all other weights, 
+                #TODO: unify weight name and remove other appearances
                 'Processors': [], # Overwritten/cleaned by expand function, set cuts in data.py or mc.py
                 'Quantities': [
                     # General quantities
-                    'npv', 'rho', 'weight', 'npumean',
-                    'njets', 'njetsinv', 'njets30', # number of valid and invalid jets
+                    'npv', 'rho', 'npumean', # pileup observables
+                    'weight',  # TODO: Rename and change MERLIN
+                    'njets',  # 'njetsinv', 'njets30', 'njets10', # number of valid and invalid jets
                     'run', 'lumi', 'event',
                     # Z quantities
                     'zpt', 'zeta', 'zy', 'zphi', 'zmass',
                     'phistareta', 'ystar', 'yboost',
-                    'zl1pt', 'zl1eta', 'zl1phi',
-                    'zl2pt', 'zl2eta', 'zl2phi',
+                    'zl1pt', 'zl1eta', 'zl1phi',  # leading lepton used for Z reconstruction
+                    'zl2pt', 'zl2eta', 'zl2phi',  # second leading lepton used for Z reconstruction
                     # Leading jet
-                    'njets10',#
-                    'jet1pt', 'jet1eta', 'jet1y', 'jet1phi',
-                    'jet1chf', 'jet1nhf', 'jet1ef',
-                    'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
-                    'jet1area',
-                    'jet1l1', 'jet1rc', 'jet1l2',
-                    'jet1ptraw', 'jet1ptl1',
-                    #'jet1unc',  # Leading jet uncertainty
+                    'jet1pt', 'jet1eta', 'jet1y', 'jet1phi',  # leading jet observable
+                    # 'jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf',
+                    # particle flow energy fractions, comment in if needed for manual cross checks
+                    'jet1area',  # area of jet used for cross checks
+                    'jet1l1', 'jet1rc', 'jet1l2',  # leading jet corrections L1, L1RC, L2L3, TODO: change name to jet1l2l3?
+                    'jet1ptraw', 'jet1ptl1',  # raw and L1 corrected leading jet pT, TODO: remove pTs and use correction factors
+                    #'jet1unc',  # Leading jet uncertainty, not implemented yet
                     # Second jet
                     'jet2pt', 'jet2eta', 'jet2y', 'jet2phi',
                     # 3rd jet
                     'jet3pt', 'jet3eta', 'jet3y', 'jet3phi',
                     # MET and related
-                    'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet',
-                    'mettype1vecpt', 'mettype1pt',
-                    'jetHT',
-                    'jetrecoilpt', 'jetrecoilphi', 'jetrecoileta', 'jetrpf',
-                    'jet1idtightlepveto', 'jet1idtight', 'jet1idloose',
-                    'jet2idtightlepveto', 'jet2idtight', 'jet2idloose',
-                    'jet3idtightlepveto', 'jet3idtight', 'jet3idloose',
+                    'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet',  # raw = without type-1 correction, sumet = sum over all pTs
+                    'mettype1vecpt', 'mettype1pt',  # vectorial and scalar difference between corrected and uncorrected met
+                    # 'jetHT',  # scalar sum of all jet pTs
+                    # 'jetrecoilpt', 'jetrecoilphi', 'jetrecoileta', 'jetrpf',  # recoil observables
+                    # 'jet1idtightlepveto', 'jet1idtight', 'jet1idloose',  # please add jet IDs only necessary ones manually
+                    # 'jet2idtightlepveto', 'jet2idtight', 'jet2idloose',
+                    # 'jet3idtightlepveto', 'jet3idtight', 'jet3idloose',
                     #'invalidjet1pt','invalidjet1idloose','invalidjet1eta', 'invalidjet1y', 'invalidjet1phi',
                     #'invalidjet2pt','invalidjet2idloose',
                     #'invalidjet3pt','invalidjet3idloose',
@@ -86,21 +88,20 @@ def getBaseConfig(tagged=False, **kwargs):
             },
         # Processors
         'Processors': [
-            'producer:ValidTaggedJetsProducer',
-            'producer:ValidZllJetsProducer',  # needs to run before the 'ZJetCorrectionsProducer'
-            'producer:ZJetCorrectionsProducer',
-            'producer:TypeIMETProducer',
-            'producer:JetSorter',
-            'producer:JetRecoilProducer',
+            'producer:ValidTaggedJetsProducer',  # builds jet collection
+            'producer:ValidZllJetsProducer',  # applies lepton cleaning, needs to run before the 'ZJetCorrectionsProducer'
+            'producer:ZJetCorrectionsProducer',  # applies correction factors
+            'producer:TypeIMETProducer',  # applies type-1 correction, can run on unsorted collections
+            'producer:JetSorter',  # sorts jets
+            # 'producer:JetRecoilProducer',  # produces jet recoil observables, use if neccessary
             ],
         # Wire Kappa objects
         'EventMetadata' : 'eventInfo',
         'LumiMetadata' : 'lumiInfo',
         'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
     }
-
     if tagged:
-        cfg['Pipelines']['default']['Quantities'] += ['jet1btagpf','jet1btag', 'jet1qgtag']#,  'jet1puidraw','jet1puidtight','jet1puidmedium', 'jet1puidloose', 'jet2puidraw', 'jet2puidtight','jet2puidmedium', 'jet2puidloose']
+        cfg['Pipelines']['default']['Quantities'] += ['jet1btagpf','jet1btag', 'jet1qgtag']
     return cfg
 
 def data(cfg, **kwargs):
@@ -109,7 +110,7 @@ def data(cfg, **kwargs):
     cfg['Processors'] += ['producer:NPUProducer']
     cfg['ProvideL2L3ResidualCorrections'] = True
     #cfg['ProvideL2ResidualCorrections'] = True
-    cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']
+    cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']  # TODO: restructure as mentioned above
 
     # -- process keyword arguments
 
@@ -132,24 +133,24 @@ def mc(cfg, **kwargs):
         ]
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
-        'run','lumi','event','npu',
-        'genjet1pt','genjet1eta','genjet1y','genjet1phi',
+        'npu',
+        'genjet1pt','genjet1eta','genjet1y','genjet1phi', # generated jet observables
         'genjet2pt','genjet2eta','genjet2y','genjet2phi',
         'genjet3pt','genjet3eta','genjet3y','genjet3phi',
-        'jet1flavor',
-        'ngenjets','ngenjets10','ngenjets30',
-        'genHT',
-        'matchedgenparton1pt','matchedgenparton1flavour','matchedgenparton2pt',
-        'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1phi',
+        'jet1flavor',  # flavor of reco jet calculated by MC info
+        'ngenjets',  # 'ngenjets10','ngenjets30',
+        # 'genHT',  # generator HT, sum of all out-coming particles
+        'matchedgenparton1pt','matchedgenparton2pt',  #,'matchedgenparton1flavour', jet matches parton observables
+        'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1phi',  # matched gen jet observables
         'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
         'genphistareta', 'genystar', 'genyboost',
         'genzl1pt','genzl1eta','genzl1phi',
         'genzl2pt','genzl2eta','genzl2phi',
-        'genzfound','validgenzfound',
-        'deltarzgenz',
-        'ngenneutrinos',
-        'x1','x2','qScale',
+        # 'genzfound','validgenzfound',  # maybe required for debugging
+        # 'deltarzgenz',  # calculation moved to MERLIN
+        # 'ngenneutrinos',  # maybe used for background estimation
+        'x1','x2','qScale',  # qScale taken from hard process saved in MC
         'numberGeneratedEventsWeight','crossSectionPerEventWeight','generatorWeight','puWeight',
         ]
 
