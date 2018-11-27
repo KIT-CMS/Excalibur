@@ -115,6 +115,14 @@ elif [ $USER = "mschnepf" ]; then
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/mschnepf/Excalibur"
     GCPATH=/usr/users/mschnepf/htcondor/grid-control
     export PATH=$PATH:$GCPATH:$GCPATH/scripts
+
+    export HARRY_REMOTE_USER="mschnepf"
+    export HARRY_USERPC="ekplx7.ekp.kit.edu"
+    if [[ $HOSTNAME = *bms* ]]; then
+         export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/mschnepf/public_html/plots_archive/{subdir}"
+         export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/mschnepf/public_html/plots_archive/{subdir}"
+    fi
+
 fi
 
 source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
