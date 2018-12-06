@@ -119,10 +119,11 @@ def ZJet():
             if options.lfn:
                 lfn_modi = options.lfn
             
-            populate_workdir(artus_json=options.json, workdir_path=options.work)
+            populate_workdir(artus_json=options.json, workdir_path=options.work, cache_percentage=options.cachePercentage)
             createGridControlConfig(
                 conf,
                 config_path,
+                cache_percentage=options.cachePercentage,
                 timestamp=options.timestamp,
                 batch=options.batch,
                 jobs=options.jobs,
@@ -365,7 +366,8 @@ Have fun. ;)
         help="set the number of files per job (overwrites -j|--jobs)")
     batch_parser.add_argument('--parallel-merge', metavar='MERGE_THREADS', type=int, default=None, nargs='?', const=2,
         help="Merge output in parallel while GC is running [Default: %(const)s threads]")
-
+    batch_parser.add_argument('--cachePercentage', '-x', type=int, default='0',
+        help="set how many files shall be cached if possible (this will set a prefix for every file which shall be cached) \n!Only integer values between 1 and 100!")
     opt = parser.parse_args()
 
     # logging
@@ -526,22 +528,14 @@ def writeDBS(input_files, nickname, dbsfile_name):
     return lfn_modi
 
 
-def createGridControlConfig(settings, filename, original=None, timestamp='', batch="", jobs=None, files_per_job=None,
+def createGridControlConfig(settings, filename, cache_percentage="0", original=None, timestamp='', batch="", jobs=None, files_per_job=None,
                             partition_lfn_modifier='', excalibur_json="", workdir_path=None):
     if original is None:
         original = getEnv() + '/cfg/gc/gc_{}.conf'.format(batch)
     # guess best job number
     if files_per_job is None:
         # avoid small jobs unless specifically requested
-        min_files_per_job = 1 if jobs is not None else 8
-        # guess for condor
-        if jobs is None and batch == 'ekpsg':
-            n_free_slots = get_n_free_slots_ekpsg()
-            print n_free_slots
-            # If enough slots available, use all of them. If not, its wiser to use the default number and queue them
-            if n_free_slots >= 32:
-                jobs = n_free_slots  # use multiples-of-X for stable job counts (caching)
-                print "%d free slots on ekpsg -> submit %d jobs" % (n_free_slots, jobs)
+        min_files_per_job = 1 if jobs is not None else 10 
 
         jobdict = {False: 800, True: 400} # is_data => files per job
         n_jobs = (jobs if jobs is not None else jobdict.get(settings['InputIsData'], 70))
@@ -553,6 +547,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
         '@TIMESTAMP@': timestamp,
         '@EXCALIBURJSON@' : excalibur_json,
         '@WORKPATH@' : workdir_path,
+        '@cache-percentage@':str(cache_percentage),
         '@EXCALIBUR_SE@' : getEnv('EXCALIBUR_SE'),
         '$EXCALIBURPATH': getEnv('EXCALIBURPATH'),
         '$EXCALIBUR_WORK': getEnv('EXCALIBUR_WORK'),
@@ -561,7 +556,7 @@ def createGridControlConfig(settings, filename, original=None, timestamp='', bat
     copyFile("cfg/gc/gc_base.conf", os.path.join(os.path.dirname(filename), "gc_base.conf"), d)
 
 
-def create_runfile(configjson, filename='test.sh', original=None, workpath=None):
+def create_runfile(configjson, filename='test.sh', cache_percentage=0, original=None, workpath=None):
     """
     Create the wrapper for executing excalibur/artus in grid-control
 
@@ -582,18 +577,19 @@ def create_runfile(configjson, filename='test.sh', original=None, workpath=None)
     text = text.replace('@SCRAM_ARCH@', getEnv('SCRAM_ARCH'))
     text = text.replace('@EXCALIBURPATH@', getEnv())
     text = text.replace('@CMSSW_BASE@', getEnv('CMSSW_BASE'))
+    text = text.replace('@cache-percentage@', str(cache_percentage))
     if workpath is not None:
         text = text.replace('@WORKPATH@/', workpath)
     with open(filename, 'wb') as f:
         f.write(text)
 
 
-def populate_workdir(workdir_path, artus_json):
+def populate_workdir(workdir_path, artus_json, cache_percentage):
     """
     Copy required resources to the working directory
     """
     print "Populating workdir:", workdir_path
-    create_runfile(artus_json, workdir_path + "/run-excalibur.sh", workpath=workdir_path)
+    create_runfile(artus_json, workdir_path + "/run-excalibur.sh", cache_percentage=0, workpath=workdir_path)
     shutil.copy(artus_json, workdir_path)
     # files to transfer: wkdir_subdir => basedir => relpaths
     
@@ -652,6 +648,7 @@ def createFileList(infiles, fast=False):
             elif files.split(':')[0] in ['root', ]:
                 print "Use pyxrootd tools"
                 gridpath = files.replace("*.root", "")
+                
                 gridserver = 'root://' + gridpath.split("//")[1]
                 gridpath = '/' + gridpath.split("//")[2]
                 from XRootD import client
@@ -711,14 +708,6 @@ def prepare_wkdir_parent(work_path, out_name, clean=False):
         print len(paths), "old output directories for this config. Clean-up recommended."
     print "Output directory:", work_path
     os.makedirs(work_path + "/work." + out_name)
-
-
-def get_n_free_slots_ekpsg():
-    """Get number of free slots on sg machines."""
-    condor_constraint = 'CloudSite == "ekpsupermachines"'
-    constraint = "condor_status -constraint '%s' -af TotalSlots" % condor_constraint
-    condor = subprocess.Popen(shlex.split(constraint), stdout=subprocess.PIPE)
-    return int(subprocess.check_output(('wc', '-l'), stdin=condor.stdout))
 
 
 def format_time(seconds):

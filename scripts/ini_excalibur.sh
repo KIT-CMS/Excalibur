@@ -99,11 +99,10 @@ elif [ $USER = "dsavoiu" ]; then
 elif [ $USER = "msauter" ]; then
     echo "Profil: msauter"
     export EXCALIBURBRILSSH="msauter@lxplus.cern.ch"
-    export EXCALIBUR_WORK=/portal/ekpbms2/home/msauter/zjets/
+    export EXCALIBUR_WORK=/ceph/msauter/zjets/
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/msauter/Excalibur"
     export HARRY_REMOTE_USER="msauter"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
-    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/msauter/Excalibur"
     if [[ $HOSTNAME = *bms* ]]; then
          export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/msauter/public_html/plots_archive/{subdir}"
          export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/msauter/public_html/plots_archive/{subdir}"

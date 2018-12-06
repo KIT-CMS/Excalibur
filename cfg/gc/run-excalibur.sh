@@ -25,7 +25,7 @@ eval `scram runtime -sh`
 # Create worker node specific JSON file with correct list of input files
 echo "#### Setup Workdir"
 cd -
-@WORKPATH@/json_modifier.py @WORKPATH@/@ARTUS_CONFIG@ $PWD
+@WORKPATH@/json_modifier.py @WORKPATH@/@ARTUS_CONFIG@ $PWD @cache-percentage@
 
 # Run analysis with config from worker node tmp dir
 echo "#### Starting Artus..."
