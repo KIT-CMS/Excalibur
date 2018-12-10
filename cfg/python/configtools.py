@@ -92,7 +92,7 @@ def expand(config, cutModes, corrLevels, default="default"):
         'genzcuts' :      [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt',         'ValidZ',            'Phistareta','GenPhistareta','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
         'allzcuts' :                                                                                  ['Phistareta','GenPhistareta','LeadingJetY','LeadingGenJetY','LeadingJetPt','LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
         'zjetcuts':       ['MinNGenMuons','GenMuonPt','GenMuonEta','ZPt','GenZPt',         'ValidGenZ','Phistareta','GenPhistareta',              'LeadingGenJetY',               'LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
-        'genzjetcuts' :   [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt','GenZPt','ValidZ',            'Phistareta','GenPhistareta','LeadingJetY',                 'LeadingJetPt',                  'MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
+        'genzjetcuts' :   [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt','GenZPt','ValidZ',            'Phistareta','GenPhistareta','LeadingJetY',                 'LeadingJetPt',                  'MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha', 'Hlt'],
         'allzjetcuts' :                                           ['ZPt','GenZPt',                     'Phistareta','GenPhistareta',                                                                'MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
         'zcuts':          ['MinNGenMuons','GenMuonPt','GenMuonEta',      'GenZPt',         'ValidGenZ','Phistareta','GenPhistareta',              'LeadingGenJetY',               'LeadingGenJetPt','MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
         'genzcuts' :      [   'MinNMuons',   'MuonPt',   'MuonEta','ZPt',         'ValidZ',            'Phistareta','GenPhistareta','LeadingJetY',                 'LeadingJetPt',                  'MaxNMuons','MaxNGenMuons','JetID','ValidJetsFilter','LeadingJetEta','BackToBack','Alpha'],
@@ -109,6 +109,10 @@ def expand(config, cutModes, corrLevels, default="default"):
         for cut in ["filter:%sCut" % m for m in modes[cutMode]]:
             if cut in pipelines[cutMode]['Processors']:
                 pipelines[cutMode]['Processors'].remove(cut)
+        for _filter in ["filter:%sFilter" % m for m in modes[cutMode]]:
+            if _filter in pipelines[cutMode]['Processors']:
+                pipelines[cutMode]['Processors'].remove(_filter)
+
         
     # remove template pipeline
     pipelines.pop(default)
