@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import configtools
 import ROOT
 import os
