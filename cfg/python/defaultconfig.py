@@ -249,6 +249,12 @@ def _2017(cfg, **kwargs):
     cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2017_13TeV.txt')
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
 
+def _2018(cfg, **kwargs):
+    _2017(cfg, **kwargs)  # user 2017 config as base
+    cfg['Year'] = 2018
+    cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2018_13TeV.txt')
+    cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt')]
+
 
 def data_2016(cfg, **kwargs):
     _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (interval of validity) 
@@ -280,6 +286,9 @@ def data_2017(cfg, **kwargs):
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
+def data_2018(cfg, **kwargs):
+    # no data customization for 2018 (yet)
+    pass
     
 def mc_2016(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
@@ -290,6 +299,9 @@ def mc_2017(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
     pass
     
+def mc_2018(cfg, **kwargs):
+    # no MC customization for 2018 (yet)
+    pass
 
 def ee(cfg, **kwargs):
     cfg['Electrons'] = 'electrons'
@@ -415,6 +427,10 @@ def _2017ee(cfg, **kwargs):
         'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
         'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
     ]
+
+def _2018ee(cfg, **kwargs):
+    _2017ee(cfg, **kwargs)  # use 2017 as base
+    cfg['ElectronVIDName'] = "Fall17-94X-V1"
 
     
 def data_2016ee(cfg, **kwargs):
@@ -556,6 +572,10 @@ def _2017mm(cfg, **kwargs):
         # https://indico.cern.ch/event/682891/contributions/2810364/attachments/1570825/2477991/20171206_CMSWeek_MuonHLTReport_KPLee_v3_1.pdf
         'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8',
     ]
+
+def _2018mm(cfg, **kwargs):
+    _2017mm(cfg, **kwargs)  # same as 2017
+    cfg['Year'] = 2017  # 2018 muon ID not implemented yet -> reset to 2017 as workaround
 
     
 def data_2016mm(cfg, **kwargs):
