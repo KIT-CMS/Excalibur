@@ -583,3 +583,68 @@ def mc_2016mm(cfg, **kwargs):
     
 def mc_2017mm(cfg, **kwargs):
     pass
+
+
+###############################################
+# !experimental config for 2018 data!
+###############################################
+def _2018(cfg, **kwargs):
+    cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
+    cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
+    cfg['CutJetIDVersion'] = 2017
+    cfg['CutJetIDFirstNJets'] = 2
+    cfg['Year'] = 2018
+    cfg['Energy'] = 13
+    cfg['JetIDVersion'] = 2017  # for object-based JetID
+    cfg['MinPUJetID'] = -9999  # no PUJetID for 2017
+    cfg['MinZllJetDeltaRVeto'] = 0.3
+    cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
+    # create empty containers to allow using references prematurely
+    cfg["InputFiles"] = configtools.InputFiles()
+    # data settings also used to derive values for mc
+    cfg['Minbxsec'] = 69.2
+    cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2017_13TeV.txt')
+    cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt')]
+
+def data_2018(cfg, **kwargs):
+    # -- modifications for JEC V10 (jun. 2018 JERC)
+
+    # Type-I MET modification (recommended jun. 2018)
+    # -> do not consider jets with pt < 75 GeV in a particular abs(eta) region
+    #    when calculating Type-I MET
+    cfg['EnableTypeIModification'] = True
+    cfg['TypeIModExcludeJetPtMax'] = 75
+    cfg['TypeIModExcludeJetAbsEtaMin'] = 2.650
+    cfg['TypeIModExcludeJetAbsEtaMax'] = 3.139
+
+    # object-based eta-phi cleaning (recommended jun. 2018)
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+
+def _2018ee(cfg, **kwargs):
+    # -- ZJetValidElectronsProducer
+    cfg['ElectronID'] = "user"
+    cfg['ApplyElectronVID'] = True
+    cfg['ElectronVIDName'] = "Fall17-94X-V1-Preliminary"
+    cfg['ElectronVIDType'] = "cutbased"
+    cfg['ElectronVIDWorkingPoint'] = "tight"
+
+    # -- double electron triggers: Ele17 no longer deployed
+    cfg['HltPaths']= [
+        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
+        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
+    ]
+
+
+def _2018mm(cfg, **kwargs):
+    cfg['HltPaths'] = [
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ',
+        'HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ',
+        # -- lowest pT unprescaled trigger for the whole of 2017
+        # https://indico.cern.ch/event/682891/contributions/2810364/attachments/1570825/2477991/20171206_CMSWeek_MuonHLTReport_KPLee_v3_1.pdf
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8',
+    ]
+

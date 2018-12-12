@@ -4,7 +4,7 @@ import sys
 import json
 import os
 from socket import gethostname
-
+from random import shuffle
 
 def ModifyJSON(jsonConfig, newPath, cachePercentage, oldexcaliburpath=None):
     """
@@ -20,11 +20,10 @@ def ModifyJSON(jsonConfig, newPath, cachePercentage, oldexcaliburpath=None):
         with open(jsonConfig, "r") as jsonFile:
            conf = json.load(jsonFile)
                 
-                
-        if "srm:" in os.environ['FILE_NAMES']: ## srm files will be downloaded
-                conf["InputFiles"] = [ f.split('//')[-1].strip().strip('"') for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
-        else:
-                conf["InputFiles"] = [ f.strip('"') for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
+    if "srm:" in os.environ['FILE_NAMES']: ## srm files will be downloaded
+        conf["InputFiles"] = [ f.split('//')[-1].strip().strip('"') for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
+    else:
+        conf["InputFiles"] = [ f.strip('"') for f in os.environ['FILE_NAMES'].replace(',','').split(' ')]
    
     try:
         # check if files should be cached, if true set prefix for caching
@@ -81,7 +80,7 @@ def ModifyJSON(jsonConfig, newPath, cachePercentage, oldexcaliburpath=None):
 
     with open(newPath + '/' + os.path.basename(jsonConfig), 'w') as newJSON:
         json.dump(conf, newJSON, sort_keys=True, indent=1, separators=(',', ':'))
-        print conf["InputFiles"]
+    print conf["InputFiles"]
 
 if __name__ == "__main__":
         if len(sys.argv) < 4:
