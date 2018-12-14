@@ -132,8 +132,6 @@ def mc(cfg, **kwargs):
         'producer:RecoJetGenPartonMatchingProducer',
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
-        'producer:HltProducer',
-        #'filter:HltFilter', # filter has to be added later to be removed for special pipelines see configtools
         ]
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
@@ -444,7 +442,6 @@ def mm(cfg, **kwargs):
                             'producer:RecoZmmProducer',
                             ]+cfg['Processors']
     cfg['Pipelines']['default']['Processors'] = [
-        'filter:HltFilter',
         #'filter:ValidJetsFilter',
         'filter:LeadingJetPtCut',
         'filter:LeadingJetEtaCut',
