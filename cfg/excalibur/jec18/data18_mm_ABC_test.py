@@ -16,10 +16,9 @@ def config():
     cfg["InputFiles"].set_input(
         #bmspathE="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018D_13TeV-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         #bmspathE="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018D_13TeV-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        sg0path1="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018A_13TeV-PromptReco-v3/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        sg0path2="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018B_13TeV-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        sg0path3="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018C_13TeV-PromptReco-v3/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        sg0path4="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018D_13TeV-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        sg0path1="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018A-17Sep2018-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        sg0path2="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018B-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        sg0path3="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018C-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt')]
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_DATA/'+JEC+'_DATA')
