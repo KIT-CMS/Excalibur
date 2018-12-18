@@ -1,7 +1,7 @@
 JEC_BASE='Fall17_17Nov2017'
 JEC_VERSION='V24'
 
-#JER = 'Fall17_25nsV1'  # set this to 'None' to turn JER smearing off
+#JER = 'Fall17_V2'  # set this to 'None' to turn JER smearing off
 JER = None
 
 SE_PATH_PREFIXES = dict(

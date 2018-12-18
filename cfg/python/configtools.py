@@ -109,6 +109,10 @@ def expand(config, cutModes, corrLevels, default="default"):
         for cut in ["filter:%sCut" % m for m in modes[cutMode]]:
             if cut in pipelines[cutMode]['Processors']:
                 pipelines[cutMode]['Processors'].remove(cut)
+        for _filter in ["filter:%sFilter" % m for m in modes[cutMode]]:
+            if _filter in pipelines[cutMode]['Processors']:
+                pipelines[cutMode]['Processors'].remove(_filter)
+
         
     # remove template pipeline
     pipelines.pop(default)

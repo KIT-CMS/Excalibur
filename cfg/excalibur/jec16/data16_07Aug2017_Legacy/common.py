@@ -1,5 +1,5 @@
 JEC_BASE='Summer16_07Aug2017'
-JEC_VERSION='V17'
+JEC_VERSION='V18'
 
 SE_PATH_PREFIXES = dict(
     srm_gridka_nrg="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user",

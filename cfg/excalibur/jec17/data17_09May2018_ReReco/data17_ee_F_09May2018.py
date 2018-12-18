@@ -1,18 +1,24 @@
 import configtools
 import os
+import sys
+
+# -- import common information
+sys.path.append(os.path.dirname(__file__))
+from common import JEC_BASE, JEC_VERSION, SE_PATH_PREFIXES
 
 RUN='F'
 CH='ee'
-JEC='Fall17_17Nov2017'+RUN+'_V10'
+JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
+
 
 def config():
-    cfg = configtools.getConfig('data', 2017, CH)
+    cfg = configtools.getConfig('data', 2017, CH, JEC=JEC)
     cfg["InputFiles"].set_input(
-        ekppathF="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-09May2018-v1/*.root",
-        #ekppathF="/storage/gridka-nrg/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-09May2018-v1/*.root",
+        ekppathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-09May2018-v1/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
+        bmspathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-09May2018-v1/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
-    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/'+JEC+'_DATA/'+JEC+'_DATA')
+
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
     cfg['ProvideL2ResidualCorrections'] = True

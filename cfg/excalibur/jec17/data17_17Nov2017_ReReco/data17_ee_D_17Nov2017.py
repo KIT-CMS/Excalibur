@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from common import JEC_BASE, JEC_VERSION, SE_PATH_PREFIXES
 
-RUN='D'
+RUN='DE'
 CH='ee'
 JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
 
