@@ -671,15 +671,17 @@ def createFileList(infiles, fast=False):
             # use local file system for getting input file list
             else:
                 out_files.extend(glob.glob(files))
-
         else:
             out_files.append(files)
-
+    # sort all files to ensure that every job processes the same files when executed repeadetly
+    out_files.sort()
     if not out_files:
         print "No input files found."
         sys.exit(1)
+    # cut list to requested number of files
     if fast:
         out_files = out_files[fast[0]:fast[1]]
+        print "Consider " + str(len(out_files)) + " files for processing!"
     return out_files
 
 

@@ -60,9 +60,9 @@ def updateConfig(conf, tupl, **kwargs):
 		getattr(defaultconfig, string)(conf, **kwargs)
 
 
-def setInputFiles(ekppath=None, nafpath=None):
+def setInputFiles(path=None, ekppath=None, nafpath=None):
 	"""Return ekppath if you're at EKP, nafpath if at NAF. """
-	return InputFiles(ekppath=ekppath, nafpath=nafpath)
+	return InputFiles(path=path, ekppath=ekppath, nafpath=nafpath)
 
 
 def changeNamingScheme(cfg, old=True):

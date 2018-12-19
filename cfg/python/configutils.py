@@ -349,8 +349,12 @@ class InputFiles(object):
 
 	def set_input(self, **kwargs):
 		"""Overwrite the input for specific domains"""
-		for domain in kwargs:
-			self.inputs.setdefault(domain[:3].lower(), []).append(kwargs[domain])
+  		if 'path' in kwargs.keys():
+			if kwargs['path'] is not None:
+ 				self.inputs.setdefault('path', []).append(kwargs['path'])
+		else:
+			for domain in kwargs:
+				self.inputs.setdefault(domain[:3].lower(), []).append(kwargs[domain])
 			#self.inputs[domain[:3].lower()]   = kwargs[domain]
 
 	def __str__(self):
@@ -362,9 +366,12 @@ class InputFiles(object):
 	def resolve(self):
 		"""Path to the input files used (i.e. the glob for the local domain)"""
 		try:
-			if not self.inputs[self.host]:
+			if self.host in self.inputs.keys():
+				return self.inputs[self.host]
+			elif 'path' in self.inputs:
+				return self.inputs['path']
+			else:
 				raise KeyError
-			return self.inputs[self.host]
 		except KeyError:
 			raise KeyError("Input file for domain '%s' not set" % self.host)
 
