@@ -5,7 +5,7 @@ from Excalibur.Plotting.utility.toolsZJet import PlottingJob, get_input_files, l
 import Excalibur.Plotting.utility.binningsZJet as binningsZJet
 
 
-def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
+def jer_truncation_scan_jer_only(args=None, additional_dictionary=None, channel='m'):
     """Profile Plot of RMS quantity in bins of alpha"""
     # x_dict = generate_dict(channel_dict=channel)
 
@@ -13,8 +13,7 @@ def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
     # cut_binnings=['0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2 0.225 0.25 0.275 0.3'] # x_bins in plot
     cut_binning = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]  # x_bins in plot
 
-    truncations_list = [85., 93., 95., 97., 98.5]
-    truncations_list = [65., 75., 85., 93., 95., 97., 98.5, 100]
+    truncations_list = [98.5, 97., 95.5, 94., 92.5]  # [85., 93., 95., 97., 98.5]
     plots_list = ['MC', 'Data']
     plots = []
 
@@ -31,14 +30,14 @@ def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
         if plot_type == 'Data':
             rms_quantities = ['ptbalance', 'genjet1pt/genzpt', 'genzpt/zpt', 'jet1pt/genjet1pt']
             rms_quantities_labels = ['PTBal(Data)', 'PLI(MC)', 'ZRes(MC)', 'JER(MC-generated)']
-            rms_quantities_colors = ['black', 'blue', 'green', 'red']
+            rms_quantities_colors = ['grey', 'springgreen', 'forestgreen', 'orange']
             minuend_quantity = 'PTBal(Data)'
             subtrahend_quantities = 'PLI(MC) ZRes(MC)'
             result_quantity = 'JER(Data-extracted)'
         elif plot_type == 'MC':
             rms_quantities = ['jet1pt/zpt', 'genjet1pt/genzpt', 'genzpt/zpt', 'jet1pt/genjet1pt']
             rms_quantities_labels = ['PTBal(MC)', 'PLI(MC)', 'ZRes(MC)', 'JER(MC-generated)']
-            rms_quantities_colors = ['orange', 'blue', 'green', 'red']
+            rms_quantities_colors = ['royalblue', 'springgreen', 'forestgreen', 'orange']
             minuend_quantity = 'PTBal(MC)'
             subtrahend_quantities = 'PLI(MC) ZRes(MC)'
             result_quantity = 'JER(MC-extracted)'
@@ -141,7 +140,8 @@ def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
                     minuend_nick += [rms_nick_string]
                 if rms_quantities_labels[index2] in subtrahend_quantities.split():
                     subtrahend_nicks += [rms_nick_string]
-                result_nick = 'nick_' + str(result_quantity.replace('(', '').replace(')', '')) + '_subtracted_' + str(truncation)
+                result_nick = 'nick_' + str(result_quantity.replace('(', '').replace(')', '')) + '_subtracted_' + \
+                              str(truncation)
 
                 # Get RMS value of each alpha bin for all variables and write them in new nicks
                 if True:
@@ -150,7 +150,8 @@ def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
                     d.update({
                         'histogram_from_rms_nicks': d['histogram_from_rms_nicks'] + [nick_string],
                         'histogram_from_rms_newnicks': d['histogram_from_rms_newnicks'] + [rms_nick_string],
-                        'histogram_from_rms_x_values': d['histogram_from_rms_x_values'] + [' '.join(map(str, cut_binning))],
+                        'histogram_from_rms_x_values':
+                            d['histogram_from_rms_x_values'] + [' '.join(map(str, cut_binning))],
                         'histogram_from_rms_truncations': d['histogram_from_rms_truncations'] + [truncation],
                         # 'nicks_whitelist': d['nicks_whitelist'] + [rms_nick_string],
                         # 'nicks': d['nicks'] + [rms_nick_string],
@@ -166,15 +167,18 @@ def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
                 if 'HistogramFromQuadraticSubtraction' not in d['analysis_modules']:
                     d['analysis_modules'] = d['analysis_modules'] + ['HistogramFromQuadraticSubtraction']
                 d.update({
-                    'histogram_from_quadratic_subtraction_minuend_nicks': d['histogram_from_quadratic_subtraction_minuend_nicks'] + [minuend_nick],
-                    'histogram_from_quadratic_subtraction_subtrahend_nicks': d['histogram_from_quadratic_subtraction_subtrahend_nicks'] + [' '.join(subtrahend_nicks)],
-                    'histogram_from_quadratic_subtraction_result_nicks': d['histogram_from_quadratic_subtraction_result_nicks'] + [result_nick],
+                    'histogram_from_quadratic_subtraction_minuend_nicks':
+                        d['histogram_from_quadratic_subtraction_minuend_nicks'] + [minuend_nick],
+                    'histogram_from_quadratic_subtraction_subtrahend_nicks':
+                        d['histogram_from_quadratic_subtraction_subtrahend_nicks'] + [' '.join(subtrahend_nicks)],
+                    'histogram_from_quadratic_subtraction_result_nicks':
+                        d['histogram_from_quadratic_subtraction_result_nicks'] + [result_nick],
                     'nicks_whitelist': d['nicks_whitelist'] + [result_nick],
                     # 'nicks_whitelist': [result_nick],
                     # 'nicks': d['nicks'] + [result_nick],
-                    'colors': d['colors'] + ['grey'],
+                    'colors': d['colors'] + ['red'],
                     'alphas': d['alphas'] + [1.0],
-                    'labels': d['labels'] + [result_quantity + ' ' + str(truncation) + '% tuncation'],
+                    'labels': d['labels'] + [result_quantity + ' truncation to ' + str(truncation) + '%'],
                     'line_styles': d['line_styles'] + [''],
                 })
         # extrapolate to alpha equal zero by fitting a function
@@ -194,15 +198,18 @@ def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
                 d.update({
                     'function_fit': d['function_fit'] + [nick_white],
                     'function_nicknames': d['function_nicknames'] + [fit_nick_white],
-                    'functions': d['functions'] + ['[0]*x*x*x+[1]*x*x+[2]*x+[3]'],
-                    'function_parameters': d['function_parameters'] + ['0., 0., 0., 0.'],
+                    'functions': d['functions'] + ['[0]+[1]*x'],
+                    # 'functions': d['functions'] + ['[0]*x*x*x+[1]*x*x+[2]*x+[3]'],
+                    'function_parameters': d['function_parameters'] + ['0., 0.'],
+                    # 'function_parameters': d['function_parameters'] + ['0., 0., 0., 0.'],
                     'function_ranges': d['function_ranges'] + ['0.0, 0.3'],
                     'nicks_whitelist': d['nicks_whitelist'] + [fit_nick_white],
                     'alphas': d['alphas'] + [1.0, 0.4],
                     'colors': d['colors'] + [nick_colors[index], nick_colors[index]],
                     'labels': d['labels'] + [nick_labels[index], ''],
                     'line_styles': d['line_styles'] + [nick_linestyles[index], '--'],
-                    'markers': ['d', '', 'v', '', 'o', '', '^', '', '<', '', '>', '', '*', '', '8', '', 's', '', 'p', '', 'h', '', 'D', ''],
+                    'markers': ['d', '', 'v', '', 'o', '', '^', '', '<', '', '>', '', '*', '', '8', '', 's', '', 'p',
+                                '', 'h', '', 'D', ''],
                     'x_lims': [0.0, 0.3],
 
                 })
@@ -210,7 +217,7 @@ def jer_truncation_scan_JER(args=None, additional_dictionary=None, channel='m'):
     return [PlottingJob(plots=plots, args=args)]
 
 
-def jer_truncation_scan_without_JER(args=None, additional_dictionary=None, channel='m'):
+def jer_truncation_scan_without_jer(args=None, additional_dictionary=None, channel='m'):
     """Profile Plot of RMS quantity in bins of alpha"""
     plots = []
     # x_dict = generate_dict(channel_dict=channel)
@@ -226,23 +233,23 @@ def jer_truncation_scan_without_JER(args=None, additional_dictionary=None, chann
         if plot_type == 'JER-gen':
             rms_quantity = 'jet1pt/genjet1pt'
             rms_quantity_label = 'JER(MC-gen)'
-            rms_quantity_color = 'red'
+            rms_quantity_color = 'orange'
         elif plot_type == 'PLI':
             rms_quantity = 'genjet1pt/genzpt'
             rms_quantity_label = 'PLI(MC)'
-            rms_quantity_color = 'blue'
+            rms_quantity_color = 'springgreen'
         elif plot_type == 'ZRes':
             rms_quantity = 'genzpt/zpt'
             rms_quantity_label = 'ZRes(MC)'
-            rms_quantity_color = 'green'
+            rms_quantity_color = 'forestgreen'
         elif plot_type == 'PTBal-MC':
             rms_quantity = 'jet1pt/zpt'
             rms_quantity_label = 'PTBal(MC)'
-            rms_quantity_color = 'orange'
+            rms_quantity_color = 'royalblue'
         elif plot_type == 'PTBal-Data':
             rms_quantity = 'ptbalance'
             rms_quantity_label = 'PTBal(Data)'
-            rms_quantity_color = 'black'
+            rms_quantity_color = 'grey'
         else:
             rms_quantity = ''
             rms_quantity_label = ''
@@ -252,7 +259,7 @@ def jer_truncation_scan_without_JER(args=None, additional_dictionary=None, chann
             'analysis_modules': [],
             'plot_modules': ['PlotMplZJet'],
             'legend': 'upper left',
-            'filename': 'Z' + channel + channel + '_JER_alpha_truncationscan_' + plot_type + '_' + plot_type,
+            'filename': 'Z' + channel + channel + '_JER_alpha_truncationscan_' + plot_type,
         }
 
         if additional_dictionary:
@@ -290,7 +297,7 @@ def jer_truncation_scan_without_JER(args=None, additional_dictionary=None, chann
         })
 
         # Scan for optimal truncation value
-        truncations_list = [65., 75., 85., 93., 95., 97., 98.5, 100]
+        truncations_list = [98.5, 97., 95.5, 94., 92.5]  # [85., 93., 95., 97., 98.5, 100]
         for truncation in truncations_list:
             nick_list = []
             for index in range(len(cut_binning)-1):
@@ -351,7 +358,7 @@ def jer_truncation_scan_without_JER(args=None, additional_dictionary=None, chann
                     'y_lims': [0.0, 0.3],
                     'colors': d['colors'] + [rms_quantity_color],
                     'alphas': d['alphas'] + [1.0],
-                    'labels': d['labels'] + [rms_quantity_label + ' ' + str(truncation) + '% tuncation'],
+                    'labels': d['labels'] + [rms_quantity_label + ' truncation to ' + str(truncation) + '%'],
                     'line_styles': d['line_styles'] + [''],
                 })
             # extrapolate to alpha equal zero
@@ -361,15 +368,18 @@ def jer_truncation_scan_without_JER(args=None, additional_dictionary=None, chann
                 d.update({
                     'function_fit': d['function_fit'] + [rms_nick_string],
                     'function_nicknames': d['function_nicknames'] + [fit_nick_string],
-                    'functions': d['functions'] + ['[0]*x*x*x+[1]*x*x+[2]*x+[3]'],
-                    'function_parameters': d['function_parameters'] + ['1., 1., 1., 1.'],
+                    'functions': d['functions'] + ['[0]+[1]*x'],
+                    # 'functions': d['functions'] + ['[0]*x*x*x+[1]*x*x+[2]*x+[3]'],
+                    'function_parameters': d['function_parameters'] + ['0., 0.'],
+                    # 'function_parameters': d['function_parameters'] + ['0., 0., 0., 0.'],
                     'function_ranges': d['function_ranges'] + ['0.0, 0.3'],
                     'nicks_whitelist': d['nicks_whitelist'] + [fit_nick_string],
                     'colors': d['colors'] + [rms_quantity_color],
                     'alphas': d['alphas'] + [0.4],
                     'labels': d['labels'] + [''],
                     'line_styles': d['line_styles'] + ['--'],
-                    'markers': ['d', '', 'v', '', 'o', '', '^', '', '<', '', '>', '', '*', '', '8', '', 's', '', 'p', '', 'h', '', 'D', ''],
+                    'markers': ['d', '', 'v', '', 'o', '', '^', '', '<', '', '>', '', '*', '', '8', '', 's', '', 'p',
+                                '', 'h', '', 'D', ''],
                     'x_lims': [0.0, 0.3],
                 })
 
