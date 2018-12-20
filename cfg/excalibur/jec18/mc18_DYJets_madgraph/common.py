@@ -4,7 +4,6 @@ JEC_VERSION='V32'
 #JEC_VERSION='V1'
 
 #JER = 'Fall17_V2'  # set this to 'None' to turn JER smearing off
->>>>>>> master
 JER = None
 
 SE_PATH_PREFIXES = dict(
