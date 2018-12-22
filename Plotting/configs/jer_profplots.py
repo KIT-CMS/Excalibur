@@ -12,8 +12,8 @@ def rms_profplot_datamc(args=None, additional_dictionary=None, channel='m'):
     cut_quantity = 'alpha'  # x_quantity on the plot
     x_range = [0.0, 2.0]  # range of resolutions
     # cut_binnings=['0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2 0.225 0.25 0.275 0.3'] # x_bins in plot
-    # cut_binning = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]  # x_bins in plot
-    cut_binning = [0.0, 0.05, 0.1]
+    cut_binning = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]  # x_bins in plot
+    # cut_binning = [0.0, 0.05, 0.1]
 
     # plots_list = ['all', 'JER', 'PLI', 'ZRes', 'PTBal']
     plots_list = ['PLI', 'JER', 'ZRes', 'PTBal']
@@ -25,23 +25,23 @@ def rms_profplot_datamc(args=None, additional_dictionary=None, channel='m'):
         if plot_type == 'JER':
             rms_quantities = ['jet1pt/genjet1pt']
             rms_quantities_labels = ['JER(MC)']
-            rms_quantities_colors = ['red']
+            rms_quantities_colors = ['orange']
             x_range = [0.0, 2.0]
         elif plot_type == 'PLI':
             rms_quantities = ['genjet1pt/genzpt']
             rms_quantities_labels = ['PLI(MC)']
-            rms_quantities_colors = ['blue']
+            rms_quantities_colors = ['springgreen']
             # x_range = [0.0, 2.0]
-            x_range = [0.6, 1.4]
+            x_range = [0.0, 2.0]
         elif plot_type == 'ZRes':
             rms_quantities = ['genzpt/zpt']
             rms_quantities_labels = ['ZRes(MC)']
-            rms_quantities_colors = ['green']
+            rms_quantities_colors = ['forestgreen']
             x_range = [0.9, 1.1]
         elif plot_type == 'PTBal':
             rms_quantities = ['ptbalance', 'jet1pt/zpt']
             rms_quantities_labels = ['PTB(Data)', 'PTB(MC)']
-            rms_quantities_colors = ['black', 'orange']
+            rms_quantities_colors = ['grey', 'royalblue']
             x_range = [0.0, 2.0]
 
         d = {
@@ -100,11 +100,17 @@ def rms_profplot_datamc(args=None, additional_dictionary=None, channel='m'):
                 })
 
                 # update x range from predefined values:
-                if rms_quantity in binningsZJet.BinningsDictZJet().binnings_dict:
-                    x_bins = binningsZJet.BinningsDictZJet().binnings_dict[rms_quantity]
-                    d['x_bins'] = d['x_bins'] + [x_bins]
-                else:
-                    d['x_bins'] = d['x_bins'] + ['40,0.,2.']
+                # if rms_quantity in binningsZJet.BinningsDictZJet().binnings_dict:
+                #     x_bins = binningsZJet.BinningsDictZJet().binnings_dict[rms_quantity]
+                #     d['x_bins'] = d['x_bins'] + [x_bins]
+                # else:
+                #     d['x_bins'] = d['x_bins'] + ['40,0.,2.']
+
+                # if rms_quantity == 'genzpt/zpt':
+                #     d['x_bins'] = [entry.replace('4000', '400') for entry in d['x_bins']]
+                # else:
+                #     d['x_bins'] = [entry.replace('4000', '40') for entry in d['x_bins']]
+                d['x_bins'] = d['x_bins'] + ['40,'+str(x_range[0])+','+str(x_range[1])]
 
                 if rms_quantity not in ['ptbalance']:
                     d.update({
