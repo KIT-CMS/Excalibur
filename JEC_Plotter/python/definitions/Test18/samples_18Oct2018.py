@@ -22,7 +22,7 @@ SAMPLES = dict()
 #for _channel in ('ee', 'mm'):
 for _channel in ('mm', 'ee'):
     for _jecv, _sample_dir in _SAMPLE_DIR_DICT.iteritems():
-        for _run_period in ('B', 'C', 'D', 'E', 'F', 'BCDEF'):
+        for _run_period in ('B', 'C', 'D', 'E', 'F', 'BCDEF', 'ABC'):
             #_filename = 'excalibur_data18_{}_{}.root'.format(_channel, _run_period)
             _filename = 'data18_{}_{}_18Oct.root'.format(_channel, _run_period)
             # TODO: SAMPLES????
@@ -35,7 +35,7 @@ for _channel in ('mm', 'ee'):
                 })
 
 # -- MC
-_JECVS_MC = ['V10']
+_JECVS_MC = ['V32']
 #for _channel in ('ee', 'mm'):
 for _channel in ('mm',):
     for _jecv in _JECVS_MC:
