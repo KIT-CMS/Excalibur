@@ -6,8 +6,8 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        bmspath="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/ZJet_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16/*.root",
-        nafpath="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/ZJet_WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16/*.root",
+        bmspath="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/ZJet_DYJetsToTauTau_MuEleDecay_TuneCUETP8M1_13TeV-pythia8_RunIISummer16/*.root",
+        nafpath="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/ZJet_DYJetsToTauTau_MuEleDecay_TuneCUETP8M1_13TeV-pythia8_RunIISummer16/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],
@@ -63,8 +63,8 @@ def config():
     cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Trigger_EfficienciesAndSF_BCDEF.root")
     #cfg['LeptonTrackingSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Tracking_EfficienciesAndSF_BCDEFGH.root")
 ##### MC specific properties: #####
-    cfg['NumberGeneratedEvents'] = 29705748
-    cfg['GeneratorWeight'] =  1.0
-    cfg['CrossSection'] = 50260.0
-    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_WJetsToLNu_madgraphMLM-pythia8_RunIISummer16.root')
+    cfg['NumberGeneratedEvents'] = 1727574
+    cfg['GeneratorWeight'] =  0.667084273703
+    cfg['CrossSection'] = 1991.0
+    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_WW_pythia8_RunIISummer16.root')
     return cfg

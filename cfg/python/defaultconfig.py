@@ -143,10 +143,10 @@ def mc(cfg, **kwargs):
         'ngenjets',  # 'ngenjets10','ngenjets30',
         # 'genHT',  # generator HT, sum of all out-coming particles
         'matchedgenparton1pt','matchedgenparton2pt',  #,'matchedgenparton1flavour', jet matches parton observables
-        'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1phi',  # matched gen jet observables
-        'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2phi',
+        'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1y','matchedgenjet1phi',  # matched gen jet observables
+        'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2y','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
-        'genphistareta', 'genystar', 'genyboost',
+        'genphistareta', 'genystar', 'genyboost', 'matchedgenystar', 'matchedgenyboost',
         'genzl1pt','genzl1eta','genzl1phi',
         'genzl2pt','genzl2eta','genzl2phi',
         # 'genzfound','validgenzfound',  # maybe required for debugging
@@ -212,7 +212,7 @@ def mc(cfg, **kwargs):
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
     # TODO: move activation of SFProducer to kwargs:
-    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTrackingSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
+    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]#,'producer:LeptonTrackingSFProducer'
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = 2016  # for event-based JetID
     cfg['CutJetIDFirstNJets'] = 2
@@ -543,8 +543,8 @@ def mcmm(cfg, **kwargs):
     cfg['RecoMuonMatchingGenParticleStatus'] = 1
     cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.5  # TODO: check if lower cut is more reasonable
     cfg['GenParticleTypes'] += ['genMuon', 'genTau']
-    cfg['GenMuonLowerPtCuts'] = ['27']  # TODO: Check if removable, filter already defined above
-    cfg['GenMuonUpperAbsEtaCuts'] = ['2.3']  # TODO: Check if removable, filter already defined above
+    #cfg['GenMuonLowerPtCuts'] = ['27']  # TODO: Check if removable, filter already defined above
+    #cfg['GenMuonUpperAbsEtaCuts'] = ['2.3']  # TODO: Check if removable, filter already defined above
     cfg['GenMuonStatus'] = 1
 
     # for KappaMuonsConsumer
