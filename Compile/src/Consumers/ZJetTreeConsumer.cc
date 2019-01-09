@@ -74,13 +74,13 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "ystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_zValid && (product.GetValidJetCount(settings, event) > 0) 
-                ? std::abs(product.m_z.p4.Rapidity() - product.GetValidPrimaryJet(settings, event)->p4.Rapidity())
+                ? std::abs(product.m_z.p4.Rapidity() - product.GetValidPrimaryJet(settings, event)->p4.Rapidity())/2
                 : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "yboost", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_zValid && (product.GetValidJetCount(settings, event) > 0) 
-                ? std::abs(product.m_z.p4.Rapidity() + product.GetValidPrimaryJet(settings, event)->p4.Rapidity())
+                ? std::abs(product.m_z.p4.Rapidity() + product.GetValidPrimaryJet(settings, event)->p4.Rapidity())/2
                 : DefaultValues::UndefinedFloat);
         });
     // Gen Z
@@ -116,14 +116,28 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genBosonLVFound && (product.m_simpleGenJets.size() > 0)
-                ? std::abs(product.m_genBosonLV.Rapidity() - product.m_simpleGenJets.at(0)->p4.Rapidity())
+                ? std::abs(product.m_genBosonLV.Rapidity() - product.m_simpleGenJets.at(0)->p4.Rapidity())/2
                 : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genyboost", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genBosonLVFound && (product.m_simpleGenJets.size() > 0)
-                ? std::abs(product.m_genBosonLV.Rapidity() + product.m_simpleGenJets.at(0)->p4.Rapidity())
+                ? std::abs(product.m_genBosonLV.Rapidity() + product.m_simpleGenJets.at(0)->p4.Rapidity())/2
                 : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
+            return (product.m_genBosonLVFound && genJet != nullptr)
+                ? std::abs(product.m_genBosonLV.Rapidity() - genJet->p4.Rapidity())/2
+                : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenyboost", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
+            return (product.m_genBosonLVFound && genJet != nullptr)
+                ? std::abs(product.m_genBosonLV.Rapidity() + genJet->p4.Rapidity())/2
+                : DefaultValues::UndefinedFloat;
         });
         
     //////////
@@ -616,6 +630,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (genJet != nullptr) ? genJet->p4.Eta() : DefaultValues::UndefinedFloat;
         });
 	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenjet1y", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
+            return (genJet != nullptr) ? genJet->p4.Rapidity() : DefaultValues::UndefinedFloat;
+        });
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (genJet != nullptr) ? genJet->p4.Phi() : DefaultValues::UndefinedFloat;
@@ -629,6 +648,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "matchedgenjet2eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
             return (genJet != nullptr) ? genJet->p4.Eta() : DefaultValues::UndefinedFloat;
+		});
+	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenjet2y", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
+            return (genJet != nullptr) ? genJet->p4.Rapidity() : DefaultValues::UndefinedFloat;
 		});
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet2phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
