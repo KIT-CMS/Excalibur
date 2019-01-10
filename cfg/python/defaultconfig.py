@@ -30,7 +30,7 @@ def getBaseConfig(tagged=False, **kwargs):
         # Valid Jet Selection
         # 'ValidJetsInput': 'uncorrected',  # set to default
         'JetID' : 'none', # object-based specification, 'none' if you want to use the event-based ID filter
-        #'PuJetIDs' : ['2:puJetIDFullTight'],  # TODO: change value due to different KAPPA naming
+        'PUJetID': 'none', # choose 'none' to use the fullDiscriminant and set the cut later, OR choose working point 'loose','medium','tight'
         'JetMetadata' : 'jetMetadata',  # folder to look for jet variables in KAPPA files
         'TaggedJets' : 'ak4PFJetsCHS',  # default folder to look for saved jets in KAPPA files
         # PU
@@ -77,8 +77,8 @@ def getBaseConfig(tagged=False, **kwargs):
                     'mettype1vecpt', 'mettype1pt',  # vectorial and scalar difference between corrected and uncorrected met
                     # 'jetHT',  # scalar sum of all jet pTs
                     # 'jetrecoilpt', 'jetrecoilphi', 'jetrecoileta', 'jetrpf',  # recoil observables
-                    # 'jet1idtightlepveto', 'jet1idtight', 'jet1idloose',  # please add jet IDs only necessary ones manually
-                    # 'jet2idtightlepveto', 'jet2idtight', 'jet2idloose',
+                    # 'jet1idtightlepveto', 'jet1idtight', 'jet1idloose', 'jet1puidtight', 'jet1puidmedium', 'jet1puidloose'  # please add jet IDs only necessary ones manually
+                    # 'jet2idtightlepveto', 'jet2idtight', 'jet2idloose', 'jet2puidtight', 'jet2puidmedium', 'jet2puidloose'
                     # 'jet3idtightlepveto', 'jet3idtight', 'jet3idloose',
                     #'invalidjet1pt','invalidjet1idloose','invalidjet1eta', 'invalidjet1y', 'invalidjet1phi',
                     #'invalidjet2pt','invalidjet2idloose',
@@ -219,6 +219,7 @@ def _2016(cfg, **kwargs):
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
+    cfg['PUJetID'] = 'loose'
     cfg['MinPUJetID'] = -9999
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work

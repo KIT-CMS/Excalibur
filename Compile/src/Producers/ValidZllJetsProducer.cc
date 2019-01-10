@@ -8,6 +8,7 @@ std::string ValidZllJetsProducer::GetProducerId() const { return "ValidZllJetsPr
 void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
 
     minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
+    PUJetID = settings.GetPUJetID();
     minPUJetID = settings.GetMinPUJetID();
     maxLeadingJetY = settings.GetCutLeadingJetYMax();
     objectJetY = settings.GetUseObjectJetYCut();
@@ -26,8 +27,25 @@ bool ValidZllJetsProducer::DoesJetPass(const KBasicJet* jet, ZJetEvent const& ev
     // check that PUJetID is above configured minimal value
     const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...
     if (kJet) {
-        if (kJet->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata) < minPUJetID) {
-            return false;
+        if (PUJetID == "none") {
+            if (kJet->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata) < minPUJetID) {
+                return false;
+            }
+        }
+        else if (PUJetID == "loose") {
+            if (!bool(int(kJet->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 2))) {
+                return false;
+            }
+        }
+        else if (PUJetID == "medium") {
+            if (!bool(int(kJet->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 1))) {
+                return false;
+            }
+        }
+        else if (PUJetID == "tight") {
+            if (!bool(int(kJet->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 0))) {
+                return false;
+            }
         }
     }
     if (objectJetY) {

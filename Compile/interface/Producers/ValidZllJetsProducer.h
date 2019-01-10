@@ -15,8 +15,12 @@
  *
  *  MinZllJetDeltaRVeto (type: float) :
  *      minimal required distance between jets and leptons from Z decay
- *  MinPUJetID (type: float) :
- *      minimal required value of 'pile-up jet ID' for jet to be valid
+ * PUJetID (type: string):
+ *      sets working point of puJetID to 'loose', 'medium', 'tight'. Choose 'none' to use a minimal value of 'pile-up jet ID'.
+ *      Needs to be defined in skim file, typically as 'pileupJetId:fullId'
+ * MinPUJetID (type: float) :
+ *      minimal required value of 'pile-up jet ID' for jet to be valid. Only used if working point is set to 'none'!
+ *      Needs to be defined in skim file, typically as 'pileupJetId:fullDiscriminant'
  *
  *  Note: for the lepton veto to work, the Z-boson must be present in the product.
  *        This requires running either the `ZmmProducer` or the `ZeeProducer`
@@ -55,6 +59,7 @@ class ValidZllJetsProducer : public ZJetProducerBase {
 
   private:
     float minZllJetDeltaRVeto;
+    std::string PUJetID;
     float minPUJetID;
     float maxLeadingJetY;
     bool  objectJetY;
