@@ -207,30 +207,43 @@ def run_gc(config_path, output_glob, workdir_path):
     except subprocess.CalledProcessError:
         print "grid-control run failed"
         sys.exit(1)
-    try: 
-        downloadFromSE = False
-        with open(config_path) as cfg_file:
-            for line in cfg_file:
-                if 'se path =' in line  and 'srm' in line:
-                    downloadFromSE = True
-        if downloadFromSE:
-            subprocess.check_call(['downloadFromSE.py', config_path, '-o', output_glob, '-s'])
-    except KeyboardInterrupt:
-        sys.exit(0)
-    except subprocess.CalledProcessError:
-        print "downloadFromSE.py failed"
-        sys.exit(1)    
 
+    downloadFromSE = False
+    with open(config_path) as cfg_file:
+        for line in cfg_file:
+            if 'se path =' in line and 'srm' in line and 'srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/' in line:
+                haddXrootd = True
+                srm_path = line.split(' ')[-1]
+            elif 'se path =' in line  and 'srm' in line:
+                downloadFromSE = True
+    if haddXrootd:
+        try:
+            wrapper_logger.info("Merging output files via XrootD")
+
+            subprocess.call(['hadd_xrootd.py', '-o', workdir_path + 'out.root', '-i', srm_path + "*.root"])
+        except Exception as err:
+            print "hadd via XRootD failed"
+            print err
+            downloadFromSE = True
+    if downloadFromSE:
+        try:
+            subprocess.check_call(['downloadFromSE.py', config_path, '-o', output_glob, '-s'])
+        except KeyboardInterrupt:
+            sys.exit(0)
+        except subprocess.CalledProcessError:
+            print "downloadFromSE.py failed"
+            sys.exit(1)
     gctime = time.time() - gctime
-    print output_glob
-    print glob.glob(output_glob+"*.root")
-    
-    if glob.glob(output_glob):
-        wrapper_logger.info("Merging output files")
-        subprocess.call(['hadd', workdir_path + 'out.root'] + glob.glob(output_glob+"*.root"))
-    else:
-        print "Batch job failed to produce any output (%s)" % output_glob
-        sys.exit(1)
+    if haddXrootd is not True or downloadFromSE is True:
+        print output_glob
+        print glob.glob(output_glob+"*.root")
+
+        if glob.glob(output_glob):
+            wrapper_logger.info("Merging output files")
+            subprocess.call(['hadd', workdir_path + 'out.root'] + glob.glob(output_glob+"*.root"))
+        else:
+            print "Batch job failed to produce any output (%s)" % output_glob
+            sys.exit(1)
     return gctime
 
 
