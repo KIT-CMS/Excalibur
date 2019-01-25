@@ -84,6 +84,8 @@ class ZJetSettings : public KappaSettings
 
     // LeptonSFProducer
     IMPL_SETTING_DEFAULT(bool, LeptonSFetaonly, false)
+    IMPL_SETTING_DEFAULT(bool, LeptonSFTranspose, false)
+    IMPL_SETTING_DEFAULT(bool, LeptonSFReversedAxes, false)
     IMPL_SETTING(std::string, LeptonIDSFRootfile)
     IMPL_SETTING(std::string, LeptonIsoSFRootfile)
     IMPL_SETTING(std::string, LeptonTrackingSFRootfile)

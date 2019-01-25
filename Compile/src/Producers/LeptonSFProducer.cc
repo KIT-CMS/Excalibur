@@ -3,6 +3,7 @@
 #include <boost/algorithm/string.hpp>
 #include "TH2.h"
 #include "TGraphAsymmErrors.h"
+#include <stdio.h>
 
 /*
 taken from https://twiki.cern.ch/twiki/bin/view/Main/EGammaScaleFactors2012
@@ -54,6 +55,7 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIDSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
+    m_reversed_axes = settings.GetLeptonSFReversedAxes();
     if (settings.GetLeptonSFVariation() == true) {
         LOG(WARNING) << "LeptonIDSFProducer: varying scale factor UP and DOWN one sigma + 1.0%";
         error_multiplier[0] = 1.01;
@@ -68,9 +70,17 @@ void LeptonIDSFProducer::Init(ZJetSettings const& settings)
     else{
         LOG(ERROR) << "LeptonIsoSFProducer not implemented for this channel";
     }
-    
-    m_etabins = &m_xbins;
-    m_ptbins = &m_ybins;
+
+    if (m_reversed_axes)
+    {
+        m_etabins = &m_ybins;
+        m_ptbins = &m_xbins;
+    }
+    else
+    {
+        m_etabins = &m_xbins;
+        m_ptbins = &m_ybins;
+    }
     if (m_etaonly)
         m_absoluteeta = false;
     //m_reversed_axes = true;
@@ -137,6 +147,7 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonIsoSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
+    m_reversed_axes = settings.GetLeptonSFReversedAxes();
     if (settings.GetLeptonSFVariation() == true) {
         LOG(WARNING) << "LeptonIsoSFProducer: varying scale factor UP and DOWN one sigma + 0.5%";
         error_multiplier[0] = 1.005;
@@ -156,8 +167,17 @@ void LeptonIsoSFProducer::Init(ZJetSettings const& settings)
         LOG(ERROR) << "LeptonIsoSFProducer not implemented for this channel";
     }
 
-    m_etabins = &m_xbins;
-    m_ptbins = &m_ybins;
+    if (m_reversed_axes)
+    {
+        m_etabins = &m_ybins;
+        m_ptbins = &m_xbins;
+    }
+    else
+    {
+        m_etabins = &m_xbins;
+        m_ptbins = &m_ybins;
+    }
+
     if (m_etaonly)
         m_absoluteeta = false;
     //m_reversed_axes = true;
@@ -225,6 +245,8 @@ std::string LeptonTrackingSFProducer::GetProducerId() const { return "LeptonTrac
 void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTrackingSFRootfile();
+    m_reversed_axes = settings.GetLeptonSFReversedAxes();
+
     if (settings.GetLeptonSFVariation() == true) {
         LOG(WARNING) << "LeptonTrackingSFProducer: varying scale factor UP and DOWN one sigma";
     } 
@@ -243,11 +265,19 @@ void LeptonTrackingSFProducer::Init(ZJetSettings const& settings)
     else{
         LOG(ERROR) << "LeptonTrackingSFProducer not implemented for this channel";
     }
-    
-    m_etabins = &m_xbins;
-    m_ptbins = &m_ybins;
+
+    if (m_reversed_axes)
+    {
+        m_etabins = &m_ybins;
+        m_ptbins = &m_xbins;
+    }
+    else
+    {
+        m_etabins = &m_xbins;
+        m_ptbins = &m_ybins;
+    }
+
     m_absoluteeta = false;
-    //m_reversed_axes = true;
 
     // Get file
     LOG(INFO) << "Loading lepton scale factors for Tracking: File " << m_sffile
@@ -309,6 +339,7 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
 {
     m_sffile = settings.GetLeptonTriggerSFRootfile();
     m_etaonly = settings.GetLeptonSFetaonly();
+    m_reversed_axes = settings.GetLeptonSFReversedAxes();
     if (settings.GetLeptonSFVariation() == true) {
         LOG(WARNING) << "LeptonTriggerSFProducer: varying scale factor UP and DOWN one sigma + 0.5%";
         error_multiplier[0] = 1.005;
@@ -328,8 +359,18 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     else{
         LOG(ERROR) << "LeptonTriggerSFProducer not implemented for this channel";
     }
-    m_etabins = &m_xbins;
-    m_ptbins = &m_ybins;
+
+    if (m_reversed_axes)
+    {
+        m_etabins = &m_ybins;
+        m_ptbins = &m_xbins;
+    }
+    else
+    {
+        m_etabins = &m_xbins;
+        m_ptbins = &m_ybins;
+    }
+
     if (m_etaonly)
         m_absoluteeta = false;
     //m_reversed_axes = true;
