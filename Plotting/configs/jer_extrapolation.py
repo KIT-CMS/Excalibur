@@ -14,8 +14,8 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
 
     cut_quantities = ['alpha', 'zeta', 'zpt']  # Quantities used as x-axis
 
-    whitelist_quantities = ['jet1pt/genjet1pt']  # list to JER extracted is automatically added to whitelist
-    # whitelist_quantities = []  # for whitelisting all quantities
+    whitelist_quantities = []  # for whitelisting all quantities per default
+    y_lims = [0.0, 1.0]  # for setting range of y axis per default
 
     for cut_quantity in cut_quantities:  # x_quantity on the plot
 
@@ -34,7 +34,8 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
             cut_range = ['30, 1000']
 
         # TODO: adjust truncation values to optimal working point (gamma channel: 98.5%)
-        plots_list = ['MC', 'Data']
+        # plots_list = ['MC', 'Data']
+        plots_list = ['MC-ZRes-study']
 
         if channel == 'm':
             truncation = 98.5
@@ -70,19 +71,32 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
                 })
 
             if plot_type == 'Data':
+                whitelist_quantities = ['jet1pt/genjet1pt']  # JER extracted is automatically added to whitelist
                 rms_quantities = ['ptbalance', 'genjet1pt/genzpt', 'genzpt/zpt', 'jet1pt/genjet1pt']
                 rms_quantities_labels = ['PTBal(Data)', 'PLI(MC)', 'ZRes(MC)', 'JER(MC-generated)']
-                rms_quantities_colors = ['grey', 'springgreen', 'forestgreen', 'orange']
+                rms_quantities_colors = ['grey', 'springgreen', 'forestgreen', 'orange', 'blue', 'blue']
                 minuend_quantity = 'PTBal(Data)'
                 subtrahend_quantities = 'PLI(MC) ZRes(MC)'
                 result_quantity = 'JER(Data-extracted)'
+                y_lims = [0.0, 0.4]
             elif plot_type == 'MC':
+                whitelist_quantities = ['jet1pt/genjet1pt']  # JER extracted is automatically added to whitelist
                 rms_quantities = ['jet1pt/zpt', 'genjet1pt/genzpt', 'genzpt/zpt', 'jet1pt/genjet1pt']
                 rms_quantities_labels = ['PTBal(MC)', 'PLI(MC)', 'ZRes(MC)', 'JER(MC-generated)']
                 rms_quantities_colors = ['royalblue', 'springgreen', 'forestgreen', 'orange']
                 minuend_quantity = 'PTBal(MC)'
                 subtrahend_quantities = 'PLI(MC) ZRes(MC)'
                 result_quantity = 'JER(MC-extracted)'
+                y_lims = [0.0, 0.4]
+            elif plot_type == 'MC-ZRes-study':
+                whitelist_quantities = []  # all quantities are automatically added to whitelist
+                rms_quantities = ['genzpt/zpt', 'genepluspt/epluspt', 'genmupluspt/mupluspt']
+                rms_quantities_labels = ['ZRes(MC)', 'eRes(MC)', 'muRes(MC)']
+                rms_quantities_colors = ['forestgreen', 'blue', 'blue']
+                minuend_quantity = ''
+                subtrahend_quantities = ''
+                result_quantity = ''
+                y_lims = [0.0, 0.05]
             else:
                 rms_quantities = []
                 rms_quantities_labels = []
@@ -203,7 +217,7 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
                         'histogram_from_rms_truncations': d['histogram_from_rms_truncations'] + [truncation],
                         # 'nicks': d['nicks'] + [rms_nick_string],
                         'y_label': 'resolution',
-                        'y_lims': [0.0, 0.4],
+                        'y_lims': y_lims,
                     })
                     if rms_quantity in whitelist_quantities:
                         d.update({
@@ -229,32 +243,33 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
                             })
 
             # Getting JER from quadratic subtraction
-            if 'HistogramFromQuadraticSubtraction' not in d['analysis_modules']:
-                d['analysis_modules'] = d['analysis_modules'] + ['HistogramFromQuadraticSubtraction']
-            d.update({
-                'histogram_from_quadratic_subtraction_minuend_nicks': [minuend_nick],
-                'histogram_from_quadratic_subtraction_subtrahend_nicks': [' '.join(subtrahend_nicks)],
-                'histogram_from_quadratic_subtraction_result_nicks': [result_nick],
-                'nicks_whitelist': d['nicks_whitelist'] + [result_nick],
-                # 'nicks': d['nicks'] + [result_nick],
-                'colors': d['colors'] + ['red'],
-                'alphas': d['alphas'] + [1.0],
-                'labels': d['labels'] + [result_quantity],
-                'line_styles': d['line_styles'] + [''],
-            })
-            nick_colors += ['red']
-            nick_labels += [result_quantity]
-            nick_linestyles += ['']
-            if ratio_plot:
-                if 'Ratio' not in d['analysis_modules']:
-                    d['analysis_modules'] = d['analysis_modules'] + ['Ratio']
+            if minuend_quantity != '':
+                if 'HistogramFromQuadraticSubtraction' not in d['analysis_modules']:
+                    d['analysis_modules'] = d['analysis_modules'] + ['HistogramFromQuadraticSubtraction']
                 d.update({
-                    'ratio_denominator_nicks': d['ratio_denominator_nicks'] + [result_nick],
-                    'y_subplot_lims': [0.75, 1.25],
-                    'y_subplot_label': 'Ratio',
-                    'subplot_fraction': 25,
-                    'subplot_legend': 'upper right',
+                    'histogram_from_quadratic_subtraction_minuend_nicks': [minuend_nick],
+                    'histogram_from_quadratic_subtraction_subtrahend_nicks': [' '.join(subtrahend_nicks)],
+                    'histogram_from_quadratic_subtraction_result_nicks': [result_nick],
+                    'nicks_whitelist': d['nicks_whitelist'] + [result_nick],
+                    # 'nicks': d['nicks'] + [result_nick],
+                    'colors': d['colors'] + ['red'],
+                    'alphas': d['alphas'] + [1.0],
+                    'labels': d['labels'] + [result_quantity],
+                    'line_styles': d['line_styles'] + [''],
                 })
+                nick_colors += ['red']
+                nick_labels += [result_quantity]
+                nick_linestyles += ['']
+                if ratio_plot:
+                    if 'Ratio' not in d['analysis_modules']:
+                        d['analysis_modules'] = d['analysis_modules'] + ['Ratio']
+                    d.update({
+                        'ratio_denominator_nicks': d['ratio_denominator_nicks'] + [result_nick],
+                        'y_subplot_lims': [0.75, 1.25],
+                        'y_subplot_label': 'Ratio',
+                        'subplot_fraction': 25,
+                        'subplot_legend': 'upper right',
+                    })
             # extrapolate to alpha equal zero by fitting a function
             if cut_quantity in ['alpha']:
                 nick_whitelist = d['nicks_whitelist']

@@ -9,8 +9,6 @@ from jer_comparisons import general_comparison, general_comparison_genreco
 from jer_functionfits import fit_function
 from jer_profplots import rms_profplot_datamc
 from jer_truncationscan import jer_truncation_scan_without_jer, jer_truncation_scan_jer_only
-# from jer_subtraction import rms_subtraction_datamc
-# from jer_truncations import rms_profplot_datamc_truncationscan
 from jer_extrapolation import jer_extrapolation
 
 # 'jet1pt': '40,0,400',  # '5 10 20 30 50 75 125 175 225 300 400',
@@ -28,7 +26,7 @@ def jer_determination_data_mc_zll(args=None):
     # plot_types += ['jer_truncation_scan']
     # plot_types += ['general_comparisons']
     # plot_types += ['fit_functions']
-    # MC only plots:
+    # # MC only plots:
     # plot_types += ['general_comparisons_mc']
     # plot_types += ['fit_functions_mc']
     # plot_types += ['gen_reco_comparisons_mc']
