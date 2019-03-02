@@ -252,6 +252,8 @@ def _2017(cfg, **kwargs):
 
 def _2018(cfg, **kwargs):
     _2017(cfg, **kwargs)  # user 2017 config as base
+    cfg['JetIDVersion'] = 2018  # for object-based JetID
+    cfg['CutJetIDVersion'] = 2018  # for event-based JetID
     cfg['Year'] = 2018
     cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2018_13TeV.txt')
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt')]

@@ -6,8 +6,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from common import JEC_BASE, JEC_VERSION, SE_PATH_PREFIXES, GOLDEN_JSON
 
-#RUN='A'
-RUN='F'  # use Run2017F here because we are testing 'Fall17' JECs with 2018 data
+RUN='A'
 CH='mm'
 JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
 

@@ -6,8 +6,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from common import JEC_BASE, JEC_VERSION, SE_PATH_PREFIXES, GOLDEN_JSON
 
-#RUN='B'
-RUN='F'  # use Run2017F here because we are testing 'Fall17' JECs with 2018 data
+RUN='B'
 CH='mm'
 JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
 
@@ -15,9 +14,9 @@ JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
 def config():
     cfg = configtools.getConfig('data', 2018, CH, JEC=JEC)
     cfg["InputFiles"].set_input(
-        bmspathA="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018B-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        ekppathA="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018B-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        sg0pathA="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018B-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        bmspathB="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018B-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        ekppathB="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018B-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        sg0pathB="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018B-17Sep2018-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/{}'.format(GOLDEN_JSON))]
 
