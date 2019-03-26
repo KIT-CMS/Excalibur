@@ -83,6 +83,12 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                 ? std::abs(product.m_z.p4.Rapidity() + product.GetValidPrimaryJet(settings, event)->p4.Rapidity())/2
                 : DefaultValues::UndefinedFloat);
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "backtoback", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_zValid && (product.GetValidJetCount(settings, event) > 0)
+                ? std::abs(std::abs(product.m_z.p4.Phi() - product.GetValidPrimaryJet(settings, event)->p4.Phi()))// - std::atan(1)*4)
+                : DefaultValues::UndefinedFloat);
+        });
     // Gen Z
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzpt",
@@ -126,6 +132,12 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                 : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genbacktoback", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genBosonLVFound && (product.m_simpleGenJets.size() > 0)
+                ? std::abs(std::abs(product.m_genBosonLV.Phi() + product.m_simpleGenJets.at(0)->p4.Phi()))// - std::atan(1)*4)
+                : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (product.m_genBosonLVFound && genJet != nullptr)
@@ -137,6 +149,13 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (product.m_genBosonLVFound && genJet != nullptr)
                 ? std::abs(product.m_genBosonLV.Rapidity() + genJet->p4.Rapidity())/2
+                : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenbacktoback", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
+            return (product.m_genBosonLVFound && genJet != nullptr)
+                ? std::abs(std::abs(product.m_genBosonLV.Phi() - genJet->p4.Phi()))// - std::atan(1)*4)
                 : DefaultValues::UndefinedFloat;
         });
         
