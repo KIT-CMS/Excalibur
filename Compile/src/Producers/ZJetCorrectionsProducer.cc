@@ -135,9 +135,21 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
         m_l2l3res = new FactorizedJetCorrector(jecParameters);
         jecParameters.clear();
     }
-
     // JEU initialization
-    // Not yet implemented..
+    // so far no source differentiation is implemented
+    if (settings.GetProvideJECUncertainties()) {
+        LOG(INFO) << "\t -- JetCorrectionUncertainty enabled for " << algoName << " jets using the following JEU files";
+        LOG(INFO) << "\t -- " << settings.GetJec() << "_"
+                  << "Uncertainty" << "_" << algoName << ".txt";
+        JetCorrectorParameters* jecUncertaintyParameters = nullptr;
+        jecUncertaintyParameters = new JetCorrectorParameters(
+                    settings.GetJec() + "_" + "Uncertainty" + "_" + algoName + ".txt"
+            );
+        if ((!jecUncertaintyParameters->isValid()) || (jecUncertaintyParameters->size() == 0))
+            LOG(FATAL)  << "Invalid definition " << settings.GetJetEnergyCorrectionUncertaintySource()
+                        << " in file " << settings.GetJetEnergyCorrectionUncertaintyParameters();
+        correctionUncertainty = new JetCorrectionUncertainty(*jecUncertaintyParameters);
+    }
 }
 
 void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,

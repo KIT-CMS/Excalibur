@@ -32,6 +32,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(bool, FlavourCorrections)
     IMPL_SETTING_DEFAULT(bool, ProvideL2ResidualCorrections, false)
     IMPL_SETTING_DEFAULT(bool, ProvideL2L3ResidualCorrections, false)
+    IMPL_SETTING_DEFAULT(bool, ProvideJECUncertainties, false)
 
     // JERSmearer
     IMPL_SETTING(std::string, JER)
