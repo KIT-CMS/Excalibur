@@ -45,7 +45,7 @@ def main(xrootd_path, output):
         print("file: %s"% filename)
     try:
         subprocess.call(['hadd', output] + filelist)
-        print(['hadd', output] + filelist)
+        print('hadd output file: %s' % output)
     except KeyboardInterrupt:                                                   
         sys.exit(0) 
     except subprocess.CalledProcessError:                                       
