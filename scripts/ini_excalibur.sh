@@ -123,8 +123,15 @@ elif [ $USER = "mschnepf" ]; then
          export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/mschnepf/public_html/plots_archive/{subdir}"
     fi
 
+elif [ $USER = "tfesenbecker" ]; then
+    echo "Profil: tfesenbecker"
+    export EXCALIBUR_WORK=/portal/ekpbms3/home/tfesenbecker/excalibur_work
+    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tfesenbecker/Excalibur"
+
+
 fi
 
 source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
+
 
