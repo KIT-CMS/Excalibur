@@ -219,7 +219,7 @@ def _2016(cfg, **kwargs):
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
-    cfg['PUJetID'] = 'loose'
+    # cfg['PUJetID'] = 'loose'
     cfg['MinPUJetID'] = -9999
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
