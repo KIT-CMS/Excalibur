@@ -20,3 +20,13 @@ class RecoJetGenPartonMatchingProducer : public RecoJetGenParticleMatchingProduc
                  KappaProduct& product,
                  KappaSettings const& settings) const override;
 };
+
+class GenJetGenPartonMatchingProducer : public RecoJetGenParticleMatchingProducer
+{
+  public:
+    std::string GetProducerId() const override;
+
+    void Produce(KappaEvent const& event,
+                 KappaProduct& product,
+                 KappaSettings const& settings) const override;
+};
