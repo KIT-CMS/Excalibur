@@ -113,6 +113,7 @@ void ZJetTrueGenMuonsProducer::Produce(ZJetEvent const& event,
     //std::cout << "no. of genParticles: " << event.m_genParticles->size() << std::endl;
     //std::cout << "no. of genPhotons: " << product.m_genPhotons.size() << std::endl;
     int im=0;
+    int iz;
     // loop over genMuons
     for (unsigned int imu=0; imu < product.m_genMuons.size(); imu++) {
         //std::cout << "muon no. " << imu << std::endl;
@@ -144,11 +145,26 @@ void ZJetTrueGenMuonsProducer::Produce(ZJetEvent const& event,
                 */
                     //im = FindMom(im, event);
                     //std::cout << std::endl << "found new mom: " << event.m_genParticles->at(im).p4;
+                //if (event.m_eventInfo->nEvent == 18593506) {
+                //    std::cout << event.m_genParticles->at(im).pdgId << event.m_genParticles->at(im).p4 << std::endl;
+                //}
                 }
-                //product.m_genz.p4 = event.m_genParticles->at(im).p4;
-                //std::cout << event.m_genParticles->at(im).p4 << std::endl;
-                product.m_genMuons[imu]->p4 = event.m_genParticles->at(im).p4;
             }
+        }
+        //std::cout << event.m_genParticles->at(im).p4 << std::endl;
+        product.m_genMuons[imu]->p4 = event.m_genParticles->at(im).p4;
+        //product.m_validGenMuons.push_back(&event.m_genParticles->at(im));
+        iz = FindMom(im, event);
+        if (iz!=-1000 && event.m_genParticles->at(iz).pdgId == 23) {
+            product.m_truez = event.m_genParticles->at(iz).p4;
+            product.m_truezfound = true;
+        }
+        if (iz!=-1000 && std::abs(event.m_genParticles->at(iz).pdgId) == 15) {
+            product.m_genTaus.push_back(&event.m_genParticles->at(iz));
+        }
+    }
+}
+
             /*if (event.m_genParticles->at(ip).nDaughters()>1 && 
                 event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(0)).p4 == product.m_genMuons[imu]->p4 &&
                 event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(1)).pdgId == 22) {
@@ -193,56 +209,6 @@ void ZJetTrueGenMuonsProducer::Produce(ZJetEvent const& event,
                     if (event.m_genParticles->at(ip).daughterIndex())
                 }
             }*/
-        }
-    }
-    //std::cout << "no. of genPhotons: " << (std::vector<const KPFCandidate*> product.m_pfPhotons)->size() << std::endl;
-    //std::cout << "no. of photons: " <<  product.m_pfPhotons.size() << std::endl;
-    //
-        // KLV dressedMuon;
-        //KLV photon;
-        //product.m_dressedMuons = KLV();
-        // dressedMuon.p4 = product.m_validMuons[imu]->p4;
-        //std::cout << "muon " << imu+1 << " before dressing: " << product.m_validMuons[imu]->p4 << std::endl;
-        //for (unsigned int iph=0; iph<product.m_pfPhotons.size(); iph++) {
-            //if (std::abs(pfCandidate->pdgId) == 211) { 
-            //photon.p4 = product.m_pfPhotons[iph]->p4;
-            //if (ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4) < maxZJetDressedMuonDeltaR) {
-                //std::cout << "photon candidate: " << pfCandidate->pdgId << std::endl;}
-                /*std::cout << "photon cone to muon: "
-                    << ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4 ) 
-                    << std::endl;*/
-                //product.m_validMuons[imu]->p4 += photon.p4;
-            //}
-        //}
-        //std::cout << "muon " << imu+1 << " after dressing: " << product.m_validMuons[imu]->p4 << std::endl;
-        //product.m_dressedMuons.push_back(&dressedMuon);
-        //std::cout << product.m_dressedMuons[imu] << std::endl;
-        //product.m_dressedMuons.push_back(&((KLV*)product.m_validMuons[imu])->p4);
-    //}
-}
-
-/*std::string GenZJetDressedMuonsProducer::GetProducerId() const { return "ValidZllGenJetsProducer"; }
-void ValidZllGenJetsProducer::Init(ZJetSettings const& settings)
-{
-    minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
-}
-
-void ValidZllGenJetsProducer::Produce(ZJetEvent const& event,
-                                   ZJetProduct& product,
-                                   ZJetSettings const& settings) const
-{
-    assert(event.m_genJets);
-    for (unsigned int jet=0; jet < ((KLVs*) event.m_genJets)->size(); ++jet) {
-        bool validjet = true;
-        for (unsigned int lep=0; lep<product.m_genLeptonsFromBosonDecay.size(); ++lep) {
-            validjet = validjet && ROOT::Math::VectorUtil::DeltaR( ((KLVs*) event.m_genJets)->at(jet).p4, product.m_genLeptonsFromBosonDecay[lep]->p4) > minZllJetDeltaRVeto;
-        }
-        if (validjet) {
-            product.m_simpleGenJets.push_back(&((KLVs*) event.m_genJets)->at(jet));
-        }
-    }
-}
-*/
 
 std::string ZJetGenPhotonsProducer::GetProducerId() const { return "ZJetGenPhotonsProducer"; }
 
