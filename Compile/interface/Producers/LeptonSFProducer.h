@@ -16,12 +16,12 @@ class LeptonSFProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   protected:
-    float m_sf[12][12] = {};
-    float m_er[12][12] = {};
-    float m_sfdata[12][12] = {};
-    float m_erdata[12][12] = {};
-    float m_sfmc[12][12] = {};
-    float m_ermc[12][12] = {};
+    float m_sf[30][30] = {};
+    float m_er[30][30] = {};
+    float m_sfdata[30][30] = {};
+    float m_erdata[30][30] = {};
+    float m_sfmc[30][30] = {};
+    float m_ermc[30][30] = {};
     std::vector<float> m_xbins = {};
     std::vector<float> m_ybins = {};
     std::vector<float>* m_etabins = {};
