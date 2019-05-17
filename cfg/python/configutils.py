@@ -349,13 +349,14 @@ class InputFiles(object):
 
 	def set_input(self, **kwargs):
 		"""Overwrite the input for specific domains"""
-  		if 'path' in kwargs.keys():
-			if kwargs['path'] is not None:
- 				self.inputs.setdefault('path', []).append(kwargs['path'])
-		else:
-			for domain in kwargs:
-				self.inputs.setdefault(domain[:3].lower(), []).append(kwargs[domain])
-			#self.inputs[domain[:3].lower()]   = kwargs[domain]
+		print kwargs.keys()
+		for key, path in kwargs.items():
+			# pseudo-domain 'path'
+			if key[:4]=='path':
+				self.inputs.setdefault('path', []).append(path)
+			# domain-specific paths
+			else:
+				self.inputs.setdefault(key[:3].lower(), []).append(path)
 
 	def __str__(self):
 		return self.resolve()[0]
