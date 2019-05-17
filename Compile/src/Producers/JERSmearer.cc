@@ -82,9 +82,6 @@ void JERSmearer::Produce(ZJetEvent const& event,
                     {JME::Binning::JetEta, recoJets[iJet]->p4.Eta()},
                     {JME::Binning::Rho, event.m_pileupDensity->rho}
                 });
-                double jetResolutionScaleFactor = m_jetResolutionScaleFactor->getScaleFactor({
-                    {JME::Binning::JetEta, recoJets[iJet]->p4.Eta()}
-                }, Variation::NOMINAL);
                 // compute and apply the pT smearing factor
                 recoJets[iJet]->p4 *= 1 + std::normal_distribution<>(0, jetResolution)(m_randomNumberGenerator);
             }
