@@ -29,9 +29,8 @@ def config():
 
     cfg['ElectronID'] = 'user'  # old ID no longer written out in new skim
     cfg['ApplyElectronVID'] = True
-    #cfg['ElectronVIDName'] = "Summer16-80X-V1"
-    cfg['ElectronVIDName'] = "Fall17-94X-V1-Preliminary"
-    cfg['ElectronVIDType'] = "cutbased"
+    cfg['ElectronVIDName'] = "Fall17-94X-V1"
+    cfg['ElectronVIDType'] = "cutbased_v2"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
     return cfg

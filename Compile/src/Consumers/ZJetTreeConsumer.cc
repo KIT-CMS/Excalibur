@@ -1687,16 +1687,35 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     // -- electron IDs
 
     const std::string electronVID = settings.GetElectronVIDName();
+    const std::string electronVIDType = boost::algorithm::to_lower_copy(boost::algorithm::trim_copy(settings.GetElectronVIDType()));
     bool q_writeOutVIDs = true;
     if (electronVID == "") {
         q_writeOutVIDs = false;
     }
 
     // write out cutbased VIDs
-    const std::string electronVID_looseTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-loose";
-    const std::string electronVID_mediumTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-medium";
-    const std::string electronVID_tightTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-tight";
-    const std::string electronVID_vetoTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-veto";
+
+    std::string electronVID_looseTag;
+    std::string electronVID_mediumTag;
+    std::string electronVID_tightTag;
+    std::string electronVID_vetoTag;
+
+    if (electronVIDType != "cutbased_v2")
+    {
+        std::cout << "Using \"cutbased\" Electron IDs"<< std::endl;
+        electronVID_looseTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-loose";
+        electronVID_mediumTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-medium";
+        electronVID_tightTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-tight";
+        electronVID_vetoTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-veto";
+    }
+    else
+    {
+        std::cout << "Using \"" << electronVIDType <<"\" Electron IDs"<< std::endl;
+        electronVID_looseTag = "cutBasedElectronID-" + electronVID + "-loose:";
+        electronVID_mediumTag = "cutBasedElectronID-" + electronVID + "-medium:";
+        electronVID_tightTag = "cutBasedElectronID-" + electronVID + "-tight:";
+        electronVID_vetoTag = "cutBasedElectronID-" + electronVID + "-veto:";
+    }
 
     // first electron VIDs
 

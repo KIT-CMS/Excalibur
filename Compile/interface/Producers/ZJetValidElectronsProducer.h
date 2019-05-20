@@ -75,6 +75,18 @@ class ZJetValidElectronsProducer : public ValidElectronsProducer<ZJetTypes>
                 }
                 m_electronVID_fullTag = "egmGsfElectronIDs:mvaEleID-" + electronVIDName + "-" + electronVIDWorkingPoint;
             }
+            else if (electronVIDType == "cutbased_v2") {
+                if ((electronVIDWorkingPoint != "veto") &&
+                    (electronVIDWorkingPoint != "loose") &&
+                    (electronVIDWorkingPoint != "medium") &&
+                    (electronVIDWorkingPoint != "tight")) {
+
+                    LOG(WARNING) << "[ZJetValidElectronsProducer] Unknown CutBased VID "
+                              << "working point '" << electronVIDWorkingPoint << "': "
+                              << "continuing, but could fail later...";
+                }
+                m_electronVID_fullTag = "cutBasedElectronID-" + electronVIDName + "-" + electronVIDWorkingPoint + ":";
+            }
             else {
                 LOG(ERROR) << "[ZJetValidElectronsProducer] Unknown VID type '"
                            << electronVIDType << "': expected one of {'CutBased', 'MVA'}";

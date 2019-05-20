@@ -10,7 +10,7 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
     cut_binning = []  # x_bins in plot
     cut_range = []
     plots = []
-    ratio_plot = True
+    ratio_plot = False
 
     cut_quantities = ['alpha', 'zeta', 'zpt']  # Quantities used as x-axis
 
@@ -34,8 +34,8 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
             cut_range = ['30, 1000']
 
         # TODO: adjust truncation values to optimal working point (gamma channel: 98.5%)
-        # plots_list = ['MC', 'Data']
-        plots_list = ['MC-ZRes-study']
+        plots_list = ['MC', 'Data']
+        # plots_list = ['MC-ZRes-study']
 
         if channel == 'm':
             truncation = 98.5
@@ -71,6 +71,7 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
                 })
 
             if plot_type == 'Data':
+                # whitelist_quantities = []  # automatically add all to whitelist
                 whitelist_quantities = ['jet1pt/genjet1pt']  # JER extracted is automatically added to whitelist
                 rms_quantities = ['ptbalance', 'genjet1pt/genzpt', 'genzpt/zpt', 'jet1pt/genjet1pt']
                 rms_quantities_labels = ['PTBal(Data)', 'PLI(MC)', 'ZRes(MC)', 'JER(MC-generated)']
@@ -78,8 +79,9 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
                 minuend_quantity = 'PTBal(Data)'
                 subtrahend_quantities = 'PLI(MC) ZRes(MC)'
                 result_quantity = 'JER(Data-extracted)'
-                y_lims = [0.0, 0.4]
+                y_lims = [0.0, 0.3]
             elif plot_type == 'MC':
+                # whitelist_quantities = []  # automatically add all to whitelist
                 whitelist_quantities = ['jet1pt/genjet1pt']  # JER extracted is automatically added to whitelist
                 rms_quantities = ['jet1pt/zpt', 'genjet1pt/genzpt', 'genzpt/zpt', 'jet1pt/genjet1pt']
                 rms_quantities_labels = ['PTBal(MC)', 'PLI(MC)', 'ZRes(MC)', 'JER(MC-generated)']
@@ -87,9 +89,9 @@ def jer_extrapolation(args=None, additional_dictionary=None, channel='m'):
                 minuend_quantity = 'PTBal(MC)'
                 subtrahend_quantities = 'PLI(MC) ZRes(MC)'
                 result_quantity = 'JER(MC-extracted)'
-                y_lims = [0.0, 0.4]
+                y_lims = [0.0, 0.3]
             elif plot_type == 'MC-ZRes-study':
-                whitelist_quantities = []  # all quantities are automatically added to whitelist
+                # whitelist_quantities = []  # all quantities are automatically added to whitelist
                 rms_quantities = ['genzpt/zpt', 'genepluspt/epluspt', 'genmupluspt/mupluspt']
                 rms_quantities_labels = ['ZRes(MC)', 'eRes(MC)', 'muRes(MC)']
                 rms_quantities_colors = ['forestgreen', 'blue', 'blue']

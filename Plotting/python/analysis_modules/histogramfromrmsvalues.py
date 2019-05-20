@@ -68,7 +68,6 @@ class HistogramFromRMSValues(analysisbase.AnalysisBase):
         rms = root_hist.GetRMS()
         mean = root_hist.GetMean()
         fit = ROOT.TF1('gauss_fit', "[2]/([0]*(2*pi)**(0.5))*TMath::Exp(-0.5*((x-[1])/[0])*((x-[1])/[0]))", a, b)
-        # fit = ROOT.TF1('gauss_fit', "[2]*TMath::Gaus(x,[1],[0],kFalse)", a, b)
         fit.SetParameters(rms, mean, 10)
         fit.SetParNames("sigma", "mean", "n")
         fit.SetParLimits(0, rms-0.01*rms, rms+0.01*rms)

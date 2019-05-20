@@ -9,7 +9,8 @@ from jer_comparisons import general_comparison, general_comparison_genreco
 from jer_functionfits import fit_function
 from jer_profplots import rms_profplot_datamc
 from jer_truncationscan import jer_truncation_scan_without_jer, jer_truncation_scan_jer_only
-from jer_extrapolation import jer_extrapolation
+from jer_extrapolation3 import jer_extrapolation3 as jer_extrapolation
+# from jer_extrapolation import jer_extrapolation
 
 # 'jet1pt': '40,0,400',  # '5 10 20 30 50 75 125 175 225 300 400',
 # 'jet2pt': '40,0,250',  # '5 10 20 30 40 50 75 125 175 250',
@@ -18,7 +19,7 @@ from jer_extrapolation import jer_extrapolation
 
 def jer_determination_data_mc_zll(args=None):
     channels = ['e', 'm']
-    year = 2017
+    year = 2018
     plot_types = []
     # DataMC plots:
     # plot_types += ['rms_prof_plot']
@@ -57,7 +58,10 @@ def jer_determination_data_mc_zll(args=None):
         }
         if channel == 'm':
             d['title'] = r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{\\mu \\mu}$"
-            if year == 2017:
+            if year == 2018:
+                d['files'] = ['/ceph/dsavoiu/JEC/Autumn18/17Sep2018_V8_2019-03-18/data18_mm_ABCD_17Sep2018.root',
+                              '/ceph/dsavoiu/JEC/Autumn18/17Sep2018_V8_2019-03-18/mc18_mm_DYNJ_Madgraph.root']
+            elif year == 2017:
                 d['files'] = ['/ceph/cheidecker/zjets/excalibur/Fall17_17Nov2017_V24/data17_mm_BCDEF_17Nov2017.root',
                               '/ceph/cheidecker/zjets/excalibur/Fall17_17Nov2017_V24/mc17_mm_DYNJ_Madgraph.root']
                 # d['files'] = ['/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_2018-06-13/'
@@ -65,24 +69,37 @@ def jer_determination_data_mc_zll(args=None):
                 #               '/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_2018-06-13/'
                 #               'mc17_mm_DYNJ_Madgraph.root']
             elif year == 2016:
-                d['files'] = ['/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
-                              '07Aug2017_V12_noEGMss_2018-07-15/data16_mm_BCDEFGH_07Aug2017.root',
-                              '/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
-                              '07Aug2017_V12_noEGMss_2018-07-15/mc16_mm_BCDEFGH_DYNJ_Madgraph.root']
+                d['files'] = ['/ceph/cheidecker/zjets/excalibur/07Aug2017_V12_noEGMss_2018-07-15/'
+                              'data16_mm_BCDEFGH_07Aug2017.root',
+                              '/ceph/cheidecker/zjets/excalibur/07Aug2017_V12_noEGMss_2018-07-15/'
+                              'mc16_mm_BCDEFGH_DYNJ_Madgraph.root']
+                # d['files'] = ['/ceph/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
+                #               '07Aug2017_V12_noEGMss_2018-07-15/data16_mm_BCDEFGH_07Aug2017.root',
+                #               '/ceph/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
+                #               '07Aug2017_V12_noEGMss_2018-07-15/mc16_mm_BCDEFGH_DYNJ_Madgraph.root']
         elif channel == 'e':
             d['title'] = r"$\\mathrm{Z} \\mathit{\\rightarrow} \\mathrm{e e}$"
-            if year == 2017:
+            if year == 2018:
+                d['files'] = ['/ceph/dsavoiu/JEC/Autumn18/17Sep2018_V8_2019-03-18/data18_ee_ABCD_17Sep2018.root',
+                              '/ceph/dsavoiu/JEC/Autumn18/17Sep2018_V8_2019-03-18/mc18_ee_DYNJ_Madgraph.root']
+            elif year == 2017:
                 d['files'] = ['/ceph/cheidecker/zjets/excalibur/Fall17_17Nov2017_V24/data17_ee_BCDEF_17Nov2017.root',
-                              '/ceph/cheidecker/zjets/excalibur/Fall17_17Nov2017_V24/mc17_ee_DYNJ_Madgraph.root']
+                              '/ceph/cheidecker/zjets/excalibur/Fall17_17Nov2017_V24/mc17_ee_DYNJ_Madgraph_egsm.root']
+                # d['files'] = ['/ceph/cheidecker/zjets/excalibur/Fall17_17Nov2017_V24/data17_ee_BCDEF_17Nov2017.root',
+                #               '/ceph/cheidecker/zjets/excalibur/Fall17_17Nov2017_V24/mc17_ee_DYNJ_Madgraph.root']
                 # d['files'] = ['/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_2018-06-13/'
                 #               'data17_ee_BCDEF_17Nov2017.root',
                 #               '/storage/c/dsavoiu/excalibur_results_calibration/Fall17/17Nov2017_V10_2018-06-13/'
                 #               'mc17_ee_DYNJ_Madgraph.root']
             elif year == 2016:
-                d['files'] = ['/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
-                              '07Aug2017_V12_backportEGMss_npvGood_2018-08-04/data16_ee_BCDEFGH_07Aug2017.root',
-                              '/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
-                              '07Aug2017_V12_backportEGMss_npvGood_2018-08-04/mc16_ee_BCDEFGH_DYNJ_Madgraph.root']
+                d['files'] = ['/ceph/cheidecker/zjets/excalibur/07Aug2017_V12_backportEGMss_npvGood_2018-08-04/'
+                              'data16_ee_BCDEFGH_07Aug2017.root',
+                              '/ceph/cheidecker/zjets/excalibur/07Aug2017_V12_backportEGMss_npvGood_2018-08-04/'
+                              'mc16_ee_BCDEFGH_DYNJ_Madgraph.root']
+                # d['files'] = ['/ceph/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
+                #               '07Aug2017_V12_backportEGMss_npvGood_2018-08-04/data16_ee_BCDEFGH_07Aug2017.root',
+                #               '/ceph/storage/c/dsavoiu/excalibur_results_calibration/Summer16/'
+                #               '07Aug2017_V12_backportEGMss_npvGood_2018-08-04/mc16_ee_BCDEFGH_DYNJ_Madgraph.root']
 
         # Adopting weights for Data and MC plots:
         if additional_weights:

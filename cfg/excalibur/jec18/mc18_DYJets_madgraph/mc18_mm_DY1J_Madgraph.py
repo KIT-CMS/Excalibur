@@ -13,6 +13,8 @@ JEC='{}_{}'.format(JEC_BASE, JEC_VERSION)
 def config():
     cfg = configtools.getConfig('mc', 2018, CH, JEC=JEC, JER=JER)
     cfg["InputFiles"].set_input(
+        path1="{}/dsavoiu/Skimming/ZJet_DY1JetsToLL_Autumn18-madgraphMLM_realistic_v15-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        path2="{}/dsavoiu/Skimming/ZJet_DY1JetsToLL_Autumn18-madgraphMLM_realistic_v15-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         bmspath1="{}/dsavoiu/Skimming/ZJet_DY1JetsToLL_Autumn18-madgraphMLM_realistic_v15-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         ekppath1="{}/dsavoiu/Skimming/ZJet_DY1JetsToLL_Autumn18-madgraphMLM_realistic_v15-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         sg0path1="{}/dsavoiu/Skimming/ZJet_DY1JetsToLL_Autumn18-madgraphMLM_realistic_v15-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
