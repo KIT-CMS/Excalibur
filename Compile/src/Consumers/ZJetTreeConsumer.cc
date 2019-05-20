@@ -50,19 +50,19 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zpt",
         [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Pt(): DefaultValues::UndefinedFloat);
-	});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zeta",
         [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Eta(): DefaultValues::UndefinedFloat);
-    	});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zphi",
         [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Phi(): DefaultValues::UndefinedFloat);
-    	});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zeta",
         [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.Eta(): DefaultValues::UndefinedFloat);
-	});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zy", [](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_zValid ? product.m_z.p4.Rapidity(): DefaultValues::UndefinedFloat);
@@ -70,7 +70,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zmass",
         [](ZJetEvent const& event, ZJetProduct const& product) { return (product.m_zValid ? product.m_z.p4.mass(): DefaultValues::UndefinedFloat);
-	});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "ystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_zValid && (product.GetValidJetCount(settings, event) > 0) 
@@ -89,36 +89,56 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                 ? std::abs(std::abs(product.m_z.p4.Phi() - product.GetValidPrimaryJet(settings, event)->p4.Phi()))// - std::atan(1)*4)
                 : DefaultValues::UndefinedFloat);
         });
+
+    // True Z: from hard process
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truezpt",
+        [](ZJetEvent const& event, ZJetProduct const& product) {
+            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Pt() : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truezeta",
+        [](ZJetEvent const& event, ZJetProduct const& product) {
+            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Eta() : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truezphi",
+        [](ZJetEvent const& event, ZJetProduct const& product) {
+            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Phi() : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truezy", [](ZJetEvent const& event, ZJetProduct const& product) {
+            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Rapidity() : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truezmass", [](ZJetEvent const& event, ZJetProduct const& product) {
+            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.mass() : DefaultValues::UndefinedFloat);
+        });
     // Gen Z
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzpt",
         [](ZJetEvent const& event, ZJetProduct const& product) { 
-	     return(product.m_genBosonLVFound ? product.m_genBosonLV.Pt() : DefaultValues::UndefinedFloat); 
-	});
+            return(product.m_genBosonLVFound ? product.m_genBosonLV.Pt() : DefaultValues::UndefinedFloat);
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzeta",
         [](ZJetEvent const& event, ZJetProduct const& product) { 
-	     return(product.m_genBosonLVFound ? product.m_genBosonLV.Eta() : DefaultValues::UndefinedFloat); 
-	});
+            return(product.m_genBosonLVFound ? product.m_genBosonLV.Eta() : DefaultValues::UndefinedFloat);
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzphi",
         [](ZJetEvent const& event, ZJetProduct const& product) { 
-	     return(product.m_genBosonLVFound ? product.m_genBosonLV.Phi() : DefaultValues::UndefinedFloat); 
-	});
+            return(product.m_genBosonLVFound ? product.m_genBosonLV.Phi() : DefaultValues::UndefinedFloat);
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzy", [](ZJetEvent const& event, ZJetProduct const& product) {
-            return(product.m_genBosonLVFound ? product.m_genBosonLV.Rapidity() : DefaultValues::UndefinedFloat); 
+            return(product.m_genBosonLVFound ? product.m_genBosonLV.Rapidity() : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzmass",
-        [](ZJetEvent const& event, ZJetProduct const& product) { 
-	    return(product.m_genBosonLVFound ? product.m_genBosonLV.mass() : DefaultValues::UndefinedFloat); 
-	});
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "deltarzgenz", [](ZJetEvent const& event, ZJetProduct const& product) {
-            return (product.m_genBosonLVFound ? ROOT::Math::VectorUtil::DeltaR(product.m_genBosonLV, product.m_z.p4)
-                                     : DefaultValues::UndefinedFloat);
-	});
+        [](ZJetEvent const& event, ZJetProduct const& product) {
+        return(product.m_genBosonLVFound ? product.m_genBosonLV.mass() : DefaultValues::UndefinedFloat);
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genystar", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genBosonLVFound && (product.m_simpleGenJets.size() > 0)
@@ -130,6 +150,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (product.m_genBosonLVFound && (product.m_simpleGenJets.size() > 0)
                 ? std::abs(product.m_genBosonLV.Rapidity() + product.m_simpleGenJets.at(0)->p4.Rapidity())/2
                 : DefaultValues::UndefinedFloat);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "deltarzgenz", [](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genBosonLVFound ? ROOT::Math::VectorUtil::DeltaR(product.m_genBosonLV, product.m_z.p4)
+                                        : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genbacktoback", [settings](ZJetEvent const& event, ZJetProduct const& product) {
@@ -158,7 +183,29 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                 ? std::abs(std::abs(product.m_genBosonLV.Phi() - genJet->p4.Phi()))// - std::atan(1)*4)
                 : DefaultValues::UndefinedFloat;
         });
-        
+    ////////////////
+    // Phistareta //
+    ////////////////
+
+    LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
+       "genphistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
+            if (!product.m_genBosonLVFound)
+                return DefaultValues::UndefinedDouble;
+            return product.GetGenPhiStarEta(event);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
+       "truephistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
+            if (!product.m_truezfound)
+                return DefaultValues::UndefinedDouble;
+            return product.GetTruePhiStarEta(event);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
+        "phistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
+            if (!product.m_zValid)
+                return DefaultValues::UndefinedDouble;
+            return product.GetPhiStarEta(event);
+        });
+
     //////////
     // Jets //
     //////////
@@ -167,10 +214,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     // basic quantities
     
     
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jetHT", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.GetHT(settings, event);
-		});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
@@ -291,7 +338,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
                              ->getTag("QGlikelihood", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
-		});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet1puidraw", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
@@ -401,7 +448,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? product.GetValidJet(settings, event, 1)->p4.Rapidity()
                        : DefaultValues::UndefinedFloat;
         });
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet2puidraw", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 1)
                        ? static_cast<KJet*>(product.GetValidJet(settings, event, 1))
@@ -545,6 +592,36 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genparton1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genPartons.size() > 0 && product.m_genPartons.at(0) != nullptr)
+                       ? product.m_genPartons.at(0)->p4.Pt()
+                       : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genparton1y", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genPartons.size() > 0 && product.m_genPartons.at(0) != nullptr)
+                       ? product.m_genPartons.at(0)->p4.Rapidity()
+                       : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genparton1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genPartons.size() > 0 && product.m_genPartons.at(0) != nullptr)
+                       ? product.m_genPartons.at(0)->p4.Phi()
+                       : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genparton1mass", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genPartons.size() > 0 && product.m_genPartons.at(0) != nullptr)
+                       ? product.m_genPartons.at(0)->p4.mass()
+                       : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "genparton1flavour", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return (product.m_genPartons.size() > 0 && product.m_genPartons.at(0) != nullptr)
+                       ? product.m_genPartons.at(0)->pdgId
+                       : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_simpleGenJets.size() > 0)
                        ? product.m_simpleGenJets.at(0)->p4.Eta()
@@ -631,6 +708,21 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
             return (genParton != nullptr) ? genParton->p4.Pt() : DefaultValues::UndefinedFloat;
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenparton1y", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
+            return (genParton != nullptr) ? genParton->p4.Rapidity() : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenparton1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
+            return (genParton != nullptr) ? genParton->p4.Phi() : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenparton1mass", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
+            return (genParton != nullptr) ? genParton->p4.mass() : DefaultValues::UndefinedFloat;
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "matchedgenparton1flavour", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 0);
@@ -642,43 +734,64 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 1);
             return (genParton != nullptr) ? genParton->p4.Pt() : DefaultValues::UndefinedFloat;
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenparton2y", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 1);
+            return (genParton != nullptr) ? genParton->p4.Rapidity() : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenparton2phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 1);
+            return (genParton != nullptr) ? genParton->p4.Phi() : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "matchedgenparton2mass", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 1);
+            return (genParton != nullptr) ? genParton->p4.mass() : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "matchedgenparton2flavour", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            KGenParticle* genParton = product.GetMatchedGenParton(event, settings, 1);
+            return (genParton != nullptr) ? static_cast<float>(genParton->pdgId)
+                                          : DefaultValues::UndefinedFloat;
+        });
 
     // Reco jet - gen jet matches
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedFloat;
         });
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet1eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (genJet != nullptr) ? genJet->p4.Eta() : DefaultValues::UndefinedFloat;
         });
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet1y", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (genJet != nullptr) ? genJet->p4.Rapidity() : DefaultValues::UndefinedFloat;
         });
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet1phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 0);
             return (genJet != nullptr) ? genJet->p4.Phi() : DefaultValues::UndefinedFloat;
         });
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
             return (genJet != nullptr) ? genJet->p4.Pt() : DefaultValues::UndefinedFloat;
         });
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet2eta", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
             return (genJet != nullptr) ? genJet->p4.Eta() : DefaultValues::UndefinedFloat;
-		});
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet2y", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
             return (genJet != nullptr) ? genJet->p4.Rapidity() : DefaultValues::UndefinedFloat;
-		});
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "matchedgenjet2phi", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             KLV* genJet = product.GetMatchedGenJet(event, settings, 1);
@@ -686,22 +799,22 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     
     // deltaR for jets
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarjet1genjet1", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (((KLVs*) event.m_genJets) != nullptr 
-									&& ((KLVs*) event.m_genJets)->size() > 0 
-									&& product.GetValidJetCount(settings, event) > 0
-						? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(0).p4, product.GetValidJet(settings, event, 0)->p4)
-						: DefaultValues::UndefinedFloat);
+                                    && ((KLVs*) event.m_genJets)->size() > 0
+                                    && product.GetValidJetCount(settings, event) > 0
+                        ? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(0).p4, product.GetValidJet(settings, event, 0)->p4)
+                        : DefaultValues::UndefinedFloat);
     });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarjet2genjet2", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (((KLVs*) event.m_genJets) != nullptr 
-									&& ((KLVs*) event.m_genJets)->size() > 1 
-									&& product.GetValidJetCount(settings, event) > 1
-						? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(1).p4, product.GetValidJet(settings, event, 1)->p4)
-						: DefaultValues::UndefinedFloat);
-	});
+                                    && ((KLVs*) event.m_genJets)->size() > 1
+                                    && product.GetValidJetCount(settings, event) > 1
+                        ? ROOT::Math::VectorUtil::DeltaR(((KLVs*) event.m_genJets)->at(1).p4, product.GetValidJet(settings, event, 1)->p4)
+                        : DefaultValues::UndefinedFloat);
+    });
 
     // Skim jet - jets found in skim, without checks for validity etc
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -775,26 +888,27 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     ///////////////
     // Z LEPTONS //
     ///////////////
+
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "validz", [](event_type const& event, product_type const& product) {
             if (product.m_zValid)
                 return 1;
-	    else
-		return 0;
+            else
+                return 0;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "genzfound", [](event_type const& event, product_type const& product) {
             if (product.m_genzfound)
                 return 1;
-	    else
-		return 0;
+            else
+                return 0;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "validgenzfound", [](event_type const& event, product_type const& product) {
             if (product.m_validgenzfound)
                 return 1;
-	    else
-		return 0;
+            else
+                return 0;
         });
     // leading Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -906,19 +1020,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? kleptonflavour_to_pdgid(product.m_zLeptons.first->flavour())
                        : kleptonflavour_to_pdgid(product.m_zLeptons.second->flavour());
         });
-    LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
-       "genphistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
-    	    if (!product.m_genBosonLVFound)
-                return DefaultValues::UndefinedDouble;
-            return product.GetGenPhiStarEta(event);
-		 
-    	});
-    LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
-        "phistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
-	     if (!product.m_zValid)
-                return DefaultValues::UndefinedDouble;
-            return product.GetPhiStarEta(event);
-        });
+
     ///////////
     // MUONS //
     ///////////
@@ -1212,10 +1314,51 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return (product.m_genPhotons.size() > 0) ? product.m_genPhotons[0]->p4.Phi()
                                                         : DefaultValues::UndefinedFloat;
         });
+
+    //////////////
+    // Gen Taus //
+    //////////////
+
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truetaupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genTau = product.m_genTaus.begin();
+                 genTau != product.m_genTaus.end(); ++genTau) {
+                if ((*genTau)->charge() > 0)
+                    return (*genTau)->p4.Pt();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truetauplusy", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genTau = product.m_genTaus.begin();
+                 genTau != product.m_genTaus.end(); ++genTau) {
+                if ((*genTau)->charge() > 0)
+                    return (*genTau)->p4.Rapidity();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truetauminuspt", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genTau = product.m_genTaus.begin();
+                 genTau != product.m_genTaus.end(); ++genTau) {
+                if ((*genTau)->charge() < 0)
+                    return (*genTau)->p4.Pt();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truetauminusy", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genTau = product.m_genTaus.begin();
+                 genTau != product.m_genTaus.end(); ++genTau) {
+                if ((*genTau)->charge() < 0)
+                    return (*genTau)->p4.Rapidity();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+
     /////////////////
     // Gen Leptons //
     /////////////////
-
 
     // first N leptons in order of pT
     for (unsigned int iLep = 0; iLep < 2; ++iLep) {
@@ -1331,6 +1474,79 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             }
             return DefaultValues::UndefinedFloat;
         });
+    // true muons
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemupluspt", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() > 0)
+                    return (*genMuon)->p4.Pt();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemupluseta", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() > 0)
+                    return (*genMuon)->p4.Eta();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemuplusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() > 0)
+                    return (*genMuon)->p4.Phi();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemuplusmass", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() > 0)
+                    return (*genMuon)->p4.mass();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemuminuspt", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() < 0)
+                    return (*genMuon)->p4.Pt();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemuminuseta", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() < 0)
+                    return (*genMuon)->p4.Eta();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemuminusphi", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() < 0)
+                    return (*genMuon)->p4.Phi();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "truemuminusmass", [](ZJetEvent const& event, ZJetProduct const& product) {
+            for (std::vector<KGenParticle*>::const_iterator genMuon = product.m_validGenMuons.begin();
+                 genMuon != product.m_validGenMuons.end(); ++genMuon) {
+                if ((*genMuon)->charge() < 0)
+                    return (*genMuon)->p4.mass();
+            }
+            return DefaultValues::UndefinedFloat;
+        });
 
     // Reco muon - gen muon matches
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -1348,14 +1564,14 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarmu1genmu1", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genMuons.size() >= 1 && product.m_validMuons.size() >= 1
-						? ROOT::Math::VectorUtil::DeltaR(product.m_genMuons[0]->p4, product.m_validMuons[0]->p4)
-						: DefaultValues::UndefinedFloat);
+                    ? ROOT::Math::VectorUtil::DeltaR(product.m_genMuons[0]->p4, product.m_validMuons[0]->p4)
+                    : DefaultValues::UndefinedFloat);
     }); 
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarmu2genmu2", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genMuons.size() >= 2 && product.m_validMuons.size() >= 2
-						? ROOT::Math::VectorUtil::DeltaR(product.m_genMuons[1]->p4, product.m_validMuons[1]->p4)
-						: DefaultValues::UndefinedFloat);
+                    ? ROOT::Math::VectorUtil::DeltaR(product.m_genMuons[1]->p4, product.m_validMuons[1]->p4)
+                    : DefaultValues::UndefinedFloat);
     }); 
     // Invalid muons
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
@@ -1794,32 +2010,31 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         
         
     // deltaR for electrons
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltare1gene1", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genElectrons.size() >= 1 && product.m_validElectrons.size() >= 1
-						? ROOT::Math::VectorUtil::DeltaR(product.m_genElectrons[0]->p4, product.m_validElectrons[0]->p4)
-						: DefaultValues::UndefinedFloat);
+                    ? ROOT::Math::VectorUtil::DeltaR(product.m_genElectrons[0]->p4, product.m_validElectrons[0]->p4)
+                    : DefaultValues::UndefinedFloat);
     }); 
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltare2gene2", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genElectrons.size() >= 2 && product.m_validElectrons.size() >= 2
-						? ROOT::Math::VectorUtil::DeltaR(product.m_genElectrons[1]->p4, product.m_validElectrons[1]->p4)
-						: DefaultValues::UndefinedFloat);
+                    ? ROOT::Math::VectorUtil::DeltaR(product.m_genElectrons[1]->p4, product.m_validElectrons[1]->p4)
+                    : DefaultValues::UndefinedFloat);
     });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarzl1genzl1", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genLeptonsFromBosonDecay.size() >= 1 && product.m_zValid
-						? ROOT::Math::VectorUtil::DeltaR(product.m_genLeptonsFromBosonDecay[0]->p4, product.m_zLeptons.first->p4)
-						: DefaultValues::UndefinedFloat);
+                    ? ROOT::Math::VectorUtil::DeltaR(product.m_genLeptonsFromBosonDecay[0]->p4, product.m_zLeptons.first->p4)
+                    : DefaultValues::UndefinedFloat);
     });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "deltarzl2genzl2", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.m_genLeptonsFromBosonDecay.size() >= 2 && product.m_zValid
-						? ROOT::Math::VectorUtil::DeltaR(product.m_genLeptonsFromBosonDecay[1]->p4, product.m_zLeptons.second->p4)
-						: DefaultValues::UndefinedFloat);
-	});	    
-	
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+                    ? ROOT::Math::VectorUtil::DeltaR(product.m_genLeptonsFromBosonDecay[1]->p4, product.m_zLeptons.second->p4)
+                    : DefaultValues::UndefinedFloat);
+    });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "invalidjet1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetInvalidJetCount(settings, event) > 0)
                        ? product.GetInvalidJet(settings, event, 0)->p4.Pt()
@@ -1846,11 +2061,11 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "invalidjet1idloose", [settings](event_type const& event, product_type const& product) {
             return (product.GetInvalidJetCount(settings, event) > 0)
-						? ValidJetsProducer::passesJetID(product.m_invalidJets[0],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
-						: DefaultValues::UndefinedFloat;
-		});
-	LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+                    ? ValidJetsProducer::passesJetID(product.m_invalidJets[0],
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+                    : DefaultValues::UndefinedFloat;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "invalidjet2pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetInvalidJetCount(settings, event) > 1)
                        ? product.GetInvalidJet(settings, event, 1)->p4.Pt()
@@ -1859,10 +2074,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "invalidjet2idloose", [settings](event_type const& event, product_type const& product) {
             return (product.GetInvalidJetCount(settings, event) > 1)
-						? ValidJetsProducer::passesJetID(product.m_invalidJets[1],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
-						: DefaultValues::UndefinedFloat;
-		});
+                    ? ValidJetsProducer::passesJetID(product.m_invalidJets[1],
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+                    : DefaultValues::UndefinedFloat;
+        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "invalidjet3pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetInvalidJetCount(settings, event) > 2)
@@ -1872,10 +2087,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "invalidjet3idloose", [settings](event_type const& event, product_type const& product) {
             return (product.GetInvalidJetCount(settings, event) > 2)
-						? ValidJetsProducer::passesJetID(product.m_invalidJets[2],
-							KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
-						: DefaultValues::UndefinedFloat;
-		});
+                    ? ValidJetsProducer::passesJetID(product.m_invalidJets[2],
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+                    : DefaultValues::UndefinedFloat;
+        });
     // Needs to be called at the end
     KappaLambdaNtupleConsumer::Init(settings);
 

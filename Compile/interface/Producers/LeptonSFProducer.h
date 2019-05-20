@@ -16,9 +16,12 @@ class LeptonSFProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   protected:
-    float m_sf[12][12][12] = {};
-    float m_er[12][12][12] = {};
-    float error_multiplier[3] = {1.0,1.0,1.0};
+    float m_sf[30][30] = {};
+    float m_er[30][30] = {};
+    float m_sfdata[30][30] = {};
+    float m_erdata[30][30] = {};
+    float m_sfmc[30][30] = {};
+    float m_ermc[30][30] = {};
     std::vector<float> m_xbins = {};
     std::vector<float> m_ybins = {};
     std::vector<float>* m_etabins = {};
@@ -31,7 +34,7 @@ class LeptonSFProducer : public ZJetProducerBase
     bool m_absoluteeta = true;
     bool m_etaonly;
 
-    virtual float GetScaleFactor(int run_index, int err_index, KLV const& lepton) const
+    virtual float GetScaleFactor(int type, float err_shift, KLV const& lepton) const
     {
         for (unsigned int index_eta = 0; index_eta < m_etabins->size() - 1; ++index_eta) {
             if (GetEta(lepton) >= m_etabins->at(index_eta) &&
@@ -40,30 +43,38 @@ class LeptonSFProducer : public ZJetProducerBase
                     if ((lepton.p4.Pt()) >= m_ptbins->at(index_pt) &&
                         (lepton.p4.Pt()) < m_ptbins->at(index_pt + 1)) {
                         if (m_reversed_axes) {
-                            //return m_sf[run_index][index_pt][index_eta]
-                            return error_multiplier[err_index]*m_sf[run_index][index_pt][index_eta]
-                                +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][index_pt][index_eta];
-                            //return m_sf[run_index][index_pt][index_eta];
-                        } 
+                            if (type == 0)
+                                return m_sf[index_pt][index_eta] + err_shift*m_er[index_pt][index_eta];
+                            if (type == 1)
+                                return m_sfdata[index_pt][index_eta] + err_shift*m_erdata[index_pt][index_eta];
+                            if (type == 2)
+                                return m_sfmc[index_pt][index_eta] + err_shift*m_ermc[index_pt][index_eta];
+                        }
                         else {
-                            //return m_sf[run_index][index_eta][index_pt]
-                            return error_multiplier[err_index]*m_sf[run_index][index_eta][index_pt]
-                                +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][index_eta][index_pt];
-                            //return m_sf[run_index][index_eta][index_pt]+error_multiplier[err_index]*m_er[run_index][index_eta][index_pt];
+                            if (type == 0)
+                                return m_sf[index_eta][index_pt] + err_shift*m_er[index_eta][index_pt];
+                            if (type == 1)
+                                return m_sfdata[index_eta][index_pt] + err_shift*m_erdata[index_eta][index_pt];
+                            if (type == 2)
+                                return m_sfmc[index_eta][index_pt] + err_shift*m_ermc[index_eta][index_pt];
                         }
                     }
                 }
                 if (m_reversed_axes) {
-                    //return m_sf[run_index][m_ptbins->size()-2][index_eta]
-                    return error_multiplier[err_index]*m_sf[run_index][m_ptbins->size()-2][index_eta]
-                        +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][m_ptbins->size()-2][index_eta];
-                    //return m_sf[run_index][m_ptbins->size()-2][index_eta];
-                } 
+                    if (type == 0)
+                        return m_sf[m_ptbins->size()-2][index_eta] + err_shift*m_er[m_ptbins->size()-2][index_eta];
+                    if (type == 1)
+                        return m_sfdata[m_ptbins->size()-2][index_eta] + err_shift*m_erdata[m_ptbins->size()-2][index_eta];
+                    if (type == 2)
+                        return m_sfmc[m_ptbins->size()-2][index_eta] + err_shift*m_ermc[m_ptbins->size()-2][index_eta];
+                }
                 else {
-                    //return m_sf[run_index][index_eta][m_ptbins->size()-2]
-                    return error_multiplier[err_index]*m_sf[run_index][index_eta][m_ptbins->size()-2]
-                        +(error_multiplier[err_index]-1.0)/std::abs(error_multiplier[err_index]-1.0+1e-10)*m_er[run_index][index_eta][m_ptbins->size()-2];
-                    //return m_sf[run_index][index_eta][m_ptbins->size()-2]
+                    if (type == 0)
+                        return m_sf[index_eta][m_ptbins->size()-2] + err_shift*m_er[index_eta][m_ptbins->size()-2];
+                    if (type == 1)
+                        return m_sfdata[index_eta][m_ptbins->size()-2] + err_shift*m_erdata[index_eta][m_ptbins->size()-2];
+                    if (type == 2)
+                        return m_sfmc[index_eta][m_ptbins->size()-2] + err_shift*m_ermc[index_eta][m_ptbins->size()-2];
                 }
             }
         }

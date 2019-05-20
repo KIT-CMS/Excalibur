@@ -44,6 +44,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new JetRecoilProducer();
     else if (id == RecoJetGenPartonMatchingProducer().GetProducerId())
         return new RecoJetGenPartonMatchingProducer();
+    else if (id == GenJetGenPartonMatchingProducer().GetProducerId())
+        return new GenJetGenPartonMatchingProducer();
     else if (id == RecoJetGenJetMatchingProducer().GetProducerId())
         return new RecoJetGenJetMatchingProducer();
     else if (id == NPUProducer().GetProducerId())

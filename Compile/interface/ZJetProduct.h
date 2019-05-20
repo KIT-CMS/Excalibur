@@ -51,7 +51,10 @@ class ZJetProduct : public KappaProduct
     long n_neutrinos = 0;
     
     // Added by ZJetDressedMuonsProducer
+    std::vector<KGenParticle*> m_genPartons;
     std::vector<KGenParticle*> m_genPhotons;
+    RMFLV m_truez;
+    bool m_truezfound = false;
 
     /////////////////////////////
     // Functions for Consumers //
@@ -244,37 +247,46 @@ class ZJetProduct : public KappaProduct
 	}
 
     //Calculate Phi* eta
-    double GetPhiStarEta(ZJetEvent const& event) const
-    {
-	KLepton* muplus;
-	KLepton* muminus;
-	if (m_zLeptons.first->charge()>0)
-	{
-		muplus = m_zLeptons.first;
-		muminus = m_zLeptons.second;
-	}
-	else 
-	{
-		muplus = m_zLeptons.second;
-		muminus = m_zLeptons.first;
-	}
-	return(CalcPhiStarEta<KLepton*>(muplus, muminus));
+    double GetPhiStarEta(ZJetEvent const& event) const {
+        KLepton* muplus;
+        KLepton* muminus;
+        if (m_zLeptons.first->charge()>0) {
+            muplus = m_zLeptons.first;
+            muminus = m_zLeptons.second;
+        }
+        else {
+            muplus = m_zLeptons.second;
+            muminus = m_zLeptons.first;
+        }
+        return(CalcPhiStarEta<KLepton*>(muplus, muminus));
     }
-    double GetGenPhiStarEta(ZJetEvent const& event) const
-    {
-	KGenParticle* muplus;
-	KGenParticle* muminus;
-	if (m_genLeptonsFromBosonDecay[0]->charge()>0)
-	{
-		muplus = m_genLeptonsFromBosonDecay[0];
-		muminus = m_genLeptonsFromBosonDecay[1];
-	}
-	else 
-	{
-		muplus = m_genLeptonsFromBosonDecay[1];
-		muminus = m_genLeptonsFromBosonDecay[0];
-	}
-	return(CalcPhiStarEta<KGenParticle*>(muplus, muminus));
+
+    double GetGenPhiStarEta(ZJetEvent const& event) const {
+        KGenParticle* muplus;
+        KGenParticle* muminus;
+        if (m_genLeptonsFromBosonDecay[0]->charge()>0) {
+            muplus = m_genLeptonsFromBosonDecay[0];
+            muminus = m_genLeptonsFromBosonDecay[1];
+        }
+        else {
+            muplus = m_genLeptonsFromBosonDecay[1];
+            muminus = m_genLeptonsFromBosonDecay[0];
+        }
+        return(CalcPhiStarEta<KGenParticle*>(muplus, muminus));
+    }
+
+    double GetTruePhiStarEta(ZJetEvent const& event) const {
+        KGenParticle* muplus;
+        KGenParticle* muminus;
+        if (m_validGenMuons[0]->charge()>0) {
+            muplus  = m_validGenMuons[0];
+            muminus = m_validGenMuons[1];
+        }
+        else {
+            muplus  = m_validGenMuons[1];
+            muminus = m_validGenMuons[0];
+        }
+        return(CalcPhiStarEta<KGenParticle*>(muplus, muminus));
     }
 
     template <class TParticle>
@@ -338,11 +350,11 @@ class ZJetProduct : public KappaProduct
     }
 
     // Access to gen Z
-    KGenParticle* GetGenZ() const
+    KGenParticle* GetTrueZ() const
     {
-        std::vector<KGenParticle*> genZs =
+        std::vector<KGenParticle*> trueZs =
             SafeMap::GetWithDefault(m_genParticlesMap, 23, (std::vector<KGenParticle*>)(0));
-        return (genZs.size() > 0) ? genZs[0] : nullptr;
+        return (trueZs.size() > 0) ? trueZs[0] : nullptr;
     }
 
     // Reco muon - gen muon matching result

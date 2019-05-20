@@ -82,13 +82,8 @@ void JERSmearer::Produce(ZJetEvent const& event,
                     {JME::Binning::JetEta, recoJets[iJet]->p4.Eta()},
                     {JME::Binning::Rho, event.m_pileupDensity->rho}
                 });
-                std::cout << jetResolution << std::endl;
-                double jetResolutionScaleFactor = m_jetResolutionScaleFactor->getScaleFactor({
-                    {JME::Binning::JetEta, recoJets[iJet]->p4.Eta()}
-                }, Variation::NOMINAL);
-                std::cout << jetResolutionScaleFactor << std::endl;
                 // compute and apply the pT smearing factor
-                recoJets[iJet]->p4 *= 1 + std::normal_distribution<>(0, jetResolution)(m_randomNumberGenerator);// * std::sqrt(std::max(jetResolutionScaleFactor * jetResolutionScaleFactor - 1, 0.0));
+                recoJets[iJet]->p4 *= 1 + std::normal_distribution<>(0, jetResolution)(m_randomNumberGenerator);
             }
         }
     }
@@ -108,11 +103,9 @@ void JERSmearer::Produce(ZJetEvent const& event,
                     {JME::Binning::JetEta, recoJets[iJet]->p4.Eta()},
                     {JME::Binning::Rho, event.m_pileupDensity->rho}
                 });
-                std::cout << jetResolution << std::endl;
                 double jetResolutionScaleFactor = m_jetResolutionScaleFactor->getScaleFactor({
                     {JME::Binning::JetEta, recoJets[iJet]->p4.Eta()}
                 }, Variation::NOMINAL);
-                std::cout << jetResolutionScaleFactor << std::endl;
                 // get and validate matched gen jet
                 const KLV* matchedGenJet = nullptr;
                 if (matchedGenJetIndices[iJet] >= 0) {
