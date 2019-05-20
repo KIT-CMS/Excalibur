@@ -77,9 +77,8 @@ def getBaseConfig(tagged=False, **kwargs):
                     'mettype1vecpt', 'mettype1pt',  # vectorial and scalar difference between corrected and uncorrected met
                     # 'jetHT',  # scalar sum of all jet pTs
                     # 'jetrecoilpt', 'jetrecoilphi', 'jetrecoileta', 'jetrpf',  # recoil observables
-                    # please add jetIDs only necessary ones manually
-                    # 'jet1idtightlepveto', 
-                    #'jet1idtight', 'jet1idloose', 'jet1puidtight', 'jet1puidmedium', 'jet1puidloose'  # 'jet2idtightlepveto', 'jet2idtight', 'jet2idloose', 'jet2puidtight', 'jet2puidmedium', 'jet2puidloose'
+                    # 'jet1idtightlepveto', 'jet1idtight', 'jet1idloose', 'jet1puidtight', 'jet1puidmedium', 'jet1puidloose'  # please add jet IDs only necessary ones manually
+                    # 'jet2idtightlepveto', 'jet2idtight', 'jet2idloose', 'jet2puidtight', 'jet2puidmedium', 'jet2puidloose'
                     # 'jet3idtightlepveto', 'jet3idtight', 'jet3idloose',
                     #'invalidjet1pt','invalidjet1idloose','invalidjet1eta', 'invalidjet1y', 'invalidjet1phi',
                     #'invalidjet2pt','invalidjet2idloose',
@@ -123,21 +122,14 @@ def data(cfg, **kwargs):
         print " WARNING! Keyword argument `JEC` to `getBaseConfig` was not given. cfg['Jec'] must be set manually..."
     else:
         cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
-    _jer_string = kwargs.get('JER', None)
-    if _jer_string is not None:
-        cfg['JER'] = os.path.join(configtools.getPath(), '../JRDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jer_string))
-        cfg['JERMethod'] = "stochastic"  # only "stochastic" possible for data
-        cfg['JERSmearerSeed'] = 92837465
-        # insert smearer before the sorter
-        cfg['Processors'].insert(cfg['Processors'].index("producer:JetSorter") , "producer:JERSmearer")
 
+        
 def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
     cfg['Processors'] += [
         'producer:GenParticleProducer',
         'producer:ValidZllGenJetsProducer',
         'producer:RecoJetGenPartonMatchingProducer',
-        #'producer:GenJetGenPartonMatchingProducer',
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
         ]
@@ -150,17 +142,11 @@ def mc(cfg, **kwargs):
         'jet1flavor',  # flavor of reco jet calculated by MC info
         'ngenjets',  # 'ngenjets10','ngenjets30',
         # 'genHT',  # generator HT, sum of all out-coming particles
-        #'matchedgenparton1pt','matchedgenparton1y','matchedgenparton1phi','matchedgenparton1mass','matchedgenparton1flavour',
-        #'matchedgenparton2pt','matchedgenparton2y','matchedgenparton2phi','matchedgenparton2mass','matchedgenparton2flavour', 
-        #'genparton1pt','genparton1y','genparton1phi','genparton1mass','genparton1flavour',
-        #'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1y','matchedgenjet1phi',  # matched gen jet observables
-        #'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2y','matchedgenjet2phi',
+        'matchedgenparton1pt','matchedgenparton2pt',  #,'matchedgenparton1flavour', jet matches parton observables
+        'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1y','matchedgenjet1phi',  # matched gen jet observables
+        'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2y','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
-        #'truezpt','truezy','truezeta','truezphi','truezmass',
-        #'truetaupluspt', 'truetauplusy',# 'truetaupluseta', 'truetauplusphi', 'truetauplusmass',
-        #'truetauminuspt','truetauminusy',#'truetauminuseta','truetauminusphi','truetauminusmass',
         'genphistareta', 'genystar', 'genyboost', 'matchedgenystar', 'matchedgenyboost',
-        #'truephistareta', 'trueystar', 'trueyboost', ### not sure if these work yet!
         'genzl1pt','genzl1eta','genzl1phi',
         'genzl2pt','genzl2eta','genzl2phi',
         # 'genzfound','validgenzfound',  # maybe required for debugging
@@ -172,7 +158,7 @@ def mc(cfg, **kwargs):
 
     # RecoJetGenPartonMatchingProducer Settings
     cfg['DeltaRMatchingRecoJetGenParticle'] = 0.3
-    cfg['JetMatchingAlgorithm'] = 'algorithmic' #'physics' #  algorithmic or physics
+    cfg['JetMatchingAlgorithm'] = 'physics' # 'algorithmic' # algorithmic or physics
 
     # RecoJetGenJetMatchingProducer Settings
     cfg['DeltaRMatchingRecoJetGenJet'] = 0.3  # TODO: Check if still valid
@@ -222,15 +208,18 @@ def mc(cfg, **kwargs):
         # insert smearer and sorter after the matching producer
         cfg['Processors'][cfg['Processors'].index("producer:RecoJetGenJetMatchingProducer")+1:1] = ["producer:JERSmearer", "producer:JetSorter"]
 
+        
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
+    # TODO: move activation of SFProducer to kwargs:
+    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]#,'producer:LeptonTrackingSFProducer'
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = 2016  # for event-based JetID
     cfg['CutJetIDFirstNJets'] = 2
     cfg['Year'] = 2016
     cfg['Energy'] = 13
     cfg['JetIDVersion'] = 2016  # for object-based JetID
-    #cfg['PUJetID'] = 'loose'
+    # cfg['PUJetID'] = 'loose'
     cfg['MinPUJetID'] = -9999
     cfg['MinZllJetDeltaRVeto'] = 0.3
     cfg['JetLeptonLowerDeltaRCut'] = 0.3 # JetID 2015 does not veto muon contribution - invalidate any jets that are likely muons; requires ZmmProducer and ValidZllJetsProducer to work
@@ -273,6 +262,7 @@ def _2018(cfg, **kwargs):
 def data_2016(cfg, **kwargs):
     _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (interval of validity) 
     # (for selecting the right jet eta-phi cleaning file)
+
     # object-based eta-phi cleaning (recommended jul. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
     cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
@@ -280,6 +270,7 @@ def data_2016(cfg, **kwargs):
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
+    
 def data_2017(cfg, **kwargs):
     # -- modifications for JEC V10 (jun. 2018 JERC)
 
@@ -533,18 +524,15 @@ def mcmm(cfg, **kwargs):
         'ngenmuons',
         'genmupluspt', 'genmupluseta', 'genmuplusphi', 'genmuplusmass',
         'genmuminuspt','genmuminuseta','genmuminusphi','genmuminusmass',
-        #'truemupluspt', 'truemupluseta', 'truemuplusphi', 'truemuplusmass',
-        #'truemuminuspt','truemuminuseta','truemuminusphi','truemuminusmass',
         # 'genmu1pt','genmu1eta','genmu1phi','genmu1mass',
         # 'genmu2pt','genmu2eta','genmu2phi','genmu2mass',
         ]
-    # use Status 1 muons for Z
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZmmProducer',)
-    # find true Muons:
-    #cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetTrueGenMuonsProducer',)
-    # use true Muons for Z: (TODO: should be called TrueGenZmmProducer)
-    #cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetTrueGenMuonsProducer'), 'producer:ValidGenZmmProducer',)
-    cfg['Processors'] += ['producer:RecoMuonGenParticleMatchingProducer',]  # TODO: Check order of producers
+    cfg['Processors'] += [
+    #        'producer:GenZmmProducer', #Use this for Status 1 muons
+            #'producer:ValidGenZmmProducer', #Use this for original muons  # TODO: get working
+            'producer:RecoMuonGenParticleMatchingProducer',  # TODO: Check order of producers
+            ]
     cfg['Pipelines']['default']['Processors'] += [
         'filter:MinNGenMuonsCut',
         'filter:MaxNGenMuonsCut',
@@ -570,8 +558,8 @@ def mcmm(cfg, **kwargs):
 
 def _2016mm(cfg, **kwargs):
     cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
-    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/')
-    cfg['MuonEnergyCorrection'] = 'RoccoR2016'
+    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')
+    cfg['MuonEnergyCorrection'] = 'rochcorr2016'
     ### Get Root file from POG ### https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults ###
     cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/ID_EfficienciesAndSF_BCDEF.root")
     cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Iso_EfficienciesAndSF_BCDEF.root")
@@ -592,20 +580,29 @@ def _2018mm(cfg, **kwargs):
     _2017mm(cfg, **kwargs)  # same as 2017
     cfg['Year'] = 2017  # 2018 muon ID not implemented yet -> reset to 2017 as workaround
 
+    
 def data_2016mm(cfg, **kwargs):
-    # TODO: move activation of SFProducer to kwargs:
-    # for now: activate if necessary!
-    #cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
-    #cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_eta_pt'
-    #cfg['LeptonIsoSFHistogramName'] = 'NUM_LooseRelIso_DEN_TightIDandIPCut_eta_pt'
-    #cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio'
-    pass
+    #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFData_ICHEP.root")
+    #cfg['TriggerSFRuns'] = [274094,276097]
+    ### Check if chosen histogram is consistent with ID & Isolation choice!
+    cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA'
+    cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA'
+    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA'
+    cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
 
+    
 def data_2017mm(cfg, **kwargs):
     pass
-
+    
+    
 def mc_2016mm(cfg, **kwargs):
-    pass
+    #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_Moriond.root")
+    ### Check if chosen histogram is consistent with ID & Isolation choice!
+    cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC'
+    cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesMC/histo_eta_MC'
+    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC'
+    cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
 
+    
 def mc_2017mm(cfg, **kwargs):
     pass

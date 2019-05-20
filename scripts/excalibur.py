@@ -209,6 +209,7 @@ def run_gc(config_path, output_glob, workdir_path):
         sys.exit(1)
 
     downloadFromSE = False
+    haddXrootd = False
     with open(config_path) as cfg_file:
         for line in cfg_file:
             if 'se path =' in line and 'srm' in line and 'srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/' in line:
@@ -656,7 +657,6 @@ def createFileList(infiles, fast=False):
                 import gfal2
                 ctxt = gfal2.creat_context()
                 listdir = ctxt.listdir(gridpath)
-                print listdir
                 for f in listdir:
                     if f.endswith('.root'):
                         out_files.append(gridpath + f)

@@ -15,8 +15,7 @@ def config():
     cfg = configtools.getConfig('mc', 2016, CH, JEC=JEC, JER=JER)
     cfg["InputFiles"].set_input(
         #bmspath="{}/tberger/Skimming/MC-Summer16_metfix/Zll_DY3JetsToLL_M-50_madgraphMLM-pythia8_RunIISummer16/*.root".format(SE_PATH_PREFIXES['srm_desy_dcache']),
-        ekppath="{}/dsavoiu/Skimming/ZJet_DY3JetsToLL_Summer16-madgraphMLM_asymptotic_2016_TrancheIV_v6-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
-        bmspath="{}/dsavoiu/Skimming/ZJet_DY3JetsToLL_Summer16-madgraphMLM_asymptotic_2016_TrancheIV_v6-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
+        path="{}/dsavoiu/Skimming/ZJet_DY3JetsToLL_Summer16-madgraphMLM_asymptotic_2016_TrancheIV_v6-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
     )
 
     cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
