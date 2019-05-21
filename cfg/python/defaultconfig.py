@@ -216,8 +216,6 @@ def mc(cfg, **kwargs):
         
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
-    # TODO: move activation of SFProducer to kwargs:
-    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]#,'producer:LeptonTrackingSFProducer'
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = 2016  # for event-based JetID
     cfg['CutJetIDFirstNJets'] = 2
@@ -586,15 +584,14 @@ def data_2016mm(cfg, **kwargs):
     # for now: activate if necessary!
     #cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
     #cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
-    #cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_eta_pt'
-    #cfg['LeptonIsoSFHistogramName'] = 'NUM_LooseRelIso_DEN_TightIDandIPCut_eta_pt'
-    #cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio'
-    #### Get Root file from POG ### information on https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults ###
-    #### files from https://gitlab.cern.ch/cms-muonPOG/MuonReferenceEfficiencies/tree/master/EfficienciesStudies ###
-    #cfg['LeptonIDSFRootfile']      = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_ID.root")
-    #cfg['LeptonIsoSFRootfile']     = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_ISO.root")
-    #cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_Trigger.root")
-    pass
+    cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_eta_pt'
+    cfg['LeptonIsoSFHistogramName'] = 'NUM_LooseRelIso_DEN_TightIDandIPCut_eta_pt'
+    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio'
+    ### Get Root file from POG ### information on https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults ###
+    ### files from https://gitlab.cern.ch/cms-muonPOG/MuonReferenceEfficiencies/tree/master/EfficienciesStudies ###
+    cfg['LeptonIDSFRootfile']      = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_ID.root")
+    cfg['LeptonIsoSFRootfile']     = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_ISO.root")
+    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_Trigger.root")
 
 
 def data_2017mm(cfg, **kwargs):
