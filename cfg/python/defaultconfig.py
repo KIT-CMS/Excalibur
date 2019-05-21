@@ -142,10 +142,15 @@ def mc(cfg, **kwargs):
         'jet1flavor',  # flavor of reco jet calculated by MC info
         'ngenjets',  # 'ngenjets10','ngenjets30',
         # 'genHT',  # generator HT, sum of all out-coming particles
-        'matchedgenparton1pt','matchedgenparton2pt',  #,'matchedgenparton1flavour', jet matches parton observables
+        'matchedgenparton1flavour',#'matchedgenparton1pt','matchedgenparton1y','matchedgenparton1phi','matchedgenparton1mass',
+        'matchedgenparton2flavour',#'matchedgenparton2pt','matchedgenparton2y','matchedgenparton2phi','matchedgenparton2mass',
         'matchedgenjet1pt','matchedgenjet1eta','matchedgenjet1y','matchedgenjet1phi',  # matched gen jet observables
         'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2y','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
+        #'genparton1flavour','genparton1pt','genparton1y','genparton1phi','genparton1mass',
+        #'truezpt','truezy','truezeta','truezphi','truezmass',
+        #'truetaupluspt', 'truetauplusy',# 'truetaupluseta', 'truetauplusphi', 'truetauplusmass',
+        #'truetauminuspt','truetauminusy',#'truetauminuseta','truetauminusphi','truetauminusmass',
         'genphistareta', 'genystar', 'genyboost', 'matchedgenystar', 'matchedgenyboost',
         'genzl1pt','genzl1eta','genzl1phi',
         'genzl2pt','genzl2eta','genzl2phi',
@@ -558,13 +563,8 @@ def mcmm(cfg, **kwargs):
 
 def _2016mm(cfg, **kwargs):
     cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
-    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr2016')
-    cfg['MuonEnergyCorrection'] = 'rochcorr2016'
-    ### Get Root file from POG ### https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults ###
-    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/ID_EfficienciesAndSF_BCDEF.root")
-    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Iso_EfficienciesAndSF_BCDEF.root")
-    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Trigger_EfficienciesAndSF_BCDEF.root")
-    cfg['LeptonTrackingSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Tracking_EfficienciesAndSF_BCDEFGH.root")
+    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/')
+    cfg['MuonEnergyCorrection'] = 'RoccoR2016'
 
 
 def _2017mm(cfg, **kwargs):
@@ -580,29 +580,30 @@ def _2018mm(cfg, **kwargs):
     _2017mm(cfg, **kwargs)  # same as 2017
     cfg['Year'] = 2017  # 2018 muon ID not implemented yet -> reset to 2017 as workaround
 
-    
-def data_2016mm(cfg, **kwargs):
-    #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFData_ICHEP.root")
-    #cfg['TriggerSFRuns'] = [274094,276097]
-    ### Check if chosen histogram is consistent with ID & Isolation choice!
-    cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesDATA/histo_eta_DATA'
-    cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesDATA/histo_eta_DATA'
-    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesDATA/histo_eta_DATA'
-    cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
 
-    
+def data_2016mm(cfg, **kwargs):
+    # TODO: move activation of SFProducer to kwargs:
+    # for now: activate if necessary!
+    #cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
+    #cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
+    #cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_eta_pt'
+    #cfg['LeptonIsoSFHistogramName'] = 'NUM_LooseRelIso_DEN_TightIDandIPCut_eta_pt'
+    #cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio'
+    #### Get Root file from POG ### information on https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults ###
+    #### files from https://gitlab.cern.ch/cms-muonPOG/MuonReferenceEfficiencies/tree/master/EfficienciesStudies ###
+    #cfg['LeptonIDSFRootfile']      = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_ID.root")
+    #cfg['LeptonIsoSFRootfile']     = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_ISO.root")
+    #cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_Trigger.root")
+    pass
+
+
 def data_2017mm(cfg, **kwargs):
     pass
-    
-    
-def mc_2016mm(cfg, **kwargs):
-    #cfg['LeptonSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016/SFMC_Moriond.root")
-    ### Check if chosen histogram is consistent with ID & Isolation choice!
-    cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_eta/efficienciesMC/histo_eta_MC'
-    cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_eta/efficienciesMC/histo_eta_MC'
-    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_EtaBins/efficienciesMC/histo_eta_MC'
-    cfg['LeptonTrackingSFHistogramName'] = 'ratio_eff_eta3_dr030e030_corr'
 
-    
+
+def mc_2016mm(cfg, **kwargs):
+    pass
+
+
 def mc_2017mm(cfg, **kwargs):
     pass
