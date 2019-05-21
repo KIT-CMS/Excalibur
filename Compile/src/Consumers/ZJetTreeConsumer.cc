@@ -1702,7 +1702,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
 
     if (electronVIDType != "cutbased_v2")
     {
-        std::cout << "Using \"cutbased\" Electron IDs"<< std::endl;
         electronVID_looseTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-loose";
         electronVID_mediumTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-medium";
         electronVID_tightTag = "egmGsfElectronIDs:cutBasedElectronID-" + electronVID + "-tight";
