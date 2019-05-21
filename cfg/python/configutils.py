@@ -349,7 +349,6 @@ class InputFiles(object):
 
 	def set_input(self, **kwargs):
 		"""Overwrite the input for specific domains"""
-		print kwargs.keys()
 		for key, path in kwargs.items():
 			# pseudo-domain 'path'
 			if key[:4]=='path':
