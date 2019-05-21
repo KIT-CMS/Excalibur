@@ -9,7 +9,7 @@ from jer_comparisons import general_comparison, general_comparison_genreco
 from jer_functionfits import fit_function
 from jer_profplots import rms_profplot_datamc
 from jer_truncationscan import jer_truncation_scan_without_jer, jer_truncation_scan_jer_only
-from jer_extrapolation3 import jer_extrapolation3 as jer_extrapolation
+#from jer_extrapolation3 import jer_extrapolation3 as jer_extrapolation
 # from jer_extrapolation import jer_extrapolation
 
 # 'jet1pt': '40,0,400',  # '5 10 20 30 50 75 125 175 225 300 400',
