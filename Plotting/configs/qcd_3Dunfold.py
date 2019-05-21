@@ -65,6 +65,8 @@ def prepare_3Dhist(args=None, obs='zpt'):
     return [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges]
 
 def invert_3Dhists(args=None, filename = ''):
+#def invert_3Dhists(args=None, filename = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_jet1pt20/variations/zpt_toy_ADown.root'):
+#def invert_3Dhists(args=None, filename = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_jet1pt20/zpt_toy.root'):
     if filename == '':
         print "WARNING: filename must be specified!"
         return
@@ -147,23 +149,23 @@ def loop_3Dhist(args=None):
     else:
         return [PlottingJob(plots=plots, args=args)]
 
-def create_3Dhist(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH', match='', dressed='_FSR01', puid='', varquantity='', variation=0):
+def create_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='mad', match='', dressed='', puid='', varquantity='', variation=0):
     if data == 'toy':
         print "toy mc not created by this function."
-        return 
+        return
     [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args, obs, cut, data, data, yboostbin=None, ystarbin=None)
     [l_obshists, h_reco, h_gen, h_recoresponse, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args, obs)
     # simulations are always scaled to match data comparison (weight, lumi)
-    if data == 'BCDEFGH':
+    if data in ['BCDEFGH','BCD']:
         lumi = 1
         match = ''
     else:
         lumi = d['lumis'][0]
     h_genresponse = deepcopy(h_recoresponse)
     if varquantity == '_JEC':
-        input_file = '/ceph/tberger/excalibur_results/2019-03-20/data16_mm_BCDEFGH_SiMu07Aug17'+dressed+varquantity+variationstring[variation]+'.root'
+        input_file = datasets[data].replace('.root',dressed+puid+varquantity+variationstring[variation]+'.root')
     elif varquantity == '_JER':
-        input_file = '/ceph/tberger/excalibur_results/2019-03-20/data16_mm_BCD_SiMu07Aug17'+dressed+'_smearedJets.root'
+        input_file = datasets[data].replace('.root',dressed+puid+varquantity+'.root')
     else:
         input_file = datasets[data].replace('.root',dressed+puid+'.root')
     f_in = ROOT.TFile(input_file,"READ")
@@ -178,7 +180,7 @@ def create_3Dhist(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH', match='
         print "WARNING: file "+output_file+" already exists. Check if it can be removed!"
         return
     ntuple_gen, ntuple_reco = f_in.Get("genzjetcuts_L1L2L3/ntuple"), f_in.Get("zjetcuts_L1L2L3/ntuple")
-    if data == 'BCDEFGH':
+    if data in ['BCDEFGH','BCD']:
         ntuple_reco = f_in.Get("zjetcuts_L1L2L3Res/ntuple")
     f_out = ROOT.TFile(output_file,"RECREATE")
     print 'Fill 3D reco histogram'
@@ -190,72 +192,52 @@ def create_3Dhist(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH', match='
                         & (entry.muminuspt>25) & (abs(entry.muminuseta)<2.4)
                         & (abs(entry.zmass-91.1876)<20) )
         #genyb,genys = ((entry.genyboost,entry.genystar) if not data == 'BCDEFGH' else (yb,ys))
-        genzy,genjet1y = ( (entry.genzy, entry.genjet1y) if not data == 'BCDEFGH' else (zy,jet1y))
+        genzy,genjet1y = ( (entry.genzy, entry.genjet1y) if not data in ['BCD','BCDEFGH'] else (zy,jet1y))
         gencutweight = (  (entry.genmupluspt >25) & (abs(entry.genmupluseta) <2.4)
                         & (entry.genmuminuspt>25) & (abs(entry.genmuminuseta)<2.4)
                         & (abs(entry.genzmass-91.1876)<20) 
-                        if not data == 'BCDEFGH' else recocutweight)
+                        if not data in ['BCD','BCDEFGH'] else recocutweight)
         jet1pt = entry.jet1pt
-        genjet1pt = (entry.genjet1pt if not data == 'BCDEFGH' else jet1pt)
-        #jet2pt = entry.jet2pt
-        #jet3pt = entry.jet3pt
-        if varquantity == '_JetPt':
-            jet1pt *= (1+0.1*np.random.randn())
-            jet2pt *= (1+0.1*np.random.randn())
-            jet3pt *= (1+0.1*np.random.randn())
-            if jet1pt<0:
-                print "jet1 switched below 0",entry.jet1pt
-                break
-            if jet2pt>jet1pt:
-                #print "jet1 switched to jet2:",entry.jet1pt,entry.jet2pt
-                jet1pt = jet2pt
-                jet1y  = entry.jet2y
-            if jet3pt>jet1pt:
-                #print "jet3 switched to jet1:",entry.jet1pt,entry.jet2pt,entry.jet3pt,jet1pt,jet2pt,jet3pt
-                jet1pt = jet2pt
-                jet1y  = entry.jet2y
+        genjet1pt = (entry.genjet1pt if not data in ['BCD','BCDEFGH'] else jet1pt)
         yb,ys = 0.5*abs(zy+jet1y),0.5*abs(zy-jet1y)
         genyb,genys = 0.5*abs(genzy+genjet1y),0.5*abs(genzy-genjet1y)
         if 'jet1pt20' in cut.split('_'):
-            gencutweight  &= ((genjet1pt>20) if not data == 'BCDEFGH' else 1)
+            gencutweight  &= ((genjet1pt>20) if not data in ['BCD','BCDEFGH'] else 1)
             recocutweight &= (jet1pt>20)
         if 'jet1pt15' in cut.split('_'):
-            gencutweight  &= ((genjet1pt>15) if not data == 'BCDEFGH' else 1)
+            gencutweight  &= ((genjet1pt>15) if not data in ['BCD','BCDEFGH'] else 1)
             recocutweight &= (jet1pt>15)
         if 'jet1pt10' in cut.split('_'):
-            gencutweight  &= ((genjet1pt>10) if not data == 'BCDEFGH' else 1)
+            gencutweight  &= ((genjet1pt>10) if not data in ['BCD','BCDEFGH'] else 1)
             recocutweight &= (jet1pt>10)
         if not recocutweight:
             continue
-        SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeight
-        if varquantity == '_IDSF':
-          if variation == -1:
-            SFweight = entry.leptonIDSFWeightDown * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeight
-          if variation == 1:
-            SFweight = entry.leptonIDSFWeightUp * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeight
-        if varquantity == '_IsoSF':
-          if variation == -1:
-            SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeightDown * entry.leptonTriggerSFWeight
-          if variation == 1:
-            SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeightUp * entry.leptonTriggerSFWeight
-        if varquantity == '_TriggerSF':
-          if variation == -1:
-            SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeightDown
-          if variation == 1:
-            SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeightUp
+        if data in ['BCDEFGH','BCD']:
+            SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeight
+            if varquantity == '_IDSF':
+              if variation == -1:
+                SFweight = entry.leptonIDSFWeightDown * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeight
+              if variation == 1:
+                SFweight = entry.leptonIDSFWeightUp * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeight
+            if varquantity == '_IsoSF':
+              if variation == -1:
+                SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeightDown * entry.leptonTriggerSFWeight
+              if variation == 1:
+                SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeightUp * entry.leptonTriggerSFWeight
+            if varquantity == '_TriggerSF':
+              if variation == -1:
+                SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeightDown
+              if variation == 1:
+                SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeightUp
+        else:
+            SFweight = 1
         if match == '_matched':
             gencutweight  &= (entry.matchedgenjet1pt==entry.genjet1pt)
             recocutweight &= (entry.matchedgenjet1pt==entry.genjet1pt)
-        if match == '_switched':
-            gencutweight  &= ((entry.matchedgenjet1pt<entry.genjet1pt) & (entry.matchedgenjet1pt>0))
-            recocutweight &= ((entry.matchedgenjet1pt<entry.genjet1pt) & (entry.matchedgenjet1pt>0))
-        if match == '_PU':
-            gencutweight  &= (entry.matchedgenjet1pt<0)
-            recocutweight &= (entry.matchedgenjet1pt<0)
         if obs =='zpt':
-            recoobs,genobs = entry.zpt,(entry.genzpt if not data == 'BCDEFGH' else entry.zpt)
+            recoobs,genobs = entry.zpt,(entry.genzpt if not data in ['BCD','BCDEFGH'] else entry.zpt)
         elif obs =='phistareta':
-            recoobs,genobs = entry.phistareta,(entry.genphistareta if not data == 'BCDEFGH' else entry.phistareta)
+            recoobs,genobs = entry.phistareta,(entry.genphistareta if not data in ['BCD','BCDEFGH'] else entry.phistareta)
         else:
             print "WARNING: creation of 3D histogram for observable not implemented!"
             return
@@ -272,7 +254,7 @@ def create_3Dhist(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH', match='
         h_recoresponse.Fill(obs_index,genobs_index,recocutweight*gencutweight*weight*SFweight*lumi)
     
     print 'Fill 3D gen histogram'
-    if not data == 'BCDEFGH':
+    if not data in ['BCD','BCDEFGH']:
       for entry in ntuple_gen:
         #yb,ys,event,weight = entry.yboost,entry.ystar,entry.event,entry.weight
         yb,ys,event,weight = 0.5*abs(entry.zy+entry.jet1y),0.5*abs(entry.zy-entry.jet1y),entry.event,entry.weight
@@ -292,16 +274,9 @@ def create_3Dhist(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH', match='
             recocutweight &= (entry.jet1pt>10)
         if not gencutweight:
             continue
-        SFweight = entry.leptonIDSFWeight * entry.leptonIsoSFWeight * entry.leptonTriggerSFWeight
         if match == '_matched':
             gencutweight  &= (entry.matchedgenjet1pt==entry.genjet1pt)
             recocutweight &= (entry.matchedgenjet1pt==entry.genjet1pt)
-        if match == '_switched':
-            gencutweight  &= ((entry.matchedgenjet1pt<entry.genjet1pt) & (entry.matchedgenjet1pt>0))
-            recocutweight &= ((entry.matchedgenjet1pt<entry.genjet1pt) & (entry.matchedgenjet1pt>0))
-        if match == '_PU':
-            gencutweight  &= (entry.matchedgenjet1pt<0)
-            recocutweight &= (entry.matchedgenjet1pt<0)
         if obs =='zpt':
             recoobs,genobs = entry.zpt,entry.genzpt
         elif obs =='phistareta':
@@ -342,20 +317,20 @@ N_toys=1000000
 
 def toyloop_3D(args=None):
     N_toys = 100000000
-    for cut in ['_jet1pt10','_jet1pt15','_jet1pt20']:
-     #for data in ['BCDEFGH','amc','hpp','mad','TTJets','TW','WW','WZ','ZZ']:
-     #   create_3Dhist(obs='zpt',       cut=cut,data=data)
-     #   create_3Dhist(obs='phistareta',cut=cut,data=data)
+    for cut in ['_jet1pt20']:
+     for data in ['BCDEFGH','TTJets','TW','WW','WZ','ZZ','ptz','amc','mad','hpp','pow']:
+        create_3Dhist(obs='zpt',       cut=cut,data=data)
+        create_3Dhist(obs='phistareta',cut=cut,data=data)
      create_toy3Dhist(obs='zpt',       cut=cut,N_toys=N_toys)
      create_toy3Dhist(obs='phistareta',cut=cut,N_toys=N_toys)
-     for varquantity in ['_Robs','_Ryj','_Ryz','_A','_F']:#,'_switch','_SF'
+     for varquantity in ['_Robs','_Ryj','_Ryz','_A','_F','_switch']:
       for variation in [-1,1]:
         create_toy3Dhist(obs='zpt',       cut=cut,varquantity=varquantity,variation=variation,N_toys=N_toys)
         create_toy3Dhist(obs='phistareta',cut=cut,varquantity=varquantity,variation=variation,N_toys=N_toys)
     return
 
 
-def create_toy3Dhist(args=None, obs='phistareta', cut='_jet1pt20', mc='mad', match='', dressed='_FSR01', puid='', varquantity='_Robs', variation=0, N_toys=100000000):
+def create_toy3Dhist(args=None, obs='zpt', cut='_jet1pt20', mc='mad', match='', dressed='', puid='', varquantity='', variation=0, N_toys=1000000):
     if mc == 'BCDEFGH':
         print "Can not create toy mc from data."
         return
@@ -364,14 +339,26 @@ def create_toy3Dhist(args=None, obs='phistareta', cut='_jet1pt20', mc='mad', mat
     [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args, obs, cut, '', mc, yboostbin=None, ystarbin=None)
     [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
     h_genresponse = h_response.Clone("response_2")
-    l_RMSobs,l_RMSyz,l_RMSyj,l_switch,l_weight,l_A,l_F,l_SF,l_swwidth= [],[],[],[],[],[],[],[],[]
-    l_genobsmin,l_genobsmax,l_genobscenter,l_genybmin,l_genybmax,l_genysmin,l_genysmax = [],[],[],[],[],[],[]
+    [h_rand,h_RMSobs,h_RMSyz,h_RMSyj,h_A,h_F,h_S,h_SW] = [h_gen.Clone(name) for name in ['weight',obs+'res','zyres','jet1yres',obs+'A',obs+'F',obs+'switch',obs+'switchwidth']]
+    l_RMSobs,l_RMSyz,l_RMSyj,l_switch,l_weight,l_A,l_F,l_swwidth= [],[],[],[],[],[],[],[]
+    l_genobsmin,l_genobsmax,l_genobscenter,l_genobswidth,l_genybmin,l_genybmax,l_genysmin,l_genysmax = [],[],[],[],[],[],[],[]
     #input_path = "/ceph/tberger/plots/resolution_dataframes/resolution_"+mc+cut+dressed+puid
-    input_path  = plots_folder+cut+dressed+puid+'/resolution'
-    #output_file = plots_folder+cut+dressed+puid+'/'+obs+'_toy_from_'+mc+match+'.root'
+    input_path  = plots_folder+cut+dressed+puid+'/resolution_985'
     output_file = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'.root'
     if not variation == 0:
         output_file = plots_folder+cut+dressed+puid+'/variations/'+obs+'_toy'+match+varquantity+variationstring[variation]+'.root'
+    # check if gen distributions are existent
+    if not (os.path.exists(plots_folder+cut+dressed+puid+'/gen'+obs+'_'+mc+'.root')
+        and os.path.exists(plots_folder+cut+dressed+puid+'/genzy'+'_'+mc+'.root')
+        and os.path.exists(plots_folder+cut+dressed+puid+'/genjet1y'+'_'+mc+'.root')):
+        print "WARNING: gen distributions not created yet. Use merlin.py --py create_gendistributions"
+        return
+    f_genobs = ROOT.TFile(plots_folder+cut+dressed+puid+'/gen'+obs+'_'+mc+'.root','READ')
+    f_genyz  = ROOT.TFile(plots_folder+cut+dressed+puid+'/genzy'+'_'+mc+'.root','READ')
+    f_genyj  = ROOT.TFile(plots_folder+cut+dressed+puid+'/genjet1y'+'_'+mc+'.root','READ')
+    h_rand_obs = f_genobs.Get('gen'+obs)
+    h_rand_yz  = f_genyz.Get('genzy')
+    h_rand_yj  = f_genyj.Get('genjet1y')
     # safety step to avoid overwriting of existing files
     if os.path.exists(output_file):
         print "WARNING: file "+output_file+" already exists. Check if it can be removed!"
@@ -379,7 +366,8 @@ def create_toy3Dhist(args=None, obs='phistareta', cut='_jet1pt20', mc='mad', mat
     print "3DtoyMC will be written to "+output_file
     f_out = ROOT.TFile(output_file,"RECREATE")
     hist_index, bin_index = 0,0
-    
+    #f_jety = ROOT.TFile('websync/2019_05_19/test1/matchedgenjet1y.root','READ')
+    #h_jety = f_jety.Get("jety")
     genybmin,genybmax,genysmin,genysmax = 0.0,0.5,0.0,0.5
     obsmin, obsmax = l_obshists[0].GetXaxis().GetXbins()[0],l_obshists[0].GetXaxis().GetXbins()[l_obshists[0].GetNbinsX()]
     for obsbin in xrange(h_gen.GetNbinsX()):
@@ -397,486 +385,186 @@ def create_toy3Dhist(args=None, obs='phistareta', cut='_jet1pt20', mc='mad', mat
             print input_path+"/"+obs+"_"+mc+namestring+".root"
             f_in_obs = ROOT.TFile(input_path+"/"+obs+"_"+mc+namestring+".root","READ")
             f_in_yz = ROOT.TFile(input_path+"/zy_"+mc+namestring+"_bins_of_"+obs+".root","READ")
-            f_in_yj = ROOT.TFile(input_path+"/jet1y_"+mc+namestring+"_bins_of_"+obs+".root","READ")
+            #f_in_yj = ROOT.TFile(input_path+"/jet1y_"+mc+namestring+"_bins_of_"+obs+".root","READ")
+            f_in_yj_match = ROOT.TFile(input_path+"/matchedjet1y_"+mc+namestring+"_bins_of_"+obs+".root","READ")
+            f_in_yj_switch = ROOT.TFile(input_path+"/switchedjet1y_"+mc+namestring+"_bins_of_"+obs+".root","READ")
             h_weight = f_in_obs.Get("gen"+obs)
-            #x_bins = [np.sqrt(h_weight.GetBinLowEdge(i+1)*(h_weight.GetBinLowEdge(i+1)+h_weight.GetBinWidth(i+1))) for i in xrange(h_weight.GetNbinsX())]
             x_bins = [h_weight.GetBinLowEdge(i+1)+h_weight.GetBinWidth(i+1)/2 for i in xrange(h_weight.GetNbinsX())]
-            #print x_bins
-            h_rms_obs= f_in_obs.Get("rms")
-            h_rms_yz = f_in_yz.Get("rms")
-            h_rms_yj = f_in_yj.Get("rms")
+            h_rms_obs= f_in_obs.Get("sigma0")
+            h_rms_yz = f_in_yz.Get("sigma0")
+            #h_rms_yj = f_in_yj.Get("sigma0")
+            h_rms_yj  = f_in_yj_match.Get("sigma0")
             h_switched = f_in_obs.Get("switched")
             h_fake =f_in_obs.Get("fakerate")
             h_acceptance = f_in_obs.Get("acceptance")
-            fit1 = ROOT.TF1("fit1","[0]+[1]*sqrt(x)+[2]/sqrt(x)",obsmin,obsmax)
-            fit2 = ROOT.TF1("fit2","[0]-[1]/x**2",obsmin,obsmax)
-            fit3 = ROOT.TF1("fit3","[0]+[1]/x**3",obsmin,obsmax)
-            fit3.SetParLimits(0,0,1)
+            if obs == 'zpt':
+                fit1 = ROOT.TF1("fit1","[0]+[1]*sqrt(x)+[2]/sqrt(x)",obsmin,obsmax)
+                fit2 = ROOT.TF1("fit2","[0]+[1]/sqrt(x)",obsmin,obsmax)
+                fit3 = ROOT.TF1("fit3","[0]",obsmin,obsmax)
+                fit4 = ROOT.TF1("fit4","[0]-[1]/x",obsmin,obsmax)
+                fit6 = ROOT.TF1("fit6","[0]*exp(-[1]*x)",obsmin,obsmax)
+            elif obs == 'phistareta':
+                fit1 = ROOT.TF1("fit1","[0]+[1]*x+[2]/x",obsmin,obsmax)
+                fit2 = ROOT.TF1("fit2","[0]+[1]/x",obsmin,obsmax)
+                fit3 = ROOT.TF1("fit3","[0]+[1]*log(x)",obsmin,obsmax)
+                fit4 = ROOT.TF1("fit4","[0]-[1]/x**2",obsmin,obsmax)
+                fit6 = ROOT.TF1("fit6","[0]+[1]/x",obsmin,obsmax)
+            fit5 = ROOT.TF1("fit5","[0]+[1]/x**3",obsmin,obsmax)
+            fit2.SetParLimits(0,0,1)
+            fit5.SetParLimits(0,0,1)
+            fit6.SetParameters(0,10)
+            fit6.SetParameters(1,0.001)
             
             fit_obs = h_rms_obs.Fit("fit1","S N")
             v_obs = [fit1(x_bins[i]) for i in xrange(h_rms_obs.GetNbinsX())]
             conf_obs = array('d',[0]*len(x_bins))
             fit_obs.GetConfidenceIntervals(len(x_bins),1,1,array('d',x_bins),conf_obs,0.683)
             
-            fit_yz = h_rms_yz.Fit("fit1","S N")
-            v_yz = [fit1(x_bins[i]) for i in xrange(h_rms_yz.GetNbinsX())]
-            conf_yz = array('d',[0]*len(x_bins))
-            fit_yz.GetConfidenceIntervals(len(x_bins),1,1,array('d',x_bins),conf_yz,0.683)
-            
-            fit_yj = h_rms_yj.Fit("fit1","S N")
-            v_yj = [fit1(x_bins[i]) for i in xrange(h_rms_yj.GetNbinsX())]
+            fit_yj = h_rms_yj.Fit("fit2","S N")
+            v_yj = [fit2(x_bins[i]) for i in xrange(h_rms_yj.GetNbinsX())]
             conf_yj = array('d',[0]*len(x_bins))
             fit_yj.GetConfidenceIntervals(len(x_bins),1,1,array('d',x_bins),conf_yj,0.683)
             
-            fit_A = h_acceptance.Fit("fit2","S N")
-            v_A = [fit2(x_bins[i]) for i in xrange(h_acceptance.GetNbinsX())]
+            fit_yz = h_rms_yz.Fit("fit3","S N")
+            v_yz = [fit3(x_bins[i]) for i in xrange(h_rms_yz.GetNbinsX())]
+            conf_yz = array('d',[0]*len(x_bins))
+            fit_yz.GetConfidenceIntervals(len(x_bins),1,1,array('d',x_bins),conf_yz,0.683)
+            
+            fit_A = h_acceptance.Fit("fit4","S N")
+            v_A = [fit4(x_bins[i]) for i in xrange(h_acceptance.GetNbinsX())]
             conf_A = array('d',[0]*len(x_bins))
             fit_A.GetConfidenceIntervals(len(x_bins),1,1,array('d',x_bins),conf_A,0.683)
             
-            fit_F = h_fake.Fit("fit3","S N")
-            v_F = [fit3(x_bins[i]) for i in xrange(h_fake.GetNbinsX())]
+            fit_F = h_fake.Fit("fit5","S N")
+            v_F = [fit5(x_bins[i]) for i in xrange(h_fake.GetNbinsX())]
             conf_F = array('d',[0]*len(x_bins))
             fit_F.GetConfidenceIntervals(len(x_bins),1,1,array('d',x_bins),conf_F,0.683)
             
+            fit_S = h_switched.Fit("fit6","S N")
+            v_S = [fit6(x_bins[i]) for i in xrange(h_switched.GetNbinsX())]
+            conf_S = array('d',[0]*len(x_bins))
+            fit_S.GetConfidenceIntervals(len(x_bins),1,1,array('d',x_bins),conf_S,0.683)
+
             h_pu = f_in_obs.Get("PU")
-            h_SF =f_in_obs.Get("SF")
-            #h_stability = f_in.Get("stability")
-            #h_purity = f_in.Get("purity")
         bin_index += 1
         l_genobsmin.append(h_weight.GetBinLowEdge(bin_index))
         l_genobsmax.append(h_weight.GetBinLowEdge(bin_index)+h_weight.GetBinWidth(bin_index))
         l_genobscenter.append(np.sqrt(l_genobsmin[obsbin]*l_genobsmax[obsbin]))
+        l_genobswidth.append(h_weight.GetBinWidth(bin_index))
         l_genybmin.append(genybmin)
         l_genybmax.append(genybmax)
         l_genysmin.append(genysmin)
         l_genysmax.append(genysmax)
-        #l_RMSobs.append( v_obs[bin_index-1] +(    variation*conf_obs[bin_index-1] if varquantity in ['_Robs'] else 0))
-        #l_RMSyz.append(  v_yz[bin_index-1]  +(    variation*conf_yz[bin_index-1] if varquantity in ['_Ryz'] else 0))
-        #l_RMSyj.append(  v_yj[bin_index-1]  +(    variation*conf_yj[bin_index-1] if varquantity in ['_Ryj'] else 0))
-        l_A.append(      v_A[bin_index-1]   +(    variation*conf_A[bin_index-1] if varquantity in ['_A'] else 0))
-        l_F.append(    1-v_F[bin_index-1]   -(    variation*conf_F[bin_index-1] if varquantity in ['_F'] else 0))
-        l_RMSobs.append( h_rms_obs[bin_index]+(   variation*h_rms_obs.GetBinError(bin_index) if varquantity in ['_Robs'] else 0))
-        l_RMSyz.append(   h_rms_yz[bin_index]+(    variation*h_rms_yz.GetBinError(bin_index) if varquantity in ['_Ryz'] else 0))
-        l_RMSyj.append(   h_rms_yj[bin_index]+(    variation*h_rms_yj.GetBinError(bin_index) if varquantity in ['_Ryj'] else 0))
-        #l_A.append(   h_acceptance[bin_index]+(variation*h_acceptance.GetBinError(bin_index) if varquantity in ['_A'] else 0))
-        #l_F.append(       1-h_fake[bin_index]-(      variation*h_fake.GetBinError(bin_index) if varquantity in ['_F'] else 0))
-        l_switch.append(h_switched[bin_index]+(variation*h_switched.GetBinError(bin_index) if varquantity in ['_switch'] else 0))
-        l_swwidth.append(2.2)
-        l_weight.append(h_weight[bin_index])
-        l_SF.append(          h_SF[bin_index]+(        variation*h_SF.GetBinError(bin_index) if varquantity in ['_SF'] else 0))
+        
+        h_RMSobs.SetBinContent(obsbin+1,v_obs[bin_index-1]), h_RMSobs.SetBinError(obsbin+1,conf_obs[bin_index-1])
+        h_RMSyz.SetBinContent(obsbin+1,v_yz[bin_index-1])  , h_RMSyz.SetBinError(obsbin+1,conf_yz[bin_index-1])
+        h_RMSyj.SetBinContent(obsbin+1,v_yj[bin_index-1])  , h_RMSyj.SetBinError(obsbin+1,conf_yj[bin_index-1])
+        h_A.SetBinContent(obsbin+1,1-v_A[bin_index-1])     , h_A.SetBinError(obsbin+1,conf_A[bin_index-1])
+        h_F.SetBinContent(obsbin+1,v_F[bin_index-1])       , h_F.SetBinError(obsbin+1,conf_F[bin_index-1])
+        h_S.SetBinContent(obsbin+1,v_S[bin_index-1])       , h_S.SetBinError(obsbin+1,conf_S[bin_index-1])
+        
+        l_RMSobs.append(h_RMSobs[obsbin+1]+(variation*h_RMSobs.GetBinError(obsbin+1) if varquantity in ['_Robs']   else 0))
+        l_RMSyz.append(  h_RMSyz[obsbin+1]+(variation* h_RMSyz.GetBinError(obsbin+1) if varquantity in ['_Ryz']    else 0))
+        l_RMSyj.append(  h_RMSyj[obsbin+1]+(variation* h_RMSyj.GetBinError(obsbin+1) if varquantity in ['_Ryj']    else 0))
+        l_A.append(          h_A[obsbin+1]-(variation*     h_A.GetBinError(obsbin+1) if varquantity in ['_A']      else 0))
+        l_F.append(          h_F[obsbin+1]+(variation*     h_F.GetBinError(obsbin+1) if varquantity in ['_F']      else 0))
+        l_switch.append(     h_S[obsbin+1]+(variation*     h_S.GetBinError(obsbin+1) if varquantity in ['_switch'] else 0))
+        
     if match == '_matched':
         l_switch = [0]*h_gen.GetNbinsX()
     elif match == '_switched':
         l_switch = [1]*h_gen.GetNbinsX()
-    h_rand = h_gen.Clone("weight")
-    for i in xrange(h_rand.GetNbinsX()):
-        h_rand.SetBinContent(i+1,max(l_weight[i],0))
-    #l_RMSyz = [0]*h_gen.GetNbinsX()
-    #l_RMSyj = [0]*h_gen.GetNbinsX()
-    l_switch = [0]*h_gen.GetNbinsX()
-    #l_A  = [1]*h_gen.GetNbinsX()
-    #l_F  = [1]*h_gen.GetNbinsX()
-    #l_SF = [1]*h_gen.GetNbinsX()
-    print obs+" resolution in each bin:",[l_RMSobs[i+100] for i in range(5)]
-    print "yz resolution in each bin:",[l_RMSyz   [i+100] for i in range(5)]
-    print "yj resolution in each bin:",[l_RMSyj   [i+100] for i in range(5)]
-    print "acceptance in each bin:",[l_A          [i+100] for i in range(5)]
-    print "fake corr. in each bin:",[l_F          [i+100] for i in range(5)]
-    #r_switch = 2.2
+    #l_RMSobs = [0]*h_gen.GetNbinsX()
+    #l_RMSyz  = [0]*h_gen.GetNbinsX()
+    #l_RMSyj  = [0]*h_gen.GetNbinsX()
+    #l_switch = [0]*h_gen.GetNbinsX()
+    #l_switch = [1]*h_gen.GetNbinsX()
+    #l_A  = [0]*h_gen.GetNbinsX()
+    #l_F  = [0]*h_gen.GetNbinsX()
+    if obs == 'zpt':
+        print "zpt resolution in each bin:       ", [l_RMSobs[i] for i in range(5)]
+    elif obs == 'phistareta':
+        print "phistareta resolution in each bin:", [l_RMSobs[i] for i in range(5)]
+    print "zy resolution in each bin:        ", [l_RMSyz[i]  for i in range(5)]
+    print "jet1y resolution in each bin:     ", [l_RMSyj[i]  for i in range(5)]
+    print "losses in each bin:               ", [l_A[i]      for i in range(5)]
+    print "fakes in each bin:                ", [l_F[i]      for i in range(5)]
+    print "switch prob in each bin:          ", [l_switch[i] for i in range(5)]
     gencounter = 0
     recocounter = 0
     print "3DtoyMC will be written to "+output_file
     print "create toys"
+    hist_genjets = ROOT.TH1D("genjets","",50,-2.5,2.5)
+    hist_recojets = ROOT.TH1D("recojets","",50,-2.5,2.5)
     for i in xrange(N_toys):
         if i%(N_toys/10) == 0:
-            print "toy MC creation finished to "+str(100.*i/N_toys)+"%"
-        index = int(h_rand.GetRandom())
-        genobs = l_genobsmin[index]+(l_genobsmax[index]-l_genobsmin[index])*np.random.random()
-        while True:
-            genyb  = l_genybmin[index]+(l_genybmax[index]-l_genybmin[index])*np.random.random()
-            genys  = l_genysmin[index]+(l_genysmax[index]-l_genysmin[index])*np.random.random()
-            if genyb+genys<2.5:
-                break
-        sgn1 = np.sign(np.random.randn())
-        sgn2 = np.sign(np.random.randn())
-        genyz = sgn1 * (genyb + sgn2*genys)
-        genyj = sgn1 * (genyb - sgn2*genys)
+            print "toy MC creation finished by "+str(100.*i/N_toys)+"%"
+        genobs = h_rand_obs.GetRandom()
+        genyz  = h_rand_yz.GetRandom()
+        genyj  = h_rand_yj.GetRandom()
+        #genobs = (1000-25)*np.random.random()+25
+        #genyj = 4.8*np.random.random()-2.4
+        #genyz = 4.8*np.random.random()-2.4
+        genyb = abs(genyj+genyz)/2
+        genys = abs(genyj-genyz)/2
+        geny_index = l_ybinedges[int(genys/0.5)]+int(genyb/0.5)
+        yj = genyj
+        index = l_obsbinedges[geny_index]+l_obshists[geny_index].FindBin(genobs)-1
+        if np.random.random() < l_switch[index]:
+            genyj = h_rand_yj.GetRandom()
+            #genyj = 4.8*np.random.random()-2.4
+            genyb = abs(genyj+genyz)/2
+            genys = abs(genyj-genyz)/2
+        hist_genjets.Fill(yj)
         geny_index = l_ybinedges[int(genys/0.5)]+int(genyb/0.5)
         genobs_index = l_obsbinedges[geny_index]+l_obshists[geny_index].FindBin(genobs)-1
-        #print l_S1obs[genobs_index],l_S2obs[genobs_index],l_Alobs[genobs_index]
-        recoobs= genobs * (1+l_RMSobs[genobs_index]*np.random.randn())
-        recoyz = genyz+l_RMSyz[genobs_index]*np.random.randn()
-        recoyj = genyj+l_RMSyj[genobs_index]*np.random.randn()
-        if np.random.random() < l_switch[genobs_index]:
-            #recoyj = 4.8*np.random.random()-2.4
-            while True:
-                recoyj = l_swwidth[genobs_index]*np.random.randn()
-                if abs(recoyj)<2.4:
-                    break
-        recoyb = abs(recoyj+recoyz)/2
-        recoys = abs(recoyj-recoyz)/2
-        if obs=='zpt' and (recoyb+recoys > 2.5 or recoobs>1000 or recoobs<25 or (recoobs>250 and recoys>2)):
-            continue
-        if obs=='phistareta' and (recoyb+recoys > 2.5 or recoobs>50 or recoobs<0.4 or (recoobs>5 and recoys>2)):
-            continue
-        y_index = l_ybinedges[int(recoys/0.5)]+int(recoyb/0.5)
-        recoobs_index = l_obsbinedges[y_index]+l_obshists[y_index].FindBin(recoobs)-1
-        if recoobs_index == 75:
-            recocounter += 1
+        while True:
+            recoobs= genobs * (1+l_RMSobs[genobs_index]*np.random.randn())
+            recoyz = genyz+l_RMSyz[genobs_index]*np.random.randn()
+            recoyj = genyj+l_RMSyj[genobs_index]*np.random.randn()
+            recoyb = abs(recoyj+recoyz)/2
+            recoys = abs(recoyj-recoyz)/2
+            if not (   (obs=='zpt'        and (recoyb+recoys > 2.4 or recoobs>1000 or recoobs<25 ))
+                    or (obs=='phistareta' and (recoyb+recoys > 2.4 or recoobs>50   or recoobs<0.4))):
+                        break
+        recoy_index = l_ybinedges[int(recoys/0.5)]+int(recoyb/0.5)
+        recoobs_index = l_obsbinedges[recoy_index]+l_obshists[recoy_index].FindBin(recoobs)-1
+        hist_recojets.Fill(genyj)
         randF,randA = np.random.random(),np.random.random()
-        if randF < l_F[genobs_index]:
-            h_gen.Fill(genobs_index)
-        if randA < l_A[genobs_index]:
-            h_reco.Fill(recoobs_index,l_SF[recoobs_index])
-        if randA < l_A[genobs_index] and randF < l_F[genobs_index]:
-            h_response.Fill(recoobs_index,genobs_index,l_SF[recoobs_index])
+        if randF > l_F[recoobs_index]:
+            h_gen.Fill(index)
+        if randA > l_A[index]:
+            h_reco.Fill(recoobs_index)
+        if randA > l_A[index] and randF > l_F[recoobs_index]:
+            h_response.Fill(recoobs_index,index)
             h_genresponse.Fill(recoobs_index,genobs_index)
     f_out.cd()
     h_reco.Write()
     h_gen.Write()
     h_response.Write()
     h_genresponse.Write()
+    h_rand.Write()
+    h_RMSobs.Write()
+    h_RMSyz.Write()
+    h_RMSyj.Write()
+    h_A.Write()
+    h_F.Write()
+    h_S.Write()
+    h_SW.Write()
+    hist_genjets.Write()
+    hist_recojets.Write()
     print "3DtoyMC written to "+output_file
     return
 
-'''
-def create_toy3Dhist(args=None, obs='zpt', cut='_jet1pt20', mc='mad', match='', dressed='', puid='', varquantity='', variation=0, N_toys=10):
-    if mc == 'BCDEFGH':
-        print "Can not create toy mc from data."
-        return
-    if varquantity in ['','_stats','_IDSF','_IsoSF','_TriggerSF']:
-        variation = 0
-    [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args, obs, cut, '', mc, yboostbin=None, ystarbin=None)
-    [l_obshists, h_reco, h_gen, responsehist, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
-    l_switch = []
-    lumi = d['lumis'][0]
-    #input_path = "/ceph/tberger/plots/resolution/resolution_"+mc+cut+dressed+puid
-    #input_path = "/ceph/tberger/plots/resolution_dataframes/resolution_"+mc+cut+dressed+puid
-    input_path  = plots_folder+cut+dressed+puid+'/resolution'
-    #output_file = plots_folder+cut+dressed+puid+'/'+obs+'_toy_from_'+mc+match+'.root'
-    #if RMS:
-    output_file = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'.root'
-    #else:
-    #    output_file = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'_DG.root'
-    if not variation == 0:
-        output_file = plots_folder+cut+dressed+puid+'/variations/'+obs+'_toy'+match+varquantity+str(variation)+'.root'
-    # safety step to avoid overwriting of existing files
-    if os.path.exists(output_file):
-        print "WARNING: file "+output_file+" already exists. Check if it can be removed!"
-        return
-    print "3DtoyMC will be written to "+output_file
-    f_out = ROOT.TFile(output_file,"RECREATE")
-    hist_index, bin_index = 0,0
-    genybmin,genybmax,genysmin,genysmax = 0.0,0.5,0.0,0.5
-    obsmin, obsmax = l_obshists[0].GetXaxis().GetXbins()[0],l_obshists[0].GetXaxis().GetXbins()[l_obshists[0].GetNbinsX()]
-    doublegauss = ROOT.TF1("doublegauss","[0]*(TMath::Exp(-x**2/[1]**2)+[2]*TMath::Exp(-x**2/[3]**2))",-2,2)
-    r_obs = doublegauss.Clone("doublegauss_obs")
-    r_yz  = doublegauss.Clone("doublegauss_zy")
-    r_yj  = doublegauss.Clone("doublegauss_jet1y")
-    N=0
-    for obsbin in xrange(h_gen.GetNbinsX()):
-        if obsbin in l_obsbinedges:
-            print N,"events created"
-            if not obsbin==0:
-                bin_index = 0
-                hist_index += 1
-                genybmin += 0.5
-                genybmax += 0.5
-                if obsbin in [93,167,222,256]:
-                    genysmin += 0.5
-                    genysmax += 0.5
-                    genybmin,genybmax = 0.0,0.5
-            namestring = "_yb{}_ys{}".format(int(2*genybmin),int(2*genysmin))
-            print input_path+"/"+obs+"_"+mc+namestring+".root"
-            #f_in_obs = ROOT.TFile(input_path+"/"+obs+""+namestring+".root","READ")
-            #f_in_yz = ROOT.TFile(input_path+"/zy"+namestring+".root","READ")
-            #f_in_yj = ROOT.TFile(input_path+"/jet1y"+namestring+".root","READ")
-            f_in_obs = ROOT.TFile(input_path+"/"+obs+"_"+mc+namestring+".root","READ")
-            f_in_yz = ROOT.TFile(input_path+"/zy_"+mc+namestring+"_bins_of_"+obs+".root","READ")
-            f_in_yj = ROOT.TFile(input_path+"/jet1y_"+mc+namestring+"_bins_of_"+obs+".root","READ")
-            h_rms_obs= f_in_obs.Get("sigma")
-            h_rms_yz = f_in_yz.Get("sigma")
-            h_rms_yj = f_in_yj.Get("sigma")
-            h_weight = f_in_obs.Get("gen"+obs)
-            h_matched = f_in_obs.Get("matched")
-            h_switched = f_in_obs.Get("switched")
-            h_pu = f_in_obs.Get("PU")
-            h_SF =f_in_obs.Get("SF")
-            h_fake =f_in_obs.Get("fakerate")
-            h_acceptance = f_in_obs.Get("acceptance")
-            h_si1_obs,h_si2_obs,h_alp_obs = f_in_obs.Get("sigma1"),f_in_obs.Get("sigma2"),f_in_obs.Get("alpha")
-            h_si1_yz ,h_si2_yz ,h_alp_yz  = f_in_yz.Get("sigma1") ,f_in_yz.Get("sigma2") ,f_in_yz.Get("alpha")
-            h_si1_yj ,h_si2_yj ,h_alp_yj  = f_in_yj.Get("sigma1") ,f_in_yj.Get("sigma2") ,f_in_yj.Get("alpha")
-            #h_stability = f_in.Get("stability")
-            #h_purity = f_in.Get("purity")
-            r_switch = 2.2#l_switch[hist_index]
-        bin_index += 1
-        rms_obs  = h_rms_obs[bin_index]+(      h_rms_obs.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Robs',  '_Toy'] else 0)
-        si1_obs  = h_si1_obs[bin_index]+(      h_si1_obs.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Robs',  '_Toy'] else 0)
-        si2_obs  = h_si2_obs[bin_index]+(      h_si2_obs.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Robs',  '_Toy'] else 0)
-        alp_obs  = h_alp_obs[bin_index]+(      h_alp_obs.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Robs',  '_Toy'] else 0)
-        rms_yz   = h_rms_yz[bin_index] +(       h_rms_yz.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryz',   '_Toy'] else 0)
-        si1_yz   = h_si1_yz[bin_index] +(       h_si1_yz.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryz',   '_Toy'] else 0)
-        si2_yz   = h_si2_yz[bin_index] +(       h_si2_yz.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryz',   '_Toy'] else 0)
-        alp_yz   = h_alp_yz[bin_index] +(       h_alp_yz.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryz',   '_Toy'] else 0)
-        rms_yj   = h_rms_yj[bin_index] +(       h_rms_yj.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryj',   '_Toy'] else 0)
-        si1_yj   = h_si1_yj[bin_index] +(       h_si1_yj.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryj',   '_Toy'] else 0)
-        si2_yj   = h_si2_yj[bin_index] +(       h_si2_yj.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryj',   '_Toy'] else 0)
-        alp_yj   = h_alp_yj[bin_index] +(       h_alp_yj.GetBinError(bin_index)*np.random.randn() if varquantity in ['_Ryj',   '_Toy'] else 0)
-        switch   = h_switched[bin_index]+(    h_switched.GetBinError(bin_index)*np.random.randn() if varquantity in ['_switch','_Toy'] else 0)
-        weight   = h_weight[bin_index]+(        h_weight.GetBinError(bin_index)*np.random.randn() if varquantity in ['_weight','_Toy'] else 0)
-        pu       = h_pu[bin_index]
-        A        = h_acceptance[bin_index]+(h_acceptance.GetBinError(bin_index)*np.random.randn() if varquantity in ['_A',     '_Toy'] else 0)
-        F        = 1-h_fake[bin_index]-(          h_fake.GetBinError(bin_index)*np.random.randn() if varquantity in ['_F',     '_Toy'] else 0)
-        SF       = h_SF[bin_index]+(                h_SF.GetBinError(bin_index)*np.random.randn() if varquantity in ['_SF',    '_Toy'] else 0)
-        #weight /= h_weight.Integral()
-        if match == '_matched':
-            switch = 0
-        elif match == '_switched':
-            switch = 1
-        N += int(N_toys*weight)
-        genobsmin = l_obshists[hist_index].GetBinLowEdge(bin_index)
-        genobsmax = genobsmin + l_obshists[hist_index].GetBinWidth(bin_index)
-        r_obs.SetParameters(1,si1_obs,alp_obs,si2_obs)
-        r_yz.SetParameters( 1,si1_yz ,alp_yz ,si2_yz )
-        r_yj.SetParameters( 1,si1_yj ,alp_yj ,si2_yj )
-        #h_obs = ROOT.TH1D(obs,"",50,-0.2,0.2)
-        #h_yz  = ROOT.TH1D("zy","",50,-0.2,0.2)
-        #h_yj  = ROOT.TH1D("jet1y","",50,-0.2,0.2)
-        binname = "_{}_{}".format(int(genobsmin),int(genobsmax))+namestring
-        for i in xrange(int(N_toys*weight)):
-            genobs = genobsmin+(genobsmax-genobsmin)*np.random.random()
-            while True:
-                genyb  = genybmin+(genybmax-genybmin)*np.random.random()
-                genys  = genysmin+(genysmax-genysmin)*np.random.random()
-                if genyb+genys<2.5:
-                    break
-            if (genys>2.0 and genobs>250):
-                print "obs out of range!"
-            sgn1 = np.sign(np.random.randn())
-            sgn2 = np.sign(np.random.randn())
-            genyz = sgn1 * (genyb + sgn2*genys)
-            genyj = sgn1 * (genyb - sgn2*genys)
-            geny_index = l_ybinedges[int(genys/0.5)]+int(genyb/0.5)
-            genobs_index = l_obsbinedges[geny_index]+l_obshists[geny_index].FindBin(genobs)-1
-            recoobs= genobs * (1+rms_obs*np.random.randn())
-            recoyz = genyz+rms_yz *np.random.randn()
-            recoyj = genyj+rms_yj *np.random.randn()
-            #recoobs= genobs * (1+r_obs.GetRandom())
-            #recoyz = genyz+r_yz.GetRandom()
-            #recoyj = genyj+r_yj.GetRandom()
-            if np.random.random() < switch:
-                recoyj = 4.8*np.random.random()-2.4
-                #while True:
-                #    recoyj = r_switch*np.random.randn()
-                #    if abs(recoyj)<2.4:
-                #        break
-            recoyb = abs(recoyj+recoyz)/2
-            recoys = abs(recoyj-recoyz)/2
-            if recoyb+recoys > 2.5 or recoobs>1000 or recoobs<25 or (recoobs>250 and recoys>2):
-                continue
-            y_index = l_ybinedges[int(recoys/0.5)]+int(recoyb/0.5)
-            recoobs_index = l_obsbinedges[y_index]+l_obshists[y_index].FindBin(recoobs)-1
-         #   h_obs.Fill((genobs-recoobs)/genobs)
-         #   h_yz.Fill(genyz-recoyz)
-         #   h_yj.Fill(genyj-recoyj)
-            if np.random.rand()<F:
-                h_gen.Fill(genobs_index)
-            if np.random.rand()<A:
-                h_reco.Fill(recoobs_index,SF)
-            if np.random.rand()<A and np.random.rand()<F:
-                responsehist.Fill(genobs_index,recoobs_index,SF)
-        f_out.cd()
-        #h_obs.Write(obs+"{}".format(obsbin))
-        #h_yz.Write("zy"+binname)
-        #h_yj.Write("jet1y"+binname)
-    print N,"events created"
-    h_reco.Write()
-    h_gen.Write()
-    responsehist.Write()
-    print "3DtoyMC written to "+output_file
-    return
-'''
 
-'''
-def create_toy3Dhist(args=None, obs='zpt', cut='_jet1pt20', mc='amc', match='', dressed='', puid='', varquantity='', variation=0, N_toys=1000):
-    if mc == 'BCDEFGH':
-        print "Can not create toy mc from data."
-        return
-    if varquantity in ['','_stats','_IDSF','_IsoSF','_TriggerSF']:
-        variation = 0
-    [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args, obs, cut, '', mc, yboostbin=None, ystarbin=None)
-    [l_obshists, h_reco, h_gen, responsehist, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
-    lumi = d['lumis'][0]
-    input_path = "/ceph/tberger/plots/resolution_dataframes/resolution_"+mc+cut+dressed+puid
-    #input_path = "/ceph/tberger/plots/resolution/resolution_"+mc+cut+dressed+puid
-    output_file = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'_test.root'
-    if not variation == 0:
-        output_file = plots_folder+cut+dressed+puid+'/variations/'+obs+'_toy'+match+varquantity+variationstring[variation]+'.root'
-    # safety step to avoid overwriting of existing files
-    if os.path.exists(output_file):
-        print "WARNING: file "+output_file+" already exists. Check if it can be removed!"
-        return
-    print "3DtoyMC will be written to "+output_file
-    f_out = ROOT.TFile(output_file,"RECREATE")
-    hist_index, bin_index = 0,0
-    genybmin,genybmax,genysmin,genysmax = 0.0,0.5,0.0,0.5
-    obsmin, obsmax = l_obshists[0].GetXaxis().GetXbins()[0],l_obshists[0].GetXaxis().GetXbins()[l_obshists[0].GetNbinsX()]
-    for obsbin in xrange(h_gen.GetNbinsX()):
-        if obsbin in l_obsbinedges:
-            if not obsbin==0:
-                bin_index = 0
-                hist_index += 1
-                genybmin += 0.5
-                genybmax += 0.5
-                if obsbin in [93,167,222,256]:
-                    genysmin += 0.5
-                    genysmax += 0.5
-                    genybmin,genybmax = 0.0,0.5
-            #namestring = "_yboost_{}-{}_ystar_{}-{}".format(genybmin,genybmax,genysmin,genysmax).replace(".","")
-            namestring = "_yb{}_ys{}".format(int(2*genybmin),int(2*genysmin))
-            print input_path+"/"+obs+namestring+".root"
-            #f_in = ROOT.TFile(input_path.replace("_doublegauss","")+"/"+obs+namestring+".root","READ")
-            f_in_obs = ROOT.TFile(input_path+"/"+obs+namestring+".root","READ")
-            f_in_yz = ROOT.TFile(input_path+"/zy"+namestring+".root","READ")
-            f_in_yj = ROOT.TFile(input_path+"/jet1y"+namestring+".root","READ")
-            sigma1_obs,sigma2_obs,alpha_obs,sigma_obs,rms_obs= f_in_obs.Get("sigma1"),f_in_obs.Get("sigma2"),f_in_obs.Get("alpha"),f_in_obs.Get("sigma"),f_in_obs.Get("rms")
-            sigma1_yz, sigma2_yz, alpha_yz, sigma_yz, rms_yz = f_in_yz.Get("sigma1"), f_in_yz.Get("sigma2"), f_in_yz.Get("alpha"), f_in_yz.Get("sigma"), f_in_yz.Get("rms")
-            sigma1_yj, sigma2_yj, alpha_yj, sigma_yj, rms_yj = f_in_yj.Get("sigma1"), f_in_yj.Get("sigma2"), f_in_yj.Get("alpha"), f_in_yj.Get("sigma"), f_in_yj.Get("rms")
-            #sigma1_yb, sigma2_yb, alpha_yb, sigma_yb, rms_yb =f_in_yb.Get("sigma1"), f_in_yb.Get("sigma2"), f_in_yb.Get("alpha"), f_in_yb.Get("sigma"), f_in_yb.Get("rms")
-            #sigma1_ys, sigma2_ys, alpha_ys, sigma_ys, rms_ys =f_in_ys.Get("sigma1"), f_in_ys.Get("sigma2"), f_in_ys.Get("alpha"), f_in_ys.Get("sigma"), f_in_ys.Get("rms")
-            h_weight = f_in_obs.Get("gen"+obs)
-            h_switched = f_in_obs.Get("switched")
-            h_pu = f_in_obs.Get("PU")
-            h_SF =f_in_obs.Get("SF")
-            h_fake =f_in_obs.Get("fakerate")
-            h_acceptance = f_in_obs.Get("acceptance")
-            #h_stability = f_in.Get("stability")
-            #h_purity = f_in.Get("purity")
-            
-        bin_index += 1
-        genobsmin = l_obshists[hist_index].GetBinLowEdge(bin_index)
-        genobsmax = genobsmin + l_obshists[hist_index].GetBinWidth(bin_index)
-        binname = "_{}_{}".format(int(genobsmin),int(genobsmax))+namestring
-        Robs = [sigma1_obs[bin_index], alpha_obs[bin_index], sigma2_obs[bin_index], sigma_obs[bin_index], rms_obs[bin_index]]
-        Ryz  = [ sigma1_yz[bin_index],  alpha_yz[bin_index],  sigma2_yz[bin_index],  sigma_yz[bin_index],  rms_yz[bin_index]]
-        Ryj  = [ sigma1_yj[bin_index],  alpha_yj[bin_index],  sigma2_yj[bin_index],  sigma_yj[bin_index],  rms_yj[bin_index]]
-       #Ryb  = [ sigma1_yb[bin_index],  alpha_yb[bin_index],  sigma2_yb[bin_index],  sigma_yb[bin_index],  rms_yb[bin_index]]
-       #Rys  = [ sigma1_ys[bin_index],  alpha_ys[bin_index],  sigma2_ys[bin_index],  sigma_ys[bin_index],  rms_ys[bin_index]]
-        #if varquantity == '_Robs':
-        #    #Robs[0] += variation*sigma1_obs.GetBinError(bin_index)
-        #    #Robs[1] += variation*alpha_obs.GetBinError(bin_index)
-        #    #Robs[2] += variation*sigma2_obs.GetBinError(bin_index)
-        #    #Robs[3] += variation*sigma_obs.GetBinError(bin_index)
-        #    Robs[4] += variation*rms_obs.GetBinError(bin_index)
-        #if varquantity == '_Ryz':
-        #    #Ryz[0] += variation*sigma1_yz.GetBinError(bin_index)
-        #    #Ryz[1] += variation* alpha_yz.GetBinError(bin_index)
-        #    #Ryz[2] += variation*sigma2_yz.GetBinError(bin_index)
-        #    #Ryz[3] += variation* sigma_yz.GetBinError(bin_index)
-        #    Ryz[4] += variation*   rms_yz.GetBinError(bin_index)
-        #if varquantity == '_Ryj':
-        #    #Ryj[0] += variation*sigma1_yj.GetBinError(bin_index)
-        #    #Ryj[1] += variation* alpha_yj.GetBinError(bin_index)
-        #    #Ryj[2] += variation*sigma2_yj.GetBinError(bin_index)
-        #    #Ryj[3] += variation* sigma_yj.GetBinError(bin_index)
-        #    Ryj[4] += variation*   rms_yj.GetBinError(bin_index)
-        switch = h_switched[bin_index]
-        if match == '_matched':
-            switch = 0
-        elif match == '_switched':
-            switch = 1
-        if varquantity == '_switch':
-            switch += variation*h_switched.GetBinError(bin_index)
-        w1 = h_weight[bin_index]/N_toys*lumi
-        if varquantity == '_w1':
-            w1 += variation*h_weight.GetBinError(bin_index)/N_toys
-        w2 = h_acceptance[bin_index]/(1-h_fake[bin_index])
-        if varquantity == '_w2':
-            w2 += variation*error(h_acceptance.GetBinError(bin_index)/(1-h_fake[bin_index]),h_acceptance[bin_index]/(1-h_fake[bin_index])**2*h_fake.GetBinError(bin_index),0)
-   #     print obsbin,bin_index,hist_index,genobsmin,genobsmax,w1,w2,switch,obs+namestring+".root"
-        doublegauss = ROOT.TF1("doublegauss","[0]*(TMath::Exp(-x**2/[1]**2)+[2]*TMath::Exp(-x**2/[3]**2))",-0.2,0.2)
-        r_obs = doublegauss.Clone("doublegauss_obs")
-        r_yz  = doublegauss.Clone("doublegauss_zy")
-        r_yj  = doublegauss.Clone("doublegauss_jet1y")
-        #r_obs.SetParameters(1,Robs[0],Robs[1],Robs[2])
-        #r_yz.SetParameters( 1, Ryz[0], Ryz[1], Ryz[2])
-        #r_yj.SetParameters( 1, Ryj[0], Ryj[1], Ryj[2])
-        #r_obs.SetParameters(1,Robs[4],0,1)
-        #r_yz.SetParameters( 1, Ryz[4],0,1)
-        #r_yj.SetParameters( 1, Ryj[4],0,1)
-        #h_obs = ROOT.TH1D(obs,"",100,-0.2,0.2)
-        #h_yz  = ROOT.TH1D("zy","",50,-2.5,2.5)
-        #h_yj  = ROOT.TH1D("jet1y","",50,-2.5,2.5)
-        switching = ROOT.TF1("switch","[0]*TMath::Exp(-x**2/[1]**2/2)",-2.4,2.4)
-        switching.SetParameters(1,1.8)
-        for i in xrange(int(N_toys*w1)):
-            print int(N_toys*w1)
-            genobs = genobsmin+(genobsmax-genobsmin)*np.random.random()
-            genyb  = genybmin +(genybmax -genybmin) *np.random.random()
-            genys  = genysmin +(genysmax -genysmin) *np.random.random()
-            while genyb+genys > 2.5:
-                genyb  = genybmin +(genybmax -genybmin) *np.random.random()
-                genys  = genysmin +(genysmax -genysmin) *np.random.random()
-            sgn1 = np.sign(np.random.randn())
-            sgn2 = np.sign(np.random.randn())
-            genyz = sgn1 * (genyb + sgn2*genys)
-            genyj = sgn1 * (genyb - sgn2*genys)
-            geny_index = l_ybinedges[int(genys/0.5)]+int(genyb/0.5)
-            genobs_index = l_obsbinedges[geny_index]+l_obshists[geny_index].FindBin(genobs)-1
-            #recoobs= genobs * (1+r_obs.GetRandom())
-            #recoyz = genyz+r_yz.GetRandom()
-            #recoyj = genyj+r_yj.GetRandom()
-            recoobs= genobs * (1+Robs[4]*np.random.randn())
-            recoyz = genyz+Ryz[4]*np.random.randn()
-            recoyj = genyj+Ryj[4]*np.random.randn()
-            if np.random.random() < switch:
-                #recoyj = 1.8*np.random.randn()
-                #while abs(recoyj)>2.4:
-                    #recoyj = switching.GetRandom()
-                    recoyj = 4.8*np.random.random()-2.4
-            recoyb = 0.5*abs(recoyj+recoyz)
-            recoys = 0.5*abs(recoyj-recoyz)
-            #while recoyb+recoys > 2.5:
-            #    recoyz = genyz+r_yz.GetRandom()
-            #    recoyj = genyj+r_yj.GetRandom()
-            #    if np.random.random() < switch:
-            #        recoyj = 4.8*np.random.random()-2.4
-            #    recoyb = 0.5*abs(recoyj+recoyz)
-            #    recoys = 0.5*abs(recoyj-recoyz)
-            #    print recoyb+recoys
-            #print "check"
-            if recoyb+recoys > 2.5:
-                continue
-            if recoobs<obsmin or recoobs>obsmax:
-                continue
-            w3 = h_SF.GetBinContent(h_SF.FindBin(recoobs))
-            y_index = l_ybinedges[int(recoys/0.5)]+int(recoyb/0.5)
-            recoobs_index = l_obsbinedges[y_index]+l_obshists[y_index].FindBin(recoobs)-1
-            h_gen.Fill(genobs_index)
-            h_reco.Fill(recoobs_index)
-            responsehist.Fill(recoobs_index,genobs_index)
-        f_out.cd()
-        #h_obs.Write(obs+"{}".format(obsbin))
-        #h_yz.Write("zy"+binname)
-        #h_yj.Write("jet1y"+binname)
-    
-    #f_out = ROOT.TFile(output_file,"RECREATE")
-    h_reco.Write()
-    h_gen.Write()
-    responsehist.Write()
-    print "3DtoyMC written to "+output_file
-    return
-'''
-
-def unfold_3Dhist_by_inversion(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH',mc='toy',match='',dressed='_FSR01', puid='',varquantity='',variation=0):
+def unfold_3Dhist_by_inversion(args=None,obs='zpt',cut='_jet1pt20',data='mad',mc='mad',match='',dressed='', puid='',varquantity='',variation=0):
     if varquantity in ['','_IDSF','_IsoSF','_TriggerSF'] and not variation==0:
         print "WARNING: variations can not be computed for these variation quantities"
         variation = 0
     if not 'toy' in mc and not varquantity == '_stats':
         variation = 0
         print "WARNING: only statistical variations can be computed for this MC"
-    input_file_data = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+match+'.root'
+    input_file_data = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+'.root'
     input_file_mc   = plots_folder+cut+dressed+puid+'/'+obs+'_'+mc+match+'.root'
     output_file = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_'+mc+match+'.root'
     if not variation == 0:
@@ -902,38 +590,34 @@ def unfold_3Dhist_by_inversion(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH
     a_edge, a_data_e = ROOT.TArrayD(Ny), ROOT.TArrayD(Nx*Ny)
     #print "Set acceptance rate to 1"
     h_prox = h_response.ProjectionX("projectionx",1,Nx,"e")
-    h_proy = h_response.ProjectionY("projectiony",1,Ny,"e")
-    h_loss = h_gen.Clone("loss")
+    h_proy = h_genresponse.ProjectionY("projectiony",1,Ny,"e")
+    h_SF= h_genresponse.ProjectionX("SF",1,Nx,"e")
+    h_SF.Divide(h_prox)
+    
     h_fake = h_reco.Clone("fake")
-    h_loss.Add(h_proy,-1)
+    h_loss = h_gen.Clone("loss")
     h_fake.Add(h_prox,-1)
+    h_loss.Add(h_proy,-1)
+    for j in xrange(Ny):
+        # sometimes negative values appear inside sqrt.
+        h_fake.SetBinError(j+1,np.sqrt(abs(h_reco.GetBinError(j+1)**2-h_prox.GetBinError(j+1)**2)))
+        h_loss.SetBinError(j+1,np.sqrt(abs( h_gen.GetBinError(j+1)**2-h_proy.GetBinError(j+1)**2)))
+    #h_loss
     print "data distribution:",[h_data[i+1] for i in xrange(6)]
     print "reco distribution:",[h_reco[i+1] for i in xrange(6)]
     print "gen  distribution:",[h_gen[i+1]  for i in xrange(6)]
-    print "projection on X:",[h_prox[i+1] for i in xrange(6)]
-    print "projection on Y:",[h_proy[i+1] for i in xrange(6)]
-    
+    print "projection on X:",  [h_prox[i+1] for i in xrange(6)]
+    print "projection on Y:",  [h_proy[i+1] for i in xrange(6)]
+    print "scalefactors:",       [h_SF[i+1] for i in xrange(6)]
     print "fake distribution:",[h_fake[i+1] for i in xrange(6)]
     print "loss distribution:",[h_loss[i+1] for i in xrange(6)]
     if varquantity=='_stats' and not variation == 0:
         print "Statistical variation of response matrix"
-        h_proy = h_genresponse.ProjectionY("projectiony",1,Ny,"e")
-        for j in xrange(Ny):
-            #print h_reco.GetBinError(j+1)**2-h_prox.GetBinError(j+1)**2,np.sqrt(abs(h_reco.GetBinError(j+1)**2-h_prox.GetBinError(j+1)**2))
-            #print h_gen.GetBinError(j+1)**2-h_proy.GetBinError(j+1)**2,np.sqrt(h_gen.GetBinError(j+1)**2-h_proy.GetBinError(j+1)**2)
-            h_fake.SetBinError(j+1,np.sqrt(abs(h_reco.GetBinError(j+1)**2-h_prox.GetBinError(j+1)**2)))
-            h_loss.SetBinError(j+1,np.sqrt(abs(h_gen.GetBinError(j+1)**2-h_proy.GetBinError(j+1)**2)))
-            #if h_gen.GetBinError(j+1)**2-h_proy.GetBinError(j+1)**2 < 0:
-            #    print h_gen.GetBinError(j+1)**2-h_proy.GetBinError(j+1)**2
-            #if h_reco.GetBinError(j+1)**2-h_prox.GetBinError(j+1)**2 < 0:
-            #    print h_gen.GetBinError(j+1)**2-h_proy.GetBinError(j+1)**2
         for j in xrange(Ny):
           for i in xrange(Nx):
             h_response.SetBinContent(i+1,j+1,h_response.GetBinContent(i+1,j+1)+h_response.GetBinError(i+1,j+1)*np.random.randn())
           h_loss.SetBinContent(j+1,h_loss[j+1]+h_loss.GetBinError(j+1)*np.random.randn())
           h_fake.SetBinContent(j+1,h_fake[j+1]+h_fake.GetBinError(j+1)*np.random.randn())
-        h_prox = h_response.ProjectionX("projectionx",1,Nx,"e")
-        h_proy = h_response.ProjectionY("projectiony",1,Ny,"e")
         h_gen = h_loss.Clone("gen"+obs)
         h_reco = h_loss.Clone(obs)
         h_gen.Add(h_prox)
@@ -946,8 +630,9 @@ def unfold_3Dhist_by_inversion(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH
         #l_bkg = ['TTJets','ST','WW','WZ','ZZ','WJets']
         print "subtract backgrounds ",l_bkg
         for bkg in l_bkg:
-            f_bkg = ROOT.TFile(plots_folder+cut+dressed+puid+'/'+obs+'_'+bkg+match+'.root',"READ")
-            print plots_folder+cut+dressed+puid+'/'+obs+'_'+bkg+match+'.root'
+            input_file_bkg = plots_folder+cut+dressed+puid+'/'+obs+'_'+bkg+'.root'
+            f_bkg = ROOT.TFile(input_file_bkg,"READ")
+            print input_file_bkg
             h_bkg = f_bkg.Get(obs)
             h_data.Add(h_bkg,-1)
             print "data distribution:",[h_data.GetBinContent(i+1) for i in xrange(6)]
@@ -1053,8 +738,8 @@ def unfold_3Dhist_by_tunfold(args=None,obs='zpt',cut='_jet1pt20',data='amc',mc='
     print "data distribution:",[h_data[i+1] for i in xrange(6)]
     print "gen  distribution:",[h_gen[i+1]  for i in xrange(6)]
     print "reco distribution:",[h_reco[i+1] for i in xrange(6)]
-    print "edge distribution:",[h_edge[i+1] for i in xrange(6)]
-    print "fake distribution:",[h_fake[i+1] for i in xrange(6)]
+    print "edge distribution:",[h_edge[i+1]/h_gen[i+1] for i in xrange(264)]
+    print "fake distribution:",[h_fake[i+1]/h_reco[i+1] for i in xrange(264)]
     #for i in xrange(Nx):
     #  for j in xrange(Ny):
     #    h_response.SetBinContent(i+1,j+1,h_response.GetBinContent(i+1,j+1)/h_edge[j+1])
@@ -1070,27 +755,36 @@ def unfold_3Dhist_by_tunfold(args=None,obs='zpt',cut='_jet1pt20',data='amc',mc='
         h_response.SetBinContent(0,i+1, h_gen[i+1]-h_edge[i+1])
     print [h_response.GetBinContent(i+1,1) for i in xrange(7)]
     print "data distribution:",[h_data[i+1] for i in xrange(6)]
-    unfold = ROOT.TUnfoldDensity(h_response,1,
-                    ROOT.TUnfold.ERegMode(2),
-                    ROOT.TUnfold.EConstraint(0),
-                    ROOT.TUnfoldDensity.EDensityMode(0),
-                    0,0,
-                    "0","*[B]")
+    #unfold = ROOT.TUnfoldDensity(h_response,1,
+    #                ROOT.TUnfold.ERegMode(2),
+    #                ROOT.TUnfold.EConstraint(0),
+    #                ROOT.TUnfoldDensity.EDensityMode(0),
+    #                0,0,"0","*[B]")
+    unfold = ROOT.TUnfold(
+            h_response,
+            ROOT.TUnfold.kHistMapOutputHoriz,   # gen-level on x axis
+            ROOT.TUnfold.kRegModeNone,          # no regularization
+            ROOT.TUnfold.kEConstraintNone,      # no constraints
+            )
     print unfold
-    unfold.DoUnfold(1,h_data)
-    h_unfold = unfold.GetOutput("unfolded"+obs)
-    h_covariance = unfold.GetEmatrixInput("covariance")
-    h_correlation = h_covariance.Clone("correlation")
+    unfold.SetInput(h_data)
+    unfold.DoUnfold(0)#0,h_data)
+    h_unfold = h_data.Clone("unfolded"+obs)
+    h_covariance = h_response.Clone("covariance")
+    h_correlation = h_response.Clone("correlation")
+    unfold.GetOutput(h_unfold)
+    unfold.GetEmatrix(h_covariance)
     for j in xrange(Ny):
         for i in xrange(Nx):
             h_correlation.SetBinContent(i+1,j+1,h_covariance.GetBinContent(i+1,j+1)
                                                 /np.sqrt(h_covariance.GetBinContent(i+1,i+1)*h_covariance.GetBinContent(j+1,j+1)))
-    #h_covariance = unfold.GetEmatrixTotal("covariance")
+    #h_covariance = unfold.GetEmatrixTotal("covariance")print "fake distribution:",[h_fake[i+1] for i in xrange(6)]
     print "unfold distribution:",[h_unfold[i+1] for i in xrange(6)]
     print [h_correlation.GetBinContent(i+1,1) for i in xrange(7)]
     f_out.cd()
     h_unfold.Write()
     h_covariance.Write()
+    h_correlation.Write()
     h_reco.Write()
     h_gen.Write()
     h_data.Write("signal"+obs)
@@ -1100,25 +794,29 @@ def unfold_3Dhist_by_tunfold(args=None,obs='zpt',cut='_jet1pt20',data='amc',mc='
 def uncloop(args=None):
     #for cut in ['_jet1pt10','_jet1pt15','_jet1pt20']:
     for cut in ['_jet1pt20']:
-     for dressed in [#'',
-                    '_FSR01'
+     for dressed in ['',
+                    #'_FSR01',
+                    #'_TrueZ',
                     ]:
-      for varquantity in [  #'_stats_amc','_stats_hpp','_stats_mad',
+      for varquantity in [  #'_stats_ptz','_stats_mad','_stats_amc','_stats_hpp','_stats_pow',
                             #'_stats_toy',
-                            '_Robs','_Ryj','_Ryz','_F','_A',#'_weight','_switch','_SF',
+                            #'_Robs','_Ryj','_Ryz','_F','_A',#'_weight','_switch','_SF',
                             '_IDSF','_IsoSF','_TriggerSF',
-                            '_bkg','_lumi',
+                            #'_bkg','_lumi',
                             '_JEC',#'_JER',
-                            '_statistical',
+                            #'_statistical',
                             ]:
-        for data in [   #'amc','hpp','mad',
+        for data in [   #'amc',
+                        #'hpp',
+                        #'mad',
                         'BCDEFGH'
+                        #'BCD'
                         ]:
           uncertainties_3Dhist(obs='zpt',       cut=cut,data=data,dressed=dressed,varquantity=varquantity)
           uncertainties_3Dhist(obs='phistareta',cut=cut,data=data,dressed=dressed,varquantity=varquantity)
     return
 
-def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',match='',dressed='_FSR01',puid='',varquantity='_total',N_toys=1000):
+def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',match='',dressed='',puid='',varquantity='_switch',N_toys=1000):
     var=varquantity
     output_file = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+varquantity+'.root'
     print "write uncertainty to file",output_file
@@ -1126,7 +824,7 @@ def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',m
         print "WARNING: file "+output_file+" already exists. Check if it can be removed!"
         return
     f_out = ROOT.TFile(output_file,"RECREATE")
-    if varquantity in ['_stats_toy','_stats_amc','_stats_mad','_stats_hpp']:
+    if varquantity in ['_stats_toy','_stats_amc','_stats_mad','_stats_hpp','_stats_pow','_stats_ptz']:
             mc = varquantity.split('_')[-1]
             input_file = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+match+'.root'
             f_in      = ROOT.TFile(input_file,"READ")
@@ -1158,7 +856,7 @@ def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',m
             h_uncertainty.Write()
             h_cov.Write()
             h_central.Write('unfolded'+obs+'_by_'+mc)
-    elif varquantity in ['_Robs','_Ryz','_Ryj','_switch','_weight','_A','_F','_SF','_Toy']:
+    elif varquantity in ['_Robs','_Ryz','_Ryj','_A','_F']:
             create_toy3Dhist(args,obs,cut,'mad',match,dressed,puid,varquantity='',variation=0)
             unfold_3Dhist_by_inversion(args,obs,cut,data,'toy',match,dressed,puid)
             input_file = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_toy'+match+'.root'
@@ -1177,7 +875,26 @@ def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',m
             h_up      = f_in_up.Get('unfolded'+obs)
             h_down    = f_in_down.Get('unfolded'+obs)
             for i in xrange(h_uncertainty.GetNbinsX()):
-                h_uncertainty.SetBinContent(i+1,max(abs(h_central[i+1]-h_up[i+1]),abs(h_central[i+1]-h_down[i+1]))/h_central[i+1])
+                h_uncertainty.SetBinContent(i+1,np.sqrt(((h_central[i+1]-h_up[i+1])**2+(h_central[i+1]-h_down[i+1])**2)/2)/h_central[i+1])
+                h_uncertainty.SetBinError(i+1,0)
+            f_out.cd()
+            h_uncertainty.Write()
+            h_central.Write('unfolded'+obs+var)
+    elif varquantity in ['_switch']:
+            create_3Dhist(args,obs,cut,'mad','',dressed,puid,varquantity='',variation=0)
+            create_3Dhist(args,obs,cut,'mad','_matched',dressed,puid,varquantity='',variation=0)
+            unfold_3Dhist_by_inversion(args,obs,cut,data,'mad','',dressed,puid)
+            unfold_3Dhist_by_inversion(args,obs,cut,data,'mad','_matched',dressed,puid)
+            input_file     = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_mad.root'
+            input_file_var = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_mad_matched.root'
+            f_in     = ROOT.TFile(input_file,"READ")
+            f_in_var = ROOT.TFile(input_file_var,  "READ")
+            h_central = f_in.Get('unfolded'+obs)
+            h_var     = f_in_var.Get('unfolded'+obs)
+            h_uncertainty = h_central.Clone('uncertainty'+var)
+            h_uncertainty.Reset()
+            for i in xrange(h_uncertainty.GetNbinsX()):
+                h_uncertainty.SetBinContent(i+1,abs(h_central[i+1]-h_var[i+1])/h_central[i+1])
                 h_uncertainty.SetBinError(i+1,0)
             f_out.cd()
             h_uncertainty.Write()
@@ -1203,6 +920,8 @@ def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',m
         h_uncertainty.Write()
         h_central.Write(obs)
     elif varquantity in ['_JEC']:
+        create_3Dhist(args,obs,cut,data,match,dressed,puid,varquantity=var,variation=1)
+        create_3Dhist(args,obs,cut,data,match,dressed,puid,varquantity=var,variation=-1)
         input_file = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+match+'.root'
         f_in      = ROOT.TFile(input_file,"READ")
         h_central = f_in.Get(obs)
@@ -1263,8 +982,8 @@ def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',m
         f_out.cd()
         h_uncertainty.Write('uncertainty'+var)
     elif varquantity in ['_statistical']:
-        unfold_3Dhist_by_inversion(args,obs,cut,data,'toy',match,dressed,puid)
-        input_file = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_toy'+match+'.root'
+        unfold_3Dhist_by_inversion(args,obs,cut,data,'mad',match,dressed,puid)
+        input_file = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_mad'+match+'.root'
         f_in       = ROOT.TFile(input_file,"READ")
         h_central = f_in.Get('unfolded'+obs)
         h_uncertainty = h_central.Clone('uncertainty'+var)
@@ -1283,8 +1002,8 @@ def uncertainties_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH',m
                     'bkg' : ['_bkg'],
                     'eff' : ['_IDSF','_IsoSF','_TriggerSF'],
                     'unf' : ['_stats_mad'],
-                    #'jec' : ['_JEC'],
-                    #'mod' : ['_Robs','_Ryz','_Ryj','_A','_F'],
+                    'jec' : ['_JEC'],
+                    'mod' : ['_Robs','_Ryz','_Ryj','_A','_F'],
                     })
         for vkey in varlist:
           h_unc = h_uncertainty.Clone("uncertainty_"+vkey)
@@ -1375,14 +1094,16 @@ def invert_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc='amc',ma
 '''
 
 
-def plot_compare_datamc_3D(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='amc',match='',dressed='_FSR01',puid=''):
-#def plot_compare_datamc_3D(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='amc',match='',dressed='_FSR01',puid=''):
+def plot_compare_datamc_3D(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='amc',match='',dressed='',puid=''):
     
     bkg_list = ['TTJets','WZ','ZZ','TW','WW']
     
     data_source = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+match+'.root'
     mc_source   = plots_folder+cut+dressed+puid+'/'+obs+'_'+mc+match+'.root'
     bkg_source  =[plots_folder+cut+dressed+puid+'/'+obs+'_'+bkg+match+'.root' for bkg in bkg_list]
+    #data_source = 'ZJtriple/old/ZJtriple_jet1pt20/'+obs+'_'+data+match+'.root'
+    #mc_source   = 'ZJtriple/old/ZJtriple_jet1pt20/'+obs+'_'+mc+match+'.root'
+    #bkg_source  =['ZJtriple/old/ZJtriple_jet1pt20/'+obs+'_'+bkg+match+'.root' for bkg in bkg_list]
     
     filelist = [data_source,mc_source]+bkg_source
     filelist_binned = []
@@ -1426,96 +1147,130 @@ def plot_compare_datamc_3D(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH'
             plots.append(d)
     return [PlottingJob(plots=plots, args=args)]
 
-def plot_resolution_3D(args=None, obs='zpt', cut='_jet1pt15', mc='mad',match='',dressed='_FSR01',puid=''):
+def plot_resolution_3D(args=None, obs='zpt', cut='_jet1pt20', mc='mad',match='',dressed='',puid='',trunc = '_985'):
     plots=[]
+    folder = plots_folder+cut+dressed+puid+'/resolution'+trunc+'/'
     for ybmin in [0.0,0.5,1.0,1.5,2.0]:
       for ysmin in [0.0,0.5,1.0,1.5,2.0]:
-       for cut in ['_jet1pt10','_jet1pt15','_jet1pt20']:
+       for cut in ['_jet1pt20']:
         if not ybmin+ysmin>2:
             namestring = '_yb{}_ys{}'.format(int(2*ybmin),int(2*ysmin))
             d = ({
-                'files': [plots_folder+cut+dressed+puid+'/resolution_old/'+obs+'_'+mc+match+namestring+'.root'],
-                'www': 'resolutions'+cut+dressed+puid+'_'+mc+match+'/resolution'+namestring,
+                'files': [folder+obs+'_'+mc+match+namestring+'.root'],
+                'www': 'resolutions'+cut+dressed+puid+'_'+mc+match+'/resolution'+trunc+namestring,
                 'folders': [''],
                 'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
                 'x_log': True,
-                'x_label': obs,
+                'x_label': 'gen'+obs,
                 'x_errors': [1],
-                'markers': ['.'],
+                'markers': [''],
+                'texts_x': [0.03,0.1,0.4,0.7],
+                'texts_y': [0.97,1.18,1.18,1.18],
+                'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
+                
+                'function_display_result': True,
             })
+            if (ybmin,ysmin) == (0.0,2.0):
+                d['function_ranges'] = ['25,250'] if obs =='zpt' else ['0.4,5']
             d1 = deepcopy(d)
             d1.update({
-                'x_expressions': ['sigma','rms'],
-                'texts_x': [0.03,0.7],
+                'x_expressions': ['rms','sigma0','sigma'],
                 'filename': obs+'_resolution',
-                'nicks': ['sigma','rms'],
-                'legend': None,
+                'nicks': ['rms','gauss','cryb'],
+                'labels': ['RMS','Gaussian Width','Crystal Ball Width'],
                 'analysis_modules': ['FunctionPlot'],
-                'function_fit': ['sigma','rms'],
-                'functions': ['[0]+[1]*sqrt(x)+[2]/sqrt(x)'],
-                #'functions': ['[0]+[1]*x+[2]*sqrt(x)'],
+                'function_fit': ['rms','gauss','cryb'],
+                'functions': ['[0]+[1]*sqrt(x)+[2]/sqrt(x)'] if obs == 'zpt' else ['[0]+[1]*x+[2]/x'],
                 'function_parameters': ['1,1,1'],
-                'function_display_result': True,
-                'function_nicknames': ['sigma_fit','rms_fit'],
-                'function_fit_parameter_names': ['p_0',r'p_1',r'p_2'],
-                'colors': ['green','blue','darkgreen','darkblue'],
+                'function_nicknames': ['fit_rms','fit_gauss','fit_cryb'],
+                'function_fit_parameter_names': ['p_0','p_1','p_2'],
+                'alphas': [0.707],
+                'nicks_whitelist': ['fit',''],
+                'colors': ['green','orange','violet','darkgreen','darkorange','darkviolet'],
             })
             if obs == 'zpt':
-                d1['y_lims'] = [0,0.03]
+                d1['y_lims'] = [0,0.1]
                 d1['y_label'] = r'Relative $p_T^Z$ resolution'
+                d1['texts']   = [r'$f(x)=p_0+p_1\\sqrt{x}+p_2\\frac{1}{\\sqrt{x}}$']+d1['texts']
+            
             if obs == 'phistareta':
                 d1['y_lims'] = [0,0.005]
                 d1['y_label'] = r'Relative $\\Phi^*_\\eta$ resolution'
+                d1['texts']   = [r'$f(x)=p_0+p_1x+p_2\\frac{1}{x}$']+d1['texts']
+            d1['texts_x'] = [0.05]+d1['texts_x']
+            d1['texts_y'] = [0.9]+d1['texts_y']
             d2 = deepcopy(d1)
             d2.update({
-                'files': [plots_folder+cut+dressed+puid+'/resolution_old/jet1y_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
+                'files': [folder+'matchedjet1y_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
                 'filename': 'jet1y_resolution_bins_of_'+obs,
+                'functions': ['[0]+[1]/sqrt(x)'] if obs == 'zpt' else ['[0]+[1]/x'],
+                'texts_y':[0.97,1.14,1.14,1.14],
                 'y_lims': [0,0.05],
                 'y_label': r'$y^{jet1}$ resolution',
             })
+            d2['texts_y'] = [0.9]+d2['texts_y']
+            d2['texts'][0] = ([r'$f(x)=p_0+p_1\\frac{1}{\\sqrt{x}}$'] if obs =='zpt' else [r'$f(x)=p_0+p_1\\frac{1}{x}$'])
             d3 = deepcopy(d1)
             d3.update({
-                'files': [plots_folder+cut+dressed+puid+'/resolution_old/zy_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
+                'files': [folder+'zy_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
                 'filename': 'zy_resolution_bins_of_'+obs,
+                'functions': ['[0]' if obs == 'zpt' else ['[0]+[1]*log(x)']],
                 'y_lims': [0,0.01] if obs=='zpt' else [0,0.02],
+                'texts_y':[0.97,1.11,1.11,1.11] if obs=='zpt' else [0.97,1.14,1.14,1.14],
                 'y_label': r'$y^{Z}$ resolution',
             })
+            d3['texts_y'] = [0.9]+d3['texts_y']
+            d3['texts'][0] = ([r'$f(x)=const'] if obs =='zpt' else [r'$f(x)=p_0+p_1\\log(x)$'])
+            
             d4 = deepcopy(d)
             d4.update({
                 'x_expressions': ['PU','matched','switched'],
                 'nicks': ['PU','matched','switched'],
-                'analysis_modules':['ScaleHistograms'],
+                'analysis_modules':['ScaleHistograms','FunctionPlot'],
                 'scale_nicks': ['PU','matched','switched'],
                 'scales': [100],
+                'function_fit': ['switched'],
+                'functions': ['[0]*exp(-[1]*x)'] if obs == 'zpt' else ['[0]+[1]/x'],
+                'function_parameters': ['10,0.001'],
+                'function_nicknames': ['fit_switched'],
+                'function_fit_parameter_names': ['p_0','p_1'],
                 'markers': ['fill'],
                 'filename': obs+'_fractions',
                 'y_lims': [0,125],
                 'y_label': 'Fraction / %',
-                'stacks': ['fraction'],
-                'colors': ['grey','steelblue','orange'],
+                'stacks': 3*['fraction']+['fit'],
+                'labels': ['PU','Matched','Switched'],
+                'colors': ['grey','steelblue','orange','gold'],
                 'lines': [100],
+                'texts_x':[0.03,0.05],
+                'texts_y':[0.97,1.14],
                 'y_ticks': [0,10,20,30,40,50,60,70,80,90,100],
             })
             d5 = deepcopy(d)
             d5.update({
-                'x_expressions': ['fakerate','acceptance','purity','stability'],
-                'nicks': ['fakerate','acceptance','purity','stability'],
-                'scale_nicks': ['fakerate','acceptance','purity','stability'],
+                'x_expressions': ['acceptance','fakerate'],#,'purity','stability'],
+                'nicks': ['acceptance','fakerate'],#'purity','stability'],
+                'scale_nicks': ['acceptance','fakerate'],#'purity','stability'],
                 'analysis_modules':['ScaleHistograms','FunctionPlot'],
                 'scales': [100],
                 'filename': obs+'_rates',
-                'y_lims': [0,130],
+                'y_lims': [0,118],
                 'y_label': 'Fraction / %',
                 'y_ticks': [0,10,20,30,40,50,60,70,80,90,100],
+                'alphas': [0.5],
                 'lines': [100],
+                'texts_x':[0.03,0.05,0.55],
+                'texts_y':[0.97,1.15,1.15],
+                'labels': ['Acceptance','Fakerate'],
                 'function_fit': ['acceptance','fakerate'],
-                'functions': ['[0]-[1]/x**2','[0]+[1]/x**3'],
-                'function_parameters': ['1,1,1','1,1'],
-                'function_display_result': True,
-                'function_nicknames': ['acc_fit','fak_fit'],
-                'texts_x':[0.03,0.01,0.35],
-                'texts_y':[0.97,0.92,0.92],
+                'functions': [('[0]-[1]/x' if obs == 'zpt' else '[0]-[1]/x**2'),'[0]+[1]/x**3'],
+                'function_parameters': ['100,1','100,1'],
+                'function_nicknames': ['fit_acceptance','fit_fakerate'],
+                'colors': ['coral','slategray','lightcoral','lightslategray']
             })
+            d5['texts_x'] = [0.4,0.42]+d5['texts_x']
+            d5['texts_y'] = [0.97,0.92]+d5['texts_y']
+            d5['texts'][0] = [r'$f_{Acceptance}(x)=p_0-p_1\\frac{1}{x'+('' if obs=='zpt' else '^2')+'}$',r'$f_{Fakerate}(x)=p_0+p_1\\frac{1}{x^3}$']+d5['texts']
             plots.append(d1)
             plots.append(d2)
             plots.append(d3)
@@ -1583,26 +1338,20 @@ def plot_compare_unfolding_methods_3D(args=None, obs='zpt', cut='_jet1pt20', dat
             plots.append(d)
     return [PlottingJob(plots=plots, args=args)]
 
-#def plot_compare_unfolding_samples_3D(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH', mc='amc',match='',dressed='_FSR01',puid=''):
-#def plot_compare_unfolding_samples_3D(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='amc',match='',dressed='_FSR01',puid=''):
-#def plot_compare_unfolding_samples_3D(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH', mc='mad',match='',dressed='_FSR01',puid=''):
-#def plot_compare_unfolding_samples_3D(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='mad',match='',dressed='_FSR01',puid=''):
-#def plot_compare_unfolding_samples_3D(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH', mc='toy',match='',dressed='_FSR01',puid=''):
-def plot_compare_unfolding_samples_3D(args=None, obs='zpt', cut='_jet1pt10', data='BCDEFGH', mc='toy',match='',dressed='_FSR01',puid=''):
-    create_3Dhist(args,obs,cut,'amc',match,dressed,puid)
-    create_3Dhist(args,obs,cut,'hpp',match,dressed,puid)
-    create_3Dhist(args,obs,cut,'mad',match,dressed,puid)
-    create_toy3Dhist(args,obs,cut,'mad',match,dressed,puid)
+def plot_compare_unfolding_samples_3D(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH', mc='toy',match='',dressed='',puid=''):
     unfold_3Dhist_by_inversion(args,obs,cut,'amc',mc,match,dressed,puid)
     unfold_3Dhist_by_inversion(args,obs,cut,'hpp',mc,match,dressed,puid)
     unfold_3Dhist_by_inversion(args,obs,cut,'mad',mc,match,dressed,puid)
+    #unfold_3Dhist_by_tunfold(args,obs,cut,'amc',mc,match,dressed,puid)
+    #unfold_3Dhist_by_tunfold(args,obs,cut,'hpp',mc,match,dressed,puid)
+    #unfold_3Dhist_by_tunfold(args,obs,cut,'mad',mc,match,dressed,puid)
     
     signal_source1 = plots_folder+cut+dressed+puid+'/'+obs+'_amc'+match+'.root'
-    signal_source2 = plots_folder+cut+dressed+puid+'/'+obs+'_mad'+match+'.root'
-    signal_source3 = plots_folder+cut+dressed+puid+'/'+obs+'_hpp'+match+'.root'
+    signal_source2 = plots_folder+cut+dressed+puid+'/'+obs+'_hpp'+match+'.root'
+    signal_source3 = plots_folder+cut+dressed+puid+'/'+obs+'_mad'+match+'.root'
     unfold_source1 = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_amc_by_'+mc+match+'.root'
-    unfold_source2 = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_mad_by_'+mc+match+'.root'
-    unfold_source3 = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_hpp_by_'+mc+match+'.root'
+    unfold_source2 = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_hpp_by_'+mc+match+'.root'
+    unfold_source3 = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_mad_by_'+mc+match+'.root'
     unc_source     = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_stats_'+mc+'.root'
     varlist = ['Robs','Ryj','Ryz','F','A']
     #varlist = ['Ryj']#,'switch'
@@ -1622,7 +1371,7 @@ def plot_compare_unfolding_samples_3D(args=None, obs='zpt', cut='_jet1pt10', dat
                 'files': filelist_binned,
                 'x_expressions': 3*['gen'+obs+namestring,'unfolded'+obs+namestring]+['uncertainty_stats_'+mc+namestring]+['uncertainty_'+x+namestring for x in varlist],
                 'folders': [''],
-                'nicks': ['amcgen','amcunf','madgen','madunf','hppgen','hppunf','unc_mc']+['unc_'+x for x in varlist],
+                'nicks': ['amcgen','amcunf','hppgen','hppunf','madgen','madunf','unc_mc']+['unc_'+x for x in varlist],
                 'analysis_modules': ['QuadraticSumOfHistograms','Ratio','SumOfHistograms'],#,'MultiplyHistograms'
                 'quad_sum_nicks': ['unc_'+' unc_'.join(varlist)],
                 'quad_sum_result_nicks': ['unc_toy'],
@@ -1633,15 +1382,15 @@ def plot_compare_unfolding_samples_3D(args=None, obs='zpt', cut='_jet1pt10', dat
                 #'sum_scale_factors' : ['1 1', '1 -1','1 1', '1 -1'],
                 #'ratio_numerator_nicks': ['amcunf','madunf','hppunf','mc_up','mc_down','toy_up','toy_down'],
                 #'ratio_denominator_nicks': ['amcgen','madgen','hppgen']+4*['madgen'],
-                'ratio_numerator_nicks': ['unc_mc','amcunf','madunf','hppunf'],
-                'ratio_denominator_nicks': ['unc_mc','amcgen','madgen','hppgen'],
-                'ratio_result_nicks': ['unity','ratio_amc','ratio_mad','ratio_hpp'],
+                'ratio_numerator_nicks': ['unc_mc','amcunf','hppunf','madunf'],
+                'ratio_denominator_nicks': ['unc_mc','amcgen','hppgen','madgen'],
+                'ratio_result_nicks': ['unity','ratio_amc','ratio_hpp','ratio_mad'],
                 'sum_nicks' : ['unity unc_mc','unity unc_mc','unity unc_toy','unity unc_toy'],
                 'sum_scale_factors' : ['1 1', '1 -1','1 1', '1 -1'],
                 'sum_result_nicks': ['mc_up','mc_down','toy_up','toy_down'],
-                'ratio_denominator_no_errors': False,
-                'labels': ["aMC@NLO","aMC@NLO","","Herwig++","Herwig++","","Madgraph","Madgraph","","Toy Stat. Unc.","","Toy Syst. Unc.",""],
-                'subplot_legend': 'upper left',
+                #'ratio_denominator_no_errors': False,
+                'labels': ["aMC@NLO","aMC@NLO","","Herwig++","Herwig++","","Madgraph","Madgraph","","Toy Syst. Unc.","","Toy Stat. Unc.",""],
+                'subplot_legend': 'lower left',
                 'subplot_fraction': 45,
                 'subplot_nicks': ['up','down','ratio'], 
                 'y_subplot_label': 'Unfolded/Gen',
@@ -1652,40 +1401,47 @@ def plot_compare_unfolding_samples_3D(args=None, obs='zpt', cut='_jet1pt10', dat
                 'x_errors': 3*[1,0,0]+4*[0],
                 'y_log': True,
                 'y_errors': 9*[True]+4*[False],
-                'step': [False]*11+[True]*2,
-                'line_styles': ['']*11+['-']*2,
-                'markers': ['.','s','s','.','D','D','.','o','o']+['fill']*2+['']*2,
+                'step': [False]*9+[True]*2+[False]*2,
+                'line_styles': ['']*9+['-']*2+['']*2,
+                'markers': ['.','s','s','.','D','D','.','o','o']+['']*2+['fill']*2,
                 #'nicks_whitelist': ['^gen$','^amc$','^mad$','^hpp$','^toy$','ratio'],
-                'nicks_whitelist': ['amc','hpp','mad','mc','toy'],
+                'nicks_whitelist': ['amc','hpp','mad','toy','mc'],
                 'nicks_blacklist': ['unity','unc'],
-                'colors': ['darkred','red','red','darkblue','blue','blue','darkgreen','green','green','yellow','white','black','black'],
+                'colors': ['darkred','red','red','darkblue','blue','blue','darkgreen','green','green','black','black','yellow','white'],
                 'y_subplot_lims': [0.9,1.1],
                 'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
             })
-            if not mc=='toy':
-                d['nicks_blacklist']+=['toy']
-                d['labels'].pop(9)
-                d['labels'].insert(9," ")
-                d['labels'].pop(10)
             if mc=='amc':
                 d['labels'].insert(9,"aMC@NLO Stat. Unc.")
             elif mc=='hpp':
                 d['labels'].insert(9,"Herwig++ Stat. Unc.")
             elif mc=='mad':
                 d['labels'].insert(9,"Madgraph Stat. Unc.")
+            if not mc=='toy':
+                d['nicks_blacklist']+=['toy']
+                d['labels'].pop(10)
+                d['labels'].insert(10," ")
+                d.update({
+                    'colors': ['darkred','red','red','darkblue','blue','blue','darkgreen','green','green','yellow','white'],
+                    'step': [False],
+                    'line_styles': [''],
+                    'markers': ['.','s','s','.','D','D','.','o','o']+['fill']*2,
+                    'subplot_legend': 'upper left',
+                })
             if not ybmin+ysmin>2:
                 plots.append(d)
     return [PlottingJob(plots=plots, args=args)]
 
-def plot_uncertainties_3D(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH', mc='toy', match='',dressed='_FSR01',puid=''):
-#def plot_uncertainties_3D(args=None, obs='phistareta', cut='_jet1pt15', data='BCDEFGH', mc='mad', match='',dressed='_FSR01',puid=''):
+def plot_uncertainties_3D(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH', mc='toy', match='',dressed='',puid=''):
     if not data == 'BCDEFGH':
         print "WARNING: uncertainties are meant for data only!"
-        return
-    unf_source = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_statistical.root'
-    unc_source = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_stats_'+mc+'.root'
-    varlist = ['lumi','bkg','IDSF','IsoSF','TriggerSF','JEC','Robs','Ryj','Ryz','F','A']#,'switch','SF','weight']
-    filelist = [unf_source,unc_source]+[plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_'+var+'.root' for var in varlist]
+    #    return
+    #stat_source = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_statistical.root'
+    #resp_source = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_stats_'+mc+'.root'
+    varlist = ['statistical','stats_'+mc,'lumi','bkg','IDSF','IsoSF','TriggerSF','JEC','Robs','Ryj','Ryz','F','A']
+    #varlist = ['Robs','Ryj','Ryz','F','A']#,'switch','SF','weight']
+    #filelist = [unf_source,unc_source]+[plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_'+var+'.root' for var in varlist]
+    filelist = [plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_'+var+'.root' for var in varlist]
     filelist_binned = []
     for x in filelist:
         invert_3Dhists(args,x)
@@ -1697,16 +1453,19 @@ def plot_uncertainties_3D(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH',
             d = ({
                 'files': filelist_binned,
                 'folders': [''],
-                'nicks': ['unf','stats']+varlist,
-                'x_expressions': ['uncertainty_statistical'+namestring]+['uncertainty_stats_'+mc+namestring]+['uncertainty_'+var+namestring for var in varlist],
+                'nicks': varlist,
+                #'nicks': ['stats']+varlist,
+                #'x_expressions': ['uncertainty_statistical'+namestring]+['uncertainty_stats_'+mc+namestring]+['uncertainty_'+var+namestring for var in varlist],
+                'x_expressions': ['uncertainty_'+var+namestring for var in varlist],
                 'analysis_modules': ['QuadraticSumOfHistograms'],
-                'quad_sum_nicks': ['IDSF IsoSF TriggerSF','Robs Ryz Ryj F A','eff toy lumi bkg stats JEC'],
+                'quad_sum_nicks': ['IDSF IsoSF TriggerSF','Robs Ryz Ryj F A','eff toy lumi bkg stats_'+mc+' JEC'],
                 'quad_sum_result_nicks': ['eff','toy','total'],
                 #'legend':'upper left',
                 'filename': obs,
-                'nicks_whitelist': ['total','lumi','bkg','eff','stats','toy','JEC','unf'],
-                #'nicks_whitelist': ['stats'],#'toy','unf'],
-                'labels': ['total','lumi','bkg','efficiency','unfolding','model','JEC','statistical'],
+                'nicks_whitelist': ['statistical','total','lumi','bkg','eff','stats_'+mc,'JEC','toy'],
+                #'nicks_whitelist': ['stats','toy'],
+                #'labels': ['Unfolding','Model'],
+                'labels': ['Statistical','Total systematic','Lumi','Background','ID/Trigger','Unfolding statistical','JEC','Unfolding modelling'],
                 'alphas': [0.5],
                 'x_label': obs,
                 'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
@@ -1717,30 +1476,30 @@ def plot_uncertainties_3D(args=None, obs='zpt', cut='_jet1pt15', data='BCDEFGH',
                 'x_log': True,
                 'step': [True],
                 'line_styles': ['-'],
-                'markers': ['o','v','^','>','<','s','D','fill'],
-                'colors': ['black','red','blue','green','purple','orange','magenta','cornflowerblue'],
+                'markers': ['fill','o','v','^','>','<','s','D'],
                 'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
             })
             if not mc == 'toy':
-                d['nicks_whitelist'] = ['total','lumi','bkg','eff','stats','JEC','unf']
-                d['labels'] = ['total','lumi','bkg','efficiency','unfolding','JEC','statistical']
-                d['quad_sum_nicks'][-1] = 'eff lumi bkg stats JEC'
-                d['markers'] = ['o','v','^','>','<','D','fill'],
-                d['colors'] = ['black','red','blue','green','purple','magenta','cornflowerblue'],
+                d['nicks_whitelist'] = ['statistical','total','lumi','bkg','eff','stats_'+mc,'JEC'],
+                d['labels'] = ['Statistical','Total systematic','Lumi','Background','ID/Trigger','Unfolding statistical','JEC'],
+                d['quad_sum_nicks'][-1] = 'eff lumi bkg stats_'+mc+' JEC'
+                d['markers'] = ['fill','o','v','^','>','<','s'],
             if not ybmin+ysmin>2:
                 plots.append(d)
     return [PlottingJob(plots=plots, args=args)]
 
 
-'''
 def plot_compare_FSR_3D(args=None, obs='zpt', cut='_jet1pt20', match='',puid=''):
     noFSR_source1 = plots_folder+cut+puid+'/'+obs+'_amc'+match+'.root'
     inFSR_source1 = plots_folder+cut+'_FSR01'+puid+'/'+obs+'_amc'+match+'.root'
+    trueZ_source1 = plots_folder+cut+'_TrueZ'+puid+'/'+obs+'_amc'+match+'.root'
     noFSR_source2 = plots_folder+cut+puid+'/'+obs+'_mad'+match+'.root'
     inFSR_source2 = plots_folder+cut+'_FSR01'+puid+'/'+obs+'_mad'+match+'.root'
+    trueZ_source2 = plots_folder+cut+'_TrueZ'+puid+'/'+obs+'_mad'+match+'.root'
     noFSR_source3 = plots_folder+cut+puid+'/'+obs+'_hpp'+match+'.root'
     inFSR_source3 = plots_folder+cut+'_FSR01'+puid+'/'+obs+'_hpp'+match+'.root'
-    filelist = [noFSR_source1,inFSR_source1,noFSR_source2,inFSR_source2,noFSR_source3,inFSR_source3]
+    trueZ_source3 = plots_folder+cut+'_TrueZ'+puid+'/'+obs+'_hpp'+match+'.root'
+    filelist = [noFSR_source1,inFSR_source1,trueZ_source1,noFSR_source2,inFSR_source2,trueZ_source2,noFSR_source3,inFSR_source3,trueZ_source3]
     filelist_binned = []
     for x in filelist:
         invert_3Dhists(args,x)
@@ -1752,36 +1511,37 @@ def plot_compare_FSR_3D(args=None, obs='zpt', cut='_jet1pt20', match='',puid='')
             d = ({
                 'files': filelist_binned,
                 'folders': [''],
-                'nicks': [   'genundressedamc', 'gendressedamc', 'genundressedmad', 'gendressedmad', 'genundressedhpp', 'gendressedhpp',
-                            'recoundressedamc','recodressedamc','recoundressedmad','recodressedmad','recoundressedhpp','recodressedhpp'],
-                'x_expressions': ['gen'+obs+namestring]*6+[obs+namestring]*6,
+                'nicks': [  'bareamc', 'dressedamc','trueamc',
+                            'baremad', 'dressedmad','truemad',
+                            'barehpp', 'dressedhpp','truehpp',
+                            ],
+                #'x_expressions': ['gen'+obs+namestring],
+                'x_expressions': [obs+namestring],
                 'analysis_modules': ['NormalizeByBinWidth','Ratio'],
-                'ratio_numerator_nicks': ['genundressedamc', 'gendressedamc', 'genundressedmad', 'gendressedmad', 'genundressedhpp', 'gendressedhpp'],
-                'ratio_denominator_nicks': ['recoundressedamc','recodressedamc','recoundressedmad','recodressedmad','recoundressedhpp','recodressedhpp'],
+                'ratio_numerator_nicks': ['dressedamc','trueamc','dressedmad','truemad', 'dressedhpp','truehpp'],
+                'ratio_denominator_nicks': ['bareamc']*2+['baremad']*2+['barehpp']*2,
                 'ratio_denominator_no_errors': False,
-                'y_subplot_label': 'Dressed/Bare',
+                'y_subplot_label': 'Ratio to bare',#'Dressed/Bare',
                 'filename': obs,
                 'x_label': obs,
                 'x_log': True,
                 'x_errors': [1],
                 #'subplot_legend': 'upper left',
+                'subplot_fraction': 40,
                 'y_log': True,
                 'y_subplot_lims': [0.9,1.1],
-                'labels': [ 'Bare Gen Muons amc','Dressed Gen Muons amc','Bare Reco Muons amc','Dressed Reco Muons amc',
-                            'Bare Gen Muons mad','Dressed Gen Muons mad','Bare Reco Muons mad','Dressed Reco Muons mad',
-                            'Bare Gen Muons hpp','Dressed Gen Muons hpp','Bare Reco Muons hpp','Dressed Reco Muons hpp',
-                            ],
-                'www': 'comparison_FSR'+cut+puid+'_'+match+'/FSR'+namestring,
+                'labels': ['aMC@NLO']*3+['Madgraph']*3+['Herwig++']*3,
+                'www': 'comparison_FSR'+cut+puid+match+'/FSR'+namestring,
                 'markers': ['.'],
                 'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
-                'colors': ['darkblue','blue','darkred','red','darkgreen','green','darkorange','orange','darkmagenta','magenta','darkcyan','cyan','blue','red','green','orange','magenta','cyan'],
+                'colors': ['darkblue','blue','royalblue','darkred','red','salmon','darkgreen','green','lime','darkblue','blue','darkred','red','darkgreen','green'],
             })
             if not ybmin+ysmin>2:
                 plots.append(d)
     return [PlottingJob(plots=plots, args=args)]
-'''
 
-def plot_compare_unfold_3D(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc='mad', match='',dressed='',puid=''):
+
+def plot_compare_unfold_3D(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc='amc', match='',dressed='',puid=''):
     unf_source  = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_'+mc+match+'.root'
     data_source = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+match+'.root'
     filelist = [unf_source,data_source]
@@ -1799,8 +1559,8 @@ def plot_compare_unfold_3D(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc
                 'nicks': ['unf','gen','sig','reco'],
                 'x_expressions': ['unfolded'+obs+namestring,'gen'+obs+namestring,'signal'+obs+namestring,obs+namestring],
                 'analysis_modules': ['NormalizeByBinWidth','Ratio'],
-                'ratio_numerator_nicks': ['unf','gen'],
-                'ratio_denominator_nicks': ['sig','reco'],
+                'ratio_numerator_nicks': ['sig','reco'],
+                'ratio_denominator_nicks': ['unf','gen'],
                 'ratio_denominator_no_errors': False,
                 'y_subplot_label': 'Ratio',
                 'subplot_fraction': 40,
@@ -1808,10 +1568,12 @@ def plot_compare_unfold_3D(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc
                 'x_label': obs,
                 'x_log': True,
                 'x_errors': [1],
+                'x_ticks': [30,50,100,200,400,1000],
                 'subplot_legend': 'upper left',
                 'y_log': True,
+                'y_label': 'Events per binsize',
                 'y_subplot_lims': [0.9,1.1],
-                'labels': ['Unfolded','Gen','Signal','Reco','Unfolded/Gen','Signal/Reco'],
+                'labels': ['Unfolded','Gen','Signal','Reco','Signal/Unfolded','Reco/Gen'],
                 'www': 'comparison_unfold'+cut+match+puid+dressed+'_'+data+'_by_'+mc+'/unfold'+namestring,
                 'markers': ['.'],
                 'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
@@ -1821,51 +1583,14 @@ def plot_compare_unfold_3D(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc
                 plots.append(d)
     return [PlottingJob(plots=plots, args=args)]
 
-def plot_3Dresponse(args=None,obs='phistareta',cut='_jet1pt20',mc='amc',match='',dressed='_FSR01',puid=''):
-    [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
-    ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
-    ylist = [((xb,yb),(xs,ys))  for (xs,ys) in zip(ybins[:-1],ybins[1:]) for (xb,yb) in zip(ybins[:-1],ybins[1:]) if xb+xs<2.5]
-    plots=[]
-    d=({
-        'files': [plots_folder+cut+dressed+puid+'/'+obs+'_'+mc+match+'.root'],
-        'folders': [''],
-        'x_label': 'reco'+obs,
-        'x_expressions': 'response',
-        'x_ticks': [],
-        'y_label': 'gen'+obs,
-        'y_ticks': [],
-        'z_log':True,
-        'z_lims':[1e-3,1e0],
-        'z_label': 'Fraction of events',
-        #'analysis_modules': ['NormalizeColumnsToUnity'],
-        'analysis_modules': ['NormalizeRowsToUnity',],
-        'colormap': 'summer_r',
-        'www': 'response3D'+cut+'/'+mc+match,
-        'filename': obs,
-        'lines': l_obsbinedges,
-        'texts': ['yb{}ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))],
-               # +['yb{}ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))],
-        'texts_x': [0.02,0.09,0.16,0.23,0.30, 0.37,0.44,0.51,0.58,0.65,0.72,0.78, 0.85, 0.91, 0.96],#+15*[1.02],
-        'texts_y': 15*[1.02],#+[0.02,0.09,0.16,0.23,0.30, 0.37,0.44,0.51,0.58,0.65,0.72,0.78, 0.85, 0.91, 0.96],
-        #'x_lims': [0,18],
-        #'y_lims': [0,18],
-        'texts_size': [5],
-        'vertical_lines': l_obsbinedges,
-        'lines_styles': 5*[':']+['--']+3*[':']+['--']+2*[':']+['--']+[':']+['--'],
-        'vertical_lines_styles': 5*[':']+['--']+3*[':']+['--']+2*[':']+['--',':','--'],
-    })
-    #return d
-    plots.append(d)
-    return [PlottingJob(plots=plots, args=args)]
-
-def plot_crossections(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH',mc='NLO',match='',dressed='_FSR01',puid=''):
+def plot_crossections(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH',mc='NNLO',match='',dressed='',puid=''):
     unfold_3Dhist_by_inversion(args,obs,cut,data,'amc',match,dressed,puid)
     
-    data_source = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_amc'+match+'.root'
+    data_source = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_mad'+match+'.root'
     mc_source   = plots_folder+cut+dressed+puid+'/'+obs+'_'+mc+'.root'
-    unc_source  = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+data+match+'_total.root'
+    unc_source  = plots_folder+cut+dressed+puid+'/uncertainty/'+obs+'_'+'BCDEFGH'+match+'_total.root'
 
-    filelist = [mc_source,data_source]#,unc_source]
+    filelist = [mc_source,data_source,unc_source]
     filelist_binned = []
     for x in filelist:
         invert_3Dhists(args,x)
@@ -1875,41 +1600,74 @@ def plot_crossections(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH',mc='NLO
     scaling = [1e20,1e19,1e18,1e17,1e16,1e13,1e12,1e11,1e10,1e7,1e6,1e5,1e2,1e1,1e0]
     #scaling = [1e6,1e5,1e4,1e3,1e0,1e6,1e5,1e4,1e1,1e6,1e5,1e2,1e3,1e3,1e0]
     plots=[]
-    #namestring = '_yb{}_ys{}'.format(int(2*ybmin),int(2*ysmin))
-    d = ({
+    namelist = ['_yb{}_ys{}'.format(int(2*yboost[0]),int(2*ystar[0])) for (yboost,ystar) in ylist]
+    #namelist = [' _yb{}_ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))]
+    d1 = ({
         'files': [filelist_binned[0]]*len(ylist)+[filelist_binned[1]]*len(ylist),
         'folders': [''],
-        'x_expressions':  ['gen'+obs+'_yb{}_ys{}'.format(int(2*yboost[0]),int(2*ystar[0])) for (yboost,ystar) in ylist]
-                    +['unfolded'+obs+'_yb{}_ys{}'.format(int(2*yboost[0]),int(2*ystar[0])) for (yboost,ystar) in ylist],
-        'nicks':    ['gen_yb{}_ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))]
-                   +['unf_yb{}_ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))],
+        'x_expressions':  ['gen'+obs+x for x in namelist]
+                    +['unfolded'+obs+x for x in namelist],
+        'nicks':       ['gen'+x for x in namelist]+['unf'+x for x in namelist],
+        'scale_nicks': ['gen'+x for x in namelist]+['unf'+x for x in namelist],
+        'scales': [1e0/35.9/1000*s for s in scaling],
         'analysis_modules': ['NormalizeByBinWidth','ScaleHistograms'],
-        'scale_nicks':  ['gen_yb{}_ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))]
-                       +['unf_yb{}_ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))],
-        'scales': 2*[1e0/35.9/1000*s for s in scaling],
         'x_log': True,
         'x_errors': [1]*len(ylist)+[0]*len(ylist),
         'y_log': True,
         'y_errors': [False]*len(ylist)+[True]*len(ylist),
         'markers': ['']*len(ylist)+['^','1','p','+','*','<','2','o','x','>','3','s','v','4','d'],
-        'colors': ['grey']*len(ylist)+
+        'colors': ['dimgrey']*len(ylist)+
                     [color for color in ['red','salmon','crimson','violet','brown','blue','cyan','royalblue','teal','orange','gold','yellow','green','lime','purple']],
         'y_lims':[1e-6,1e21] if obs == 'zpt' else [1e-4,1e23],
         'filename': obs,
         'x_label': obs,
-        'www': 'unfolded3D_'+data+'_'+mc+cut+dressed+puid,
+        'labels': ['Theory ('+mc+')']*len(ylist)+['Unfolded data']*len(ylist),
+        'www': 'crossections_'+data+'_'+mc+cut+dressed+puid,
+        #'marker_fill_styles':['none'],
+        #'hatch': ['+'],
         'legend': None,
+        #'legen_cols': 2,
         'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
-        'legend_cols': 2,
-        })
-    if mc in ['LO','NLO','NNLO']:
-        d['scales']=[1e0*s for s in scaling]+[1e0/35.9/1000*s for s in scaling]
-        d['histograms_to_normalize_by_binwidth'] = ['unf_yb{}_ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))]
+    })
     if obs == 'zpt':
-        d['y_label'] = r'$ \\frac{d^3\\mathit{\\sigma}}{d\\mathit{p}_T^Z d\\mathit{y_b} d\\mathit{y^*}}/(\\frac{p\\mathit{b}}{GeV})$'
+        d1['y_label'] = r'$ \\frac{d^3\\mathit{\\sigma}}{d\\mathit{p}_T^Z d\\mathit{y_b} d\\mathit{y^*}}/(\\frac{p\\mathit{b}}{GeV})$'
     elif obs == 'phistareta':
-        d['y_label'] = r'$ \\frac{d^3\\mathit{\\sigma}}{d\\Phi^{*}_{\\eta} d\\mathit{y_b} d\\mathit{y^*}}/p\\mathit{b}$'
-    plots.append(d)
+        d1['y_label'] = r'$ \\frac{d^3\\mathit{\\sigma}}{d\\Phi^{*}_{\\eta} d\\mathit{y_b} d\\mathit{y^*}}/p\\mathit{b}$'
+    plots.append(d1)
+    
+    d2 = deepcopy(d1)
+    d2['analysis_modules'] = ['Ratio','AddHistograms']
+    d2['files'] += [filelist_binned[2]]*len(ylist)
+    d2['x_expressions'] += ['uncertainty_total'+x for x in namelist]
+    d2['nicks']         += ['unc'+x for x in namelist]
+    d2.update({
+        'ratio_numerator_nicks':  ['unf'+x for x in namelist]+['unc'+x for x in namelist],
+        'ratio_denominator_nicks':['gen'+x for x in namelist]+['unc'+x for x in namelist],
+        'ratio_result_nicks':     ['ratio'+x for x in namelist]+['unity'+x for x in namelist],
+        'add_nicks':             ['unity'+x+' ratio'+x for x in namelist]
+                                +['unity'+x+' unc'+x for x in namelist]
+                                +['unity'+x+' unc'+x for x in namelist],
+        'add_scale_factors': [str(len(ylist)-x-1)+' 1' for x in xrange(len(ylist))]
+                            +[str(len(ylist)-x)+' 1' for x in xrange(len(ylist))]
+                            +[str(len(ylist)-x)+' -1' for x in xrange(len(ylist))],
+        'add_result_nicks': ['stacked'+x for x in namelist]+['up'+x for x in namelist]+['down'+x for x in namelist],
+        'nicks_whitelist': [('stacked'+x,'up'+x,'down'+x) for x in namelist],
+        'subplot_nicks': ['_dummy'],
+        'markers': [(x,'fill','fill') for x in ['^','1','p','+','*','<','2','o','x','>','3','s','v','4','d']],
+        'colors': [(color,'silver','white') for color in ['red','salmon','crimson','violet','brown','blue','cyan','royalblue','teal','orange','gold','yellow','green','lime','purple']],
+        'y_lims': [0.5,15.5],
+        'x_errors': [0],
+        'y_ticks': [0],
+        'y_log': False,
+        'y_errors': True,
+        'figsize': [6,12],
+        'lines': [(0.5+x,0.75+x,1.25+x) for x in xrange(3*len(ylist))],
+        'lines_styles': ['-',':',':'],
+        'filename': obs+'_ratio',
+        'y_label': 'Unfolded data / Theory ('+mc+')',
+        'legend': None,
+    })
+    plots.append(d2)
     return [PlottingJob(plots=plots, args=args)]
 
 def write_results_to_txt(args=None,obs='phistareta',cut='_jet1pt20',data='BCDEFGH',mc='mad',match='',dressed='_FSR01',puid=''):
@@ -2039,34 +1797,35 @@ def plot_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='mad',
 '''
 
 
-def write_to_root(args=None,obs='zpt',order='NLO'):
+def write_to_root(args=None,obs='zpt',cut='_jet1pt20',match='',dressed='',puid='',order='NNLO',pdf=''):
     [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args,obs)
     [l_obshists, h_reco, h_gen, h_recoresponse, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args, obs)
     ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
     ylist = [((xb,yb),(xs,ys))  for (xs,ys) in zip(ybins[:-1],ybins[1:]) for (xb,yb) in zip(ybins[:-1],ybins[1:]) if xb+xs<2.5]
-    
-    #index_nlo  = lines.index('NLO')
-    #index_nnlo = lines.index('NNLO')
+    dpdf = ({  '_CT14nlo': '0', '_MMHT2014nlo68cl': '1', '_NNPDF30_nlo_as_0118': '2', '_PDF4LHC15_nlo_mc': '3'})
+    dorder = ({'LO': '1', 'NLO': '2', 'NNLO': '0'})
     for ((xb,yb),(xs,ys)) in ylist:
-        input_file = os.environ["EXCALIBURPATH"]+"/bettina_xsec/ZJ.NNLO.ZJtriple_yb{}_ystar{}_ptz.cross_section-NNPDF31_nnlo_as_0118.LO_NLO_NNLO.txt".format(int(2*xb),int(2*xs))
-        with open(input_file) as f: lines = [line.rstrip('\n') for line in f]
-        lines = [line.rstrip(']') for line in lines]
-        index_start = lines.index(order)
-        index_end   = lines.index('N'+order if order in ['LO','NLO'] else '####################################################################### ')
+        #input_file = "/portal/ekpbms1/home/tberger/PDFfits/xfitter-2.0.0/datafiles/lhc/cms/zjet/ZJtriple/theory_files/ZJ.NNLO.ZJtriple_yb{}_ystar{}_ptz.root".format(int(2*xb),int(2*xs))
+        input_file = "/portal/ekpbms1/home/tberger/PDFfits/xfitter-2.0.0/datafiles/lhc/cms/zjet/ZJtriple/theory_files/ZJ.NNLO.ZJtriple_yb{}_ystar{}_ptz_NNPDF31_nnlo_as_0118.root".format(int(2*xb),int(2*xs))
+        f_in = ROOT.TFile(input_file,"READ")
+        #central_name = "h"+dorder[order]+"1001"+dpdf[pdf]+"0"
+        #up_name      = "h"+dorder[order]+"1001"+dpdf[pdf]+"8"
+        #down_name    = "h"+dorder[order]+"1001"+dpdf[pdf]+"9"
+        central_name = "h3100100"
+        up_name      = "h3100108"
+        down_name    = "h3100109"
+        h_central = f_in.Get(central_name)
+        h_up      = f_in.Get(up_name)
+        h_down    = f_in.Get(down_name)
         y_index = l_ybinedges[int(2*xs)]+int(2*xb)
-        print y_index
-        list_lo =[]
-        for i in xrange(index_start,index_end):
-            line=lines[i+1].split('  ')
-            line.pop(0)
-            for x in line:
-                list_lo.append(float(x))
-        print list_lo
-        for j in xrange(len(list_lo)):
+        for j in xrange(h_central.GetNbinsX()):
             obs_index = l_obsbinedges[y_index]+j+1
             print obs_index
-            h_gen.SetBinContent(obs_index,list_lo[j])
-    output_file = ROOT.TFile("/ceph/tberger/plots/3D/"+obs+"_"+order+"_jet1pt20.root","RECREATE")
+            h_gen.SetBinContent(obs_index,h_central[j+1]*35.9*1000*h_central.GetBinWidth(j+1))
+            h_gen.SetBinError(obs_index,h_gen[obs_index]*max(abs(h_up[j+1]),abs(h_down[j+1])))
+    output_file = plots_folder+cut+dressed+puid+'/'+obs+'_'+order+match+pdf+'.root'
+    print "file written to",output_file
+    f_out = ROOT.TFile(output_file,"RECREATE")
     h_gen.Write()
     h_reco.Write()
     return
@@ -2120,6 +1879,182 @@ def unfold_3Dhist(args=None,obs='zpt',cut='_jet1pt20',data='amc',mc='toy',match=
     return [PlottingJob(plots=plots, args=args)]
     #return d(
 
-        
-        
+
+def plot_variations(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc='toy', match='',dressed='',puid=''):
+    #central_source = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+match+'.root'
+    central_source = plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_'+mc+match+'.root'
+    varlist = ['Robs','Ryj','Ryz','F','A']
+    plots=[]
+    for var in varlist:
+        #filelist = [central_source]+[plots_folder+cut+dressed+puid+'/variations/'+obs+'_'+data+match+'_'+var+x+'.root' for x in ['Up','Down']]
+        filelist = [central_source]+[plots_folder+cut+dressed+puid+'/unfolded/'+obs+'_'+data+'_by_'+mc+match+'_'+var+x+'.root' for x in ['Up','Down']]
+        filelist_binned = []
+        for x in filelist:
+            invert_3Dhists(args,x)
+            filelist_binned.append(x.replace('.root','_binned.root'))
+        for ybmin in [0.0,0.5,1.0,1.5,2.0]:
+          for ysmin in [0.0,0.5,1.0,1.5,2.0]:
+            namestring = '_yb{}_ys{}'.format(int(2*ybmin),int(2*ysmin))
+            d = ({
+                'files': [filelist_binned],
+                'nicks': ['central','up','down'],
+                'folders': [''],
+                'x_expressions': ['unfolded'+obs+namestring],
+                #'x_expressions': [obs+namestring] if not var=='F' else ['gen'+obs+namestring],
+                'www': 'comparison_variations'+cut+'_'+data+'_by_'+mc+dressed+puid+match+'/variations'+namestring,
+                'y_log': True,
+                'x_log': True,
+                'x_label': obs,
+                'x_errors': [1],
+                'x_ticks': [30,50,100,1000],
+                'filename': obs+'_'+var,
+                'analysis_modules': ['Ratio'],
+                'ratio_numerator_nicks': ['up','down'],
+                'ratio_denominator_nicks': ['central'],
+                'ratio_denominator_no_errors': False,
+                'markers': ['o','^','v','^','v'],
+                'colors': ['black','darkorange','darkgreen','darkorange','darkgreen'],
+                'y_subplot_lims': [0.985,1.015],
+                'y_subplot_label': 'Ratio to central',
+            })
+            if not ybmin+ysmin>2:
+                plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
+    
+
+def plot_3Dresponse(args=None,obs='zpt',cut='_jet1pt20',data='',mc='toy',match='',dressed='',puid=''):
+    [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
+    
+    #unfold_3Dhist_by_inversion(args,obs,cut,data,mc,match,dressed,puid)
+    
+    #data_source1 = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'.root'
+    #data_source1 = plots_folder+cut+dressed+puid+'/'+obs+'_ptz'+match+'.root'
+    #data_source2 = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'_noswitch.root'
+    #data_source3 = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'_constswitch05.root'
+    #data_source4 = plots_folder+cut+dressed+puid+'/'+obs+'_toy'+match+'_constswitch10.root'
+    #mc_source = plots_folder+cut+dressed+puid+'/'+obs+'_ptz'+match+'.root'
+    #data_source = plots_folder+cut+dressed+puid+'/'+obs+'_'+data+match+'.root'
+    mc_source   = plots_folder+cut+dressed+puid+'/'+obs+'_'+mc+match+'.root'
+    plots=[]
+    lines_list = 5*[':']+['--']+3*[':']+['--']+2*[':']+['--',':','--']
+    samples = ['toy','pow','amc']#,'hpp','mad']
+    data_source = ([plots_folder+cut+dressed+puid+'/'+obs+'_'+x+match+'.root' for x in ['toy']]
+        +[  plots_folder+cut+dressed+puid+'/variations/'+obs+'_toy'+match+'_switchDown.root',
+            plots_folder+cut+dressed+puid+'/variations/'+obs+'_toy'+match+'_switchUp.root'])
+    d1 = ({
+        'files': data_source,
+        'nicks': ['reco'+x for x in samples]+['gen'+x for x in samples],
+        'folders': [''],
+        'x_expressions': len(samples)*[''+obs]+len(samples)*['gen'+obs],
+        'www': 'response3D'+cut,
+        'y_log': True,
+        'x_label': 'Bin',
+        #'x_lims':[0,80],
+        #'x_lims':[170,240],
+        #'x_ticks': [30,50,100,1000],
+        'filename': obs,#+'_last',
+        'labels': ['Toy','Powheg','aMC@NLO','Herwig++','Madgraph'],
+        #'labels': 2*['Toy','noswitch','switch05','switch10'],
+        'analysis_modules': ['Ratio'],
+        'ratio_numerator_nicks': ['reco'+x for x in samples],
+        'ratio_denominator_nicks': ['gen'+x for x in samples],
+        #'ratio_denominator_no_errors': False,
+        'x_errors': len(samples)*[0]+2*len(samples)*[1],
+        'y_errors': len(samples)*[1]+len(samples)*[0]+len(samples)*[1],
+        'markers': ['x','1','2','3','4']+2*len(samples)*[''],
+        'figsize': [36,6],
+        'vertical_lines': l_obsbinedges,
+        'vertical_lines_styles': lines_list,
+        'colors': ['grey','orange','red','blue','green','darkgrey','darkorange','darkred','darkblue','darkgreen','black','orange','red','blue','green'],
+        'subplot_fraction': 40,
+        'y_subplot_lims': [0.5,1.5],
+        #'y_subplot_lims': [0.8,1.0],
+        #'y_subplot_label': 'Ratio to central',
+    })
+    plots.append(d1)
+    d2 = ({
+        'files': [mc_source],
+        'folders': [''],
+        'x_expressions': ['response'],
+        'x_ticks': [],
+        'y_label': 'gen'+obs,
+        'x_label': obs,
+        'y_ticks': [],
+        'z_log':True,
+        'z_lims':[1e-3,1e0],
+        'z_label': 'Fraction of events',
+        #'analysis_modules': ['NormalizeColumnsToUnity'],
+        'analysis_modules': ['NormalizeRowsToUnity',],
+        'colormap': 'summer_r',
+        'www': 'response3D'+cut,
+        'filename': obs+'_response',
+        'lines': l_obsbinedges,
+        'vertical_lines': l_obsbinedges,
+        'lines_styles': lines_list,
+        'vertical_lines_styles': lines_list,
+    })
+    plots.append(d2)
+    d3 = ({
+        'files': [mc_source],
+        'nicks': ['R'+obs,'Ryz','Ryj'],
+        'folders': [''],
+        'x_expressions': [obs+'res','zyres','jet1yres'],
+        'www': 'response3D'+cut,
+        'x_label': 'Bin',
+        'y_lims':[0,0.1],# if obs=='zpt' else [0,0.03],
+        #'y_log': True,
+        'markers': ['1','2','3'],
+        'colors': ['green','orange','purple'],
+        'filename': obs+'_resolutions',
+        'figsize': [36,6],
+        'vertical_lines': l_obsbinedges,
+        'vertical_lines_styles': lines_list,
+    })
+    plots.append(d3)
+    d4 = deepcopy(d3)
+    d4.update({
+        'nicks': ['F','A','switch'],
+        'x_expressions': [obs+'F',obs+'A',obs+'switch'],
+        #'y_lims':[0.6,1.0],# if obs=='zpt' else [0.8,1.0],
+        'y_lims':[0,0.5],
+        'markers': ['4','x',''],
+        'colors': ['black','red','blue'],
+        'filename': obs+'_rates',
+    })
+    plots.append(d4)
+    return [PlottingJob(plots=plots, args=args)]
+
+
+def create_gendistributions(args=None, obs='jet1y', cut='_jet1pt20', mc='mad',match='',dressed='',puid=''):
+    plots=[]
+    output_file = plots_folder+cut+dressed+puid+'/gen'+obs+'_'+mc+'.root'
+    if os.path.exists(output_file):
+        print "WARNING: file "+output_file+" already exists. Check if it can be removed!"
+        return
+    d = ({
+        'files': [datasets[mc]],
+        'folders': ['genzjetcuts_L1L2L3/ntuple'],
+        'nicks':['gen'+obs],
+        'x_expressions': [obs],
+        'filename': output_file.replace('.root',''),
+        'x_log': True,
+        'plot_modules': ['ExportRoot'],
+        'output_dir': '/',
+        'weights': ['(abs(genmupluseta)<2.4)&&(abs(genmuminuseta)<2.4)&&(genmupluspt>25)&&(genmuminuspt>25)&&(abs(genzmass-91.1876)<20)'],
+    })
+    if cut=='_jet1pt20':
+        d['weights'] = ['(genjet1pt>20)&&'+x for x in d['weights']]
+    else:
+        print "cuts not known"
+    if obs == 'zpt':
+        d['x_bins'] = ' '.join(['{}'.format(x) for x in np.logspace(1,np.log(1000)/np.log(25),100,True,25)])
+    elif obs == 'phistareta':
+        d['x_bins'] = ' '.join(['{}'.format(x) for x in np.logspace(1,np.log(50)/np.log(0.4),100,True,0.4)])
+    elif obs in ['zy','jet1y']:
+        d['x_bins'] = ['96,-2.4,2.4']
+    else:
+        d['x_bins'] = obs
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
+
 

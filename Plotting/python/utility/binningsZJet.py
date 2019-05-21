@@ -52,8 +52,9 @@ class BinningsDictZJet(BinningsDict):
             #'phistareta':   '0.001 0.005 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 4 6 12 25 50 100',
             'phistareta':   '0.102 0.114 0.128 0.145 0.165 0.189 0.219 0.258 0.312 0.391 0.524 0.695 0.918 1.153 1.496 1.947 2.522 3.2774 6 12 25 50 100 ',
             #'zpt':          '30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 300 400 1000',
-            'zpt':          '5 10 15 20 25 30 35 40 45 50 60 70 80 90 100 110 130 150 170 190 220 250 400 1000',
+            #'zpt':          '5 10 15 20 25 30 35 40 45 50 60 70 80 90 100 110 130 150 170 190 220 250 400 1000',
             #'zpt':          ' '.join(['{}'.format(int(10*x)/10.) for x in np.logspace(1,3,30)]),
+            'zpt':          ' '.join(['{}'.format(int(10*x)/10) for x in np.logspace(1,np.log(1000)/np.log(25),1000,True,25)]),
             #'zpt':          '5 50 100 250 400 650 1000',
             'zy':           '30,-2.4,2.4',
             'abs(zy)':      '12,0,2.4',
@@ -114,8 +115,8 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
         if (yboostbin==(0.0,0.5) and ystarbin==(2.0,2.5)):
             print obs+" binning changed"
             d.update({  'x_ticks': [40,60,100,200],
-                        'x_bins': ['25 30 40 50 70 90 110 150 250'],
-                        'y_bins': ['25 30 40 50 70 90 110 150 250'],
+                        'x_bins': ['25 30 40 50 70 90 110 150 250 1000'],
+                        'y_bins': ['25 30 40 50 70 90 110 150 250 1000'],
                         })
         elif ( (yboostbin==(0.0,0.5) and ystarbin==(1.5,2.0))
             or (yboostbin==(0.5,1.0) and ystarbin==(1.5,2.0))
@@ -137,8 +138,8 @@ def rebinning(args,d,obs,yboostbin,ystarbin):
         if (yboostbin==(0.0,0.5) and ystarbin==(2.0,2.5)):
             print obs+" binning changed"
             d.update({  'x_ticks': [0.5, 1, 2, 4],
-                        'x_bins': ['0.4 0.6 0.8 1.0 5'],
-                        'y_bins': ['0.4 0.6 0.8 1.0 5'],
+                        'x_bins': ['0.4 0.6 0.8 1.0 5 50'],
+                        'y_bins': ['0.4 0.6 0.8 1.0 5 50'],
                         #'x_bins': ['0.4 0.5 0.6 0.7 0.8 1.0 5.0'],
                         #'y_bins': ['0.4 0.5 0.6 0.7 0.8 1.0 5.0'],
                         })

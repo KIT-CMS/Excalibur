@@ -89,26 +89,17 @@ def generate_basiccutstring(args=None, cut='_jet1pt20'):
 
 def generate_datasets(args=None):
     datasets = ({
-        'BCDEFGH' : '/ceph/tberger/excalibur_results/2019-01-28/data16_mm_BCDEFGH_SiMu07Aug17.root',
-        'amc' :     '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-        'hpp' :     '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-        'mad' :     '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
-        'TTJets' :  '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
-        'ZZ' :      '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_ZZpythia8.root',
-        'WZ' :      '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_WZJToLLLNu.root',
-        'WW' :      '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_WWTo2L2Nupowheg.root',
-        'TW':       '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_TW.root',
-   #     'BCDEFGH' : '/ceph/tberger/excalibur_results/2018-11-14/data16_mm_BCDEFGH_SiMu07Aug17.root',
-   #     'amc' :     '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-   #     'hpp' :     '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-   #     'TTJets':   '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
-   #     'ST'    :   '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_ST.root',
-   #     'WW'    :   '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_WWpythia8.root',
-   #     'WZ'    :   '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_WZpythia8.root',
-   #     'ZZ'    :   '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_ZZpythia8.root',
-   #     'WJets' :   '/ceph/tberger/excalibur_results/2018-11-14/mc16_mm_BCDEFGH_WJetsToLNumadgraph.root',
-        #'BCDEFGH':  '/portal/ekpbms2/home/tberger/Excalibur/CMSSW_7_4_7/src/Excalibur/data16_mm_BCD_SiMu07Aug17.root',
-        #'amc':      '/portal/ekpbms2/home/tberger/Excalibur/CMSSW_7_4_7/src/Excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+        'BCDEFGH' : '/storage/8/tberger/excalibur_results/2019-05-20/data16_mm_BCDEFGH_SiMu07Aug17.root',
+        'amc' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+        'hpp' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        'mad' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+        'pow' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
+        'ptz' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
+        'TTJets' :  '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
+        'ZZ' :      '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_ZZpythia8.root',
+        'WZ' :      '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_WZJToLLLNu.root',
+        'WW' :      '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_WWTo2L2Nupowheg.root',
+        'TW':       '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_TW.root',
     })
     return datasets
 

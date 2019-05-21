@@ -16,7 +16,7 @@ class ExpressionsDictZJet(ExpressionsDict):
         self.expressions_dict.update({
             'alpha': '(jet2pt/zpt)',
             'genalpha': '(genjet2pt/genzpt)',
-            'A': '(zpt-jet1pt)/(zpt+jet1pt)',
+            #'A': '(zpt-jet1pt)/(zpt+jet1pt)',
             'B': '1-mpf',
             'ystar': 'abs(zy-jet1y)/2',
             'yboost': 'abs(zy+jet1y)/2',

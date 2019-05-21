@@ -25,26 +25,35 @@ variationstring=({1:'Up',0: '',-1:'Down'})
 basiccutstring = ({
     '_zpt30':                       '(abs(mupluseta)<2.4)*(abs(muminuseta)<2.4)*(mupluspt>25)*(muminuspt>25)*(abs(zmass-91.1876)<20)*(zpt>30)',
     '_phistareta08':                '(abs(mupluseta)<2.4)*(abs(muminuseta)<2.4)*(mupluspt>25)*(muminuspt>25)*(abs(zmass-91.1876)<20)*(phistareta>0.8)',
-    '_jet1pt30':                    '(abs(mupluseta)<2.4)*(abs(muminuseta)<2.4)*(mupluspt>25)*(muminuspt>25)*(abs(zmass-91.1876)<20)*(jet1pt>30)',
+    '_jet1pt20':                    '(abs(mupluseta)<2.4)*(abs(muminuseta)<2.4)*(mupluspt>25)*(muminuspt>25)*(abs(zmass-91.1876)<20)*(jet1pt>20)',
     '_phistareta08_jet1pt10':       '(abs(mupluseta)<2.4)*(abs(muminuseta)<2.4)*(mupluspt>25)*(muminuspt>25)*(abs(zmass-91.1876)<20)*(phistareta>0.8)*(jet1pt>10)',
     '_zpt30_jet1pt10':              '(abs(mupluseta)<2.4)*(abs(muminuseta)<2.4)*(mupluspt>25)*(muminuspt>25)*(abs(zmass-91.1876)<20)*(zpt>30)*(abs(jet1y)<2.4)*(jet1pt>10)',
     'gen_zpt30':                    '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genzpt>30)',
     'gen_phistareta08':             '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genphistareta>0.8)',
-    'gen_jet1pt30':                 '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genjet1pt>30)',
+    'gen_jet1pt20':                 '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genjet1pt>20)',
     'gen_phistareta08_jet1pt10':    '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genphistareta>0.8)*(genjet1pt>10)',
     'gen_zpt30_jet1pt10':           '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genzpt>30)*(genjet1pt>10)',
     })
 
 datasets = ({
-    'BCDEFGH' : '/storage/c/tberger/excalibur_results_xsec/2018-09-11/data16_mm_BCDEFGH_SiMu07Aug17.root',
-    'amc' :     '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-    'hpp' :     '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-    'TTJets' :  '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
-    'ZZ' :      '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_ZZpythia8.root',
-    'WZ' :      '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_WZpythia8.root',
-    'WW' :      '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_WWpythia8.root',
-    'WJets' :   '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_WJetsToLNumadgraph.root',
-    'ST':       '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_ST.root',
+    #'BCDEFGH' : '/storage/c/tberger/excalibur_results_xsec/2018-09-11/data16_mm_BCDEFGH_SiMu07Aug17.root',
+    #'amc' :     '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+    #'hpp' :     '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+    #'TTJets' :  '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
+    #'ZZ' :      '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_ZZpythia8.root',
+    #'WZ' :      '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_WZpythia8.root',
+    #'WW' :      '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_WWpythia8.root',
+    #'WJets' :   '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_WJetsToLNumadgraph.root',
+    #'ST':       '/storage/c/tberger/excalibur_results_xsec/2018-09-11/mc16_mm_BCDEFGH_ST.root',
+    'BCDEFGH' : '/ceph/tberger/excalibur_results/2019-04-09/data16_mm_BCDEFGH_SiMu07Aug17.root',
+    'amc' :     '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_DYtoLLamcatnlo_match04.root',
+    'hpp' :     '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+    'mad' :     '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+    'TTJets' :  '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
+    'ZZ' :      '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_ZZpythia8.root',
+    'WZ' :      '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_WZJToLLLNu.root',
+    'WW' :      '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_WWTo2L2Nupowheg.root',
+    'TW':       '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_TW.root',
     })
 
 ######################################################################################################################################################
@@ -58,7 +67,7 @@ def basic_xsec(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='BCDEFGH', mc='
         cutstring = basiccutstring[cut]
         gencutstring = basiccutstring['gen'+cut]
         namestring = ''
-    weightstring = '(leptonIDSFWeight)*(leptonIsoSFWeight)*(leptonTrackingSFWeight)*(leptonTriggerSFWeight)'
+    weightstring = '(leptonIDSFWeight)*(leptonIsoSFWeight)*(leptonTriggerSFWeight)'
     d = ({  'corrections': [''],
             'zjetfolders': 'leptoncuts',
             'weights' : [cutstring+'*'+weightstring],
@@ -76,7 +85,7 @@ def basic_xsec(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='BCDEFGH', mc='
             'texts_y': [0.99,0.91,0.84],
             'texts_size': [15],
             'ratio_denominator_no_errors' : False,
-            'subplot_fraction': 40,
+            #'subplot_fraction': 40,
             #'lumis' : [35.8],
     })
     if not data in ['amc','hpp']:
@@ -88,20 +97,30 @@ def basic_xsec(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='BCDEFGH', mc='
     binningsZJet.rebinning(args,d,obs,yboostbin,ystarbin)
     return [d, cutstring, gencutstring, weightstring, namestring]
 
-def genrecocomparisons(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='amc', mc='amc', yboostbin=None, ystarbin=None):
+def genreco_comparisons(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc='amc', yboostbin=None, ystarbin=None):
+    plots = []
     # delivers dictionary to plot distributions in gen level compared to reco level
     # (including a comparison between applied and non-applied efficiency corrections, inofficially called Scale Factors (SF))
     [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args, obs, cut, data, mc, yboostbin, ystarbin)
     d.update({
         'files': [  datasets[mc],],
+        #'files': [  #'/ceph/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_2019-04-03_19-17/out.root',
+        #            #'/ceph/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_2019-04-03_19-17/out.root',
+        #            #'/ceph/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_FSR01_2019-04-03_19-17/out.root',
+        #            '/ceph/tberger/excalibur_results/2019-01-28/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+        #            #'/ceph/tberger/excalibur_results/2019-04-05/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+        #            #'/ceph/tberger/excalibur_results/2019-04-05/mc16_mm_BCDEFGH_DYtoLLamcatnlo_TrueZ.root',
+        #            ],
         'zjetfolders': ['zjetcuts_L1L2L3','zjetcuts_L1L2L3','genzjetcuts_L1L2L3'],
         #'zjetfolders': ['leptoncuts','leptoncuts','genleptoncuts'],
         'nicks': ['nosf','reco','gen'],
         'x_expressions': [obs,obs,'gen'+obs],
         'y_lims': [1e-2,1e5],
         'weights' : [cutstring,cutstring+'*'+weightstring,gencutstring],
+        'no_weight': True,
+        'lines': [100],
         'www': 'comparison_Gen-Reco_'+mc+cut+namestring,
-        'analysis_modules': ['NormalizeByBinWidth','Ratio'],#
+        'analysis_modules': ['Ratio'],#'NormalizeByBinWidth',
         #########################################################################################################
         #'nicks': ['nosfplus','recoplus','genplus','nosfminus','recominus','genminus'],
         #'x_expressions': ['muplus'+obs,'muplus'+obs,'genmuplus'+obs,'muminus'+obs,'muminus'+obs,'genmuminus'+obs],
@@ -121,39 +140,51 @@ def genrecocomparisons(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='amc', 
         'markers': ['.'],
         'colors': ['purple','red','blue','purple','red'],
     })
+    #plots.append(d)
+    #return [PlottingJob(plots=plots, args=args)]
     return d
 
-def datamccomparisons(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='BCDEFGH', mc='amc', yboostbin=None, ystarbin=None):
+#def datamc_comparisons(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='amc', yboostbin=None, ystarbin=None):
+def datamc_comparisons(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='amc', yboostbin=(0.0,0.5), ystarbin=(0.0,0.5)):
     # delivers dictionary to plot reco distributions in simulation (signal+background) compared to data
     [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args, obs, cut, data, mc, yboostbin, ystarbin)
+    plots = []
     d.update({
-        'files': [  datasets[data],
-                    datasets[mc],
-                    datasets['TTJets'],
-                    datasets['ZZ'],
-                    datasets['WZ'],
-                    datasets['WW'],
-                    datasets['ST'],
-                    datasets['WJets'],
+        'files': [  '/storage/8/tberger/excalibur_results/2019-05-13/data16_mm_BCDEFGH_SiMu07Aug17.root',
+                    '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+                    '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
+                    '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_ZZpythia8.root',
+                    '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_WZJToLLLNu.root',
+                    '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_WWTo2L2Nupowheg.root',
+                    '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_TW.root',
+                    #datasets[data],
+                    #datasets[mc],
+                    #datasets['TTJets'],
+                    #datasets['ZZ'],
+                    #datasets['WZ'],
+                    #datasets['WW'],
+                    #datasets['TW'],
                     ],
-        'zjetfolders': ['zjetcuts_L1L2L3Res']+7*['zjetcuts_L1L2L3'],
-        'nicks': ['data','DY','TTJets','ZZ','WZ','WW','ST','WJets'],
-        'www': 'comparison_Data-MC_'+mc+cut+namestring,
-        'weights' : [cutstring+'*'+weightstring],
+        'zjetfolders': ['zjetcuts_L1L2L3Res']+6*['zjetcuts_L1L2L3'],
+        'nicks': ['data','DY','TTJets','ZZ','WZ','WW','TW'],
+        'www': 'comparison_Data-MC_'+mc+cut+namestring+'_noSF',
+        'weights' : [cutstring+'*(leptonIDSFWeight)*(leptonIsoSFWeight)*(leptonTriggerSFWeight)'],#+7*[cutstring],
         'analysis_modules': ['SumOfHistograms','NormalizeByBinWidth','Ratio'],
-        'sum_nicks' : ['DY TTJets ZZ WZ WW ST WJets'],#
+        'sum_nicks' : ['DY TTJets ZZ WZ WW TW'],#
         'sum_result_nicks' : ['sim'],
-        'stacks': ['data','MC','MC','MC','MC','MC','MC','MC','ratio'],#
+        'stacks': ['data','MC','MC','MC','MC','MC','MC','ratio'],#
         #'sum_scale_factors' : ["1 0"],
-        'ratio_numerator_nicks' : ['sim'],
-        'ratio_denominator_nicks' : ['data'],
+        'ratio_numerator_nicks' : ['data'],
+        'ratio_denominator_nicks' : ['sim'],
         'ratio_result_nicks': ['ratio'],
         'nicks_blacklist': ['sim'],
         'y_subplot_lims': [0.75,1.25],
         'y_subplot_label': 'Sim/Data',
         'y_lims': [1e-2,1e9],
     })
-    return d
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
+    #return d
 
 def responsematrix(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='amc', mc='amc', yboostbin=None, ystarbin=None):
     # delivers dictionary to write the response matrix as well gen level and reco level distributions (SF applied!) to root file
@@ -608,28 +639,28 @@ def plot_crosssection(args=None, obs='zpt', cut='_zpt30_jet1pt10', data='BCDEFGH
     
 ######################################################################################################################################################
 # uses previously created dictionaries to plot in a loop
-def plotloop(args=None):
+def plot_loop(args=None):
     plots = []
-    ybins = [0.0,0.5]#,1.0,1.5,2.0,2.5]
-    for cut in ['_zpt30_jet1pt10']:#]:#'_mupt25_zmass20_zpt30','_mupt25_zmass20_zpt30_jet24',
+    ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
+    for cut in ['_jet1pt20']:#]:#'_mupt25_zmass20_zpt30','_mupt25_zmass20_zpt30_jet24',
      for obs in ['zpt']:#,'zy','zmass','jet1pt','jet1y','mupluspt','mupluseta','muminuspt','muminuseta']:#['yboost','ystar']:#,'jet2pt','jet2y']:
       for yboostbin in zip(ybins[:-1],ybins[1:]):#[(0.0,0.5)]: #
        for ystarbin in zip(ybins[:-1],ybins[1:]):#[(0.0,0.5),(2.0,2.5)]:#,(1.5,2.0),(2.0,2.5)]: #
         if not yboostbin[0]+ystarbin[0]>2:
-         for mc in ['amc','hpp']:
-            plots.append(genrecocomparisons(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
-            plots.append(datamccomparisons(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
-            plots.append(responsematrix(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
-            plots.append(plot_matrix(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
+         for mc in ['amc','hpp','mad']:
+            plots.append(genreco_comparisons(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
+            #plots.append(datamccomparisons(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
+            #plots.append(responsematrix(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
+            #plots.append(plot_matrix(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
             #plots.append(plot_resolutionrootfiles(args, obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin))
-         for variation in [0,-1,1]:
-          for varquantity in ['_statistics','_SF','_weight','_sigma']:
-           for resolution in ['_rms']:#,'_sigma']:
-            plots.append(plot_matrix(args, obs, cut, mc='toy', yboostbin=yboostbin, ystarbin=ystarbin, resolution=resolution, variation=variation, varquantity=varquantity))
-      for mc in ['amc','hpp']:
-        plots.append(genrecocomparisons(args, obs, cut, mc=mc))
-        plots.append(datamccomparisons(args, obs, cut, mc=mc))
-        plots.append(responsematrix(args, obs, cut, mc=mc))
+         #for variation in [0,-1,1]:
+         # for varquantity in ['_statistics','_SF','_weight','_sigma']:
+         #  for resolution in ['_rms']:#,'_sigma']:
+         #   plots.append(plot_matrix(args, obs, cut, mc='toy', yboostbin=yboostbin, ystarbin=ystarbin, resolution=resolution, variation=variation, varquantity=varquantity))
+      for mc in ['amc','hpp','mad']:
+        plots.append(genreco_comparisons(args, obs, cut, mc=mc))
+        #plots.append(datamccomparisons(args, obs, cut, mc=mc))
+        #plots.append(responsematrix(args, obs, cut, mc=mc))
         #plots.append(plot_matrix(args, obs, cut, mc=mc))
     if plots==[]:
         return
@@ -938,28 +969,198 @@ def plot_crosssections_all(args=None, obs='zpt', cut='_mupt25_zmass20_zpt30_jetp
     
     
     
+def plot_something(args=None,obs='zpt'):
+    plots=[]
+    gen = 'true'
+    d = ({
+        'files': [#  '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+                  #  #'/storage/8/tberger/excalibur_results/2019-05-03/data16_mm_BCDEFGH_SiMu07Aug17.root',
+                  #  #'/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
+                  #  '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0To50.root',
+                  #  '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt50To100.root',
+                  #  '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt100To250.root',
+                  #  '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt250To400.root',
+                  #  '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt400To650.root',
+                  #  '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt650ToInf.root',
+                  '/storage/8/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_2019-05-19_16-00/out.root',
+                  '/storage/8/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0To50_2019-05-19_16-00/out.root',
+                  '/storage/8/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt50To100_2019-05-19_16-03/out.root',
+                  '/storage/8/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt100To250_2019-05-19_15-59/out.root',
+                  '/storage/8/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt250To400_2019-05-19_16-00/out.root',
+                  '/storage/8/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt400To650_2019-05-19_16-00/out.root',
+                  '/storage/8/tberger/excalibur_work/excalibur/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt650ToInf_2019-05-19_16-00/out.root',
+                    ],
+        'nicks': ['amc','Pt0To50','Pt50To100','Pt100To250','Pt250To400','Pt400To650','Pt650ToInf'],
+        #'folders': ['zjetcuts_L1L2L3/ntuple']+6*[gen+'zjetcuts_L1L2L3/ntuple'],
+        'folders': ['nocuts_L1L2L3/ntuple'],
+        'x_expressions': [gen+obs],
+        'labels': ['amc','Pt0To50','Pt50To100','Pt100To250','Pt250To400','Pt400To650','Pt650ToInf','Pt0ToInf','ratio'],
+        'weights': [#'1','1','1','1','1','1','1'
+                    '1'#'generatorWeight/abs(generatorWeight)'
+        #            #'*(abs(mupluseta)<2.4)*(abs(muminuseta)<2.4)*(mupluspt>25)*(muminuspt>25)*(abs(zmass-91.1876)<20)*(jet1pt>20)',
+        #            '(abs('+gen+'mupluseta)<2.4)*(abs('+gen+'muminuseta)<2.4)*('+gen+'mupluspt>25)*('+gen+'muminuspt>25)*(abs('+gen+'zmass-91.1876)<20)*('+gen+'jet1pt>10)*('+x+')'
+        #            #for x in ['1','genzpt<50','(genzpt>50)*(genzpt<100)*127877213/1.065789e+08','(genzpt>100)*(genzpt<250)*80524712/8.100321e+07','(genzpt>250)*(genzpt<400)','(genzpt>400)*(genzpt<650)','(genzpt>650)']#
+                    #x for x in ['1','5512.4400/5381.3','374.68/354.39','86.5240/81.21','3.3247/2.99','0.4491/0.3882','0.0422/0.03737']
+                    #x for x in ['1','5352.57924/5381.3','363.81428/354.39','84.014804/81.21','3.228256512/2.99','0.436041144/0.3882','0.040981055/0.03737']
+                    #x for x in ['1','5512.4400/5352.57924','374.6800/363.81428','86.5240/84.014804','3.3247/3.228256512','0.4491/0.436041144','0.0422/0.040981055']
+                    ],
+        'www': 'stitch_reweighted',
+        'y_log': True,
+        #'y_lims': [-1e4,1e5],
+        'x_bins': obs,
+        'x_log': obs in ['zpt'],
+        'x_label': gen+obs,
+        'x_errors': [1],
+        'filename': gen+obs,
+        'stacks': ['amc']+6*['mc']+['ratio'],#+x for x in ['1','2','3','4','5','6']],
+        'analysis_modules': ['SumOfHistograms','Ratio'],#'NormalizeByBinWidth',
+        'sum_nicks' : ['Pt0To50 Pt50To100 Pt100To250 Pt250To400 Pt400To650 Pt650ToInf'],
+        'sum_result_nicks' : ['Pt0ToInf'],
+        #'sum_scale_factors' : ['1 1 1 1 1 1'],
+        #'nicks_whitelist': ['amc','Pt0To50','Pt50To100','Pt100To250','Pt250To400','Pt400To650','Pt650ToInf','Pt0ToInf','ratio'],
+        'nicks_blacklist': ['Pt0ToInf'],
+        'ratio_numerator_nicks': ['amc'],
+        'ratio_denominator_nicks': ['Pt0ToInf'],#'Pt0To50','Pt50To100','Pt100To250','Pt250To400','Pt400To650','Pt650ToInf'],
+        'ratio_result_nicks': ['ratio'],#'ratioPt0To50','ratioPt50To100','ratioPt100To250','ratioPt250To400','ratioPt400To650','ratioPt650ToInf'],
+        'ratio_denominator_no_errors': False,
+        'y_subplot_lims': [0.85,1.15],
+        #'y_subplot_label': 'Ratio to gen',
+        #'markers': ['.']+6*['fill']+2*['.'],
+        #'colors': ['red','black','blue','darkred','darkblue'],
+    })
+    if obs == 'zpt':
+        d.update({
+            'x_ticks': [10,20,30,50,100,1000],
+            'vertical_lines': [50,100,250,400,650],
+            'vertical_lines_styles': [':'],
+        })
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
+
+def plot_something_else(args=None,obs='genzpt'):
+    plots=[]
+    d = ({
+        'files': [  '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_DYtoLLmadgraph_bare.root',
+                    '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+                    '/ceph/tberger/excalibur_results/2019-04-09/mc16_mm_BCDEFGH_DYtoLLmadgraph_TrueZ.root',
+                    ],
+        'nicks': ['bare','dressed','true'],
+        'folders': (2*['genzjetcuts_L1L2L3/ntuple']+['nocuts_L1L2L3/ntuple']) if 'gen' in obs else ['zjetcuts_L1L2L3/ntuple'],
+        'weights': 
+                ['(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genjet1pt>20)',
+                 '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genjet1pt>20)',
+                 '(abs(genmupluseta)<2.4)*(abs(genmuminuseta)<2.4)*(genmupluspt>25)*(genmuminuspt>25)*(abs(genzmass-91.1876)<20)*(genparton1pt>20)',
+                    ] if 'gen' in obs else ['jet1pt>20'],
+        'x_expressions': [obs],
+        'www': 'parton',
+        'y_log': True,
+        'x_bins': 'zpt',
+        'x_log': True,
+        'x_label': obs,
+        'x_errors': [1],
+        'x_ticks': [10,20,30,50,100,1000],
+        'filename': obs,
+        'analysis_modules': ['Ratio'],
+        'ratio_numerator_nicks': ['bare','true'],
+        'ratio_denominator_nicks': ['dressed'],
+        'ratio_denominator_no_errors': False,
+        'y_subplot_lims': [0.9,1.1],
+        'y_subplot_label': 'Ratio to dressed',
+        'markers': ['<','.','>','<','>'],
+        'colors': ['green','black','orange','darkgreen','darkorange'],
+    })
+    #if not 'gen' in obs:
+    d['nicks_blacklist'] = ['true']
+    d['colors'] = ['green','black','darkgreen'],
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
+    
+def plot_something_else2(args=None,obs='zpt'):
+    plots=[]
+    d = ({
+        'files': [  '/ceph/tberger/excalibur_results/2019-03-20/data16_mm_BCD_SiMu07Aug17_FSR01.root',
+                    '/ceph/tberger/excalibur_results/2019-03-20/data16_mm_BCD_SiMu07Aug17_FSR01_JECUp.root',
+                    '/ceph/tberger/excalibur_results/2019-03-20/data16_mm_BCD_SiMu07Aug17_FSR01_JECDown.root',
+                    '/ceph/tberger/excalibur_results/2019-03-20/data16_mm_BCD_SiMu07Aug17_FSR01_smearedJets.root',
+                ],
+        'folders': ['zjetcuts_L1L2L3Res/ntuple'],
+        'nicks': ['central','JECUp','JECDown','JER'],
+        'x_expressions': [obs],
+        'x_bins': obs,
+        'filename': obs,
+        'x_label': obs,
+        'x_errors': [1],
+        'x_log': True,
+        #'x_lims': [10,400],
+        'y_log': True,
+        'analysis_modules': ['Ratio'],
+        'ratio_numerator_nicks': ['central','JECUp','JECDown','JER'],
+        'ratio_denominator_nicks': ['central'],
+        'y_subplot_lims': [0.8,1.1],
+        'www': 'JEC_JER',
+        'markers': ['o','^','v','D'],
+        'colors': ['black','deeppink','deeppink','chartreuse'],
+    })
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
+    
+def plot_something_else3(args=None,obs='zpt'):
+    plots=[]
+    d = ({
+        'files': [  '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_jet1pt20/'+obs+'_NNLO.root',
+                    '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_jet1pt20/'+obs+'_NNLO_CT14nlo.root',
+                    '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_jet1pt20/'+obs+'_NNLO_MMHT2014nlo68cl.root',
+                    '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_jet1pt20/'+obs+'_NNLO_NNPDF30_nlo_as_0118.root',
+                    '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_jet1pt20/'+obs+'_NNLO_PDF4LHC15_nlo_mc.root',
+                ],
+        'folders': [''],
+        'nicks': ['NNPDF31_nnlo_as_0118','CT14nlo','MMHT2014nlo68cl','NNPDF30_nlo_as_0118','PDF4LHC15_nlo_mc'],
+        'x_expressions': ['gen'+obs],
+        #'x_bins': obs,
+        'filename': obs,
+        #'x_label': obs,
+        #'x_errors': [1],
+        #'x_log': True,
+        'x_lims': [0,20],
+        #'y_log': True,
+        'analysis_modules': ['Ratio'],
+        'ratio_numerator_nicks': ['NNPDF31_nnlo_as_0118','CT14nlo','MMHT2014nlo68cl','NNPDF30_nlo_as_0118','PDF4LHC15_nlo_mc'],
+        'ratio_denominator_nicks': ['NNPDF31_nnlo_as_0118'],
+        'y_subplot_lims': [0.8,1.2],
+        'www': 'PDFs',
+        'markers': ['o','d','v','^','s'],
+        'colors': ['black','red','blue','green','purple'],
+    })
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+      
+def plot_something_else4(args=None,obs='zy'):
+    plots=[]
+    d = ({
+        'files': ['/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLmadgraph.root'],
+        #'files': ['/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root'],
+        #'files': ['/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root'],
+        #'files': ['/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLherwigpp.root'],
+        #'files': ['/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_ZtoMMpowheg.root'],
+        'folders': ['genzjetcuts_L1L2L3/ntuple'],#'zjetcuts_L1L2L3/ntuple'],
+        'nicks':[obs],
+        'x_expressions': [obs],
+        'x_bins': ['100,-2.5,2.5'],
+        #'x_bins': ' '.join(['{}'.format(x) for x in np.logspace(1,np.log(1000)/np.log(25),100,True,25)]),
+        #'x_bins': ' '.join(['{}'.format(x) for x in np.logspace(1,np.log(50)/np.log(0.4),100,True,0.4)]),
+        #'x_bins': ['50,-6.2,6.2'],
+        'filename': obs,
+        'x_log': True,
+        #'analysis_modules': ['FunctionPlot'],
+        'plot_modules': ['ExportRoot'],
+        'weights': [
+                'genjet1pt>20'
+                +'&&(abs(genmupluseta)<2.4)&&(abs(genmuminuseta)<2.4)&&(genmupluspt>25)&&(genmuminuspt>25)&&(abs(genzmass-91.1876)<20)',
+        ],
+        #'weights': ['genzpt>30&&genzpt<35&&genyboost>1.0&&genyboost<1.5&&genystar<0.5'],
+        'www': 'test1',
+    })
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
