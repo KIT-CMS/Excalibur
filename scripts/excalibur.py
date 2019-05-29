@@ -642,6 +642,7 @@ def showMessage(title, message, fail=False):
 
 def createFileList(infiles, fast=False):
     files_list = getattr(infiles, "artus_value", infiles)
+    print(files_list)
     out_files = []
     if type(files_list) != list:
         print "Not possible to resolve inputfiles format ",str(type(files_list))," must be a str"
@@ -667,6 +668,7 @@ def createFileList(infiles, fast=False):
                 gridpath = files.replace("*.root", "")
                 gridserver = 'root://' + gridpath.split("//")[1]
                 gridpath = '/' + gridpath.split("//")[2]
+
                 from XRootD import client
                 from XRootD.client.flags import DirListFlags, OpenFlags, MkDirFlags, QueryCode
                 myclient = client.FileSystem(gridserver)
@@ -674,18 +676,21 @@ def createFileList(infiles, fast=False):
                 status, listing = myclient.dirlist(gridpath, DirListFlags.LOCATE, timeout=10)
                 if status == '' or listing != None:
                     for entry in listing:
-                        if entry.name.endswith('.root') and not entry.name == '':
+                        # if entry.name.endswith('.root') and not entry.name == '':
+                        if entry.name.endswith('.root') and not entry.name == '' and gridserver + '/' + gridpath + entry.name not in out_files:
                             out_files.append(gridserver + '/' + gridpath + entry.name)
                     print "Successfully queried " + str(len(out_files)) + " files!"
                 else:
                     print "Error getting list of files!"
                     print status, listing
                     exit(1)
+
             # use local file system for getting input file list
             else:
                 out_files.extend(glob.glob(files))
         else:
             out_files.append(files)
+
     # sort all files to ensure that every job processes the same files when executed repeadetly
     out_files.sort()
     if not out_files:
