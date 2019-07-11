@@ -8,6 +8,7 @@ import ROOT
 import numpy as np
 from array import array
 from copy import deepcopy
+import scipy.stats
 
 ROOT.gROOT.SetBatch()
 #ROOT.TH1D.StatOverflows(True)
@@ -15,6 +16,11 @@ ROOT.gROOT.SetBatch()
 def error(a,b,c):
     # gives the root of the squared sum of a,b,c
     return np.sqrt(a**2+b**2+c**2)
+
+
+def betainverse(alpha,N1,N2):
+    return scipy.stats.beta.ppf(alpha,N1+1,N2+1)
+
 
 def generate_basiccutstring(cut='_jet1pt20',yboostbin=None,ystarbin=None):
     basicrecocutstring='(abs(mupluseta)<2.4)&&(abs(muminuseta)<2.4)&&(mupluspt>25)&&(muminuspt>25)&&(abs(zmass-91.1876)<20)'
@@ -42,13 +48,16 @@ def generate_basiccutstring(cut='_jet1pt20',yboostbin=None,ystarbin=None):
         basiccutstring+='&&('+cut[0]+'jet2pt/'+cut[0]+'zpt<0.5)'
     if yboostbin and ystarbin:
         basiccutstring+=('&&('+cut[0]+'yboost>{})&&('+cut[0]+'yboost<{})&&('+cut[0]+'ystar>{})&&('+cut[0]+'ystar<{})').format(yboostbin[0],yboostbin[1],ystarbin[0],ystarbin[1])
+        #basiccutstring+=('&&(abs('+cut[0]+'zy)>{})&&(abs('+cut[0]+'zy)<{})&&(abs('+cut[0]+'jet1y)>{})&&(abs('+cut[0]+'jet1y)<{})').format(yboostbin[0],yboostbin[1],ystarbin[0],ystarbin[1])
     return basiccutstring
 
-def rebinning(obs,yboostbin,ystarbin):
+def rebinning(obs,yboostbin=None,ystarbin=None):
     if obs == 'mupluspt' or obs == 'muminuspt':
         binning = ' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 350'
     if obs in ['zy','jet1y','mupluseta','muminuseta','mu1eta','mu2eta','matchedjet1y','switchedjet1y']:
         binning = '-2.4 -2.2 -2.0 -1.8 -1.6 -1.4 -1.2 -1.00 -0.8 -0.6 -0.4 -0.2 0.0 0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4'
+    if obs in ['abszy','absjet1y']:
+        binning = '0.0 0.4 0.8 1.2 1.6 2.0 2.4'
     if obs == 'jet1pt':
         binning = '5 10 12 15 20 30 50 75 125 175 225 300 400'
     if obs in ['yboost','ystar','matchedyboost','matchedystar']:
@@ -86,11 +95,11 @@ def rebinning(obs,yboostbin,ystarbin):
     return [float(x) for x in binning.split(' ')]
 
 datasets = ({
-        'amc' :     '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-        'hpp' :     '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-        'mad' :     '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
-        'pow' :     '/storage/8/tberger/excalibur_results/2019-05-13/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
-        'ptz' :     '/storage/8/tberger/excalibur_results/2019-05-03/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
+        'amc' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+        'hpp' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        'mad' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+        'pow' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
+        'ptz' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
         })
 
 '''
@@ -100,19 +109,18 @@ mc='amc'
 yboostbin=(0.0,0.5)
 ystarbin=(0.0,0.5)
 match=''
-dressed=''
-puid=''
+postfix=''
 binsof=''
 '''
 
-def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystarbin=None,
-        match='', dressed='', puid='', binsof='',trunc=''):
+def write_resolution(obs='zpt', cut='_jet1pt20', mc='mad', yboostbin=None, ystarbin=None,
+        match='', postfix='', binsof='',trunc=''):
     cutstring,gencutstring = generate_basiccutstring(cut),generate_basiccutstring('gen'+cut)
     weightstring = "1"#(leptonIDSFWeight)*(leptonIsoSFWeight)*(leptonTriggerSFWeight)"
     if yboostbin and ystarbin:
         ycutstring,genycutstring = generate_basiccutstring('',yboostbin,ystarbin),generate_basiccutstring('gen',yboostbin,ystarbin)
-        #namestring = "_yboost_{}-{}_ystar_{}-{}".format(yboostbin[0],yboostbin[1],ystarbin[0],ystarbin[1]).replace('.','')
         namestring = "_yb{}_ys{}".format(int(2*yboostbin[0]),int(2*ystarbin[0]))
+        #namestring = "_yz{}_yj{}".format(int(yboostbin[0]/0.5),int(ystarbin[0]/0.5))
     else:
         ycutstring,genycutstring,namestring = '1','1',""
     
@@ -120,10 +128,10 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
     #print gencutstring
     #print ycutstring
     #print genycutstring
-    input_file = datasets[mc].replace('.root',dressed+puid+'.root')
+    input_file = datasets[mc].replace('.root',postfix+'.root')
     #file_in = ROOT.TFile(input_file,"READ")
     print "resolution information will be estimated from ",input_file
-    output_path = plots_folder+cut+dressed+puid+"/resolution"+trunc
+    output_path = plots_folder+cut+postfix+"/resolution"+trunc
     filename = obs+'_'+mc+namestring+".root"
     if not binsof=='':
         filename = obs+'_'+mc+namestring+"_bins_of_"+binsof+".root"
@@ -139,14 +147,6 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
     print "resolution information will be written to "+output_file
     N = 50
     hmin, hmax = 0,2
-    if obs == 'zpt':
-        hmin, hmax = 0.8,1.2
-    if obs =='phistareta':
-        hmin, hmax = 0.99,1.01
-    #if obs == 'zy':
-    #    hmin, hmax = -0.1,0.1
-    #if obs == 'jet1y':
-    #    hmin, hmax = -0.2,0.2
     if obs in ['matchedjet1y','switchedjet1y']:
         obs_exp = 'jet1y'
         genobs_exp = 'genjet1y'
@@ -156,6 +156,7 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
     res_exp = "(("+obs_exp+")/("+genobs_exp+")-1)"
     bin_exp = "&&("+genobs_exp+">{})&&("+genobs_exp+"<{})"
     reco_bin_exp = "&&("+obs_exp+">{})&&("+obs_exp+"<{})"
+    #bins = rebinning(obs)
     bins = rebinning(obs,yboostbin,ystarbin)
     if obs in ['zy','jet1y','switchedjet1y']:
         res_exp="("+obs_exp+"-"+genobs_exp+")"
@@ -180,10 +181,10 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
     df_reco = df_reco.Filter(cutstring)
     
     file_out = ROOT.TFile(output_file,"RECREATE")
-    histlist = ["rms","sigma0","sigma","chi2","fakerate","acceptance","stability","purity","PU","matched","switched"]
+    histlist = ["rms","sigma0","sigma","chi2","fakes","losses","stability","purity","PU","matched","switched"]
     h_gen = ROOT.TH1D("gen"+obs, "", len(bins)-1, array('d',bins))
     [h_rms,h_sigma0,h_sigma,h_chi2,
-        h_fake,h_acceptance,h_stability,h_purity,h_PU,h_match,h_switch
+        h_fake,h_loss,h_stability,h_purity,h_PU,h_match,h_switch
     ] = [h_gen.Clone(name) for name in histlist]
     #doublegaus = ROOT.TF1("doublegaus","[0]*(TMath::Exp(-x**2/[1]**2)+[2]*TMath::Exp(-x**2/[3]**2))",hmin,hmax)
     cryb = ROOT.TF1("cryb","[0]*ROOT::Math::crystalball_function(-abs(x), [1], [3], [2], 0)",hmin,hmax)
@@ -218,6 +219,7 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
         h_test = df_gen_binned_res.Histo1D(test_histo,'res','weight')
         h_test.GetQuantiles(2,yq,xq)
         hmin, hmax = yq[0],yq[1]
+        print hmin, hmax
         N = max(min(200,int(h_test.GetEntries()/50)),15)
         res_histo = ROOT.RDF.TH1DModel("resolution"+binname,"",N,hmin,hmax)
         h_resolution = df_gen_binned_res.Histo1D(res_histo,'res','weight')
@@ -259,53 +261,49 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
         h_resolution.Write()
         if binsof == '':
             print 'count events'
-            N_genbin_recobin = 1.0*df_gen_binned.Filter(cutstring+"&&"+ycutstring
-                                                                +("&&("+obs_exp+">{})&&("+obs_exp+"<{})").format(genmin,genmax)).Sum('weight').GetValue()
-            N_recobin_genbin = 1.0*df_reco_binned.Filter(gencutstring+"&&"+genycutstring
-                                                                +("&&("+genobs_exp+">{})&&("+genobs_exp+"<{})").format(genmin,genmax)).Sum('weight').GetValue()
-            N_reco_genbin = 1.0*df_gen_binned.Filter(cutstring).Sum('weight').GetValue()
-            N_gen_recobin = 1.0*df_reco_binned.Filter(gencutstring).Sum('weight').GetValue()
-            N_genbin, N_recobin = 1.0*df_gen_binned.Sum('weight').GetValue(), 1.0*df_reco_binned.Sum('weight').GetValue()
-            N_gen, N_reco = 1.0*df_gen.Sum('weight').GetValue(), 1.0*df_reco.Sum('weight').GetValue()
-            print N_gen, N_reco, N_genbin,N_recobin
+            w_genbin_recobin = 1.0*df_gen_binned.Filter(cutstring+"&&"+ycutstring
+                                                        +reco_bin_exp.format(genmin,genmax)).Sum('weight').GetValue()
+                                                        #+("&&("+obs_exp+">{})&&("+obs_exp+"<{})").format(genmin,genmax)).Sum('weight').GetValue()
+            w_recobin_genbin = 1.0*df_reco_binned.Filter(gencutstring+"&&"+genycutstring
+                                                        +bin_exp.format(genmin,genmax)).Sum('weight').GetValue()
+                                                        #+("&&("+genobs_exp+">{})&&("+genobs_exp+"<{})").format(genmin,genmax)).Sum('weight').GetValue()
+            w_reco_genbin = 1.0*df_gen_binned.Filter(cutstring).Sum('weight').GetValue()
+            w_gen_recobin = 1.0*df_reco_binned.Filter(gencutstring).Sum('weight').GetValue()
+            w_genbin, w_recobin = 1.0*df_gen_binned.Sum('weight').GetValue(), 1.0*df_reco_binned.Sum('weight').GetValue()
+            w_gen, w_reco = 1.0*df_gen.Sum('weight').GetValue(), 1.0*df_reco.Sum('weight').GetValue()
+            print w_gen, w_reco, w_genbin,w_recobin
             #df_reco_binned_match    = df_reco_binned.Filter(("(matchedgenjet1pt>0)&&(matchedgenjet1pt==genjet1pt)&&("+obs_exp+">{})&&("+obs_exp+"<{})").format(genmin,genmax))
             #N_match             = 1.0*df_reco_binned_match.Sum('weight').GetValue()
-            df_gen_binned_match    = df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt>0)&&(matchedgenjet1pt==genjet1pt)")
-            N_match             = 1.0*df_gen_binned_match.Sum('weight').GetValue()
+            #df_gen_binned_match    = df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt>0)&&(matchedgenjet1pt==genjet1pt)")
             #df_reco_binned_switch   = df_reco_binned.Filter(("(matchedgenjet1pt>0)&&(matchedgenjet1pt<genjet1pt)&&("+obs_exp+">{})&&("+obs_exp+"<{})").format(genmin,genmax))
             #N_switch            = 1.0*df_reco_binned_switch.Sum('weight').GetValue()
-            df_gen_binned_switch   = df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt>0)&&(matchedgenjet1pt<genjet1pt)")
-            N_switch            = 1.0*df_gen_binned_switch.Sum('weight').GetValue()
+            #df_gen_binned_switch   = df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt>0)&&(matchedgenjet1pt<genjet1pt)")
+            #N_switch            = 1.0*df_gen_binned_switch.Sum('weight').GetValue()
             #df_reco_binned_PU       = df_reco_binned.Filter(("(matchedgenjet1pt<0)&&("+obs_exp+">{})&&("+obs_exp+"<{})").format(genmin,genmax))
             #N_PU                = 1.0*df_reco_binned_PU.Sum('weight').GetValue()
-            df_gen_binned_PU       = df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt<0)")
-            N_PU                = 1.0*df_gen_binned_PU.Sum('weight').GetValue()
-            #print N_match/N_recobin, N_switch/N_recobin, N_PU/N_recobin, N_match+N_switch+N_PU-N_recobin
-            N_sum = N_match+N_switch+N_PU
-            print N_match/N_sum, N_switch/N_sum, N_PU/N_sum, N_reco_genbin-N_sum
+            #df_gen_binned_PU       = df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt<0)")
+            #N_PU                = 1.0*df_gen_binned_PU.Sum('weight').GetValue()
+            w_match             = 1.0*df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt>0)&&(matchedgenjet1pt==genjet1pt)").Sum('weight').GetValue()
+            w_switch            = 1.0*df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt>0)&&(matchedgenjet1pt<genjet1pt)").Sum('weight').GetValue()
+            w_PU                = 1.0*df_gen_binned.Filter(cutstring+"&&(matchedgenjet1pt<0)").Sum('weight').GetValue()
+            w_sum = w_match+w_switch+w_PU
+            print w_match/w_sum,'+',w_switch/w_sum,'+',w_PU/w_sum,'=',w_reco_genbin/w_sum
             genweight = h_genweight.GetMean()
-            h_gen.SetBinContent(j+1,N_genbin)
-            #h_gen.SetBinError(j+1,error(h_genweight.GetMeanError()*N_genbin,genweight*np.sqrt(N_genbin),0))
-            #h_SF.SetBinContent(j+1,h_SFweight.GetMean())
-            #h_SF.SetBinError(j+1,h_SFweight.GetMeanError())
-            #df_switch = df_gen.Filter(cutstring+"&&(matchedgenjet1pt>0)&&(matchedgenjet1pt<genjet1pt)&&("+genobs_exp+(">{})&&("+genobs_exp+"<{})").format(genmin,genmax))
-            #df_switch = df_switch.Define("switch",'genjet1y-matchedgenjet1y')
-            #switch_histo = ROOT.RDF.TH1DModel("switchwidth"+binname,"", 48,-2.4,2.4)
-            #h_jet1y_switch = df_switch.Histo1D(switch_histo,'matchedgenjet1y','weight')
-            #h_jet1y_switch.Write()
+            h_gen.SetBinContent(j+1,w_genbin)
+            N_recobin     = df_reco_binned.Count().GetValue()
+            N_genbin      = df_gen_binned.Count().GetValue()
+            N_reco_genbin = df_gen_binned.Filter(cutstring).Count().GetValue()
+            print N_genbin,N_recobin
             try:
-                h_fake.SetBinContent(j+1,1-N_gen_recobin/N_recobin)
-                h_fake.SetBinError(j+1,np.sqrt(N_gen_recobin/N_recobin*(1-N_gen_recobin/N_recobin)/N_recobin))
-                print 'fakerate:',1-N_gen_recobin/N_recobin,N_gen_recobin,N_recobin
-                h_purity.SetBinContent(j+1,N_genbin_recobin/N_recobin)
-                h_purity.SetBinError(j+1,np.sqrt(N_genbin_recobin/N_recobin*(1-N_genbin_recobin/N_recobin)/N_recobin))
-                print 'purity:',N_genbin_recobin/N_recobin,N_genbin_recobin,N_recobin
-                #h_PU.SetBinContent(j+1,N_PU/N_recobin)
-                #h_PU.SetBinError(j+1,np.sqrt(N_PU/N_recobin*(1-N_PU/N_recobin)/N_recobin))
-                #h_match.SetBinContent(j+1,N_match/N_recobin)
-                #h_match.SetBinError(j+1,np.sqrt(N_match/N_recobin*(1-N_match/N_recobin)/N_recobin))
-                #h_switch.SetBinContent(j+1,N_switch/N_recobin)
-                #h_switch.SetBinError(j+1,np.sqrt(N_switch/N_recobin*(1-N_switch/N_recobin)/N_recobin))
+                h_fake.SetBinContent(j+1,w_gen_recobin/w_recobin)
+                #h_fake.SetBinError(j+1,max( abs(w_gen_recobin/w_recobin-betainverse(0.16,  w_gen_recobin,w_gen_recobin-w_recobin),
+                #                            abs(w_gen_recobin/w_recobin-betainverse(1-0.16,w_gen_recobin,w_gen_recobin-w_recobin))
+                #                            )
+                h_fake.SetBinError(j+1,np.sqrt(w_gen_recobin/w_recobin*(1-w_gen_recobin/w_recobin)/N_recobin))
+                print 'fakes:',1-w_gen_recobin/w_recobin,w_gen_recobin,w_recobin
+                h_purity.SetBinContent(j+1,w_genbin_recobin/w_recobin)
+                h_purity.SetBinError(j+1,np.sqrt(w_genbin_recobin/w_recobin*(1-w_genbin_recobin/w_recobin)/N_recobin))
+                print 'purity:',w_genbin_recobin/w_recobin,w_genbin_recobin,w_recobin
             except ZeroDivisionError:
                 h_fake.SetBinContent(j+1,0)
                 h_purity.SetBinContent(j+1,0)
@@ -314,21 +312,21 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
                 h_switch.SetBinContent(j+1,0)
                 
             try:
-                h_acceptance.SetBinContent(j+1,N_reco_genbin/N_genbin)
-                h_acceptance.SetBinError(j+1,np.sqrt(N_reco_genbin/N_genbin*(1-N_reco_genbin/N_genbin)/N_genbin))
-                print 'acceptance:',N_reco_genbin/N_genbin,N_reco_genbin,N_genbin
-                h_stability.SetBinContent(j+1,N_genbin_recobin/N_genbin)
-                h_stability.SetBinError(j+1,np.sqrt(N_genbin_recobin/N_genbin*(1-N_genbin_recobin/N_genbin)/N_genbin))
-                print 'stability:',N_genbin_recobin/N_genbin,N_genbin_recobin,N_genbin
-                h_PU.SetBinContent(j+1,N_PU/N_sum)
-                h_PU.SetBinError(j+1,np.sqrt(N_PU/N_sum*(1-N_PU/N_sum)/N_sum))
-                h_match.SetBinContent(j+1,N_match/N_sum)
-                h_match.SetBinError(j+1,np.sqrt(N_match/N_sum*(1-N_match/N_sum)/N_sum))
-                h_switch.SetBinContent(j+1,N_switch/N_sum)
-                h_switch.SetBinError(j+1,np.sqrt(N_switch/N_sum*(1-N_switch/N_sum)/N_sum))
+                h_loss.SetBinContent(j+1,w_reco_genbin/w_genbin)
+                h_loss.SetBinError(j+1,np.sqrt(w_reco_genbin/w_genbin*(1-w_reco_genbin/w_genbin)/N_genbin))
+                print 'losses:',w_reco_genbin/w_genbin,w_reco_genbin,w_genbin
+                h_stability.SetBinContent(j+1,w_genbin_recobin/w_genbin)
+                h_stability.SetBinError(j+1,np.sqrt(w_genbin_recobin/w_genbin*(1-w_genbin_recobin/w_genbin)/N_genbin))
+                print 'stability:',w_genbin_recobin/w_genbin,w_genbin_recobin,w_genbin
+                h_PU.SetBinContent(j+1,w_PU/w_sum)
+                h_PU.SetBinError(j+1,np.sqrt(w_PU/w_sum*(1-w_PU/w_sum)/N_reco_genbin))
+                h_match.SetBinContent(j+1,w_match/w_sum)
+                h_match.SetBinError(j+1,np.sqrt(w_match/w_sum*(1-w_match/w_sum)/N_reco_genbin))
+                h_switch.SetBinContent(j+1,w_switch/w_sum)
+                h_switch.SetBinError(j+1,np.sqrt(w_switch/w_sum*(1-w_switch/w_sum)/N_reco_genbin))
             except ZeroDivisionError:
                 print 'ZeroDivisionError occurred'
-                h_acceptance.SetBinContent(j+1,0)
+                h_loss.SetBinContent(j+1,0)
                 h_stability.SetBinContent(j+1,0)
     h_resolution.Delete()
     file_out.Write()
@@ -339,7 +337,7 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='amc', yboostbin=None, ystar
 ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
 
 #plots_folder = '/ceph/tberger/ZJtriple/ZJtriple'
-plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple'
+plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-06-30'
 for obs in ['zpt','phistareta',
             #'jet1y',
             'zy',
@@ -349,23 +347,30 @@ for obs in ['zpt','phistareta',
               #'_jet1pt15',#'_jet1pt15_backtoback',#'_jet1pt15_alpha05',
               '_jet1pt20',#'_jet1pt20_backtoback',#'_jet1pt20_alpha05',
               ]:
-    for mc in ['mad']:
+    for mc in ['amc','mad','hpp']:
     #for mc in ['ptz']:
      for match in ['']:
-      for dressed in ['']:#,'_TrueZ','_FSR01']:#,'_FSR02','_FSR03','_FSR04']:
-       for trunc in ['_985']:#,'_98','_95']:
-       #for puid in [   '',#'_puppi',
+      for trunc in ['_95']:#,'_985']:#,'_98','_95']:
+       for postfix in ['','_puppi','_ak8',
                     #'_puidloose','_puidmedium','_puidtight'
-                    #]:
+                    #'_R02','_R04','_R06','_R09'
+                    ]:
         for yboostbin in zip(ybins[:-1],ybins[1:]):
          for ystarbin in zip(ybins[:-1],ybins[1:]):
           if not yboostbin[0]+ystarbin[0]>2:
            if obs in ['zpt','phistareta']:
-            write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, dressed=dressed, trunc=trunc)
+            write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix,trunc=trunc)
            else:
-            write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, dressed=dressed, binsof = 'zpt', trunc=trunc)
-            write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, dressed=dressed, binsof = 'phistareta', trunc=trunc)
+            write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix, binsof = 'zpt', trunc=trunc)
+            write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix, binsof = 'phistareta', trunc=trunc)
 
-
-
+'''
+import ROOT
+cutstring = "(abs(mupluseta)<2.4)&&(abs(muminuseta)<2.4)&&(mupluspt>25)&&(muminuspt>25)&&(abs(zmass-91.1876)<20)&&(jet1pt>20)"
+gencutstring = "(abs(genmupluseta)<2.4)&&(abs(genmuminuseta)<2.4)&&(genmupluspt>25)&&(genmuminuspt>25)&&(abs(genzmass-91.1876)<20)&&(genjet1pt>20)"
+input_file = "/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLmadgraph.root"
+df_gen, df_reco = ROOT.RDataFrame("genzjetcuts_L1L2L3/ntuple",input_file), ROOT.RDataFrame("zjetcuts_L1L2L3/ntuple",input_file)
+df_gen  = df_gen.Filter(gencutstring)
+df_reco = df_reco.Filter(cutstring)
+'''
 
