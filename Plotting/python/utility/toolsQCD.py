@@ -87,19 +87,51 @@ def generate_basiccutstring(args=None, cut='_jet1pt20'):
         basiccutstring+='*('+cut[0]+'jet2pt/'+cut[0]+'zpt<0.5)'
     return basiccutstring
 
+def generate_cutlabel(args=None, cut='_jet1pt20'):
+    cutlabel=[]
+    cut=cut.split('_')
+    if 'jet1pt10' in cut:
+        cutlabel.append(r'$\\mathrm{p^{jet1}_T}>10\\mathrm{GeV}$')
+    if 'jet1pt15' in cut:
+        cutlabel.append(r'$\\mathrm{p^{jet1}_T}>15\\mathrm{GeV}$')
+    if 'jet1pt20' in cut:
+        cutlabel.append(r'$\\mathrm{p^{jet1}_T}>20\\mathrm{GeV}$')
+    if 'jet1pt30' in cut:
+        cutlabel.append(r'$\\mathrm{p^{jet1}_T}>30\\mathrm{GeV}$')
+    if 'zpt30' in cut:
+        cutlabel.append(r'$\\mathrm{p^{Z}_T}>30\\mathrm{GeV}$')
+    if 'phistareta04' in cut:
+        cutlabel.append(r'$\\mathrm{\\Phi^*_\\eta}>0.4$')
+    if 'backtoback' in cut:
+        cutlabel.append(r'$\\mathrm{\\Delta\\Phi(Z,jet1)}>\\pi$')
+    if 'alpha05' in cut:
+        cutlabel.append(r"$\\alpha<0.5$")
+    return cutlabel
+   
+    
+
 def generate_datasets(args=None):
     datasets = ({
-        'BCDEFGH' : '/storage/8/tberger/excalibur_results/2019-05-20/data16_mm_BCDEFGH_SiMu07Aug17.root',
-        'amc' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-        'hpp' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-        'mad' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
-        'pow' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
-        'ptz' :     '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
-        'TTJets' :  '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
-        'ZZ' :      '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_ZZpythia8.root',
-        'WZ' :      '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_WZJToLLLNu.root',
-        'WW' :      '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_WWTo2L2Nupowheg.root',
-        'TW':       '/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_TW.root',
+        #'BCDEFGH' : '/storage/8/tberger/excalibur_results/2019-05-20/data16_mm_BCDEFGH_SiMu07Aug17_oldTriggerSF.root',
+        'BCDEFGH'   : '/storage/8/tberger/excalibur_results/2019-06-17/data16_mm_BCDEFGH_SiMu07Aug17.root',
+        '17Jul2018' : '/storage/8/tberger/excalibur_results/2019-06-17/data16_mm_BCDEFGH_SiMu17Jul2018.root',
+        #'BCDEFGH' : '/storage/8/tberger/excalibur_results/2019-06-17/data16_mm_BCDEFGH_SiMu07Aug17_bare.root',
+        #'BCDEFGH' : '/storage/8/tberger/excalibur_results/2019-06-17/data16_mm_BCDEFGH_SiMu07Aug17_oldSF.root',
+        #'BCDEFGH' : '/storage/8/tberger/excalibur_results/2019-06-17/data16_mm_BCDEFGH_SiMu07Aug17_oldSFrelative.root',
+        #'GH':       '/storage/8/tberger/excalibur_work/excalibur/data16_mm_GH_SiMu07Aug17_2019-05-31_10-49/out.root',
+        'amc' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+        'hpp' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        'mad' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+        #'amc' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo_bare.root',
+        #'hpp' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLherwigpp_bare.root',
+        #'mad' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLmadgraph_bare.root',
+        #'pow' :     '/storage/8/tberger/excalibur_results/2019-06-13/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
+        #'ptz' :     '/storage/8/tberger/excalibur_results/2019-06-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
+        'TTJets' :  '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
+        'ZZ' :      '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_ZZpythia8.root',
+        'WZ' :      '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_WZJToLLLNu.root',
+        'WW' :      '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_WWTo2L2Nupowheg.root',
+        'TW':       '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_TW.root',
     })
     return datasets
 
