@@ -77,7 +77,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'mettype1vecpt', 'mettype1pt',  # vectorial and scalar difference between corrected and uncorrected met
                     # 'jetHT',  # scalar sum of all jet pTs
                     # 'jetrecoilpt', 'jetrecoilphi', 'jetrecoileta', 'jetrpf',  # recoil observables
-                    # 'jet1idtightlepveto', 'jet1idtight', 'jet1idloose', 'jet1puidtight', 'jet1puidmedium', 'jet1puidloose'  # please add jet IDs only necessary ones manually
+                    #'jet1idtightlepveto', 'jet1idtight', 'jet1idloose', 'jet1puidtight', 'jet1puidmedium', 'jet1puidloose', 'jet1puidraw' # please add jet IDs only necessary ones manually
                     # 'jet2idtightlepveto', 'jet2idtight', 'jet2idloose', 'jet2puidtight', 'jet2puidmedium', 'jet2puidloose'
                     # 'jet3idtightlepveto', 'jet3idtight', 'jet3idloose',
                     #'invalidjet1pt','invalidjet1idloose','invalidjet1eta', 'invalidjet1y', 'invalidjet1phi',
@@ -122,6 +122,13 @@ def data(cfg, **kwargs):
         print " WARNING! Keyword argument `JEC` to `getBaseConfig` was not given. cfg['Jec'] must be set manually..."
     else:
         cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
+    _jer_string = kwargs.get('JER', None)
+    if _jer_string is not None:
+        cfg['JER'] = os.path.join(configtools.getPath(), '../JRDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jer_string))
+        cfg['JERMethod'] = "stochastic"
+        cfg['JERSmearerSeed'] = 92837465
+        # insert smearer and sorter after the matching producer
+        cfg['Processors'].insert(cfg['Processors'].index('producer:JetSorter'), 'producer:JERSmearer',)
 
         
 def mc(cfg, **kwargs):
@@ -130,6 +137,7 @@ def mc(cfg, **kwargs):
         'producer:GenParticleProducer',
         'producer:ValidZllGenJetsProducer',
         'producer:RecoJetGenPartonMatchingProducer',
+        #'producer:GenJetGenPartonMatchingProducer',
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
         ]
@@ -582,11 +590,12 @@ def _2018mm(cfg, **kwargs):
 def data_2016mm(cfg, **kwargs):
     # TODO: move activation of SFProducer to kwargs:
     # for now: activate if necessary!
-    #cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
-    #cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
+    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer']#,'producer:LeptonSFProducer',]
+    cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
+    cfg['Pipelines']['default']['Quantities'] += ['zl1IDSFWeight','zl1IsoSFWeight','zl1TriggerSFWeight','zl2IDSFWeight','zl2IsoSFWeight','zl2TriggerSFWeight']
     cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_eta_pt'
     cfg['LeptonIsoSFHistogramName'] = 'NUM_LooseRelIso_DEN_TightIDandIPCut_eta_pt'
-    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/pt_abseta_ratio'
+    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA'
     ### Get Root file from POG ### information on https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults ###
     ### files from https://gitlab.cern.ch/cms-muonPOG/MuonReferenceEfficiencies/tree/master/EfficienciesStudies ###
     cfg['LeptonIDSFRootfile']      = os.path.join(configtools.getPath(),"data/scalefactors/2016/RunBCDEF_SF_ID.root")
@@ -599,7 +608,15 @@ def data_2017mm(cfg, **kwargs):
 
 
 def mc_2016mm(cfg, **kwargs):
-    pass
+    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer']#,'producer:LeptonSFProducer',]
+    cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
+    cfg['Pipelines']['default']['Quantities'] += ['zl1IDSFWeight','zl1IsoSFWeight','zl1TriggerSFWeight','zl2IDSFWeight','zl2IsoSFWeight','zl2TriggerSFWeight']
+    cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC'
+    cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_pt_eta/efficienciesMC/pt_abseta_MC'
+    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesMC/abseta_pt_MC'
+    cfg['LeptonIDSFRootfile']      = os.path.join(configtools.getPath(),"data/scalefactors/2016outdated/ID_EfficienciesAndSF_BCDEF.root")
+    cfg['LeptonIsoSFRootfile']     = os.path.join(configtools.getPath(),"data/scalefactors/2016outdated/Iso_EfficienciesAndSF_BCDEF.root")
+    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016outdated/Trigger_EfficienciesAndSF_BCDEF.root")
 
 
 def mc_2017mm(cfg, **kwargs):
