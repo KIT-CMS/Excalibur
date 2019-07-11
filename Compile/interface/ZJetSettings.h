@@ -84,9 +84,6 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(unsigned, CutJetIDFirstNJets)
 
     // LeptonSFProducer
-    IMPL_SETTING_DEFAULT(bool, LeptonSFetaonly, false)
-    IMPL_SETTING_DEFAULT(bool, LeptonSFTranspose, false)
-    IMPL_SETTING_DEFAULT(bool, LeptonSFReversedAxes, false)
     IMPL_SETTING(std::string, LeptonIDSFRootfile)
     IMPL_SETTING(std::string, LeptonIsoSFRootfile)
     IMPL_SETTING(std::string, LeptonTrackingSFRootfile)
@@ -97,7 +94,6 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, LeptonTriggerSFHistogramName)
     IMPL_SETTING_DEFAULT(bool, LeptonSFVariation, false)
     IMPL_SETTING_DEFAULT(std::string, Channel, "mm")
-    IMPL_SETTING_INTLIST(TriggerSFRuns)
    
     // ZJetDressedMuonsProducer
     IMPL_SETTING(float, MaxZJetDressedMuonDeltaR)
