@@ -5,6 +5,7 @@ std::string NPUProducer::GetProducerId() const { return "NPUProducer"; }
 void NPUProducer::Init(ZJetSettings const& settings)
 {
     std::string file = settings.GetNPUFile();
+    m_randomNumberGenerator = std::mt19937(1);
     float minbxsec = settings.GetMinbxsec();
     float lum(0), xsavg(0), xsrms(0);
     unsigned long run(0), ls(0);
@@ -23,6 +24,7 @@ void NPUProducer::Init(ZJetSettings const& settings)
             LOG(FATAL) << "Error in PileupTruthProducer: RMS = " << xsrms << " < 0";
 
         m_pumean[run][ls] = xsavg * minbxsec * 1000.0f;
+        m_pumeanrms[run][ls] = xsrms * minbxsec * 1000.0f;
     }
 }
 
@@ -33,9 +35,11 @@ void NPUProducer::Produce(ZJetEvent const& event,
     const unsigned long run = event.m_eventInfo->nRun;
     const unsigned long ls = event.m_eventInfo->nLumi;
     float npu = 0;
+    float npurms = 0;
 
     try {
         npu = m_pumean.at(run).at(ls);
+        npurms = m_pumeanrms.at(run).at(ls);
     } catch (const std::out_of_range& oor) {
         // warn once per lumi section if npu is unknown
         if (ls != lastls || run != lastrun)
@@ -45,5 +49,5 @@ void NPUProducer::Produce(ZJetEvent const& event,
         lastls = ls;
     }
 
-    product.npumean_data = npu;
+    product.npumean_data = npu + std::normal_distribution<>(0, npurms)(m_randomNumberGenerator);
 }

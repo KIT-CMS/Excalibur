@@ -2,6 +2,8 @@
 
 #include "Excalibur/Compile/interface/ZJetTypes.h"
 
+#include <random>
+
 /*
     This producers calculates NPU ("mu", the expected pileup) in data per run and lumisection from a
    txt file in a specific format.
@@ -20,6 +22,9 @@ class NPUProducer : public ZJetProducerBase
 
   private:
     std::map<unsigned long, std::map<unsigned long, float>> m_pumean;
+    std::map<unsigned long, std::map<unsigned long, float>> m_pumeanrms;
     mutable unsigned long lastrun;
     mutable unsigned long lastls;
+    
+    mutable std::mt19937 m_randomNumberGenerator;
 };
