@@ -25,6 +25,6 @@ class NPUProducer : public ZJetProducerBase
     std::map<unsigned long, std::map<unsigned long, float>> m_pumeanrms;
     mutable unsigned long lastrun;
     mutable unsigned long lastls;
-    
+    bool m_smearing = false;
     mutable std::mt19937 m_randomNumberGenerator;
 };

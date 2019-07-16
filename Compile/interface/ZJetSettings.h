@@ -49,6 +49,8 @@ class ZJetSettings : public KappaSettings
 
     // NPUProducer (insert npu from external file)
     IMPL_SETTING(std::string, NPUFile)  // pileup JSON reformatted as csv
+    IMPL_SETTING_DEFAULT(bool, NPUSmearing, false) // NPUmean should be smeared
+    IMPL_SETTING_DEFAULT(int,  NPUSmearingSeed, 1) // set smearing seed
     IMPL_SETTING(float, Minbxsec)       // MinBias Cross Section in mb
 
     // ZJetValidElectronsProducer

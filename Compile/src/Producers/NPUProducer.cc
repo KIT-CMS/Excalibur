@@ -5,7 +5,8 @@ std::string NPUProducer::GetProducerId() const { return "NPUProducer"; }
 void NPUProducer::Init(ZJetSettings const& settings)
 {
     std::string file = settings.GetNPUFile();
-    m_randomNumberGenerator = std::mt19937(1);
+    m_smearing       = settings.GetNPUSmearing();
+    m_randomNumberGenerator = std::mt19937(settings.GetNPUSmearingSeed());
     float minbxsec = settings.GetMinbxsec();
     float lum(0), xsavg(0), xsrms(0);
     unsigned long run(0), ls(0);
@@ -48,6 +49,8 @@ void NPUProducer::Produce(ZJetEvent const& event,
         lastrun = run;
         lastls = ls;
     }
-
-    product.npumean_data = npu + std::normal_distribution<>(0, npurms)(m_randomNumberGenerator);
+    if (m_smearing)
+        product.npumean_data = npu + std::normal_distribution<>(0, npurms)(m_randomNumberGenerator);
+    else
+        product.npumean_data = npu;
 }
