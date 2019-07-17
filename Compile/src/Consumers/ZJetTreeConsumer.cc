@@ -1709,7 +1709,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     }
     else
     {
-        std::cout << "Using \"" << electronVIDType <<"\" Electron IDs"<< std::endl;
         electronVID_looseTag = "cutBasedElectronID-" + electronVID + "-loose:";
         electronVID_mediumTag = "cutBasedElectronID-" + electronVID + "-medium:";
         electronVID_tightTag = "cutBasedElectronID-" + electronVID + "-tight:";

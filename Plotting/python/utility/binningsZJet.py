@@ -48,17 +48,15 @@ class BinningsDictZJet(BinningsDict):
             'muminusphi':   '30,-3.14,3.14',
             'muminusRiso':  '30,0.01,0.31',
             
-            #'phistareta':   '0.8 0.9 1.0 1.25 1.5 2 3 4 6 12 25 50 100 400',
-            #'phistareta':   '0.001 0.005 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 4 6 12 25 50 100',
-            'phistareta':   '0.102 0.114 0.128 0.145 0.165 0.189 0.219 0.258 0.312 0.391 0.524 0.695 0.918 1.153 1.496 1.947 2.522 3.2774 6 12 25 50 100 ',
-            #'zpt':          '30 35 40 45 50 55 60 70 80 90 100 120 140 160 180 240 300 400 1000',
-            #'zpt':          '5 10 15 20 25 30 35 40 45 50 60 70 80 90 100 110 130 150 170 190 220 250 400 1000',
+            'phistareta':   '0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 4 5 7 10 15 20 30 50',
+            #'phistareta':   '25.9 26 26.1 26.2 26.25 26.3 26.5',
+            'zpt':          '5 10 15 20 25 30 35 40 45 50 60 70 80 90 100 110 130 150 170 190 220 250 400 1000',
             #'zpt':          ' '.join(['{}'.format(int(10*x)/10.) for x in np.logspace(1,3,30)]),
-            'zpt':          ' '.join(['{}'.format(int(10*x)/10) for x in np.logspace(1,np.log(1000)/np.log(25),1000,True,25)]),
-            #'zpt':          '5 50 100 250 400 650 1000',
+            #'zpt':          ' '.join(['{}'.format(int(10*x)/10) for x in np.logspace(1,np.log(1000)/np.log(25),20,True,25)]),
+            #'phistareta':   ' '.join(['{}'.format(int(100*x)/100.) for x in np.logspace(1,np.log(50)/np.log(0.1),20,True,0.1)]),
             'zy':           '30,-2.4,2.4',
             'abs(zy)':      '12,0,2.4',
-            'zmass':        '40,71,111',
+            'zmass':        '20,71,111',
             'zphi':         '30,-3.14159,3.14159',
             'njets':        '10,0,10',
             'njets30':      '10,0,10',
@@ -80,8 +78,8 @@ class BinningsDictZJet(BinningsDict):
             'jet3phi':      '31,-3.142,3.142',
             'jzb':          '20,-200,200',
             
-            'ystar':    '12,0,2.4',
-            'yboost':   '12,0,2.4',
+            'ystar':    '5,0,2.5',
+            'yboost':   '5,0,2.5',
             
             'npv':      '80,0,80',
             'npumean':  '80,0,80',
@@ -99,12 +97,12 @@ class BinningsDictZJet(BinningsDict):
         })
     
 def rebinning(args,d,obs,yboostbin,ystarbin):
-    if obs == 'mupluspt' or obs == 'muminuspt':
+    if obs in ['mupluspt','muminuspt','zl1pt','zl2pt']:
         d.update({
             'x_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 350'],
             'y_bins': [' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 350'],
             })
-    if obs == 'zy' or obs =='jet1y':
+    if obs in ['zy','jet1y','mupluseta','muminuseta','zl1eta','zl2eta']:
         d.update({'x_bins': ['-2.4 -2.2 -2.0 -1.8 -1.6 -1.4 -1.2 -1.00 -0.8 -0.6 -0.4 -0.2 0.0 0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4']})
     if obs == 'jet1pt':
         d.update({'x_bins': ['5 10 12 15 20 30 50 75 125 175 225 300 400'] })

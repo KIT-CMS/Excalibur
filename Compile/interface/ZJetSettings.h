@@ -49,6 +49,8 @@ class ZJetSettings : public KappaSettings
 
     // NPUProducer (insert npu from external file)
     IMPL_SETTING(std::string, NPUFile)  // pileup JSON reformatted as csv
+    IMPL_SETTING_DEFAULT(bool, NPUSmearing, false) // NPUmean should be smeared
+    IMPL_SETTING_DEFAULT(int,  NPUSmearingSeed, 1) // set smearing seed
     IMPL_SETTING(float, Minbxsec)       // MinBias Cross Section in mb
 
     // ZJetValidElectronsProducer
@@ -84,9 +86,6 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(unsigned, CutJetIDFirstNJets)
 
     // LeptonSFProducer
-    IMPL_SETTING_DEFAULT(bool, LeptonSFetaonly, false)
-    IMPL_SETTING_DEFAULT(bool, LeptonSFTranspose, false)
-    IMPL_SETTING_DEFAULT(bool, LeptonSFReversedAxes, false)
     IMPL_SETTING(std::string, LeptonIDSFRootfile)
     IMPL_SETTING(std::string, LeptonIsoSFRootfile)
     IMPL_SETTING(std::string, LeptonTrackingSFRootfile)
@@ -97,7 +96,6 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, LeptonTriggerSFHistogramName)
     IMPL_SETTING_DEFAULT(bool, LeptonSFVariation, false)
     IMPL_SETTING_DEFAULT(std::string, Channel, "mm")
-    IMPL_SETTING_INTLIST(TriggerSFRuns)
    
     // ZJetDressedMuonsProducer
     IMPL_SETTING(float, MaxZJetDressedMuonDeltaR)

@@ -209,7 +209,7 @@ def get_lumis(args, d, RUN, YEAR):
         elif RUN=='BCDEFG':
             d.update({ 'lumis' : [27.2]})
         elif RUN=='BCDEFGH':
-            d.update({ 'lumis' : [35.8]})
+            d.update({ 'lumis' : [35.9]})
         elif RUN=='GH':
             d.update({ 'lumis' : [16.5]})
     elif YEAR==2017:
