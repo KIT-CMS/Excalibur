@@ -14,8 +14,9 @@ JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
 def config():
     cfg = configtools.getConfig('data', 2017, CH, JEC=JEC)
     cfg["InputFiles"].set_input(
-        bmspathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-17Nov2017-v1/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
-        ekppathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-17Nov2017-v1/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
+        pathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-17Nov2017-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        # bmspathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-17Nov2017-v1/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
+        # ekppathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2017F-17Nov2017-v1/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
 

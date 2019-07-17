@@ -20,6 +20,7 @@ def config():
         # ekppathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016F-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
         # ekppathG="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016G-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
         # ekppathH="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016H-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
+        pathF="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016F-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         pathG="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016G-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         pathH="{}/dsavoiu/Skimming/ZJet_DoubleEG_Run2016H-Legacy-07Aug2017-v1_egmSSbackport/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
     )

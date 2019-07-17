@@ -15,7 +15,7 @@ def config():
     cfg = configtools.getConfig('data', 2016, CH, JEC=JEC, IOV=RUN)
     cfg["InputFiles"].set_input(
 
-        # pathF="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016F-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        pathF="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016F-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         pathG="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016G-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         pathH="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016H-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
         # bmspathF="{}/tberger/Skimming/ZJet_DoubleMuon_Run2016F-Legacy-07Aug2017-v1/*.root".format(SE_PATH_PREFIXES['srm_gridka_nrg']),
