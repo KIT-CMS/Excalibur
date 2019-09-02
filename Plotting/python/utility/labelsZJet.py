@@ -14,6 +14,7 @@ class LabelsDictZJet(labels.LabelsDict):
         self.labels_dict.update({
             #more general stuff. maybe move to Artus?
             'abs(jet1eta)': '|$\mathit{\eta}^{Jet1}$|',
+            'absjet1eta': '|$\mathit{\eta}^{Jet1}$|',
             'abs(genzy)': '|$\mathit{y}^{Z, Gen}$|',
             'abs(eeta)': '|$\mathit{\eta}^{e}$|',
             'abs(eminuseta)': '|$\mathit{\eta}^{e^{-}}$|',
@@ -129,6 +130,12 @@ class LabelsDictZJet(labels.LabelsDict):
             'mu2pt': '$\mathit{p}_{T}^{\mu2}$ / GeV',
             'mu2eta': '$\mathit{\eta}^{\mu2}$',
             'mu2phi': '$\mathit{\phi}^{\mu2}$',
+            'zl1pt': '$\mathit{p}_{T}^{\mu1}$ / GeV',
+            'zl1eta': '$\mathit{\eta}^{\mu1}$',
+            'zl1phi': '$\mathit{\phi}^{\mu1}$',
+            'zl2pt': '$\mathit{p}_{T}^{\mu2}$ / GeV',
+            'zl2eta': '$\mathit{\eta}^{\mu2}$',
+            'zl2phi': '$\mathit{\phi}^{\mu2}$',
             'muminuseta': '$\mathit{\eta}^{\mu^{-}}$',
             'muminusphi': '$\mathit{\phi}^{\mu^{-}}$',
             'muminuspt': '$\mathit{p}_{T}^{\mu^{-}}$ / GeV',
@@ -177,7 +184,7 @@ class LabelsDictZJet(labels.LabelsDict):
             'zy': '$\mathit{y}^Z$',
     
             # ZJet specific
-            'alpha': '$\mathit{p}_{T}^{Jet 2}/\mathit{p}_{T}^{Z}$',
+            'alpha': r'$\alpha$',#'$\mathit{p}_{T}^{Jet 2}/\mathit{p}_{T}^{Z}$',
             'genalpha': '$\mathit{p}_{T}^{GenJet 2}/\mathit{p}_{T}^{Z, Gen}$',
             'extrapol': 'Response',
             '(jet1pt/zpt)': r'$\mathit{p}_T$ balance',

@@ -140,6 +140,7 @@ def mc(cfg, **kwargs):
         #'producer:GenJetGenPartonMatchingProducer',
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
+        'producer:ZJetTrueGenMuonsProducer',
         ]
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
@@ -156,9 +157,9 @@ def mc(cfg, **kwargs):
         'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2y','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
         #'genparton1flavour','genparton1pt','genparton1y','genparton1phi','genparton1mass',
-        #'truezpt','truezy','truezeta','truezphi','truezmass',
-        #'truetaupluspt', 'truetauplusy',# 'truetaupluseta', 'truetauplusphi', 'truetauplusmass',
-        #'truetauminuspt','truetauminusy',#'truetauminuseta','truetauminusphi','truetauminusmass',
+        'truezpt','truezy','truezeta','truezphi','truezmass',
+        'truetaupluspt', 'truetauplusy', 'truetaupluseta', 'truetauplusphi', 'truetauplusmass',
+        'truetauminuspt','truetauminusy','truetauminuseta','truetauminusphi','truetauminusmass',
         'genphistareta', 'genystar', 'genyboost', 'matchedgenystar', 'matchedgenyboost',
         'genzl1pt','genzl1eta','genzl1phi',
         'genzl2pt','genzl2eta','genzl2phi',
@@ -183,6 +184,7 @@ def mc(cfg, **kwargs):
     #cfg['RecoJetMatchingGenParticleStatus'] = 1    # use pythia8 status instead of default=3
     # MC sample reweighting
     cfg['Processors'] += [
+        'producer:ZJetPartonProducer',
         'producer:CrossSectionWeightProducer',
         'producer:ZJetNumberGeneratedEventsWeightProducer',
         'producer:GeneratorWeightProducer',  # insert Generator producer before EventWeightProducer:
@@ -241,7 +243,7 @@ def _2016(cfg, **kwargs):
     cfg['NPUFile'] = os.path.join(configtools.getPath(),'data/pileup/pumean_data2016_13TeV.txt')
     cfg['NPUSmearing'] = True
     cfg['NPUSmearingSeed'] = 1
-     # TODO: Use official CERT naming
+    # TODO: Use official CERT naming
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_BCDEFGH_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
 
     
@@ -592,9 +594,9 @@ def _2018mm(cfg, **kwargs):
 def data_2016mm(cfg, **kwargs):
     # TODO: move activation of SFProducer to kwargs:
     # for now: activate if necessary!
-    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer']#,'producer:LeptonSFProducer',]
-    cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
-    cfg['Pipelines']['default']['Quantities'] += ['zl1IDSFWeight','zl1IsoSFWeight','zl1TriggerSFWeight','zl2IDSFWeight','zl2IsoSFWeight','zl2TriggerSFWeight']
+    #cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer']#,'producer:LeptonSFProducer',]
+    #cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
+    #cfg['Pipelines']['default']['Quantities'] += ['zl1IDSFWeight','zl1IsoSFWeight','zl1TriggerSFWeight','zl2IDSFWeight','zl2IsoSFWeight','zl2TriggerSFWeight']
     cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_eta_pt'
     cfg['LeptonIsoSFHistogramName'] = 'NUM_LooseRelIso_DEN_TightIDandIPCut_eta_pt'
     cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA'
@@ -610,9 +612,9 @@ def data_2017mm(cfg, **kwargs):
 
 
 def mc_2016mm(cfg, **kwargs):
-    cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer']#,'producer:LeptonSFProducer',]
-    cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
-    cfg['Pipelines']['default']['Quantities'] += ['zl1IDSFWeight','zl1IsoSFWeight','zl1TriggerSFWeight','zl2IDSFWeight','zl2IsoSFWeight','zl2TriggerSFWeight']
+    #cfg['Pipelines']['default']['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer']#,'producer:LeptonSFProducer',]
+    #cfg['Pipelines']['default']['Quantities'] += ['leptonIDSFWeight','leptonIsoSFWeight','leptonTriggerSFWeight']
+    #cfg['Pipelines']['default']['Quantities'] += ['zl1IDSFWeight','zl1IsoSFWeight','zl1TriggerSFWeight','zl2IDSFWeight','zl2IsoSFWeight','zl2TriggerSFWeight']
     cfg['LeptonIDSFHistogramName'] = 'MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/efficienciesMC/abseta_pt_MC'
     cfg['LeptonIsoSFHistogramName'] = 'LooseISO_TightID_pt_eta/efficienciesMC/pt_abseta_MC'
     cfg['LeptonTriggerSFHistogramName'] = 'IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesMC/abseta_pt_MC'

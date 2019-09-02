@@ -36,13 +36,14 @@ DATASETS = generate_datasets(args=None)
 #YLIMS = generate_ylims(args=None)
 VARIATIONSTRING = generate_variationstring(args=None)
 #PLOTSFOLDER = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-06-18'
-#PLOTSFOLDER = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-06-24'
-PLOTSFOLDER = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-06-30'
+#PLOTSFOLDER = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-06-30'
+PLOTSFOLDER = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-08-02'
 #PLOTSFOLDER = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple'
 MCLIST = ['amc','hpp','mad',]
-LABELDICT = ({  'pow':"Powheg",'amc':"aMC@NLO",'hpp':"Herwig++",'mad':"Madgraph",
-                'toy':"Toy MC     ",
-                'toy0':"Toy MC from Madgraph",'toy1':"Toy MC from aMC@NLO",'toy2':"Toy MC from Herwig++",'toy3':"Toy MC (10M events)"
+LABELDICT = ({  'pow':"Powheg",'amc':"P8+aMC",'hpp':"HW+MG",'mad':"P8+MG",
+                'toy':"Toy     ",
+                #'toy0':"Toy from P8+MG",'toy1':"Toy from P8+aMC",'toy2':"Toy from HW+MG",'toy3':"Toy (10M events)"
+                'toy0':"P8+MG",'toy1':"P8+aMC",'toy2':"HW+MG",'toy3':"10M events"
                 })
 MARKERDICT = ({'pow':'p','amc':'s','hpp':'D','mad':'o','toy':'d','toy0':'^','toy1':'<','toy2':'>','toy3':'v'})
 COLORDICT = ({'pow':'orange','amc':'red','hpp':'blue','mad':'green','toy':'grey', 'toy0':'seagreen', 'toy1':'salmon', 'toy2': 'orchid','toy3':'gray'})
@@ -102,6 +103,7 @@ def invert_3Dhists(args=None, filename = ''):
                     genybmin += 0.5
                     genybmax += 0.5
                     if obsbin in ([93,167,222,256] if obs=='zpt' else [85,152,201,227]):
+                    #if obsbin in ([93,167,222,256] if obs=='zpt' else [81,145,192,218]):
                         genysmin += 0.5
                         genysmax += 0.5
                         genybmin,genybmax = 0.0,0.5
@@ -157,7 +159,11 @@ def create_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='17Jul2018', match
     print 'Fill 3D reco histogram'
     obsmin, obsmax = l_obshists[0].GetXaxis().GetXbins()[0],l_obshists[0].GetXaxis().GetXbins()[l_obshists[0].GetNbinsX()]
     for entry in ntuple_reco:
-        zy,jet1y,event,weight = entry.zy,entry.jet1y,entry.event,entry.weight
+        if data == 'mad':
+            weight = entry.weight*6225.42/4963.0
+        else:
+            weight = entry.weight
+        zy,jet1y,event = entry.zy,entry.jet1y,entry.event
         recocutweight = ( (entry.mupluspt >25) & (abs(entry.mupluseta) <2.4)
                         & (entry.muminuspt>25) & (abs(entry.muminuseta)<2.4)
                         & (abs(entry.zmass-91.1876)<20) )
@@ -238,7 +244,11 @@ def create_3Dhist(args=None, obs='zpt', cut='_jet1pt20', data='17Jul2018', match
     if not data in ['BCD','GH','BCDEFGH','17Jul2018']:
       for entry in ntuple_gen:
         #yb,ys,event,weight = entry.yboost,entry.ystar,entry.event,entry.weight
-        yb,ys,event,weight = 0.5*abs(entry.zy+entry.jet1y),0.5*abs(entry.zy-entry.jet1y),entry.event,entry.weight
+        if data == 'mad':
+            weight = entry.weight*6225.42/4963.0
+        else:
+            weight = entry.weight
+        yb,ys,event = 0.5*abs(entry.zy+entry.jet1y),0.5*abs(entry.zy-entry.jet1y),entry.event
         gencutweight = ((entry.genmupluspt>25) & (abs(entry.genmupluseta)<2.4)
                         & (entry.genmuminuspt>25) & (abs(entry.genmuminuseta)<2.4)
                         & (abs(entry.genzmass-91.1876)<20))
@@ -310,11 +320,7 @@ N_toys=1000000
 def loop_3Dhist(args=None):
     N_toys = 1000000000
     cut = '_jet1pt20'
-    postfix='_puppi'
-    #for data in ['BCDEFGH','17Jul2018','hpp','amc','mad','WW','WZ','ZZ','TTJets','TW']:#,'pow','ptz',
-    for data in ['17Jul2018','hpp','amc','mad']:
-        create_3Dhist(obs='zpt',cut=cut,data=data,postfix=postfix)
-        create_3Dhist(obs='phistareta',cut=cut,data=data,postfix=postfix)
+    postfix=''#'_puppi'
     for mc in ['mad','hpp']:
         create_toy3Dhist(obs='zpt',cut=cut,mc=mc,postfix=postfix,N_toys=N_toys)
         create_toy3Dhist(obs='phistareta',cut=cut,mc=mc,postfix=postfix,N_toys=N_toys)
@@ -322,6 +328,10 @@ def loop_3Dhist(args=None):
           for variation in [-1,1]:
             create_toy3Dhist(obs='zpt',cut=cut,mc=mc,postfix=postfix,varquantity=varquantity,variation=variation,N_toys=N_toys)
             create_toy3Dhist(obs='phistareta',cut=cut,mc=mc,postfix=postfix,varquantity=varquantity,variation=variation,N_toys=N_toys)
+    for data in ['17Jul2018','hpp','amc','mad','WW','WZ','ZZ','TTJets','TW']:#,'pow','ptz',
+    #for data in ['17Jul2018','hpp','amc','mad']:
+        create_3Dhist(obs='zpt',cut=cut,data=data,postfix=postfix)
+        create_3Dhist(obs='phistareta',cut=cut,data=data,postfix=postfix)
     return
 
 
@@ -337,8 +347,8 @@ def create_toy3Dhist(args=None, obs='zpt', cut='_jet1pt20', mc='amc', match='', 
     [h_rand,h_RMSobs,h_RMSyz,h_RMSyj,h_A,h_F,h_S] = [h_gen.Clone(name) for name in ['weight',obs+'res','zyres','jet1yres',obs+'A',obs+'F',obs+'switch']]
     l_RMSobs,l_RMSyz,l_RMSyj,l_switch,l_A,l_F= [],[],[],[],[],[]
     l_rand_syj = []
-    #input_path  = PLOTSFOLDER+cut+postfix+'/resolution_985'
-    input_path  = PLOTSFOLDER+cut+postfix+'/resolution_95'
+    input_path  = PLOTSFOLDER+cut+postfix+'/resolution_985'
+    #input_path  = PLOTSFOLDER+cut+postfix+'/resolution_95'
     #output_file = PLOTSFOLDER+cut+postfix+'/'+obs+'_toy_10M'+match+'.root'
     #output_file = PLOTSFOLDER+cut+postfix+'/'+obs+'_toy'+match+'.root'
     output_file = PLOTSFOLDER+cut+postfix+'/variations_'+mc+'/'+obs+'_toy'+match+varquantity+VARIATIONSTRING[variation]+'.root'
@@ -349,11 +359,11 @@ def create_toy3Dhist(args=None, obs='zpt', cut='_jet1pt20', mc='amc', match='', 
     # toy2: parameters from histogram +/- histogram errors scaled with sqrt(chi2/ndf)
     # toy3: parameters fitted +/- confidence interval; constant switching
     if not variation == 0:
-        if not os.path.exists(PLOTSFOLDER+cut+postfix+'/variations'):
+        if not os.path.exists(PLOTSFOLDER+cut+postfix+'/variations_'+mc):
             print "WARNING: variations folder",PLOTSFOLDER+cut+postfix+'/variations',"does not exist!"
             return
         else:
-            output_file = PLOTSFOLDER+cut+postfix+'/variations/'+obs+'_toy'+match+varquantity+VARIATIONSTRING[variation]+'.root'
+            output_file = PLOTSFOLDER+cut+postfix+'/variations_'+mc+'/'+obs+'_toy'+match+varquantity+VARIATIONSTRING[variation]+'.root'
             #output_file = PLOTSFOLDER+cut+postfix+'/variations/'+obs+'_toy{}'.format(errors)+match+varquantity+VARIATIONSTRING[variation]+'.root'
     # check if gen distributions are existent
     if not (os.path.exists(PLOTSFOLDER+cut+postfix+'/gendistributions/gen'+obs+'_'+mc+'.root')
@@ -828,28 +838,30 @@ def unfold_by_tunfold_3Dhist(args=None,obs='zpt',cut='_jet1pt20',data='mad',mc='
 def loop_3Dunc(args=None):
     for cut in ['_jet1pt20']:
      for postfix in ['']:
-      for varquantity in [#  '_stats_mad','_stats_amc','_stats_hpp',#'_stats_pow','_stats_ptz',
+      for varquantity in [  '_stats_mad','_stats_amc','_stats_hpp',#'_stats_pow','_stats_ptz',
+                            '_stats_toy0','_stats_toy2',
                           #  #'_model_mad','_model_amc','_model_hpp',
-                          #  '_model_toy', 
-                          #  '_Robs', '_Ryj',  '_Ryz', '_F', '_A', '_switch','_stats_toy',
-                          #  '_IDSF','_IsoSF','_TriggerSF',
-                          #  '_bkg','_lumi',
-                          #  '_JEC','_JER',
-                          #  '_statistical',
-                            '_total'
+                            '_model_toy',
+                            '_Robs', '_Ryj',  '_Ryz', '_F', '_A', '_switch',#'_stats_toy',
+                            '_IDSF','_IsoSF','_TriggerSF',
+                            '_bkg','_lumi',
+                            '_JEC','_JER',
+                            '_statistical',
+                            '_total',
+                            '_total_stat'
                             ]:
         for data in [   '17Jul2018',
                         #'amc',
                         #'hpp',
                         #'mad',
-                        'BCDEFGH'
+                        #'BCDEFGH'
                         ]:
           create_3Dunc(obs='zpt',       cut=cut,data=data,postfix=postfix,varquantity=varquantity)
           create_3Dunc(obs='phistareta',cut=cut,data=data,postfix=postfix,varquantity=varquantity)
     return
 
 
-def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',match='', postfix='', varquantity='_total', N_toys=10000):
+def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',match='', postfix='', varquantity='_total', N_toys=1000):
     var=varquantity
     output_file = PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_'+data+match+varquantity+'.root'
     print "write uncertainty to file",output_file
@@ -931,7 +943,7 @@ def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',ma
         h_uncertainty.Reset()
         for i in xrange(h_uncertainty.GetNbinsX()):
             #h_uncertainty.SetBinContent(i+1,2*max(abs(h_0[i+1]-h_1[i+1])/(h_0[i+1]+h_1[i+1]),abs(h_0[i+1]-h_2[i+1])/(h_0[i+1]+h_2[i+1])))
-            h_uncertainty.SetBinContent(i+1,abs(h_0[i+1]-h_2[i+1])/(h_0[i+1]+h_2[i+1]))
+            h_uncertainty.SetBinContent(i+1,2*abs(h_0[i+1]-h_2[i+1])/(h_0[i+1]+h_2[i+1]))
         f_out.cd()
         h_uncertainty.Write()
     elif varquantity in ['_IDSF','_IsoSF','_TriggerSF','_JEC']:
@@ -956,6 +968,7 @@ def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',ma
         h_central.Write(obs)
     elif varquantity in ['_JER']:
         input_file = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+data+match+'.root'
+        create_3Dhist(args,obs,cut,data,match,postfix,varquantity=var)
         f_in      = ROOT.TFile(input_file,"READ")
         h_central = f_in.Get(obs)
         h_uncertainty = h_central.Clone('uncertainty'+varquantity)
@@ -1007,7 +1020,7 @@ def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',ma
             h_uncertainty.SetBinError(i+1,0)
         f_out.cd()
         h_uncertainty.Write()
-    elif varquantity in ['_total']:
+    elif '_total' in varquantity:
         input_file = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+data+match+'.root'
         f_in       = ROOT.TFile(input_file,"READ")
         h_uncertainty = f_in.Get(obs)
@@ -1016,10 +1029,10 @@ def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',ma
                     'lumi': ['_lumi'],
                     'bkg' : ['_bkg'],
                     'eff' : ['_IDSF','_IsoSF','_TriggerSF'],
-                    'unf' : ['_stats_toy'],
+                    'unf' : ['_stats_toy0','_model_toy','_Robs','_Ryz','_Ryj','_A','_F','_switch'],
+                    #'unf' : ['_stats_toy'],
                     'jer' : ['_JER'],
                     'jec' : ['_JEC'],
-                    'mod' : ['_model_toy','_Robs','_Ryz','_Ryj','_A','_F','_switch'],
                     })
         for vkey in varlist:
           h_unc = h_uncertainty.Clone("uncertainty_"+vkey)
@@ -1032,7 +1045,7 @@ def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',ma
             for i in xrange(h_uncertainty.GetNbinsX()):
                 h_unc.SetBinContent(i+1,np.sqrt(h_unc[i+1]**2+h_v[i+1]**2))
                 h_unc.SetBinError(i+1,0)
-          if not vkey == 'stat':
+          if (not vkey == 'stat') or ('stat' in varquantity):
             for i in xrange(h_uncertainty.GetNbinsX()):
                 h_uncertainty.SetBinContent(i+1,np.sqrt(h_uncertainty[i+1]**2+h_unc[i+1]**2))
                 h_uncertainty.SetBinError(i+1,0)
@@ -1046,9 +1059,11 @@ def create_3Dunc(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH',ma
     return
 
 
-def calculate_closure_chi2(args=None, obs='zpt', cut='_jet1pt20', data='mad', mc='toy0',match='', postfix='', ybindex=None, ysindex=None):
+def calculate_closure_chi2(args=None, obs='zpt', cut='_jet1pt20', data='hpp', mc='mad',match='', postfix='', ybindex=None, ysindex=None):
 #def calculate_closure_chi2(args=None, obs='phistareta', cut='_jet1pt20', data='mad', mc='toy0',match='', postfix='', ybindex=0, ysindex=0):
   varlist = ['stats_'+mc]#,'model_'+mc]
+  unfold_by_tunfold_3Dhist(args,obs,cut,data,mc,match,postfix)
+  #f_chi2 = ROOT.TFile(PLOTSFOLDER+cut+postfix+'/chi2/'+obs+'_'+data+'_by_'+mc+match+'.root',"RECREATE")
   if 'toy' in mc:
       #varlist += ['Robs','Ryj','Ryz','switch','F','A']
       varlist = ['stats_toy','model_toy','Robs','Ryj','Ryz','switch','F','A']
@@ -1060,7 +1075,7 @@ def calculate_closure_chi2(args=None, obs='zpt', cut='_jet1pt20', data='mad', mc
   h_unc = h_gen.Clone("uncertainty")
   h_unc.Reset()
   for var in varlist:
-    f_var = ROOT.TFile(PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_BCDEFGH'+match+'_'+var+'.root',"READ")
+    f_var = ROOT.TFile(PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_17Jul2018'+match+'_'+var+'.root',"READ")
     h_var = f_var.Get("uncertainty_"+var)
     for i in xrange(h_unc.GetNbinsX()):
         h_unc.SetBinContent(i+1,np.sqrt(h_unc[i+1]**2+h_var[i+1]**2))
@@ -1070,8 +1085,14 @@ def calculate_closure_chi2(args=None, obs='zpt', cut='_jet1pt20', data='mad', mc
     obsindexmin, obsindexmax = l_obsbinedges[l_ybinedges[ysindex]+int(ybindex)],l_obsbinedges[l_ybinedges[ysindex]+int(ybindex)+1]
   else:
       obsindexmin, obsindexmax = 0,h_unc.GetNbinsX()
+  h_chi2 = h_unc.Clone("chi2")
   for i in xrange(obsindexmin, obsindexmax):
     chi2 += (h_unf[i+1]-h_gen[i+1])**2/((h_unc[i+1]*h_unf[i+1])**2+h_unf.GetBinError(i+1)**2)
+    h_chi2.SetBinContent(i+1,(h_unf[i+1]-h_gen[i+1])/np.sqrt((h_unc[i+1]*h_unf[i+1])**2+h_unf.GetBinError(i+1)**2))
+    h_chi2.SetBinError(i+1,0)
+  #f_chi2.cd()
+  #h_chi2.Write()
+  #print PLOTSFOLDER+cut+postfix+'/chi2/'+obs+'_'+data+'_by_'+mc+match+'.root'
   print "chi2/ndf between gen",data,"and reco",data,"unfolded by",mc,"is",chi2/(obsindexmax-obsindexmin)
   return chi2/(obsindexmax-obsindexmin)
 
@@ -1080,9 +1101,9 @@ def write_closure_chi2(args=None, obs='zpt', cut='_jet1pt20', data='mad', mc='to
     output_path = PLOTSFOLDER+cut+postfix+'/chi2/'+obs+'_'+data+'_by_'+mc+match+'.root'
     f_out = ROOT.TFile(output_path,"RECREATE")
     [l_ybinedges,l_obsbinedges] = prepare_3Dhist(args,obs)[4:6]
-    x = range(len(l_obsbinedges)-1)
+    x    = range(len(l_obsbinedges)-1)
     xerr = range(len(l_obsbinedges)-1)
-    y = range(len(l_obsbinedges)-1)
+    y    = range(len(l_obsbinedges)-1)
     for ybmin in [0.0,0.5,1.0,1.5,2.0]:
       for ysmin in [0.0,0.5,1.0,1.5,2.0]:
         if not ybmin+ysmin>2:
@@ -1102,9 +1123,9 @@ def write_closure_chi2(args=None, obs='zpt', cut='_jet1pt20', data='mad', mc='to
     return
 
 
-
-
-def plot_datamc_3Dhist(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEFGH', mc='amc', match='', postfix=''):
+def plot_datamc_3Dhist(args=None, obs='phistareta', cut='_jet1pt20', data='17Jul2018', mc='mad', match='', postfix=''):
+  plots=[]
+  for obs in ['phistareta','zpt']:
     [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
     data_source = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+data+match+'.root'
     mc_source   = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+mc+match+'.root'
@@ -1115,7 +1136,6 @@ def plot_datamc_3Dhist(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEF
     for x in filelist:
         invert_3Dhists(args,x)
         filelist_binned.append(x.replace('.root','_binned.root'))
-    plots=[]
     d0 = ({
         'files': filelist,
         'x_expressions': [obs],
@@ -1132,12 +1152,14 @@ def plot_datamc_3Dhist(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEF
         'www': 'datamc'+cut+postfix+'_'+data+'_vs_'+mc+match,
         'filename': obs,
         'x_errors': [1],
-        'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
+        'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' bin',
         'y_log': True,
         'y_lims': [1e-2,1e5] if obs =='zpt' else [1e0,1e7],
         'nicks_blacklist': ['sim'],
         'y_subplot_label': 'Data/Sim',
         'y_subplot_lims': [0.75,1.25],
+        'texts_size': [20],
+        'labelsize': 25,
         #'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary \\hspace{6.2}}$",
     })
     for ybmin in [0.0,0.5,1.0,1.5,2.0]:
@@ -1152,7 +1174,8 @@ def plot_datamc_3Dhist(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEF
                 'analysis_modules': ['SumOfHistograms','NormalizeByBinWidth','Ratio'],
                 'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
                 'y_label': 'Events per binsize',
-                'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
+                'texts': [r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary}$",r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
+                'texts_y': [1.05,0.97],
                 'x_log': True,
                 'x_label': obs,
             })
@@ -1161,10 +1184,10 @@ def plot_datamc_3Dhist(args=None, obs='phistareta', cut='_jet1pt20', data='BCDEF
     d0['vertical_lines'] = l_obsbinedges
     d0['vertical_lines_styles'] = 5*[':']+['--']+3*[':']+['--']+2*[':']+['--',':','--']
     plots.append(d0)
-    return [PlottingJob(plots=plots, args=args)]
+  return [PlottingJob(plots=plots, args=args)]
 
 
-def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfix='',trunc = '_95'):
+def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfix='',trunc = '_985'):
 #def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfix='_puppi',trunc = '_95'):
   plots=[]
   folder = PLOTSFOLDER+cut+postfix+'/resolution'+trunc+'/'
@@ -1174,12 +1197,13 @@ def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfi
         if not ybmin+ysmin>2:
             namestring = '_yb{}_ys{}'.format(int(2*ybmin),int(2*ysmin))
             d = ({
-                'www': 'resolution'+cut+postfix+'_'+mc+match+'/resolution'+trunc+namestring,
+                'www': 'resolutions'+cut+postfix+'_'+mc+match+'/resolution'+trunc+namestring,
                 'folders': [''],
                 'x_log': True,
                 'x_errors': [1],
                 'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
-                'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
+                'texts': [r"$\\bf{CMS} \\hspace{0.5} \\it{Simulation} \\hspace{0.2} \\it{Preliminary}$",r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
+                'texts_size': [20],
                 'analysis_modules': ['FunctionPlot'],
                 'function_parameters': ['1,0.01,1,0'],
                 'function_fit_parameter_names': ['p_0','p_1','p_2','p_3'],
@@ -1187,7 +1211,56 @@ def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfi
                 'alphas': [0.707],
                 'nicks_whitelist': ['fit',''],
                 #'function_display_result': True,
+                'labelsize': 25,
             })
+            d0 = deepcopy(d)
+            rebinning(args,d0,obs,[ybmin,ybmin+0.5],[ysmin,ysmin+0.5])
+            l_bins = [float(x) for x in d0['x_bins'][0].split(' ')]
+            d0.pop('x_bins')
+            d0.pop('x_ticks')
+            d0.pop('y_bins')
+            d0.update({
+                'x_log': False,
+                'nicks': ['hist'],
+                'analysis_modules': ['FunctionPlot'],
+                'functions': ['[0]*ROOT::Math::crystalball_function(-abs(x), [1], [3], [2], 0)','[0]*exp(-x**2/[1]**2/2)'],
+                'function_fit': ['hist'],
+                'function_parameters': ['43.539223,1.3674205,0.013207260,4.9681730','38.866539,0.015700151'],
+                'function_nicknames': ['CrystalBall','Gaussian'],
+                'colors': ['black','darkviolet','darkorange'],
+                'y_label': 'Arb. units',
+                'y_ticks': [0],
+                'texts_x': [0.03,0.03,0.03,0.05,0.05],
+                'texts_y': [0.90,1.05,0.97,0.6,0.75],
+                'legend': None,
+                'function_display_result': True,
+                'function_fit_scale_errors_by_chi2': False,
+            })
+            d0['texts'] = ['']+d0['texts']
+            for obsmin,obsmax in zip(l_bins[:-1],l_bins[1:]):
+                d0['texts'][0] = [r"$\\bf{CMS} \\hspace{0.5} \\it{Simulation} \\hspace{0.2} \\it{Preliminary}$",r"${}<p_T^Z/$GeV$<{}$".format(int(obsmin),int(obsmax)) if obs=='zpt' else r"${}<\\Phi*_\\eta<{}$".format(obsmin,obsmax)]
+                d0['x_expressions'] = ['resolution_{}_{}'.format(int(obsmin),int(obsmax)) if obs=='zpt' else 'resolution_{}_{}'.format(int(10*obsmin),int(10*obsmax))]
+                d01 = deepcopy(d0)
+                d01.update({
+                    'files': [folder+obs+'_'+mc+match+namestring+'.root'],
+                    'x_label': r"$R(p_T^{Z})$" if obs=='zpt' else r"$R(\\Phi*_\\eta)$"
+                })
+                d01['www'] = d['www']+'/histograms_'+obs
+                d02 = deepcopy(d0)
+                d02.update({
+                    'files': [folder+'zy_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
+                    'x_label': r"$R(y^{Z})$"
+                })
+                d02['www'] = d['www']+'/histograms_zy_bins_of_'+obs
+                d03 = deepcopy(d0)
+                d03.update({
+                    'files': [folder+'matchedjet1y_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
+                    'x_label': r"$R(y^{jet1})$"
+                })
+                d03['www'] = d['www']+'/histograms_jet1y_bins_of_'+obs
+                #plots.append(d01)
+                #plots.append(d02)
+                #plots.append(d03)
             d1 = deepcopy(d)
             d1.update({
                 'files': [  folder+obs+'_'+mc+match+namestring+'.root',
@@ -1203,10 +1276,10 @@ def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfi
                 'functions': ['[0]+[1]*sqrt(x)+[2]/sqrt(x)','[0]+[1]/sqrt(x)','[0]'] if obs == 'zpt' else ['[0]+[1]*x+[2]/x','[0]+[1]/x','[0]+[1]*log(x)'],
                 'function_fit': [obs,'jety','zy'],
                 'function_nicknames': ['fit_'+obs,'fit_jet1y','fit_zy'],
-                'y_lims': [0,0.05],
+                'y_lims': [0,0.06],
                 'y_label': 'Resolution',
-                'texts_x': [0.05,0.05,0.05,0.03],#0.05,0.4,0.7],
-                'texts_y': [0.9,0.85,0.8,0.97],#1.08,1.08,1.08],
+                'texts_x': [0.05,0.05,0.05,0.03,0.03],#0.05,0.4,0.7],
+                'texts_y': [0.90,0.82,0.74,1.05,0.97],#1.08,1.08,1.08],
             })
             d1['texts'] = ([r'$f_{p_T^Z}(x)=p_0+p_1\\sqrt{x}+p_2\\frac{1}{\\sqrt{x}}$',
                             r'$f_{y^{jet1}}(x)=p_0+p_1\\frac{1}{\\sqrt{x}}$',
@@ -1215,6 +1288,12 @@ def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfi
                             r'$f_{y^{jet}}(x)=p_0+p_1\\frac{1}{x}$',
                             r'$f_{y^Z}(x)=p_0+p_1\\log(x)$'
                             ])+d1['texts']
+            if ysmin==2.0 and obs=='zpt':
+                d1['y_lims'] = [0,0.12]
+            elif ybmin==2.0 and obs=='zpt':
+                d1['y_lims'] = [0,0.16]
+            elif ysmin+ybmin>1.0 and obs=='zpt':
+                d1['y_lims'] = [0,0.15]
             d2 = deepcopy(d)
             d2.update({
                 'files': [folder+obs+'_'+mc+match+namestring+'.root'],
@@ -1230,8 +1309,8 @@ def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfi
                 'function_nicknames': ['fit_acc','fit_fake'],
                 'y_lims': [0.5,1.2],
                 'y_label': 'Fraction',
-                'texts_x': [0.05,0.05,0.03],#0.05,0.4,0.7],
-                'texts_y': [0.9,0.85,0.97],#1.08,1.08,1.08],
+                'texts_x': [0.05,0.05,0.03,0.03],#0.05,0.4,0.7],
+                'texts_y': [0.88,0.81,1.05,0.97],#1.08,1.08,1.08],
                 'lines': [1],
             })
             d2['texts'] = [r'$f_{Acceptance}(x)=\\frac{1}{2}p_0(1+erf(p_1(x-p_2)))+p_3$',r'$f_{1-Fakerate}(x)=p_0+p_1\\frac{1}{x'+('^3' if obs=='zpt' else '^4')+'}$']+d2['texts']
@@ -1250,69 +1329,38 @@ def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfi
                 'function_nicknames': ['fit_switched'],
                 'y_lims': [0,1.25],
                 'y_label': 'Fraction',
-                'texts_x': [0.05,0.03],#0.05,0.4,0.7],
-                'texts_y': [0.9,0.97],#1.08,1.08,1.08],
+                'texts_x': [0.05,0.03,0.03],#0.05,0.4,0.7],
+                'texts_y': [0.89,1.05,0.97],#1.08,1.08,1.08],
                 'stacks': 3*['fraction']+['fit'],
                 'lines': [1],
                 'alphas': [1],
                 'nicks_whitelist': [''],
             })
             d3['texts'] = ([r"$f_{switched}(x)=p_0exp(-p_1 x)$"] if obs =='zpt' else [r"$f_{switched}(x)=p_0+p_1\\frac{1}{x}$"]) + d3['texts']
-            '''
-            #d5['texts'][0] = [r'$f_{Losses}(x)=p_0-p_1\\frac{1}{x'+('' if obs=='zpt' else '^2')+'}$',r'$f_{Fakes}(x)=p_0+p_1\\frac{1}{x'+('^3' if obs=='zpt' else '^4')+'}$']+d5['texts']
-            rebinning(args,d,obs,[ybmin,ybmin+0.5],[ysmin,ysmin+0.5])
-            d6 = deepcopy(d)
-            l_bins = [float(x) for x in d6['x_bins'][0].split(' ')]
-            d6.pop('x_bins')
-            d6.pop('x_ticks')
-            d6.pop('y_bins')
-            d6.update({
-                'x_log': False,
-                'nicks': ['hist'],
-                'analysis_modules': ['FunctionPlot'],
-                'functions': ['[0]*ROOT::Math::crystalball_function(-abs(x), [1], [3], [2], 0)','[0]*exp(-x**2/[1]**2/2)'],
-                'function_fit': ['hist'],
-                'function_parameters': ['43.539223,1.3674205,0.013207260,4.9681730','38.866539,0.015700151'],
-                'function_nicknames': ['CrystalBall','Gaussian'],
-                'alphas': [0.5],
-                'texts_x': [0.03,0.03,0.1,0.4],
-                'texts_y': [0.97,0.92,1.08,1.08],
-                'colors': ['black','darkviolet','darkorange'],
-                'y_label': 'Arb. units',
-                'y_ticks': [0],
-                'markers': ['.','fill','fill'],
-                'marker_fill_styles': ['full'],
-                'labels': [LABELDICT[mc],'Crystal Ball Fit','Gaussian Fit'],
-                'legend': None,
+            d4 = deepcopy(d)
+            d4.update({
+                'files': [folder+obs+'_'+mc+match+namestring+'.root'],
+                'filename': obs+'_subprocesses',
+                'x_expressions': ['gg','qg','aqg','qq','qaq','aqaq'],
+                'x_label': obs,
+                'nicks': ['gg','qg','aqg','qq','qaq','aqaq'],
+                'labels': ['gluon-gluon','quark-gluon','antiquark-gluon','quark-quark','quark-antiquark','antiquark-antiquark'],
+                'markers': ['fill'],
+                #'colors': ['grey','steelblue','orange','gold'],
+                'y_lims': [-0.25,1.25],
+                'y_label': 'Fraction',
+                'texts_x': [0.03,0.03],#0.05,0.4,0.7],
+                'texts_y': [1.05,0.97],#1.08,1.08,1.08],
+                'stacks': ['fraction'],
+                'lines': [1],
+                #'alphas': [1],
+                #'nicks_whitelist': [''],
             })
-            d6['texts'] += ['']
-            for obsmin,obsmax in zip(l_bins[:-1],l_bins[1:]):
-                d6['texts'][0] = [r"${}<p_T^Z/$GeV$<{}$".format(int(obsmin),int(obsmax)) if obs=='zpt' else r"${}<\\Phi*_\\eta<{}$".format(obsmin,obsmax)]
-                d6['x_expressions'] = ['resolution_{}_{}'.format(int(obsmin),int(obsmax)) if obs=='zpt' else 'resolution_{}_{}'.format(int(10*obsmin),int(10*obsmax))]
-                d61 = deepcopy(d6)
-                d61.update({
-                    'x_label': r"$\\frac{p_T^{Z,Reco}-p_T^{Z,Gen}}{p_T^{Z,Gen}}$" if obs=='zpt' else r"$\\frac{\\Phi*_\\eta^{Reco}-\\Phi*_\\eta^{Gen}}{\\Phi*_\\eta^{Gen}}$"
-                })
-                d61['www'] = d['www']+'/histograms_'+obs
-                d62 = deepcopy(d6)
-                d62.update({
-                    'files': [folder+'zy_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
-                    'x_label': r"$y^{Z,Reco}-y^{Z,Gen}$"
-                })
-                d62['www'] = d['www']+'/histograms_zy_bins_of_'+obs
-                d63 = deepcopy(d6)
-                d63.update({
-                    'files': [folder+'matchedjet1y_'+mc+match+namestring+'_bins_of_'+obs+'.root'],
-                    'x_label': r"$y^{jet1,Reco}-y^{jet1,Gen}$"
-                })
-                d63['www'] = d['www']+'/histograms_jet1y_bins_of_'+obs
-                #plots.append(d61)
-                #plots.append(d62)
-                #plots.append(d63)
-            '''
+            d4.pop('analysis_modules')
             plots.append(d1)
             plots.append(d2)
             plots.append(d3)
+            plots.append(d4)
   return [PlottingJob(plots=plots, args=args)]
 
 
@@ -1322,7 +1370,7 @@ def plot_resolution_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='', postfi
 #MCLIST = ['toy0','toy1','toy2']
 #PLOTSFOLDER = "ZJtriple/ZJtriple_2019-06-24"
 
-def plot_closure_chi2(args=None, cut='_jet1pt20', data='BCDEFGH', mc='mad',match='', postfix=''):
+def plot_closure_chi2(args=None, cut='_jet1pt20', data='17Jul2018', mc='toy',match='', postfix=''):
   plots = []
   for obs in ['zpt','phistareta']:
     l_binedges = prepare_3Dhist(args,obs)[4]
@@ -1330,7 +1378,12 @@ def plot_closure_chi2(args=None, cut='_jet1pt20', data='BCDEFGH', mc='mad',match
     #l_binedges = prepare_3Dhist(args,obs)[5]
     filelist = []
     for sample in MCLIST:
-        unfold_by_tunfold_3Dhist(args,obs,cut,sample,mc,match,postfix)
+        if mc=='toy':
+            unfold_by_tunfold_3Dhist(args,obs,cut,sample,'toy0',match,postfix)
+            unfold_by_tunfold_3Dhist(args,obs,cut,sample,'toy2',match,postfix)
+            write_data(args,obs,cut,sample,match,postfix)
+        #else:
+         #   unfold_by_tunfold_3Dhist(args,obs,cut,sample,mc,match,postfix)
         write_closure_chi2(args,obs,cut,sample,mc,match,postfix)
         filelist.append(PLOTSFOLDER+cut+postfix+'/chi2/'+obs+'_'+sample+'_by_'+mc+match+'.root')
     d = ({
@@ -1349,9 +1402,15 @@ def plot_closure_chi2(args=None, cut='_jet1pt20', data='BCDEFGH', mc='mad',match
         'y_errors': False,
         'y_label': r'$\\mathit{\\chi}^2$/$\\mathit{n.d.f.}$',
         #'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
-        'x_label': 'Rapidity Bin Index',
+        'x_label': 'Rapidity bin index',
         'x_lims': [0.5,max(l_binedges)+1.5],
-        'title': 'unfolding in '+(r'($p_T^Z$,$y_b$,$y*$)' if obs=='zpt' else r'($\\Phi*_\\eta$,$y_b$,$y*$)'),
+        'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Simulation} \\hspace{0.2} \\it{Preliminary} \\hspace{15} .$",
+        'texts': [  'unfolding in ',(r'($p_T^Z$,$y_b$,$y*$)' if obs=='zpt' else r'($\\Phi*_\\eta$,$y_b$,$y*$)'),
+                    'using',LABELDICT[mc],('Toy ' if 'toy' in mc else '')+'response'],
+        'texts_size': 20,
+        'texts_x': [0.05],
+        'texts_y': [0.76,(0.71 if obs=='zpt' else 0.70),0.64,0.58,0.52],
+        'labelsize': 25,
         'legend': 'upper left',
         'vertical_lines': [x+0.5 for x in l_binedges],
         'vertical_lines_styles': ['--'],
@@ -1362,23 +1421,24 @@ def plot_closure_chi2(args=None, cut='_jet1pt20', data='BCDEFGH', mc='mad',match
   return [PlottingJob(plots=plots, args=args)]
 
 #def plot_unfolding_closure_3Dhist(args=None, cut='_jet1pt20', data='BCDEFGH', mc='toy',match='', postfix=''):
-def plot_unfolding_closure_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', mc='toy',match='', postfix=''):
-  varlist = 2*['stats_'+mc]#,'model_'+mc]
+def plot_unfolding_closure_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', mc='hpp',match='', postfix=''):
+  varlist = 2*['stats_'+mc]
   plots=[]
   if 'toy' in mc:
-      #varlist += ['Robs','Ryj','Ryz','switch','F','A']
       varlist = ['stats_toy','model_toy','Robs','Ryj','Ryz','switch','F','A']
-      #varlist = ['stats_toy','Robs','Ryj','Ryz','switch','F','A']
   for obs in ['zpt','phistareta']:
     [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
     filelist=[]
     for sample in MCLIST:
         #unfold_by_inversion_3Dhist(args,obs,cut,sample,mc,match,postfix)
-        unfold_by_tunfold_3Dhist(args,obs,cut,sample,mc,match,postfix)
+        if mc=='toy':
+            unfold_by_tunfold_3Dhist(args,obs,cut,sample,'toy0',match,postfix)
+            unfold_by_tunfold_3Dhist(args,obs,cut,sample,'toy2',match,postfix)
+            write_data(args,obs,cut,sample,match,postfix)
+        else:
+            unfold_by_tunfold_3Dhist(args,obs,cut,sample,mc,match,postfix)
         filelist.append(PLOTSFOLDER+cut+postfix+'/'+obs+'_'+sample+'.root')
         filelist.append(PLOTSFOLDER+cut+postfix+'/unfolded/'+obs+'_'+sample+'_by_'+mc+match+'.root')
-    #filelist.append(PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_'+data+'_stats_'+mc+'.root')
-    #filelist.append(PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_'+data+'_model_'+mc+'.root')
     filelist = filelist+[PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_'+data+'_'+var+'.root' for var in varlist]
     filelist_binned = []
     for x in filelist:
@@ -1427,7 +1487,9 @@ def plot_unfolding_closure_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', 
         'texts': [''],
         'texts_x': [0], 
         'texts_y': [0], 
-        'texts_size': [7],
+        'texts_size': [20],
+        'labelsize': 25,
+        'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary} \\hspace{20} .$",
     })
     if not 'toy' in mc:
         d0['labels'][len(MCLIST)]   = LABELDICT[mc]+" Stat. Unc."
@@ -1466,7 +1528,7 @@ def plot_unfolding_closure_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', 
                 'line_styles': 2*['']+2*['-']+len(MCLIST)*[''],
                 'markers': 2*['fill']+2*['']+[MARKERDICT[x] for x in MCLIST],
                 'colors': ['yellow','white','black','black']+[COLORDICT[x] for x in MCLIST],
-                'texts_size': [15],
+                'texts_size': [20],
                 'texts_x': [0.03],
                 'texts_y': [0.97],
                 'subplot_nicks': ['dummy'],
@@ -1511,15 +1573,7 @@ def plot_unfolding_closure_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', 
 #def plot_uncertainty_3Dhist(args=None, cut='_jet1pt20', data='BCDEFGH', mc='toy', match='', postfix=''):
 def plot_uncertainty_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', mc='toy', match='', postfix=''):
   plots = []
-  if mc == 'toy':
-    #toylist = ['Robs','Ryj','Ryz','F','A','switch']
-    #varlist = ['statistical','stats_'+mc,'model_'+mc,'lumi','bkg','IDSF','IsoSF','TriggerSF','JEC']+toylist
-    #varlist = ['statistical','stats_'+mc,'lumi','bkg','IDSF','IsoSF','TriggerSF','JEC']+toylist
-    varlist = ['stat','total','lumi','bkg','eff','unf','jec','mod','jer']
-  else:
-    #toylist = []
-    #varlist = ['statistical','stats_'+mc,'model_'+mc,'lumi','bkg','IDSF','IsoSF','TriggerSF','JEC']
-    varlist = ['stat','total','lumi','bkg','eff','unf','jec']
+  varlist = ['stat','total','lumi','bkg','eff','unf','jec','jer']
   for obs in ['zpt','phistareta']:
     [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
     if not data in ['BCDEFGH','17Jul2018']:
@@ -1536,28 +1590,23 @@ def plot_uncertainty_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', mc='to
         'folders': [''],
         'nicks': varlist,
         'x_expressions': ['uncertainty_'+var for var in varlist],
-        #'analysis_modules': ['QuadraticSumOfHistograms'],#
-        #'quad_sum_nicks': ['stats_'+mc,'IDSF IsoSF TriggerSF',' '.join(['model_'+mc]+toylist),'eff model lumi bkg JEC stats'],
-        #'quad_sum_nicks': ['stats_'+mc,'IDSF IsoSF TriggerSF',' '.join(toylist),'eff model lumi bkg JEC stats'],
-        #'quad_sum_result_nicks': ['stats','eff','model','total'],
         'filename': obs,
-        #'nicks_whitelist': ['statistical','total','lumi','bkg','eff','^stats$','JEC','^model$'],
-        'labels': ['Statistical','Total systematic','Lumi','Background','ID/Trigger','Unfolding statistical','JEC','Unfolding modelling','JER'],
+        'labels': ['Statistical','Total systematic','Luminosity','Background','Efficiency','Unfolding','JEC','JER'],
         'alphas': [0.5],
         'y_errors': False,
-        'y_lims': [0.0,0.2],
+        'y_lims': [0.0,0.1],
         'y_label': "Relative Uncertainty",
         'www': 'comparison_uncertainties'+cut+postfix+'_'+data+'_by_'+mc+match,
         'step': [True],
+        'legend': None,
+        #'figsize': [36,6],
+        #'legend_cols': 8,
         'line_styles': ['-'],
-        'markers': ['fill','o','v','^','>','<','s','D','p'],
+        'markers': ['fill','o','v','^','>','<','s','D'],
         'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
+        'texts_size': [20],
+        'labelsize': 25,
     })
-    #if not mc == 'toy':
-    #    d0['nicks_whitelist'] = ['statistical','total','lumi','bkg','eff','^stats$','JEC'],#'stats_'+mc,
-    #    d0['labels'] = ['Statistical','Total systematic','Lumi','Background','ID/Trigger','Unfolding statistical','JEC'],
-    #    d0['quad_sum_nicks'][-1] = 'eff lumi bkg stats_'+mc+' JEC'
-    #    d0['markers'] = ['fill','o','v','^','>','<','s'],
     for ybmin in [0.0,0.5,1.0,1.5,2.0]:
       for ysmin in [0.0,0.5,1.0,1.5,2.0]:
         if not ybmin+ysmin>2:
@@ -1567,10 +1616,19 @@ def plot_uncertainty_3Dhist(args=None, cut='_jet1pt20', data='17Jul2018', mc='to
                 'files': filelist_binned,
                 'x_expressions': ['uncertainty_'+var+namestring for var in varlist],
                 'x_log': True,
-                'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
+                'texts': [r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary}$",r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
                 'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
                 'x_label': obs,
+                'texts_y': [1.05,0.97],
             })
+            if ysmin>1.5:
+                d['y_lims'] = [0,0.25]
+            elif ysmin>1.0:
+                d['y_lims'] = [0,0.2]
+            elif ysmin>0.5:
+                d['y_lims'] = [0,0.15]
+            elif ybmin+ysmin>1:
+                d['y_lims'] = [0,0.16]
             d['www'] = d0['www']+'/uncertainties'+namestring
             plots.append(d)
     d0['figsize'] = [36,6]
@@ -1676,18 +1734,20 @@ def plot_unfolding_correction(args=None, obs='zpt', cut='_jet1pt20', data='BCDEF
     plots.append(d0)
     return [PlottingJob(plots=plots, args=args)]
 
-def plot_crossections_3Dhist(args=None,cut='_jet1pt20',data='2016',mc='amc',match='',postfix=''):
+def plot_crossections_3Dhist(args=None,cut='_jet1pt20',data='17Jul2018',mc='NLO',match='',postfix='',pdf='NNPDF31_nnlo_as_0118'):
   plots=[]
-  for obs in ['zpt']:#,'phistareta']:
+  for obs in ['zpt','phistareta']:
     [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
-    unfold_by_tunfold_3Dhist(args,obs,cut,data,'amc',match,postfix)
+    unfold_by_tunfold_3Dhist(args,obs,cut,data,'toy0',match,postfix)
     #unfold_by_inversion_3Dhist(args,obs,cut,data,'amc',match,postfix)
-    
-    data_source = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+data+'_'+match+'.root'
-    mc_source   = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+mc+'.root'
-    unc_source  = PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_'+'BCDEFGH'+match+'_total.root'
-    #markerlist = ['^','1','p','+','*','<','2','o','x','>','3','s','v','4','d']
-    markerlist = ['^','D','p','s','>','p','o','s','D','^','v','<','v','>','p']
+    #write_data(args,obs,cut,data,match,postfix)
+    data_source = PLOTSFOLDER+cut+postfix+'/unfolded/'+obs+'_'+data+'_by_toy0'+match+'.root'
+    if mc in ['LO','NLO','NNLO']:
+        #write_theory(args,obs,cut,postfix,mc,pdf)
+        mc_source   = PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+mc+'_'+pdf+'.root'
+    else:
+        mc_source   = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+mc+match+'.root'
+    unc_source  = PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_'+data+match+'_total_stat.root'
     filelist = [data_source,mc_source,unc_source]
     filelist_binned = []
     for x in filelist:
@@ -1695,38 +1755,101 @@ def plot_crossections_3Dhist(args=None,cut='_jet1pt20',data='2016',mc='amc',matc
         filelist_binned.append(x.replace('.root','_binned.root'))
     ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
     ylist = [((xb,yb),(xs,ys))  for (xs,ys) in zip(ybins[:-1],ybins[1:]) for (xb,yb) in zip(ybins[:-1],ybins[1:]) if xb+xs<2.5]
-    scaling = [1e20,1e19,1e18,1e17,1e16,1e13,1e12,1e11,1e10,1e7,1e6,1e5,1e2,1e1,1e0]
+    markerlist = ['^','1','d','+','*','<','2','o','x','>','3','s','v','4','p']
+    #markerlist = ['^','D','p','s','>','p','o','s','D','^','v','<','v','>','p']
+    #markerlist = ['D','s','o','v','p','^','s','o','v','^','o','v','^','v','p']
+    markerfilllist = 5*['top']+4*['left']+3*['right']+2*['bottom']+['full']
+    colorlist = ['red','salmon','crimson','violet','brown','blue','cyan','royalblue','teal','orange','gold','yellow','green','lime','purple']
+    scalelist = [1e20,1e19,1e18,1e17,1e16,1e13,1e12,1e11,1e10,1e7,1e6,1e5,1e2,1e1,1e0]
+    #scalelist = [1e28,1e26,1e24,1e22,1e10,1e20,1e18,1e16,1e8,1e14,1e12,1e6,1e4,1e2,1e0]
     #scaling = [1e6,1e5,1e4,1e3,1e0,1e6,1e5,1e4,1e1,1e6,1e5,1e2,1e3,1e3,1e0]
     namelist = ['_yb{}_ys{}'.format(int(2*yboost[0]),int(2*ystar[0])) for (yboost,ystar) in ylist]
-    #namelist = [' _yb{}_ys{}'.format(int(2*ylist[i][0][0]),int(2*ylist[i][1][0])) for i in xrange(len(ylist))]
     d = ({
-        'files': [filelist],
+        'www': 'crosssections_'+data+'_'+mc+cut+postfix,
+        'files': [filelist_binned],
         'folders': [''],
-        'x_expressions': ['unfolded'+obs,'gen'+obs,'uncertainty_total'],
-        'nicks':       ['unf','gen','unc'],
-        'analysis_modules': ['Ratio','SumOfHistograms'],
-        'ratio_numerator_nicks': ['unf'],
-        'ratio_denominator_nicks': ['unf','gen'],
-        'ratio_result_nicks': ['unity','ratio'],
-        'sum_nicks': ['unity unc','unity unc'],
-        'sum_scale_factors': ['1 1','1 -1'],
-        'sum_result_nicks': ['uncup','uncdown'],
-        'x_errors': [0,1,0,0,0],
+        'x_expressions': [('unfolded'+obs+name,'gen'+obs+name,'uncertainty_total_stat'+name) for name in namelist],
+        'nicks':       [('unf'+name,'gen'+name,'unc'+name) for name in namelist],
+        'analysis_modules': ['ScaleHistograms','NormalizeByBinWidth'],
+        'scale_nicks':  [('unf'+name,'gen'+name) for name in namelist],
+        #'scales': [1e0/35.9/1000],
+        'scales': [(1e0/35.9/1000*x,1e0/35.9/1000*x) for x in scalelist],
+        'x_errors': [0],
+        'x_log': True,
         'y_log': True,
-        'y_errors': [1,0,0,0,1],
-        'markers': ['.','','fill','fill','.'],
-        'colors': ['red','black','dimgrey','white','black'],
-        'nicks_whitelist': ['unf','gen','uncup','uncdown','ratio'],
-        'subplot_nicks': ['uncup','uncdown','ratio'],
-        'y_subplot_lims': [0.75,1.25],
-        'www': 'crossections_'+data+'_'+mc+cut+postfix,
+        'y_errors': [0],
+        'step': [0,1],
+        'line_styles': ['','-'],
+        'line_widths': [3],
+        'zorder': ['unf','gen'],
+        'y_lims': [1e-5,1e20] if obs == 'zpt' else [1e-4,1e22],
+        'marker_fill_styles': ['none'],#[(x,x) for x in markerfilllist],
+        'markeredgewidth': 2.5,
+        'markersize': 12,
+        'labelsize': 50,
+        'markers': [(x,'') for x in markerlist],
+        'colors': [('black',x) for x in colorlist],
+        'alphas': [0.707],
+        #'markers': ['.','','fill','fill','.'],
+        #'colors': ['red','black','dimgrey','white','black'],
+        'nicks_blacklist': ['unc'],
+        #'nicks_whitelist': ['unf','gen','uncup','uncdown','ratio'],
+        #'subplot_nicks': ['uncup','uncdown','ratio'],
+        #'y_subplot_lims': [0.5,1.5],
+        'labels': [('bin'+x,'bin'+x) for x in namelist],
         'filename': obs,
-        'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
+        'x_label': obs,#(r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
+        'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
+        'legend': None,
+        'legend_cols': 2,
+        'figsize': [11,16],
+        'lumis': [35.9],
+        'texts': [r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary}$",r"$35.9\\mathrm{\\,fb}^{-1} \\hspace{0.2}$(13TeV)"],
+        'texts_size': [30,25],
+        'texts_x':[0.03,0.69],
+        'texts_y':[1.03,1.035],
     })
-    d['figsize'] = [36,6]
-    d['vertical_lines'] = l_obsbinedges
-    d['vertical_lines_styles'] = 5*[':']+['--']+3*[':']+['--']+2*[':']+['--',':','--']
+    if obs == 'zpt':
+        d['y_label'] = r'$ \\frac{d^3\\mathit{\\sigma}}{d\\mathit{p}_T^Z dy_b dy^*}/(\\frac{pb}{GeV})$'
+    elif obs == 'phistareta':
+        d['y_label'] = r'$ \\frac{d^3\\mathit{\\sigma}}{d\\Phi^{*}_{\\eta} dy_b dy^*}/pb$'
+    d0 = deepcopy(d)
+    d0.update({
+        'filename': obs+'_ratio',
+        'analysis_modules': ['Ratio','AddHistograms'],#,'Errorband'],
+        'ratio_numerator_nicks':   [('unc'+name,  'gen'+name,  'unf'+name,  'unf'+name) for name in namelist],
+        'ratio_denominator_nicks': [('unc'+name,  'gen'+name,  'unf'+name,  'gen'+name) for name in namelist],
+        'ratio_result_nicks':    [('unity'+name,'scale'+name, 'stat'+name,'ratio'+name) for name in namelist],
+        'add_nicks':             [('unity'+name+' ratio'+name,'unity'+name+' scale'+name,'unity'+name+' stat'+name,'unity'+name+' unc'+name,'unity'+name+' unc'+name) for name in namelist],
+        'add_scale_factors': [(str(len(ylist)-x-1)+' 1',str(len(ylist)-x-1)+' 1',str(len(ylist)-x-1)+' 1',str(len(ylist)-x) + ' 1',str(len(ylist)-x) + ' -1') for x in xrange(len(ylist))],
+        'add_result_nicks': [('stacked1'+name,'stacked2'+name,'stacked3'+name,'up'+name,'down'+name) for name in namelist],
+        #'errorband_histogram_nicks': [('stacked'+name+' unc'+name+' unc'+name) for name in namelist],
+        #'errorband_result_nicks': ['errorband'+name for name in namelist],
+        #'errorband_percentage_error': [True],
+        #'markers': markerlist+2*len(namelist)*['fill'],
+        'step':         2*len(namelist)*[0] +2*len(namelist)*[1],
+        'line_styles':  2*len(namelist)*['']+2*len(namelist)*['-'],
+        'line_widths': [1.5],
+        'labels': 2*['bin'+x for x in namelist]+2*len(namelist)*['Unc'],
+        'x_errors': [0],#2*len(namelist)*[0]+len(namelist)*[0]+2*len(namelist)*[0],
+        'y_errors': [0],#2*len(namelist)*[0]+len(namelist)*[0]+2*len(namelist)*[0],
+        'markers': markerlist[:len(namelist)]+len(namelist)*['errorband']+2*len(namelist)*[''],
+        'colors':  len(namelist)*['black']+colorlist[:len(namelist)]+2*len(namelist)*['black'],
+        'nicks_whitelist': ['stacked1','stacked2','up','down'],
+        'subplot_nicks': ['dummy'],
+        'y_lims': [0.5,15.5],
+        'y_log': False,
+        'lines': [(0.5+x,0.75+x,1.25+x) for x in xrange(len(namelist))],
+        'lines_styles': ['-',':',':'],
+        'y_label': 'Ratio to theory',
+        'y_ticks': [(0.75+x,1.0+x,1.25+x) for x in xrange(len(namelist))],
+    })
+    #d0['figsize'] = [8,16]
+    #d['figsize'] = [36,6]
+    #d['vertical_lines'] = l_obsbinedges
+    #d['vertical_lines_styles'] = 5*[':']+['--']+3*[':']+['--']+2*[':']+['--',':','--']
     plots.append(d)
+    plots.append(d0)
   return [PlottingJob(plots=plots, args=args)]
 
 def write_results_to_txt(args=None,obs='phistareta',cut='_jet1pt20',data='BCDEFGH',mc='mad',match='', postfix=''):
@@ -1772,12 +1895,15 @@ def write_results_to_txt(args=None,obs='phistareta',cut='_jet1pt20',data='BCDEFG
 
 def write_data(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH',match='',postfix=''):
     h_xsec = prepare_3Dhist(args, obs)[2]
-    toylist = ['toy0','toy2']
+    #toylist = ['toy0','toy2']
+    toylist = ['toy0']
     #unclist = ['_statistical','_lumi','_bkg','_IDSF','_IsoSF','_TriggerSF','_stats_toy','_JEC','_Robs','_Ryz','_Ryj','_A','_F','_switch','_model_toy']
     unclist = ['stat','lumi','bkg','eff','unf','jec','mod']
     filelist = [PLOTSFOLDER+cut+postfix+'/unfolded/'+obs+'_'+data+'_by_'+toy+match+'.root' for toy in toylist]
     #uncfilelist = [ PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_'+data+match+unc+'.root' for unc in unclist]
     output_file = PLOTSFOLDER+cut+postfix+'/'+obs+'_2016'+match+'.root'
+    if data in ['mad','amc','hpp']:
+        output_file = PLOTSFOLDER+cut+postfix+'/unfolded/'+obs+'_'+data+'_by_toy'+match+'.root'
     for f in filelist:
         f_in = ROOT.TFile(f,"READ")
         h_in = f_in.Get('unfolded'+obs)
@@ -1788,28 +1914,31 @@ def write_data(args=None,obs='zpt',cut='_jet1pt20',data='BCDEFGH',match='',postf
     for i in xrange(h_xsec.GetNbinsX()):
             h_xsec.SetBinError(i+1,h_xsec[i+1]*h_unc[i+1])
     f_out = ROOT.TFile(output_file,"RECREATE")
-    h_xsec.Write('gen'+obs)
+    h_xsec.Write('unfolded'+obs if data in ['mad','amc','hpp'] else 'gen'+obs)
     print "crosssection written to",output_file
     return
 
 
-def write_theory(args=None,obs='zpt',cut='_jet1pt20',postfix='',order='LO',pdf='NNPDF31_nnlo_as_0118',unc=''):
+#def write_theory(args=None,obs='zpt',cut='_jet1pt20',postfix='',order='LO',pdf='NNPDF31_nnlo_as_0118',unc='',subprocess=False):
+def write_theory(args=None,obs='zpt',cut='_jet1pt20',postfix='',order='LO',pdf='CT14nnlo',unc='',subprocess=False):
     [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args,obs)
     [l_obshists, h_reco, h_gen, h_recoresponse, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args, obs)
     ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
     ylist = [((xb,yb),(xs,ys))  for (xs,ys) in zip(ybins[:-1],ybins[1:]) for (xb,yb) in zip(ybins[:-1],ybins[1:]) if xb+xs<2.5]
     dpdf = ({  'CT14nlo': '0', 'MMHT2014nlo68cl': '1', 'NNPDF30_nlo_as_0118': '2', 'PDF4LHC15_nlo_mc': '3'})
     dorder = ({'LO': '1', 'NLO': '2', 'NNLO': '0'})
-    for ((xb,yb),(xs,ys)) in ylist:
+    obsexp = (obs if not obs=='zpt' else 'ptz')
+    if not subprocess:
+      for ((xb,yb),(xs,ys)) in ylist:
         if pdf in ['NNPDF31_nnlo_as_0118','MMHT2014nnlo68cl','ABMP16als118_5_nnlo','CT14nnlo','NNPDF31_nlo_as_0118']:
-            input_file = ("/ceph/tberger/ZJtriple_tables/ZJ.NNLO.ZJtriple_yb{}_ystar{}_ptz_"+pdf+"_L6.root").format(int(2*xb),int(2*xs))
+            input_file = ("/ceph/tberger/ZJtriple_tables/ZJtriple_"+obsexp+"/ZJ.NNLO.ZJtriple_yb{}_ystar{}_"+obsexp+"_"+pdf+"_L6.root").format(int(2*xb),int(2*xs))
             central_name    = "h"+dorder[order]+"100100"
             up_name_pdf     = "h"+dorder[order]+"100101"
             down_name_pdf   = "h"+dorder[order]+"100102"
             up_name_scale   = "h"+dorder[order]+"100108"
             down_name_scale = "h"+dorder[order]+"100109"
         else:
-            input_file = "/ceph/tberger/ZJtriple_tables/ZJ.NNLO.ZJtriple_yb{}_ystar{}_ptz.root".format(int(2*xb),int(2*xs))
+            input_file = ("/ceph/tberger/ZJtriple_tables/ZJtriple_"+obsexp+"/ZJ.NNLO.ZJtriple_yb{}_ystar{}_"+obsexp+".root").format(int(2*xb),int(2*xs))
             central_name    = "h"+dorder[order]+"1001"+dpdf[pdf]+"0"
             up_name_pdf     = "h"+dorder[order]+"1001"+dpdf[pdf]+"1"
             down_name_pdf   = "h"+dorder[order]+"1001"+dpdf[pdf]+"2"
@@ -1831,13 +1960,32 @@ def write_theory(args=None,obs='zpt',cut='_jet1pt20',postfix='',order='LO',pdf='
                 h_gen.SetBinError(obs_index,h_gen[obs_index]*max(abs(h_up_scale[j+1]),abs(h_down_scale[j+1])))
             else:
                 h_gen.SetBinError(obs_index,h_gen[obs_index]*np.sqrt(max(abs(h_up_scale[j+1]),abs(h_down_scale[j+1]))**2+max(abs(h_up_pdf[j+1]),abs(h_down_pdf[j+1]))**2))
-    output_file = PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+order+'_'+pdf+'.root'
-    print "file written to",output_file
-    f_out = ROOT.TFile(output_file,"RECREATE")
-    h_gen.Write()
-    h_reco.Write()
-    return
-
+      output_file = PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+order+'_'+pdf+'.root'
+      f_out = ROOT.TFile(output_file,"RECREATE")
+      h_gen.Write()
+      h_reco.Write()
+      print "file written to",output_file
+      return
+    else:
+      subproc_list = ['gg','qg','qq', 'aqaq','qaq','gaq']#,'q-q','q+q','q=q','q!q','aq=aq']
+      output_file = PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+order+'_'+pdf+'_subprocesses.root'
+      f_out = ROOT.TFile(output_file,"RECREATE")
+      for subproc in subproc_list:
+        for ((xb,yb),(xs,ys)) in ylist:
+          input_file = ("/ceph/tberger/ZJtriple_tables/ZJtriple_"+obsexp+"/ZJ."+order+".ZJtriple_yb{}_ystar{}_"+obsexp+"_"+pdf+"_subprocesses.root").format(int(2*xb),int(2*xs))
+          f_in = ROOT.TFile(input_file,'READ')
+          h_all = f_in.Get('all')
+          h_subproc = f_in.Get(subproc)
+          y_index = l_ybinedges[int(2*xs)]+int(2*xb)
+          for j in xrange(h_all.GetNbinsX()):
+            obs_index = l_obsbinedges[y_index]+j+1
+            h_gen.SetBinContent(obs_index,h_subproc[j+1]/h_all[j+1])
+            h_gen.SetBinError(obs_index,0)
+        f_out.cd()
+        h_gen.Write(obs+'_'+subproc)
+      print "file written to",output_file
+      return
+      
 def unfold_3Dhist(args=None,obs='zpt',cut='_jet1pt20',data='amc',mc='toy',match='',postfix='',method='dagostini', variation=0, varquantity=''):
     output_file = PLOTSFOLDER+cut+postfix+'/unfolded/'+obs+'_'+data+'_by_'+mc+match+'_'+method+'.root'
     input_file = PLOTSFOLDER+cut+postfix+'/'+obs+'_'+mc+match+'.root'
@@ -1891,47 +2039,52 @@ def unfold_3Dhist(args=None,obs='zpt',cut='_jet1pt20',data='amc',mc='toy',match=
 def plot_Kfactors(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix='',pdf='NNPDF31_nnlo_as_0118'):
  plots=[]
  #for pdf in ['NNPDF30_nlo_as_0118','ABMP16als118_5_nnlo','CT14nnlo_as_0118','NNPDF31_nnlo_as_0118','MMHT2014nnlo68cl']:
- for obs in ['zpt']:
+ for obs in ['zpt','phistareta']:
     [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
-    write_data(args,obs,cut,data,match,postfix)
+    #write_data(args,obs,cut,data,match,postfix)
     write_theory(args,obs,cut,postfix,'LO'  ,pdf,'scale')
     write_theory(args,obs,cut,postfix,'NLO' ,pdf,'scale')
     write_theory(args,obs,cut,postfix,'NNLO',pdf,'scale')
-    filelist =  ([PLOTSFOLDER+cut+postfix+'/'+obs+'_'+x+match+'.root' for x in ['2016']]
-                +[PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+x+'_'+pdf+'.root' for x in ['LO','NLO','NNLO']]
-                +[PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_BCDEFGH'+match+'_total.root'])
+                #[PLOTSFOLDER+cut+postfix+'/'+obs+'_'+x+match+'.root' for x in ['2016']]
+    filelist =  [PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+x+'_'+pdf+'.root' for x in ['LO','NLO','NNLO']]
+                #+[PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_BCDEFGH'+match+'_total.root'])
     filelist_binned = []
     for x in filelist:
         invert_3Dhists(args,x)
         filelist_binned.append(x.replace('.root','_binned.root'))
     d0 = ({
-        'www': 'comparison_Kfactors_'+data+cut+postfix+'_'+pdf,
+        #'www': 'comparison_Kfactors_'+data+cut+postfix+'_'+pdf,
+        'www': 'comparison_Kfactors_NNLOJet'+cut+postfix+'_'+pdf,
         'files': filelist,
-        'x_expressions': 4*['gen'+obs]+['uncertainty_total'],
+        'x_expressions': ['gen'+obs],#+['uncertainty_total'],
         'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
-        'x_errors': [1],
+        'x_errors': [0],
         'folders': [''],
         'title': pdf,
-        'nicks': ['Data','LO','NLO','NNLO','uncertainty'],
-        'analysis_modules': ['NormalizeByBinWidth','Ratio','SumOfHistograms'],
-        'histograms_to_normalize_by_binwidth': ['Data','LO','NLO','NNLO'],
-        'ratio_numerator_nicks': ['Data','LO','NLO','NNLO'],
-        'ratio_denominator_nicks': ['Data'],
-        'ratio_result_nicks': ['ratioData','ratioLO','ratioNLO','ratioNNLO'],
-        'sum_nicks': ['ratioData uncertainty','ratioData uncertainty'],
-        'sum_scale_factors': ['1 1','1 -1'],
-        'sum_result_nicks': ['unc_up','unc_down'],
-        'nicks_blacklist': ['uncertainty'],
+        'nicks': ['LO','NLO','NNLO'],#,'uncertainty'],
+        'analysis_modules': ['NormalizeByBinWidth','Ratio'],#'SumOfHistograms'],
+        #'histograms_to_normalize_by_binwidth': ['Data','LO','NLO','NNLO'],
+        'ratio_numerator_nicks': 2*['LO','NLO','NNLO'],
+        'ratio_denominator_nicks': ['LO'],
+        'ratio_result_nicks': ['ratioLO','ratioNLO','ratioNNLO','uncLO','uncNLO','uncNNLO'],
+        #'sum_nicks': ['ratioData uncertainty','ratioData uncertainty'],
+        #'sum_scale_factors': ['1 1','1 -1'],
+        #'sum_result_nicks': ['unc_up','unc_down'],
+        #'nicks_blacklist': ['uncertainty'],
         'filename': obs,
-        'markers': ['.','^','s','o','fill','fill'],
-        'colors': ['black','green','blue','red','yellow','white'],
+        'markers': ['^','s','o','errorband','errorband','errorband'],
+        'colors': ['green','blue','red'],#'yellow','white'],
+        'alphas': [0.3],
+        'step': True,
+        'line_styles': ['-'],
         'y_log': True,
         'y_lims': [1e-1,1e7],
-        'y_errors': 4*[1]+2*[0],
-        'y_subplot_lims': [0.5,1.5],
-        'y_label': 'Events per binsize',
-        'y_subplot_label': 'Ratio to Data',
+        'y_errors': False,
+        #'y_subplot_lims': [0.5,1.5],
+        'y_label': 'Events per binwidth',
+        'y_subplot_label': 'Ratio to LO',
         'subplot_nicks': ['ratio','unc'],
+        'labelsize': 25,
     })
     for ybmin in [0.0,0.5,1.0,1.5,2.0]:
       for ysmin in [0.0,0.5,1.0,1.5,2.0]:
@@ -1942,9 +2095,9 @@ def plot_Kfactors(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix=''
                 'files': filelist_binned,
                 'x_label': obs,
                 'x_log': True,
-                'x_ticks': [25,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
+                'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
                 'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
-                'texts_size': [15],
+                'texts_size': [20],
                 'texts_x': [0.03],
                 'texts_y': [0.97],
                 'subplot_fraction': 40,
@@ -1961,55 +2114,50 @@ def plot_Kfactors(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix=''
  return [PlottingJob(plots=plots, args=args)]
 
 
-def plot_PDFs(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix='',order='NNLO'):
+def plot_PDFs(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix='',order='LO'):
   plots=[]
   pdflist = ['CT14nnlo','MMHT2014nnlo68cl','NNPDF31_nnlo_as_0118','ABMP16als118_5_nnlo']
   #pdflist = ['CT14nnlo_as_0118','MMHT2014nnlo68cl','NNPDF31_nnlo_as_0118','ABMP16als118_5_nnlo']
-  for obs in ['zpt']:
+  for obs in ['zpt','phistareta']:
     [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
     #write_data(args,obs,cut,data,match,postfix)
     filelist =  []#PLOTSFOLDER+cut+postfix+'/'+obs+'_'+x+match+'.root' for x in ['2016']]
     for pdf in pdflist:
         write_theory(args,obs,cut,postfix,order,pdf,'pdf')
         filelist.append(PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+order+'_'+pdf+'.root')
-    #filelist.append(PLOTSFOLDER+cut+postfix+'/uncertainty/'+obs+'_BCDEFGH'+match+'_total.root')
     filelist_binned = []
     for x in filelist:
         invert_3Dhists(args,x)
         filelist_binned.append(x.replace('.root','_binned.root'))
     d0 = ({
-        'www': 'comparison_PDFs_'+data+cut+postfix+'_'+order,
+        #'www': 'comparison_PDFs_'+data+cut+postfix+'_'+order,
+        'www': 'comparison_PDFs_NNLOJet'+cut+postfix+'_'+order,
         'files': filelist,
-        #'x_expressions': (1+len(pdflist))*['gen'+obs]+['uncertainty_total'],
         'x_expressions': ['gen'+obs],
         'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
-        'x_errors': [1],
+        'x_errors': [0],
         'folders': [''],
         'title': order,
         'nicks': pdflist,
-        'analysis_modules': ['NormalizeByBinWidth','Ratio'],#'SumOfHistograms'],
-        #'histograms_to_normalize_by_binwidth': ['Data']+pdflist,
-        'ratio_numerator_nicks': pdflist,
+        'analysis_modules': ['NormalizeByBinWidth','Ratio'],
+        'ratio_numerator_nicks': 2*pdflist,
         'ratio_denominator_nicks': pdflist[0],
-        'ratio_result_nicks': ['ratio'+x for x in pdflist],
-        #'sum_nicks': ['ratioData uncertainty','ratioData uncertainty'],
-        #'sum_scale_factors': ['1 1','1 -1'],
-        #'sum_result_nicks': ['unc_up','unc_down'],
-        #'nicks_blacklist': ['uncertainty'],
+        'ratio_result_nicks': ['ratio'+pdf for pdf in pdflist]+['unc'+pdf for pdf in pdflist],
         'filename': obs,
-        #'markers': ['.','s','v','o','^','fill','fill'],
-        #'colors': ['black','orange','green','purple','blue','yellow','white'],
-        'markers': ['s','v','o','^'],
+        'alphas': [0.3],
+        'markers': 2*['s','v','o','^']+len(pdflist)*['errorband'],
         'colors': ['orange','green','purple','blue'],
         'y_log': True,
+        'step': True,
+        'line_styles': ['-'],
+        'y_errors': False,
         'y_lims': [1e-1,1e7],
-        #'y_errors': (1+len(pdflist))*[1]+(2)*[0],
         'y_label': 'Events per binsize',
-        'y_subplot_label': 'Ratio to Data',
+        'y_subplot_label': 'Ratio to CT14',
         'y_subplot_lims': [0.95,1.05],
-        #'subplot_nicks': ['ratio','unc'],
-        #'labels': ['Data','CT14','MMHT2014','NNPDF31','ABMP16'],
+        'subplot_nicks': ['ratio','unc'],
         'labels': ['CT14','MMHT2014','NNPDF31','ABMP16'],
+        'labelsize': 25,
     })
     for ybmin in [0.0,0.5,1.0,1.5,2.0]:
       for ysmin in [0.0,0.5,1.0,1.5,2.0]:
@@ -2020,9 +2168,9 @@ def plot_PDFs(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix='',ord
                 'files': filelist_binned,
                 'x_label': obs,
                 'x_log': True,
-                'x_ticks': [25,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
+                'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
                 'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
-                'texts_size': [15],
+                'texts_size': [20],
                 'texts_x': [0.03],
                 'texts_y': [0.97],
                 'subplot_fraction': 40,
@@ -2030,6 +2178,65 @@ def plot_PDFs(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix='',ord
             #d['analysis_modules'] = ['NormalizeByBinWidth']+d0['analysis_modules']
             d['x_expressions'] = [x+namestring for x in d0['x_expressions']]
             d['www'] = d0['www']+'/PDFs'+namestring
+            plots.append(d)
+    d0['figsize'] = [36,6]
+    #d0['legend'] = None
+    d0['vertical_lines'] = l_obsbinedges
+    d0['vertical_lines_styles'] = 5*[':']+['--']+3*[':']+['--']+2*[':']+['--',':','--']
+    #plots.append(d0)
+  return [PlottingJob(plots=plots, args=args)]
+
+def plot_subprocessfractions(args=None,cut='_jet1pt20',data='17Jul2018',match='',postfix='',order='LO',pdf='NNPDF31_nnlo_as_0118'):
+  plots=[]
+  subprocesslist = ['qaq','gaq','qg','gg','qq','aqaq']
+  for obs in ['zpt','phistareta']:
+    [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhist(args,obs)
+    write_theory(args,obs,cut,postfix,order,pdf,'',True)
+    filelist = [PLOTSFOLDER+cut+postfix+'/theory/'+obs+'_'+order+'_'+pdf+'_subprocesses.root']
+    filelist_binned = []
+    for x in filelist:
+        invert_3Dhists(args,x)
+        filelist_binned.append(x.replace('.root','_binned.root'))
+    d0 = ({
+        'www': 'comparison_subprocesses_NNLOJet'+cut+postfix+'_'+order+'_'+pdf,
+        'files': filelist,
+        'x_expressions': [obs+'_'+x for x in subprocesslist],
+        'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
+        'folders': [''],
+        'nicks': subprocesslist,
+        'filename': obs,
+        'markers': ['fill'],
+        'stacks': ['pos','pos','pos','neg','pos','pos'],
+        'colors': ['turquoise','gold','coral','springgreen','mediumvioletred','cornflowerblue'],
+        'y_lims': [-0.3,1.7],
+        'y_label': 'Subprocess fraction',
+        'title': order,
+        'lines': [0,1],
+        'lines_styles':[':'],
+        'labels': ['quark-antiquark','gluon-antiquark','gluon-quark','gluon-gluon','quark-quark','antiquark-antiquark'],
+        'labelsize': 25,
+    })
+    if order == 'LO':
+        d0['nicks_blacklist'] = ['gg','qq', 'aqaq']
+        d0['stacks'] = ['pos']
+        d0['y_lims'] = [-0.1,1.3],
+    for ybmin in [0.0,0.5,1.0,1.5,2.0]:
+      for ysmin in [0.0,0.5,1.0,1.5,2.0]:
+        if not ybmin+ysmin>2:
+            namestring = '_yb{}_ys{}'.format(int(2*ybmin),int(2*ysmin))
+            d = deepcopy(d0)
+            d.update({
+                'files': filelist_binned,
+                'x_label': obs,
+                'x_log': True,
+                'x_ticks': [30,60,100,200,400,1000] if obs =='zpt' else [0.5,1.0,2.0,4.0,10,30],
+                'texts': [r"${}<y_b<{}$,${}<y*<{}$".format(ybmin,ybmin+0.5,ysmin,ysmin+0.5)],
+                'texts_size': [20],
+                'texts_x': [0.03],
+                'texts_y': [0.97],
+            })
+            d['x_expressions'] = [x+namestring for x in d0['x_expressions']]
+            d['www'] = d0['www']+'/fractions'+namestring
             plots.append(d)
     d0['figsize'] = [36,6]
     #d0['legend'] = None
@@ -2081,7 +2288,7 @@ def plot_variations(args=None, obs='zpt', cut='_jet1pt20', data='amc', mc='toy',
     return [PlottingJob(plots=plots, args=args)]
 
 
-def plot_detector_3Dhist(args=None,cut='_jet1pt20',data='',mc='toy',match='',postfix=''):
+def plot_detector_3Dhist(args=None,cut='_jet1pt20',data='',mc='toy0',match='',postfix=''):
 #def plot_detector(args=None,cut='_jet1pt20',data='',mc='toy',match='_matched',postfix=''):
   plots=[]
   lines_list = 5*[':']+['--']+3*[':']+['--']+2*[':']+['--',':','--']
@@ -2097,6 +2304,9 @@ def plot_detector_3Dhist(args=None,cut='_jet1pt20',data='',mc='toy',match='',pos
         'vertical_lines': l_obsbinedges,
         'vertical_lines_styles': lines_list,
         'x_label': (r'$\\mathit{p}_T^Z$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*}_{\\eta}$')+' Bin',
+        'texts_size': [20],
+        'labelsize': 25,
+        'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Simulation} \\hspace{0.2} \\it{Preliminary} \\hspace{10} .$",
     })
     d1 = deepcopy(d)
     d1.update({
@@ -2117,11 +2327,11 @@ def plot_detector_3Dhist(args=None,cut='_jet1pt20',data='',mc='toy',match='',pos
         'labels': [LABELDICT[x] for x in samples],
         #'colors': ['grey','orange','red','blue','green','darkgrey','darkorange','darkred','darkblue','darkgreen','black','orange','red','blue','green'],
         #'markers': ['x','1','2','3','4']+2*len(samples)*[''],
-        #'labels': ['Toy','Powheg','aMC@NLO','Herwig++','Madgraph'],
         'subplot_fraction': 40,
         #'y_subplot_lims': [0.0,2.0],
         #'y_subplot_lims': [0.8,1.0],
         'y_subplot_lims': [0.7,1.1],
+        
     })
     plots.append(d1)
     filelist_binned = []
@@ -2200,8 +2410,7 @@ def plot_detector_3Dhist(args=None,cut='_jet1pt20',data='',mc='toy',match='',pos
         'x_label': (r'$\\mathit{p}_T^{Z,Gen}$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*,Gen}_{\\eta}$')+' Bin',
         'y_label': (r'$\\mathit{p}_T^{Z,Reco}$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*,Reco}_{\\eta}$')+' Bin',
         'z_log':True,
-        'title': "Condition number = {:.3f}".format(unfold_by_inversion_3Dhist(args,obs,cut,samples[i],samples[i],match,postfix)),
-        'z_lims':[1e-3,1e0],
+        'z_lims':[1e-4,1e0],
         'z_label': 'Fraction of events',
         'analysis_modules': ['NormalizeRowsToUnity'],
         'colormap': 'summer_r',
@@ -2209,12 +2418,37 @@ def plot_detector_3Dhist(args=None,cut='_jet1pt20',data='',mc='toy',match='',pos
         'lines': l_obsbinedges,
         'lines_styles': lines_list,
         'figsize': [8,7],
+        'texts': ["Condition number = {:.3f}".format(unfold_by_inversion_3Dhist(args,obs,cut,samples[i],samples[i],match,postfix))],
+        'texts_x': [0.20],
+        'texts_y': [0.06],
       })
       plots.append(d4)
+      d5 = deepcopy(d)
+      unfold_by_tunfold_3Dhist(args,obs,cut,'17Jul2018',samples[i],match,postfix)
+      d5.update({
+        'files': [PLOTSFOLDER+cut+postfix+'/unfolded/'+obs+'_17Jul2018_by_'+samples[i]+match+'.root'],
+        'x_expressions': ['correlation'],
+        'x_label': (r'$\\mathit{p}_T^{Z,Gen}$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*,Gen}_{\\eta}$')+' Bin',
+        'y_label': (r'$\\mathit{p}_T^{Z,Reco}$' if obs =='zpt' else r'$\\mathit{\\Phi}^{*,Reco}_{\\eta}$')+' Bin',
+        #'z_log':True,
+        'z_lims':[-1,1],
+        'z_label': 'Fraction of events',
+        'colormap': 'bwr',
+        'filename': obs+'_correlation_'+samples[i],
+        'lines': l_obsbinedges,
+        'lines_styles': lines_list,
+        'figsize': [8,7],
+        #'analysis_modules': ['GetCorrelationFactor'],
+        #'texts_x': [0.13],
+        #'texts_y': [0.06],
+        'title': r"$\\bf{CMS} \\hspace{0.5} \\it{Preliminary} \\hspace{15} .$",
+      })
+      plots.append(d5)
   return [PlottingJob(plots=plots, args=args)]
 
 
-def create_gendistributions_3Dhist(args=None, cut='_jet1pt20', mc='hpp',match='',postfix='_puppi'):
+def create_gendistributions_3Dhist(args=None, cut='_jet1pt20', mc='mad',match='',postfix=''):
+#def create_gendistributions_3Dhist(args=None, cut='_jet1pt20', mc='hpp',match='',postfix='_puppi'):
     plots=[]
     for obs in ['genzpt','genphistareta','matchedgenjet1y']:
      output_file = PLOTSFOLDER+cut+postfix+'/gendistributions/'+obs+'_'+mc+'.root'

@@ -7,6 +7,7 @@ JEC = 'Summer16_07Aug2017'+RUN+'_V11'
 def config():
     cfg = configtools.getConfig('data', 2016, 'mm', JEC=JEC, IOV=RUN)
     cfg["InputFiles"].set_input(
+        #path = '/portal/ekpbms1/home/tberger/Excalibur/CMSSW_9_4_12/src/Kappa/Skimming/zjet/output_numEvent100.root',
         pathF ='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/SingleMuon_Run2016F-07Aug17-v1/*.root',
         pathG ='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/SingleMuon_Run2016G-07Aug17-v1/*.root',
         pathH ='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/SingleMuon_Run2016H-07Aug17-v1/*.root',

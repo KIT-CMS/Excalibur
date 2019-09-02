@@ -73,10 +73,10 @@ elif [ $USER = "tberger" ]; then
     export HARRY_REMOTE_USER="tberger"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
     if [[ $HOSTNAME = *bms* ]]; then 
-        export EXCALIBUR_WORK=/storage/8/tberger/excalibur_work/
-        #export EXCALIBUR_WORK=/ceph/tberger/excalibur_work/
-        export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
-        export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
+        #export EXCALIBUR_WORK=/storage/8/tberger/excalibur_work/
+        export EXCALIBUR_WORK=/ceph/tberger/excalibur_work/
+        export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /etpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
+        export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /etpwww/web/${HARRY_REMOTE_USER}/public_html/plots_archive/{subdir}"
     else 
         export EXCALIBUR_WORK=~/storage/working/
     fi

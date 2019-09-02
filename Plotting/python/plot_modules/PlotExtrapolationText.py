@@ -22,6 +22,9 @@ class PlotExtrapolationText(plotbase.PlotBase):
 				help="Size of the text")
 		self.plot_extrapolation_text_options.add_argument("--extrapolation-text-position", type=float, nargs="?",
 				help="Position of the text in x/y-coordinates")
+		self.plot_extrapolation_text_options.add_argument("--extrapolation-text-label", type=str, default="$\mathit{R}_0$",
+		#self.plot_extrapolation_text_options.add_argument("--extrapolation-text-label", type=str, default="$m^\mathrm{Z}$",
+				help="Label of the extrapolation parameter. ")
 
 
 	def prepare_args(self, parser, plotData):
@@ -36,6 +39,7 @@ class PlotExtrapolationText(plotbase.PlotBase):
 
 	def run(self, plotData):
 		size = plotData.plotdict["extrapolation_text_size"]
+		name = plotData.plotdict["extrapolation_text_label"]
 		ax = plotData.plot.axes[1]
 
 		for index, (nick, color) in enumerate(zip(
@@ -46,13 +50,16 @@ class PlotExtrapolationText(plotbase.PlotBase):
 			fit_result = plotData.fit_results[nick]
 
 			# texts with y-intercept and chi^2
-			texts = ["$\mathit{R}_0$ = %.4f $\pm$ %.4f" % (fit_function.GetParameter(0), fit_function.GetParError(0)),
+			#texts = ["$\mathit{R}_0$ = %.4f $\pm$ %.4f" % (fit_function.GetParameter(0), fit_function.GetParError(0)),
+			texts = [name+" = %.4f $\pm$ %.4f" % (fit_function.GetParameter(0), fit_function.GetParError(0)),
 					"$\chi^2 / \mathit{n.d.f}$ = %.2f / %d" % (fit_result.Chi2(), fit_result.Ndf())]
 
 			for text, ypos in zip(texts, [0.95, 0.95-(size/150.)]):
 				# x/y coords are chosen depending on font size to put the text in the upper right corner
 				ax.text(1.-(size*0.03),
 						ypos-0.015*size*index,
+				#ax.text(0.03,#1.-(size*0.03),
+				#		2.7-0.01*size*index,#ypos-0.015*size*index,
 						text,
 						color=color,
 						size=size,

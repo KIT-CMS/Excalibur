@@ -362,7 +362,7 @@ Have fun. ;)
 
     batch_parser = parser.add_argument_group("batch processing arguments", "Deploy analysis to a cluster using grid-control.")
     batch_parser.add_argument('-b', '--batch', type=str, nargs='?', default=False,
-        const=('naf' if 'naf' in socket.gethostname() else 'freiburg'),
+        const=('naf' if 'naf' in socket.gethostname() else 'allsites'),
         help="use batch mode with optional base config "
              "'allsites', 'freiburg', 'etplocal', 'htda', 'naf' or 'local' [Default: %(const)s]")
     batch_parser.add_argument('-R', '--resume', action='store_true',

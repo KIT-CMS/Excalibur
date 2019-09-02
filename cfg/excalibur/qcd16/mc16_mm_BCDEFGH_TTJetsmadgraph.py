@@ -6,7 +6,7 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/TTJets_madgraphMLM-pythia8_RunIISummer16/*.root",
+        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/TTJets_madgraphMLM-pythia8_RunIISummer16/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],

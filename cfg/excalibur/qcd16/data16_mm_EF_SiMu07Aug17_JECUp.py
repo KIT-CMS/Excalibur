@@ -21,7 +21,7 @@ def config():
         ])
     configtools.add_quantities(cfg, ['lepton'+x+'SFWeight'+y for x in ['ID','Iso','Trigger'] for y in ['Up','Down']])
 ##### Add Producers: #####
-    cfg['Processors'] = [  'producer:MuonTriggerMatchingProducer'] + cfg['Processors']
+    cfg['Processors'] = ['producer:MuonTriggerMatchingProducer'] + cfg['Processors']
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:PFCandidatesProducer',)
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer',)

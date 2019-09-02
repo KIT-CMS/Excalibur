@@ -6,7 +6,13 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/DYJetsToLL_amcatnloFXFX-pythia8_RunIISummer16/*.root",
+        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/DYJetsToLL_amcatnloFXFX-pythia8_RunIISummer16/*.root",
+        #path1="/storage/8/tberger/testfiles/MC_creation/MINIAODSIM_0.root",
+        #path2="/storage/8/tberger/testfiles/MC_creation/MINIAODSIM_1.root",
+        #path1="/storage/8/tberger/testfiles/MC_creation_no_photon_radiation/MINIAODSIM_0.root",
+        #path2="/storage/8/tberger/testfiles/MC_creation_no_photon_radiation/MINIAODSIM_1.root",
+        #path1="/storage/8/tberger/testfiles/MC_creation_no_ps_and_hadronization/MINIAODSIM_0.root",
+        #path2="/storage/8/tberger/testfiles/MC_creation_no_ps_and_hadronization/MINIAODSIM_1.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],
@@ -18,6 +24,10 @@ def config():
         'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet','mettype1vecpt', 'mettype1pt',
         #'genjet2pt','genjet2eta','genjet2y','genjet2phi',
         #'genjet3pt','genjet3eta','genjet3y','genjet3phi',
+        ])
+    configtools.add_quantities(cfg, [
+        'parton1flavour','parton1pt','parton1y','parton1phi','parton1mass',
+        'parton2flavour','parton2pt','parton2y','parton2phi','parton2mass',
         ])
 ##### Add Producers: #####
     cfg['Processors'] = ['producer:MuonTriggerMatchingProducer',] + cfg['Processors']
@@ -50,7 +60,7 @@ def config():
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### MC specific properties: #####
     cfg['NumberGeneratedEvents'] = 122055388 # from geteventsscript
-    cfg['GeneratorWeight'] =  0.670123731536
+    cfg['GeneratorWeight'] = 0.670123731536
     cfg['CrossSection'] = 5941.0
     cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
     return cfg

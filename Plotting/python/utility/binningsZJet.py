@@ -40,27 +40,33 @@ class BinningsDictZJet(BinningsDict):
             
             'nmuons':       '10,0,10',
             'mupluspt':     '11,25,300',
-            'mupluseta':    '50,-3,3',
+            'mupluseta':    '24,-2.4,2.4',
             'muplusphi':    '30,-3.14,3.14',
             'muplusRiso':   '30,0.01,0.31',
             'muminuspt':    '11,25,300',
-            'muminuseta':   '50,-3,3',
+            'muminuseta':   '24,-2.4,2.4',
             'muminusphi':   '30,-3.14,3.14',
             'muminusRiso':  '30,0.01,0.31',
             
+            'zl1pt':        '15,25,500',
+            'zl1eta':       '24,-2.4,2.4',
+            'zl1phi':       '30,-3.14,3.14',
+            'zl2pt':        '10,25,300',
+            'zl2eta':       '24,-2.4,2.4',
+            'zl2phi':       '30,-3.14,3.14',
+            
+            #'phistareta':   '0.001 0.003 0.01 0.03 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 4 5 7 10 15 20 30 50',
             'phistareta':   '0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.2 1.5 2 3 4 5 7 10 15 20 30 50',
-            #'phistareta':   '25.9 26 26.1 26.2 26.25 26.3 26.5',
-            'zpt':          '5 10 15 20 25 30 35 40 45 50 60 70 80 90 100 110 130 150 170 190 220 250 400 1000',
-            #'zpt':          ' '.join(['{}'.format(int(10*x)/10.) for x in np.logspace(1,3,30)]),
-            #'zpt':          ' '.join(['{}'.format(int(10*x)/10) for x in np.logspace(1,np.log(1000)/np.log(25),20,True,25)]),
-            #'phistareta':   ' '.join(['{}'.format(int(100*x)/100.) for x in np.logspace(1,np.log(50)/np.log(0.1),20,True,0.1)]),
-            'zy':           '30,-2.4,2.4',
+            #'zpt':          '5 10 15 20 25 30 35 40 45 50 60 70 80 90 100 110 130 150 170 190 220 250 400 1000',
+            'zpt':          '25 30 35 40 45 50 60 70 80 90 100 110 130 150 170 190 220 250 400 1000',
+            'zy':           '12,-2.4,2.4',
             'abs(zy)':      '12,0,2.4',
-            'zmass':        '20,71,111',
+            'zmass':        '80,71,111',
             'zphi':         '30,-3.14159,3.14159',
             'njets':        '10,0,10',
             'njets30':      '10,0,10',
-            'jet1eta':      '30,-3,3',
+            'jet1eta':      '-5.191 -3.839 -3.489 -3.139 -2.964 -2.853 -2.650 -2.500 -2.322 -2.172 -1.930 -1.653 -1.479 -1.305 -1.044 -0.783 -0.522 -0.261 0.000 0.261 0.522 0.783 1.044 1.305 1.479 1.653 1.930 2.172 2.322 2.500 2.650 2.853 2.964 3.139 3.489 3.839 5.191',
+            'absjet1eta':   '0.000 0.261 0.522 0.783 1.044 1.305 1.479 1.653 1.930 2.172 2.322 2.500 2.650 2.853 2.964 3.139 3.489 3.839 5.191',
             'abs(jet1y)':   '12,0,2.4',
             'abs(jet2y)':   '12,0,2.4',
             'abs(jet3y)':   '12,0,2.4',
@@ -70,7 +76,7 @@ class BinningsDictZJet(BinningsDict):
             'jetystar':     '12,0,2.4',
             'jet2pt':       '5 10 20 30 40 50 75 125 175 250 400',
             'jet3pt':       '5 10 20 30 40 50 75 125 175 250 400',
-            'jet1y':        '30,-2.4,2.4',
+            'jet1y':        '24,-2.4,2.4',
             'jet2y':        '30,-2.4,2.4',
             'jet3y':        '30,-2.4,2.4',
             'jet1phi':      '31,-3.142,3.142',
@@ -88,12 +94,12 @@ class BinningsDictZJet(BinningsDict):
             'jet1puidraw': '100,-1,1',
             'met':      '70,0,350',
 
-            'jet1pt/genjet1pt': '4000,0.,2.',  # JER gen
-            'jet1pt/zpt':       '4000,0.,2.',  # ptbalance gen
-            'genjet1pt/genzpt': '4000,0.,2.',  # PLI gen
-            'genzpt/zpt':       '4000,0.,2.',  # ZRes gen
-            'ptbalance':        '4000,0.,2.',  # ptbalance data
-
+            'jet1pt/genjet1pt': '40,0.,2.',  # JER gen
+            'jet1pt/zpt':       '40,0.,2.',  # ptbalance gen
+            'genjet1pt/genzpt': '40,0.,2.',  # PLI gen
+            'genzpt/zpt':       '40,0.,2.',  # ZRes gen
+            'ptbalance':        '40,0.,2.',  # ptbalance data
+            'mpf':              '40,0.,2.',  # mpf data
         })
     
 def rebinning(args,d,obs,yboostbin,ystarbin):

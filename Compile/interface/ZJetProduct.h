@@ -40,9 +40,13 @@ class ZJetProduct : public KappaProduct
 
     // Added by RecoJetGenPartonMatchingProducer
     std::map<std::string, std::map<KJet*, KGenParticle*>> m_matchedGenPartons;
+    std::vector<KGenParticle*> m_genPartons;
 
     // Added by RecoJetGenJetMatchingProducer
     boost::ptr_map<std::string, std::vector<int>> m_matchedGenJets;
+    
+    // Added by PartonProducer
+    std::vector<KGenParticle*> m_partons;
 
     // Added by NPUProducer
     float npumean_data = -1.0;
@@ -51,7 +55,6 @@ class ZJetProduct : public KappaProduct
     long n_neutrinos = 0;
     
     // Added by ZJetDressedMuonsProducer
-    std::vector<KGenParticle*> m_genPartons;
     std::vector<KGenParticle*> m_genPhotons;
     RMFLV m_truez;
     bool m_truezfound = false;

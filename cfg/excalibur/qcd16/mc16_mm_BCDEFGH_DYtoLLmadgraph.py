@@ -6,8 +6,8 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        path1="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/DYJetsToLL_madgraphMLM-pythia8_RunIISummer16_v1/*.root",
-        path2="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/DYJetsToLL_madgraphMLM-pythia8_RunIISummer16_v2/*.root",
+        path1="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/DYJetsToLL_madgraphMLM-pythia8_RunIISummer16_v1/*.root",
+        path2="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/DYJetsToLL_madgraphMLM-pythia8_RunIISummer16_v2/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],
@@ -19,6 +19,10 @@ def config():
         'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet','mettype1vecpt', 'mettype1pt',
         #'genjet2pt','genjet2eta','genjet2y','genjet2phi',
         #'genjet3pt','genjet3eta','genjet3y','genjet3phi',
+        ])
+    configtools.add_quantities(cfg, [
+        'parton1flavour','parton1pt','parton1y','parton1phi','parton1mass',
+        'parton2flavour','parton2pt','parton2y','parton2phi','parton2mass',
         ])
 ##### Add Producers: #####
     cfg['Processors'] = ['producer:MuonTriggerMatchingProducer',] + cfg['Processors']

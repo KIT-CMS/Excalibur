@@ -18,6 +18,7 @@
 #include "Excalibur/Compile/interface/Producers/ZProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetDressedMuonsProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetGenParticleProducer.h"
+#include "Excalibur/Compile/interface/Producers/ZJetPartonProducer.h"
 // filters
 #include "Excalibur/Compile/interface/Filters/ZJetCutsFilter.h"
 
@@ -42,6 +43,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new JetEtaPhiCleaner();
     else if (id == JetRecoilProducer().GetProducerId())
         return new JetRecoilProducer();
+    else if (id == ZJetPartonProducer().GetProducerId())
+        return new ZJetPartonProducer();
     else if (id == RecoJetGenPartonMatchingProducer().GetProducerId())
         return new RecoJetGenPartonMatchingProducer();
     else if (id == GenJetGenPartonMatchingProducer().GetProducerId())

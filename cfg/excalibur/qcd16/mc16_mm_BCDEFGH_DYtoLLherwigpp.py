@@ -6,7 +6,7 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/DYJetsToLL_madgraphMLM-herwigpp_RunIISummer16/*.root",
+        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/DYJetsToLL_madgraphMLM-herwigpp_RunIISummer16/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],
@@ -18,6 +18,10 @@ def config():
         'mpf', 'rawmpf', 'met', 'metphi', 'rawmet', 'rawmetphi', 'sumet','mettype1vecpt', 'mettype1pt',
         #'genjet2pt','genjet2eta','genjet2y','genjet2phi',
         #'genjet3pt','genjet3eta','genjet3y','genjet3phi',
+        ])
+    configtools.add_quantities(cfg, [
+        'parton1flavour','parton1pt','parton1y','parton1phi','parton1mass',
+        'parton2flavour','parton2pt','parton2y','parton2phi','parton2mass',
         ])
 ##### Add Producers: #####
     cfg['Processors'] = ['producer:MuonTriggerMatchingProducer',] + cfg['Processors']
@@ -50,7 +54,7 @@ def config():
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### MC specific properties: #####
     cfg['NumberGeneratedEvents'] = 19554896
-    cfg['GeneratorWeight'] =  1.0
+    cfg['GeneratorWeight'] = 1.0
     cfg['CrossSection'] = 358.6
     cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_madgraphMLM-herwigpp_RunIISummer16.root')
     return cfg

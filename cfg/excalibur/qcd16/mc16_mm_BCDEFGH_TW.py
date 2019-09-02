@@ -6,8 +6,8 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        pathtW=   "root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/ST_tW_top_powheg-pythia8_RunIISummer16/*.root",
-        pathtbarW="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/ST_tW_antitop_powheg-pythia8_RunIISummer16/*.root",
+        pathtW=   "root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/ST_tW_top_powheg-pythia8_RunIISummer16/*.root",
+        pathtbarW="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/ST_tW_antitop_powheg-pythia8_RunIISummer16/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],

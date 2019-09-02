@@ -18,6 +18,7 @@ class ExpressionsDictZJet(ExpressionsDict):
             'genalpha': '(genjet2pt/genzpt)',
             #'A': '(zpt-jet1pt)/(zpt+jet1pt)',
             'B': '1-mpf',
+            'absjet1eta': 'abs(jet1eta)',
             'ystar': 'abs(zy-jet1y)/2',
             'yboost': 'abs(zy+jet1y)/2',
             'jetavept': '(jet1pt+jet2pt)/2',
