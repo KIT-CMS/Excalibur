@@ -42,6 +42,7 @@ def config():
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V11_MC/Summer16_07Aug2017_V11_MC')
     cfg['JetID'] = 'loose'
     cfg['PUJetID'] = 'medium'
+    cfg['DeltaRMatchingRecoJetGenJet'] = 0.2
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'

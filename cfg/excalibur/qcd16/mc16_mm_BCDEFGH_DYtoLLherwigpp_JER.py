@@ -2,17 +2,12 @@ import configtools
 import os
 
 JEC = 'Summer16_07Aug2017_V11'
+JER = 'Spring16_25nsV6'
 
 def config():
-    cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
+    cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC,JER=JER)
     cfg["InputFiles"].set_input(
-        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/DYJetsToLL_amcatnloFXFX-pythia8_RunIISummer16/*.root",
-        #path1="/storage/8/tberger/testfiles/MC_creation/MINIAODSIM_0.root",
-        #path2="/storage/8/tberger/testfiles/MC_creation/MINIAODSIM_1.root",
-        #path1="/storage/8/tberger/testfiles/MC_creation_no_photon_radiation/MINIAODSIM_0.root",
-        #path2="/storage/8/tberger/testfiles/MC_creation_no_photon_radiation/MINIAODSIM_1.root",
-        #path1="/storage/8/tberger/testfiles/MC_creation_no_ps_and_hadronization/MINIAODSIM_0.root",
-        #path2="/storage/8/tberger/testfiles/MC_creation_no_ps_and_hadronization/MINIAODSIM_1.root",
+        path="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/DYJetsToLL_madgraphMLM-herwigpp_RunIISummer16/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],
@@ -48,7 +43,6 @@ def config():
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V11_MC/Summer16_07Aug2017_V11_MC')
     cfg['JetID'] = 'loose'
     cfg['PUJetID'] = 'medium'
-    cfg['DeltaRMatchingRecoJetGenJet'] = 0.2
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
@@ -60,8 +54,8 @@ def config():
     cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### MC specific properties: #####
-    cfg['NumberGeneratedEvents'] = 122055388 # from geteventsscript
-    cfg['GeneratorWeight'] = 0.670123731536
-    cfg['CrossSection'] = 5941.0
-    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
+    cfg['NumberGeneratedEvents'] = 19554896
+    cfg['GeneratorWeight'] = 1.0
+    cfg['CrossSection'] = 358.6
+    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_madgraphMLM-herwigpp_RunIISummer16.root')
     return cfg

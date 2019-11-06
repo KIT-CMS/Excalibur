@@ -68,6 +68,8 @@ void GenJetGenPartonMatchingProducer::Produce(KappaEvent const& event,
             // Use Artus gen jet gen particle matcher
             KGenParticle* matchedParton =
                 Match(zJetEvent, zJetProduct, zJetSettings, zJetProduct.m_simpleGenJets.at(i));
+            //std::cout << zJetProduct.m_simpleGenJets.at(i)->p4 << std::endl;
+            //std::cout << matchedParton->p4 << std::endl;
             zJetProduct.m_genPartons.push_back(matchedParton);
         }
     }

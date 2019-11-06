@@ -5,12 +5,12 @@ RUN = 'BCD'
 JEC = 'Summer16_07Aug2017'+RUN+'_V11'
 
 def config():
-    cfg = configtools.getConfig('data', 2016, 'mm', JEC=JEC, IOV=RUN)
+    cfg = configtools.getConfig('data', 2016, 'mm', JEC=JEC, IOV=RUN,)
     cfg["InputFiles"].set_input(
-        pathB1='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/SingleMuon_Run2016B-07Aug17_ver1-v1/*.root',
-        pathB2='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/SingleMuon_Run2016B-07Aug17_ver2-v1/*.root',
-        pathC ='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/SingleMuon_Run2016C-07Aug17-v1/*.root',
-        pathD ='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/SingleMuon_Run2016D-07Aug17-v1/*.root',
+        pathB1='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/SingleMuon_Run2016B-17Jul2018_ver1-v1/*.root',
+        pathB2='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/SingleMuon_Run2016B-17Jul2018_ver2-v1/*.root',
+        pathC ='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/SingleMuon_Run2016C-17Jul2018-v1/*.root',
+        pathD ='root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/SingleMuon_Run2016D-17Jul2018-v1/*.root',
     )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts'],
@@ -23,7 +23,7 @@ def config():
         ])
     configtools.add_quantities(cfg, ['lepton'+x+'SFWeight'+y for x in ['ID','Iso','Trigger'] for y in ['Up','Down']])
 ##### Add Producers: #####
-
+    cfg['Processors'].remove("producer:JetEtaPhiCleaner")
     cfg['Processors'] = ['producer:MuonTriggerMatchingProducer'] + cfg['Processors']
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:PFCandidatesProducer',)

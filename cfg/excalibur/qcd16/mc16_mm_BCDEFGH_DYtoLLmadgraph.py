@@ -43,6 +43,7 @@ def config():
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V11_MC/Summer16_07Aug2017_V11_MC')
     cfg['JetID'] = 'loose'
     cfg['PUJetID'] = 'medium'
+    cfg['DeltaRMatchingRecoJetGenJet'] = 0.2
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
@@ -56,6 +57,6 @@ def config():
 ##### MC specific properties: #####
     cfg['NumberGeneratedEvents'] = 49144274+96658943 # from geteventsscript
     cfg['GeneratorWeight'] = 1.0
-    cfg['CrossSection'] = 4963.0
+    cfg['CrossSection'] = 6225.42 # NNLO instead of LO: 4963.0
     cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
     return cfg

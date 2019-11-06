@@ -94,25 +94,25 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "truezpt",
         [](ZJetEvent const& event, ZJetProduct const& product) {
-            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Pt() : DefaultValues::UndefinedFloat);
+            return(product.GetTrueZ(event)!=nullptr ? product.GetTrueZ(event)->p4.Pt() : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "truezeta",
         [](ZJetEvent const& event, ZJetProduct const& product) {
-            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Eta() : DefaultValues::UndefinedFloat);
+            return(product.GetTrueZ(event)!=nullptr ? product.GetTrueZ(event)->p4.Eta() : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "truezphi",
         [](ZJetEvent const& event, ZJetProduct const& product) {
-            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Phi() : DefaultValues::UndefinedFloat);
+            return(product.GetTrueZ(event)!=nullptr ? product.GetTrueZ(event)->p4.Phi() : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "truezy", [](ZJetEvent const& event, ZJetProduct const& product) {
-            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.Rapidity() : DefaultValues::UndefinedFloat);
+            return(product.GetTrueZ(event)!=nullptr ? product.GetTrueZ(event)->p4.Rapidity() : DefaultValues::UndefinedFloat);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "truezmass", [](ZJetEvent const& event, ZJetProduct const& product) {
-            return(product.GetTrueZ()!=nullptr ? product.GetTrueZ()->p4.mass() : DefaultValues::UndefinedFloat);
+            return(product.GetTrueZ(event)!=nullptr ? product.GetTrueZ(event)->p4.mass() : DefaultValues::UndefinedFloat);
         });
     // Gen Z
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -195,9 +195,9 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
        "truephistareta", [](ZJetEvent const& event, ZJetProduct const& product) {
-            if (!product.m_truezfound)
-                return DefaultValues::UndefinedDouble;
-            return product.GetTruePhiStarEta(event);
+            if (product.GetTrueZ(event)!=nullptr)
+                return product.GetTruePhiStarEta(event);
+            return DefaultValues::UndefinedDouble;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddDoubleQuantity(
         "phistareta", [](ZJetEvent const& event, ZJetProduct const& product) {

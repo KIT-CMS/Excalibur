@@ -97,13 +97,11 @@ def rebinning(obs,yboostbin=None,ystarbin=None):
     return [float(x) for x in binning.split(' ')]
 
 datasets = ({
-        #'amc' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-        'amc' :     '/ceph/tberger/excalibur_results/2019-07-25/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-        'hpp' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-        #'mad' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
-        'mad' :     '/ceph/tberger/excalibur_results/2019-07-25/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
-        'pow' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
-        'ptz' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
+        'amc' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
+        'hpp' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        'mad' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+        #'pow' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
+        #'ptz' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
         })
 
 '''
@@ -357,24 +355,26 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='mad', yboostbin=None, ystar
 
 ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
 
-#plots_folder = '/ceph/tberger/ZJtriple/ZJtriple'
-plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-08-02'
+#plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-08-02'
+#plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-09-05'
+plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-09-12'
+
 for obs in ['zpt','phistareta',
             #'jet1y',
-            #'zy',
-            #'matchedjet1y',#'switchedjet1y',
+            'zy',
+            'matchedjet1y',#'switchedjet1y',
             #'mupluspt','mupluseta','muplusphi',
             ]:
   for cut in [#'_jet1pt10',#'_jet1pt10_backtoback',#'_jet1pt10_alpha05',
               #'_jet1pt15',#'_jet1pt15_backtoback',#'_jet1pt15_alpha05',
               '_jet1pt20',#'_jet1pt20_backtoback',#'_jet1pt20_alpha05',
               ]:
-    for mc in ['mad','amc']:
+    for mc in ['mad']:
      for match in ['']:
       for trunc in ['_985']:#,'_95']:#,'_98','_95']:
        for postfix in ['',#'_puppi','_ak8',
                     #'_puidloose','_puidmedium','_puidtight'
-                    #'_R02','_R04','_R06','_R09'
+                    #'_R02',#'_R04','_R06','_R09'
                     ]:
         for yboostbin in zip(ybins[:-1],ybins[1:]):
          for ystarbin in zip(ybins[:-1],ybins[1:]):

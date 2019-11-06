@@ -6,9 +6,8 @@ JEC = 'Summer16_07Aug2017_V11'
 def config():
     cfg = configtools.getConfig('mc', 2016, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        path1="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/DYJetsToLL_Pt_400To650_amcatnloFXFX-pythia8_RunIISummer16-v1/*.root",
-        path2="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/DYJetsToLL_Pt_400To650_amcatnloFXFX-pythia8_RunIISummer16_ext1-v1/*.root",
-        path3="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming/DYJetsToLL_Pt_400To650_amcatnloFXFX-pythia8_RunIISummer16_ext2-v1/*.root",
+        pathtW=   "root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/ST_tW_top_powheg-pythia8_RunIISummer16/*.root",
+        pathtbarW="root://cmsxrootd-redirectors.gridka.de//store/user/tberger/Skimming_94X/ST_tW_antitop_powheg-pythia8_RunIISummer16/*.root",
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],
@@ -35,11 +34,12 @@ def config():
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
     cfg['ValidMuonsInput'] = "corrected"
     cfg['GenJets'] = 'ak4GenJets'
-    cfg['TaggedJets'] = 'ak4PFJetsCHS'
+    cfg['TaggedJets'] = 'ak4PFJetsPuppi'
+    cfg['RC'] = False
     cfg['UseObjectJetYCut'] = True
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/Summer16_07Aug2017_V11_MC/Summer16_07Aug2017_V11_MC')
     cfg['JetID'] = 'loose'
-    cfg['PUJetID'] = 'medium'
+    cfg['PUJetID'] = 'none'
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_2016'
     cfg['MuonID'] = 'tight'
@@ -47,12 +47,12 @@ def config():
     cfg['CutMuonEtaMax'] = 2.4
     cfg['ZMassRange'] = 20.0
     cfg['CutLeadingJetPtMin'] = 10.0
-    cfg['MinPUJetID'] = -0.2
+    cfg['MinPUJetID'] = -9999
     cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
     cfg["MuonTriggerFilterNames"] = ['HLT_IsoMu24_v2:hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09','HLT_IsoTkMu24_v3:hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09']
 ##### MC specific properties: #####
-    cfg['NumberGeneratedEvents'] = 1625936
-    cfg['GeneratorWeight'] = 0.386287037128
-    cfg['CrossSection'] = 0.4491/0.3882*0.436041144
-    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_DYJetsToLL_M-50_amcatnloFXFX-pythia8_RunIISummer16.root')
+    cfg['NumberGeneratedEvents'] = 6952830+6933094
+    cfg['GeneratorWeight'] = 1.0
+    cfg['CrossSection'] = (38.09*6952830+38.06*6933094)/(6952830+6933094)
+    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/PUWeights_BCDEFGH_13TeV_23Sep2016ReReco_TTJets_madgraphMLM-pythia8_RunIISummer16.root')
     return cfg
