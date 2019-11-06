@@ -65,6 +65,10 @@ echo /VertexRefit >> .git/info/exclude  # exclude from outer CMSSW repo
 git clone https://github.com/cms-jet/JECDatabase.git --depth=1
 echo /JECDatabase >> .git/info/exclude  # exclude from outer CMSSW repo
 
+# optionally, check out JRDatabase (offline jet energy resolution)
+git clone https://github.com/cms-jet/JRDatabase.git
+echo /JRDatabase >> .git/info/exclude  # exclude from outer CMSSW repo
+
 # finally, check out Excalibur
 git clone https://github.com/KIT-CMS/Excalibur.git
 echo /Excalibur >> .git/info/exclude  # exclude from outer CMSSW repo
