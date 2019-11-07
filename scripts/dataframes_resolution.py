@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 # script to estimate zpt, phistareta, jet1y and zy resolution using ROOT dataframes. To be optimized!
-# need
+
+# To get it running, you need to source:
+#   'export LD_LIBRARY_PATH=/opt/rh/python27/root/usr/lib64'
+#   'source /cvmfs/sft.cern.ch/lcg/views/dev3/latest/x86_64-slc6-gcc8-opt/setup.sh'
+# Suggestion: takes a while, use 'nice -n10 python scripts/dataframes_resolution.py' to run the script
 
 import os
 import ROOT
@@ -23,6 +27,8 @@ def betainverse(alpha,N1,N2):
 
 
 def generate_basiccutstring(cut='_jet1pt20',yboostbin=None,ystarbin=None):
+    # Sets cutstring according to chosen kinematic selection.
+    # Basic selection is always applied for gen and reco, respectively:
     basicrecocutstring='(abs(mupluseta)<2.4)&&(abs(muminuseta)<2.4)&&(mupluspt>25)&&(muminuspt>25)&&(abs(zmass-91.1876)<20)'
     basicgencutstring='(abs(genmupluseta)<2.4)&&(abs(genmuminuseta)<2.4)&&(genmupluspt>25)&&(genmuminuspt>25)&&(abs(genzmass-91.1876)<20)'
     cut=cut.split('_')
@@ -30,6 +36,7 @@ def generate_basiccutstring(cut='_jet1pt20',yboostbin=None,ystarbin=None):
         basiccutstring = basicgencutstring
     else:
         basiccutstring = basicrecocutstring
+    # Additional selection criteria. (Default is jet1pt>20)
     if 'jet1pt10' in cut:
         basiccutstring+='&&('+cut[0]+'jet1pt>10)'
     if 'jet1pt15' in cut:
@@ -52,6 +59,7 @@ def generate_basiccutstring(cut='_jet1pt20',yboostbin=None,ystarbin=None):
     return basiccutstring
 
 def rebinning(obs,yboostbin=None,ystarbin=None):
+    # Adapt histogram binning dependent on rapidity bin.
     if obs == 'mupluspt' or obs == 'muminuspt':
         binning = ' '.join(['{}'.format(x) for x in range(25,300,(300-25)/11)])+' 350'
     if obs in ['zy','jet1y','mupluseta','muminuseta','mu1eta','mu2eta','matchedjet1y','switchedjet1y']:
@@ -98,10 +106,10 @@ def rebinning(obs,yboostbin=None,ystarbin=None):
 
 datasets = ({
         'amc' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-        'hpp' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-        'mad' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
-        #'pow' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
-        #'ptz' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
+        #'hpp' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        #'mad' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+        'hpp' :     '/ceph/tberger/excalibur_results/2019-11-06/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        'mad' :     '/ceph/tberger/excalibur_results/2019-11-06/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
         })
 
 '''
@@ -117,6 +125,7 @@ binsof=''
 
 def write_resolution(obs='zpt', cut='_jet1pt20', mc='mad', yboostbin=None, ystarbin=None,
         match='', postfix='', binsof='',trunc=''):
+    # Script to write obs-resolution to files
     cutstring,gencutstring = generate_basiccutstring(cut),generate_basiccutstring('gen'+cut)
     weightstring = "1"#(leptonIDSFWeight)*(leptonIsoSFWeight)*(leptonTriggerSFWeight)"
     if yboostbin and ystarbin:
@@ -126,10 +135,6 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='mad', yboostbin=None, ystar
     else:
         ycutstring,genycutstring,namestring = '1','1',""
     
-    #print cutstring
-    #print gencutstring
-    #print ycutstring
-    #print genycutstring
     input_file = datasets[mc].replace('.root',postfix+'.root')
     #file_in = ROOT.TFile(input_file,"READ")
     print "resolution information will be estimated from ",input_file
@@ -355,47 +360,38 @@ def write_resolution(obs='zpt', cut='_jet1pt20', mc='mad', yboostbin=None, ystar
 
 ybins = [0.0,0.5,1.0,1.5,2.0,2.5]
 
+# Select output folder:
 #plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-08-02'
 #plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-09-05'
-plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-09-12'
+#plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-09-12'
+plots_folder = '/portal/ekpbms2/home/tberger/ZJtriple/ZJtriple_2019-11-06'
 
+# The following loop loops over all observables (obs), selection criteria (cut), simulations (mc), histogram truncation (trunc), additional attributes (postfix) and rapidity bins (yboostbin,ystarbin):
 for obs in ['zpt','phistareta',
             #'jet1y',
             'zy',
             'matchedjet1y',#'switchedjet1y',
-            #'mupluspt','mupluseta','muplusphi',
             ]:
-  for cut in [#'_jet1pt10',#'_jet1pt10_backtoback',#'_jet1pt10_alpha05',
+ for cut in [#'_jet1pt10',#'_jet1pt10_backtoback',#'_jet1pt10_alpha05',
               #'_jet1pt15',#'_jet1pt15_backtoback',#'_jet1pt15_alpha05',
               '_jet1pt20',#'_jet1pt20_backtoback',#'_jet1pt20_alpha05',
               ]:
-    for mc in ['mad']:
-     for match in ['']:
-      for trunc in ['_985']:#,'_95']:#,'_98','_95']:
-       for postfix in ['',#'_puppi','_ak8',
+  for mc in ['mad']:
+   for trunc in ['_985']:#,'_95']:#,'_98','_95']:
+    for postfix in ['',#'_puppi','_ak8',
                     #'_puidloose','_puidmedium','_puidtight'
                     #'_R02',#'_R04','_R06','_R09'
                     ]:
-        for yboostbin in zip(ybins[:-1],ybins[1:]):
-         for ystarbin in zip(ybins[:-1],ybins[1:]):
-          if not yboostbin[0]+ystarbin[0]>2:
-           if obs in ['zpt','phistareta']:
+     for yboostbin in zip(ybins[:-1],ybins[1:]):
+      for ystarbin in zip(ybins[:-1],ybins[1:]):
+       if not yboostbin[0]+ystarbin[0]>2:
+        if obs in ['zpt','phistareta']:
             write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix,trunc=trunc)
-           elif obs in ['mupluspt','mupluseta','muplusphi']:
-            #write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix,trunc=trunc)
+        elif obs in ['mupluspt','mupluseta','muplusphi']:
             write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix, binsof = 'zpt', trunc=trunc)
             write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix, binsof = 'phistareta', trunc=trunc)
-           else:
+        else:
             write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix, binsof = 'zpt', trunc=trunc)
             write_resolution(obs, cut, mc=mc, yboostbin=yboostbin, ystarbin=ystarbin, postfix=postfix, binsof = 'phistareta', trunc=trunc)
 
-'''
-import ROOT
-cutstring = "(abs(mupluseta)<2.4)&&(abs(muminuseta)<2.4)&&(mupluspt>25)&&(muminuspt>25)&&(abs(zmass-91.1876)<20)&&(jet1pt>20)"
-gencutstring = "(abs(genmupluseta)<2.4)&&(abs(genmuminuseta)<2.4)&&(genmupluspt>25)&&(genmuminuspt>25)&&(abs(genzmass-91.1876)<20)&&(genjet1pt>20)"
-input_file = "/storage/8/tberger/excalibur_results/2019-05-20/mc16_mm_BCDEFGH_DYtoLLmadgraph.root"
-df_gen, df_reco = ROOT.RDataFrame("genzjetcuts_L1L2L3/ntuple",input_file), ROOT.RDataFrame("zjetcuts_L1L2L3/ntuple",input_file)
-df_gen  = df_gen.Filter(gencutstring)
-df_reco = df_reco.Filter(cutstring)
-'''
-
+# Continue with plotting script Plotting/configs/qcd_cross_section_3Dhist.py
