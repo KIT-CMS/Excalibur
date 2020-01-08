@@ -18,6 +18,7 @@ import logging
 import itertools
 import ast
 import shlex
+import urlparse
 
 wrapper_logger = logging.getLogger("CORE")
 
@@ -651,8 +652,9 @@ def createFileList(infiles, fast=False):
         if "*.root" in files:
             print "Creating file list from", files
 
+            url = urlparse.urlsplit(files)
             # check if srm protocol used for getting input file list
-            if files.split(':')[0] in ['srm', ]:
+            if url.scheme == 'srm':
                 print "Use grid ls tools (gfal2)"
                 gridpath = files.replace("*.root", "")
                 import gfal2
@@ -663,11 +665,10 @@ def createFileList(infiles, fast=False):
                         out_files.append(gridpath + f)
 
             # check if xrootd protocol used for getting input file list
-            elif files.split(':')[0] in ['root', ]:
+            elif url.scheme in ('root', 'xroot'):
                 print "Use pyxrootd tools"
-                gridpath = files.replace("*.root", "")
-                gridserver = 'root://' + gridpath.split("//")[1]
-                gridpath = '/' + gridpath.split("//")[2]
+                gridserver = 'root://' + url.netloc
+                gridpath = url.path[1:].rpartition('*')[0]
 
                 from XRootD import client
                 from XRootD.client.flags import DirListFlags, OpenFlags, MkDirFlags, QueryCode
