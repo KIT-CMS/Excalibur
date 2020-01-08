@@ -667,6 +667,11 @@ def createFileList(infiles, fast=False):
             # check if xrootd protocol used for getting input file list
             elif url.scheme in ('root', 'xroot'):
                 print "Use pyxrootd tools"
+                # unwrap forwarding proxies
+                origin_url = urlparse.urlsplit(url.path.lstrip('/'))
+                while origin_url.scheme in ('root', 'xroot'):
+                    url = origin_url
+                    origin_url = urlparse.urlsplit(url.path.lstrip('/'))
                 gridserver = 'root://' + url.netloc
                 gridpath = url.path[1:].rpartition('*')[0]
 
