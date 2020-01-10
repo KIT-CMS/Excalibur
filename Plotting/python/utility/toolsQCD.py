@@ -120,8 +120,10 @@ def generate_datasets(args=None):
         #'hpp' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
         #'mad' :     '/storage/8/tberger/excalibur_results/2019-06-17/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
         'amc' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLamcatnlo.root',
-        'hpp' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
-        'mad' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+        #'hpp' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        #'mad' :     '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
+        'hpp' :     '/ceph/tberger/excalibur_results/2019-11-06/mc16_mm_BCDEFGH_DYtoLLherwigpp.root',
+        'mad' :     '/ceph/tberger/excalibur_results/2019-11-06/mc16_mm_BCDEFGH_DYtoLLmadgraph.root',
         #'pow' :     '/storage/8/tberger/excalibur_results/2019-06-13/mc16_mm_BCDEFGH_ZtoMMpowheg.root',
         #'ptz' :     '/storage/8/tberger/excalibur_results/2019-06-13/mc16_mm_BCDEFGH_DYtoLLamcatnlo_Pt0ToInf.root',
         'TT' :      '/ceph/tberger/excalibur_results/2019-09-03/mc16_mm_BCDEFGH_TTJetsmadgraph.root',
@@ -132,6 +134,149 @@ def generate_datasets(args=None):
         'test':     '/portal/ekpbms1/home/mschnepf/QCD/NP_corrections/runtime/CMSSW_10_6_2/src/official_1mio.root',
     })
     return datasets
+
+def prepare_3Dhists(args=None, obs='zpt'):
+    [d, cutstring, gencutstring, weightstring, namestring] = basic_xsec(args, obs, '', '', '', yboostbin=None, ystarbin=None)
+    l_ybinedges = [0,5,9,12,14,0]
+    l_obshists,l_obsbinedges,counter = [],[0],0
+    for index in xrange(15):
+        name = obs+"_{}".format(index)
+        if index in [14]:
+            rebinning(args,d,obs,(0.0,0.5),(2.0,2.5))
+            l_bins = [float(x) for x in d['x_bins'][0].split(' ')]
+            l_obshists.append(ROOT.TH1D(name,"",len(l_bins)-1, array('d',l_bins)))
+        elif index in [4,8,11,12,13]:
+            rebinning(args,d,obs,(0.0,0.5),(1.5,2.0))
+            l_bins = [float(x) for x in d['x_bins'][0].split(' ')]
+            l_obshists.append(ROOT.TH1D(name,"",len(l_bins)-1, array('d',l_bins)))
+        else:
+            rebinning(args,d,obs,(0.0,0.5),(0.0,0.5))
+            l_bins = [float(x) for x in d['x_bins'][0].split(' ')]
+            l_obshists.append(ROOT.TH1D(name,"",len(l_bins)-1, array('d',l_bins)))
+        counter+=l_obshists[index].GetNbinsX()
+        l_obsbinedges.append(counter)
+    h_reco = ROOT.TH1D(obs,"",counter,0,counter)
+    h_gen = ROOT.TH1D("gen"+obs,"",counter,0,counter)
+    h_response = ROOT.TH2D("response","",counter,0,counter,counter,0,counter)
+    return [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges]
+
+def invert_3Dhists(args=None, filename = '',PLOTSFOLDER = '', BUFFERFOLDER = ''):
+    if '' in [filename,PLOTSFOLDER,BUFFERFOLDER]:
+        print "WARNING: inputs must be specified!"
+        return
+    if not os.path.exists(BUFFERFOLDER):
+        os.makedirs(BUFFERFOLDER)
+        print 'The directory',BUFFERFOLDER,'has been created'
+    if 'phistareta' in filename:
+        obs = 'phistareta'
+        [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhists(args,'phistareta')
+    elif 'zpt' in filename:
+        obs = 'zpt'
+        [l_obshists, h_reco, h_gen, h_response, l_ybinedges, l_obsbinedges] = prepare_3Dhists(args,'zpt')
+    file_in = ROOT.TFile(PLOTSFOLDER+'/'+filename,"READ")
+    namelist = [key.GetName() for key in file_in.GetListOfKeys()]
+    print namelist
+    output_file = BUFFERFOLDER+'/'+filename.replace('.root','_binned.root')
+    file_out = ROOT.TFile(output_file,"RECREATE")
+    for histname in namelist:
+      hist = file_in.Get(histname)
+      if isinstance(hist,ROOT.TH1D):
+        hist_index, bin_index = 0,0
+        genybmin,genybmax,genysmin,genysmax = 0.0,0.5,0.0,0.5
+        for obsbin in xrange(h_gen.GetNbinsX()):
+            if obsbin in l_obsbinedges:
+                if not obsbin==0:
+                    hist_bin.Write(histname+namestring)
+                    bin_index = 0
+                    hist_index += 1
+                    genybmin += 0.5
+                    genybmax += 0.5
+                    if obsbin in ([93,167,222,256] if obs=='zpt' else [85,152,201,227]):
+                    #if obsbin in ([93,167,222,256] if obs=='zpt' else [81,145,192,218]):
+                        genysmin += 0.5
+                        genysmax += 0.5
+                        genybmin,genybmax = 0.0,0.5
+                namestring = "_yb{}_ys{}".format(int(2*genybmin),int(2*genysmin))
+                hist_bin  = l_obshists[hist_index].Clone(histname+namestring)
+                if genysmin==2.0:
+                    if obs == 'zpt':
+                        hist_bin = ROOT.TH1D(histname+namestring,"",8,array('d',[25,30,40,50,70,90,110,150,250]))
+                    if obs == 'phistareta':
+                        hist_bin = ROOT.TH1D(histname+namestring,"",4,array('d',[0.4,0.6,0.8,1.0,5]))
+            bin_index += 1
+            hist_bin.SetBinContent(bin_index,hist.GetBinContent(obsbin+1))
+            hist_bin.SetBinError(bin_index,hist.GetBinError(obsbin+1))
+        hist_bin.Write(histname+namestring)
+      elif isinstance(hist,ROOT.TGraphAsymmErrors):
+        x,y = ROOT.Double(0),ROOT.Double(0)
+        g_reco, g_gen = ROOT.TGraphAsymmErrors(h_reco), ROOT.TGraphAsymmErrors(h_gen)
+        l_obsgraphs = [ROOT.TGraphAsymmErrors(g) for g in l_obshists]
+        graph_index, bin_index = 0,0
+        genybmin,genybmax,genysmin,genysmax = 0.0,0.5,0.0,0.5
+        for obsbin in xrange(g_gen.GetN()-1):
+            if obsbin in l_obsbinedges:
+                if not obsbin==0:
+                    graph_bin.Write(histname+namestring)
+                    bin_index = 0
+                    graph_index += 1
+                    genybmin += 0.5
+                    genybmax += 0.5
+                    if obsbin in ([93,167,222,256] if obs=='zpt' else [85,152,201,227]):
+                    #if obsbin in ([93,167,222,256] if obs=='zpt' else [81,145,192,218]):
+                        genysmin += 0.5
+                        genysmax += 0.5
+                        genybmin,genybmax = 0.0,0.5
+                namestring = "_yb{}_ys{}".format(int(2*genybmin),int(2*genysmin))
+                graph_bin  = l_obsgraphs[graph_index].Clone(histname+namestring)
+                if genysmin==2.0:
+                    if obs == 'zpt':
+                        hist_bin = ROOT.TH1D(histname+namestring,"",8,array('d',[25,30,40,50,70,90,110,150,250]))
+                    if obs == 'phistareta':
+                        hist_bin = ROOT.TH1D(histname+namestring,"",4,array('d',[0.4,0.6,0.8,1.0,5]))
+                    graph_bin = ROOT.TGraphAsymmErrors(hist_bin)
+            graph_bin.GetPoint(bin_index,x,y)
+            x0 = copy.deepcopy(x)
+            hist.GetPoint(obsbin,x,y)
+            graph_bin.SetPoint(bin_index,x0,y)
+            graph_bin.SetPointEYhigh(bin_index,hist.GetErrorYhigh(obsbin))
+            graph_bin.SetPointEYlow(bin_index,hist.GetErrorYlow(obsbin))
+            bin_index += 1
+        graph_bin.Write(histname+namestring)
+    print "histograms written to",output_file
+
+def closure_chi2(args=None, unffilename='', genfilename='' ,PLOTSFOLDER='', BUFFERFOLDER='', ybindex=None, ysindex=None):
+    obs  = unffilename.split('_')[0]
+    data = genfilename.split('_')[1].split('.')[0]
+    mc   = unffilename.split('.')[0].split('_')[-1]
+    varlist = ['stats_'+mc]
+    if 'toy' in unffilename:
+        varlist = ['stats_'+mc,'model_toy','Robs','Ryj','Ryz','switch','F','A']
+    f_unf = ROOT.TFile(PLOTSFOLDER+'/'+unffilename,"READ")
+    print PLOTSFOLDER+'/'+unffilename
+    f_gen = ROOT.TFile(PLOTSFOLDER+'/'+genfilename,"READ")
+    print PLOTSFOLDER+'/'+genfilename
+    h_unf = f_unf.Get("unfolded"+obs)
+    h_gen = f_gen.Get("gen"+obs)
+    h_unc = h_gen.Clone("uncertainty")
+    h_unc.Reset()
+    for var in varlist:
+        f_var = ROOT.TFile(PLOTSFOLDER+'/uncertainty/'+obs+'_17Jul2018_'+var+'.root',"READ")
+        h_var = f_var.Get("uncertainty_"+var)
+        for i in xrange(h_unc.GetNbinsX()):
+            h_unc.SetBinContent(i+1,np.sqrt(h_unc[i+1]**2+h_var[i+1]**2))
+    chi2 = 0
+    if not (ybindex==None or ysindex==None):
+        [l_ybinedges, l_obsbinedges] = prepare_3Dhists(args,obs)[4:6]
+        obsindexmin, obsindexmax = l_obsbinedges[l_ybinedges[ysindex]+int(ybindex)],l_obsbinedges[l_ybinedges[ysindex]+int(ybindex)+1]
+    else:
+        obsindexmin, obsindexmax = 0,h_unc.GetNbinsX()
+    h_chi2 = h_unc.Clone("chi2")
+    for i in xrange(obsindexmin, obsindexmax):
+        chi2 += (h_unf[i+1]-h_gen[i+1])**2/((h_unc[i+1]*h_unf[i+1])**2+h_unf.GetBinError(i+1)**2)
+        h_chi2.SetBinContent(i+1,(h_unf[i+1]-h_gen[i+1])/np.sqrt((h_unc[i+1]*h_unf[i+1])**2+h_unf.GetBinError(i+1)**2))
+        h_chi2.SetBinError(i+1,0)
+    print "chi2/ndf between gen",data,"and reco",data,"unfolded by",mc,"is",chi2/(obsindexmax-obsindexmin)
+    return chi2/(obsindexmax-obsindexmin)
 
 def basic_xsec(args=None, obs='zpt', cut='_jet1pt20', data='BCDEFGH', mc='amc', yboostbin=None,ystarbin=None, jet1match=False):
 # delivers dictionary and sets basic options which are similar to all plots, i.e. a basic dictionary and strings that define the cutflow and weights
