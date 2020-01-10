@@ -376,9 +376,9 @@ for obs in ['zpt','phistareta',
               #'_jet1pt15',#'_jet1pt15_backtoback',#'_jet1pt15_alpha05',
               '_jet1pt20',#'_jet1pt20_backtoback',#'_jet1pt20_alpha05',
               ]:
-  for mc in ['mad']:
+  for mc in ['mad','hpp']:
    for trunc in ['_985']:#,'_95']:#,'_98','_95']:
-    for postfix in ['',#'_puppi','_ak8',
+    for postfix in ['_JER','',#'_puppi','_ak8',
                     #'_puidloose','_puidmedium','_puidtight'
                     #'_R02',#'_R04','_R06','_R09'
                     ]:

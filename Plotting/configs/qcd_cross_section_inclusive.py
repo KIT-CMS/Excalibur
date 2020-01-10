@@ -573,5 +573,30 @@ def plot_npcorrections(args=None,cut='_jet1pt10'):
     return [PlottingJob(plots=plots, args=args)]
 
 
-
-
+def plot_JEC_inclusive(args=None, obs='zpt', cut='_jet1pt20', data='17Jul2018',postfix=''):
+    plots=[]
+    d = ({
+        'files': [DATASETS[data],DATASETS[data].replace('.root','_JECUp.root'),DATASETS[data].replace('.root','_JECDown.root')],
+        'nicks': ['central','up','down'],
+        'folders': ['zjetcuts_L1L2L3Res/ntuple'],
+        'x_expressions': [obs],
+        'weights': ['jet1pt>20'],
+        'www': 'comparison_variations'+cut+'_'+data+'_JEC'+postfix,
+        'y_log': True,
+        'x_log': True,
+        'x_label': obs,
+        'x_errors': [1],
+        'x_bins': obs,
+        #'x_ticks': [30,50,100,1000],
+        'filename': obs,
+        'analysis_modules': ['NormalizeByBinWidth','Ratio'],
+        'ratio_numerator_nicks': ['up','down'],
+        'ratio_denominator_nicks': ['central'],
+        'ratio_denominator_no_errors': False,
+        'markers': ['o','^','v','^','v'],
+        'colors': ['black','darkorange','darkgreen','darkorange','darkgreen'],
+        'y_subplot_lims': [0.9,1.1],
+        'y_subplot_label': 'Ratio to central',
+    })
+    plots.append(d)
+    return [PlottingJob(plots=plots, args=args)]
