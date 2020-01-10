@@ -7,7 +7,7 @@ The Excalibur outputs can be found at srm://cmssrm-kit.gridka.de:8443/srm/manage
 The Histogram outputs can be found at srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/ZJtriple_Histograms/
 The Theory calculations can be found at srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/ZJtriple_Theory/
 
-This script is only meant to produce plots out of the histograms. For functions to produce the histograms see: qcd_cross_section_3Dhist.py
+This script is only meant to produce plots out of the histograms. For functions to produce the histograms see: qcd_cross_section.py
 Use 'merlin.py --py plot_all' to create all plots defined here!
 '''
 
