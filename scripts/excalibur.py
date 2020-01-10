@@ -18,6 +18,7 @@ import logging
 import itertools
 import ast
 import shlex
+import urlparse
 
 wrapper_logger = logging.getLogger("CORE")
 
@@ -651,8 +652,9 @@ def createFileList(infiles, fast=False):
         if "*.root" in files:
             print "Creating file list from", files
 
+            url = urlparse.urlsplit(files)
             # check if srm protocol used for getting input file list
-            if files.split(':')[0] in ['srm', ]:
+            if url.scheme == 'srm':
                 print "Use grid ls tools (gfal2)"
                 gridpath = files.replace("*.root", "")
                 import gfal2
@@ -663,22 +665,32 @@ def createFileList(infiles, fast=False):
                         out_files.append(gridpath + f)
 
             # check if xrootd protocol used for getting input file list
-            elif files.split(':')[0] in ['root', ]:
+            elif url.scheme in ('root', 'xroot'):
                 print "Use pyxrootd tools"
-                gridpath = files.replace("*.root", "")
-                gridserver = 'root://' + gridpath.split("//")[1]
-                gridpath = '/' + gridpath.split("//")[2]
+                # unwrap forwarding proxies
+                proxy_header = ''
+                origin_url = urlparse.urlsplit(url.path.lstrip('/'))
+                while origin_url.scheme in ('root', 'xroot'):
+                    proxy_header += url.scheme + '://' + url.netloc + (
+                            '/' * (len(url.path)-len(url.path.lstrip('f')))
+                    )
+                    url = origin_url
+                    origin_url = urlparse.urlsplit(url.path.lstrip('/'))
+                gridserver = 'root://' + url.netloc
+                gridpath = url.path[1:].rpartition('*')[0]
 
                 from XRootD import client
                 from XRootD.client.flags import DirListFlags, OpenFlags, MkDirFlags, QueryCode
                 myclient = client.FileSystem(gridserver)
                 print 'Getting file list from XRootD server'
                 status, listing = myclient.dirlist(gridpath, DirListFlags.LOCATE, timeout=10)
-                if status == '' or listing != None:
+                if status == '' or listing is not None:
+                    entry_prefix = proxy_header + gridserver + '/' + gridpath
                     for entry in listing:
-                        # if entry.name.endswith('.root') and not entry.name == '':
-                        if entry.name.endswith('.root') and not entry.name == '' and gridserver + '/' + gridpath + entry.name not in out_files:
-                            out_files.append(gridserver + '/' + gridpath + entry.name)
+                        if entry.name.endswith('.root'):
+                            entry_url = entry_prefix + entry.name
+                            if entry_url not in out_files:
+                                out_files.append(entry_url)
                     print "Successfully queried " + str(len(out_files)) + " files!"
                 else:
                     print "Error getting list of files!"
