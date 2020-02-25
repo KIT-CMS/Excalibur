@@ -158,9 +158,9 @@ def mc(cfg, **kwargs):
         'matchedgenjet2pt','matchedgenjet2eta','matchedgenjet2y','matchedgenjet2phi',
         'genzpt','genzy','genzeta','genzphi','genzmass',
         #'genparton1flavour','genparton1pt','genparton1y','genparton1phi','genparton1mass',
-        'truezpt','truezy','truezeta','truezphi','truezmass',
-        'truetaupluspt', 'truetauplusy', 'truetaupluseta', 'truetauplusphi', 'truetauplusmass',
-        'truetauminuspt','truetauminusy','truetauminuseta','truetauminusphi','truetauminusmass',
+        # 'truezpt','truezy','truezeta','truezphi','truezmass',
+        # 'truetaupluspt', 'truetauplusy', 'truetaupluseta', 'truetauplusphi', 'truetauplusmass',
+        # 'truetauminuspt','truetauminusy','truetauminuseta','truetauminusphi','truetauminusmass',
         'genphistareta', 'genystar', 'genyboost', 'matchedgenystar', 'matchedgenyboost',
         'genzl1pt','genzl1eta','genzl1phi',
         'genzl2pt','genzl2eta','genzl2phi',
@@ -185,7 +185,7 @@ def mc(cfg, **kwargs):
     #cfg['RecoJetMatchingGenParticleStatus'] = 1    # use pythia8 status instead of default=3
     # MC sample reweighting
     cfg['Processors'] += [
-        'producer:ZJetPartonProducer',
+        # 'producer:ZJetPartonProducer',
         'producer:CrossSectionWeightProducer',
         'producer:ZJetNumberGeneratedEventsWeightProducer',
         'producer:GeneratorWeightProducer',  # insert Generator producer before EventWeightProducer:
