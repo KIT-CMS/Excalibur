@@ -9,6 +9,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, MinZllJetDeltaRVeto)
     IMPL_SETTING(std::string, PUJetID)
     IMPL_SETTING(float, MinPUJetID)
+    IMPL_SETTING(std::string, PUJetIDModuleName)
     IMPL_SETTING(bool, UseObjectJetYCut)
 
     // TypeIMETProducer

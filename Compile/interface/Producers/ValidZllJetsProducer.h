@@ -61,6 +61,7 @@ class ValidZllJetsProducer : public ZJetProducerBase {
     float minZllJetDeltaRVeto;
     std::string PUJetID;
     float minPUJetID;
+    std::string PUJetIDModuleName;
     float maxLeadingJetY;
     bool  objectJetY;
 };

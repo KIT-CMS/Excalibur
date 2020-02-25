@@ -31,6 +31,7 @@ def getBaseConfig(tagged=False, **kwargs):
         # 'ValidJetsInput': 'uncorrected',  # set to default
         'JetID' : 'none', # object-based specification, 'none' if you want to use the event-based ID filter
         'PUJetID': 'none', # choose 'none' to use the fullDiscriminant and set the cut later, OR choose working point 'loose','medium','tight'
+        'PUJetIDModuleName': 'AK4PFCHSpileupJetIdEvaluator',  # choose 'pileupJetId' for KAPPA files with slimmedJets
         'JetMetadata' : 'jetMetadata',  # folder to look for jet variables in KAPPA files
         'TaggedJets' : 'ak4PFJetsCHS',  # default folder to look for saved jets in KAPPA files
         # PU
