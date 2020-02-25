@@ -1,8 +1,10 @@
 JEC_BASE = 'Autumn18'
-JEC_VERSION = 'V1'
+JEC_VERSION = 'V19'
 
 #JER = 'Fall17_V2'  # set this to 'None' to turn JER smearing off
 JER = None
+# JER = 'Autumn18_V1'
+# JER = 'Autumn18_V7'
 
 SE_PATH_PREFIXES = dict(
     srm_gridka_nrg="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user",

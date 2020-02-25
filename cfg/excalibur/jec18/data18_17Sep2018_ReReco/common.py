@@ -1,5 +1,5 @@
 JEC_BASE = 'Autumn18_Run'
-JEC_VERSION = 'V8'
+JEC_VERSION = 'V19'
 
 GOLDEN_JSON = "Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt"
 

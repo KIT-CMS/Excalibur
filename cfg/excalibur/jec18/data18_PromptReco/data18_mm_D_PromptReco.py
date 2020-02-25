@@ -15,9 +15,9 @@ JEC='{}{}_{}'.format(JEC_BASE, RUN, JEC_VERSION)
 def config():
     cfg = configtools.getConfig('data', 2018, CH, JEC=JEC)
     cfg["InputFiles"].set_input(
-        bmspathA="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018D_13TeV-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        ekppathA="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018D_13TeV-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-        sg0pathA="{}/mschnepf/Skimming/ZJet_DoubleMuon_RUN2018D_13TeV-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        bmspathA="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018D-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        ekppathA="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018D-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
+        pathA="{}/dsavoiu/Skimming/ZJet_DoubleMuon_Run2018D-PromptReco-v2/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/{}'.format(GOLDEN_JSON))]
 
