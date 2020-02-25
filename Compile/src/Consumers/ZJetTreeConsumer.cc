@@ -343,7 +343,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet1puidraw", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
                        ? static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
-                             ->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata)
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullDiscriminant", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
     
@@ -351,7 +351,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet1puidtight", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
                        ? bool(int(static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
-                             ->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 0))
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullId", event.m_jetMetadata)) & (1 << 0))
                              //->getId("puJetIDFullTight", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
@@ -359,7 +359,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet1puidmedium", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
                        ? bool(int(static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
-                             ->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 1))
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullId", event.m_jetMetadata)) & (1 << 1))
                              //->getId("puJetIDFullMedium", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
@@ -367,7 +367,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet1puidloose", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 0)
                        ? bool(int(static_cast<KJet*>(product.GetValidPrimaryJet(settings, event))
-                             ->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 2))
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullId", event.m_jetMetadata)) & (1 << 2))
                              //->getId("puJetIDFullLoose", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
@@ -452,14 +452,14 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet2puidraw", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 1)
                        ? static_cast<KJet*>(product.GetValidJet(settings, event, 1))
-                             ->getTag("pileupJetIdfullDiscriminant", event.m_jetMetadata)
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullDiscriminant", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "jet2puidtight", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 1)
                        ? bool(int(static_cast<KJet*>(product.GetValidJet(settings, event, 1))
-                             ->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 0))
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullId", event.m_jetMetadata)) & (1 << 0))
                              //->getId("puJetIDFullTight", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
@@ -467,7 +467,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet2puidmedium", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 1)
                        ? bool(int(static_cast<KJet*>(product.GetValidJet(settings, event, 1))
-                             ->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 1))
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullId", event.m_jetMetadata)) & (1 << 1))
                              //->getId("puJetIDFullMedium", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
@@ -475,7 +475,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "jet2puidloose", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return (product.GetValidJetCount(settings, event) > 1)
                        ? bool(int(static_cast<KJet*>(product.GetValidJet(settings, event, 1))
-                             ->getTag("pileupJetIdfullId", event.m_jetMetadata)) & (1 << 2))
+                             ->getTag(settings.GetPUJetIDModuleName()+"fullId", event.m_jetMetadata)) & (1 << 2))
                              //->getId("puJetIDFullLoose", event.m_jetMetadata)
                        : DefaultValues::UndefinedFloat;
         });
