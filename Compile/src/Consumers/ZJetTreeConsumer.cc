@@ -1801,16 +1801,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             }
             return DefaultValues::UndefinedFloat;
         });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idveto", [q_writeOutVIDs, electronVID_vetoTag](event_type const& event, product_type const& product) {
-            if (q_writeOutVIDs) {
-                return product.m_validElectrons.size() >= 1 ?
-                    product.m_validElectrons[0]->getId(
-                        electronVID_vetoTag, event.m_electronMetadata
-                    ) : DefaultValues::UndefinedFloat;
-            }
-            return DefaultValues::UndefinedFloat;
-        });
 
     // second electron VIDs
 
@@ -1844,39 +1834,9 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             }
             return DefaultValues::UndefinedFloat;
         });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idveto", [q_writeOutVIDs, electronVID_vetoTag](event_type const& event, product_type const& product) {
-            if (q_writeOutVIDs) {
-                return product.m_validElectrons.size() >= 2 ?
-                    product.m_validElectrons[1]->getId(
-                        electronVID_vetoTag, event.m_electronMetadata
-                    ) : DefaultValues::UndefinedFloat;
-            }
-            return DefaultValues::UndefinedFloat;
-        });
 
     // -- non-VID electron IDs
 
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idloose95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsLooseVbtf95Electron(
-                product.m_validElectrons[0], event, product);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idmedium95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsMediumVbtf95Electron(
-                product.m_validElectrons[0], event, product);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idtight95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsTightVbtf95Electron(
-                product.m_validElectrons[0], event, product);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e1idveto95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsVetoVbtf95Electron(
-                product.m_validElectrons[0], event, product);
-        });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "e1mvatrig", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsMVATrigElectron(product.m_validElectrons[0],
@@ -1886,26 +1846,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "e1mvanontrig", [](event_type const& event, product_type const& product) {
             return ValidElectronsProducer<ZJetTypes>::IsMVANonTrigElectron(
                 product.m_validElectrons[0], event.m_electronMetadata);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idloose95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsLooseVbtf95Electron(
-                product.m_validElectrons[1], event, product);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idmedium95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsMediumVbtf95Electron(
-                product.m_validElectrons[1], event, product);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idtight95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsTightVbtf95Electron(
-                product.m_validElectrons[1], event, product);
-        });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "e2idveto95", [](event_type const& event, product_type const& product) {
-            return ValidElectronsProducer<ZJetTypes>::IsVetoVbtf95Electron(
-                product.m_validElectrons[1], event, product);
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "e2mvatrig", [](event_type const& event, product_type const& product) {

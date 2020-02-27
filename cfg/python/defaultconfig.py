@@ -362,9 +362,9 @@ def ee(cfg, **kwargs):
         'epluspt','epluseta','eplusphi','eplusiso',
         'eminuspt', 'eminuseta', 'eminusphi', 'eminusiso',
         'e1pt', 'e1eta', 'e1phi',
-        'e1idloose', 'e1idmedium', 'e1idtight', 'e1idveto', 'e1idloose95', 'e1idmedium95', 'e1idtight95','e1idveto95',# 'e1mvanontrig', 'e1mvatrig',
+        'e1idloose', 'e1idmedium', 'e1idtight', #'e1idveto', # 'e1mvanontrig', 'e1mvatrig',
         'e2pt', 'e2eta', 'e2phi',
-        'e2idloose', 'e2idmedium', 'e2idtight', 'e2idveto', 'e2idloose95', 'e2idmedium95', 'e2idtight95','e2idveto95',# 'e2mvanontrig', 'e2mvatrig',
+        'e2idloose', 'e2idmedium', 'e2idtight', #'e2idveto', # 'e2mvanontrig', 'e2mvatrig',
         'nelectrons', 'validz',
         ]
     cfg['MinNElectrons'] = 2
