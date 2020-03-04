@@ -12,7 +12,7 @@ def config():
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts'],
-                                ['None','L1L2L3'])
+                                ['None','L1L2L3Res'])
     configtools.add_quantities(cfg, [   #'mu1IDSFWeight','mu1IsoSFWeight','mu1TrackingSFWeight','mu1TriggerSFWeight',
                                         #'mu2IDSFWeight','mu2IsoSFWeight','mu2TrackingSFWeight','mu2TriggerSFWeight',
                                         'leptonIDSFWeight','leptonIDSFWeightUp','leptonIDSFWeightDown',
@@ -41,18 +41,16 @@ def config():
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_{{ year }}'
     cfg['MuonID'] = 'tight'
-    cfg['CutMuonPtMin'] = 25.0
+    cfg['CutMuonPtMin'] = 28.0
     cfg['CutMuonEtaMax'] = 2.4
     cfg['ZMassRange'] = 20.0
-    cfg['CutLeadingJetPtMin'] = 10.0
+    cfg['CutLeadingJetPtMin'] = 20.0
     cfg['MinPUJetID'] = -0.2 
 
 #### Select Jets ######
     cfg['TaggedJets'] = 'ak{{ jet_radius }}PFJetsCHS'
 #    cfg['GenJets'] = 'ak4GenJetsNoNu'   
 #    cfg['RC'] = False
-
-#    cfg['CutLeadingJetPtMin'] = 0
 #    cfg['TypeIJetPtMin'] =0
 
 ##### LeptonSF files: #####
