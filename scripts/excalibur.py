@@ -213,20 +213,30 @@ def run_gc(config_path, output_glob, workdir_path):
     haddXrootd = False
     with open(config_path) as cfg_file:
         for line in cfg_file:
-            if 'se path =' in line and 'srm' in line and 'srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/' in line:
-                haddXrootd = True
-                srm_path = line.split(' ')[-1]
-            elif 'se path =' in line  and 'srm' in line:
-                downloadFromSE = True
+            if 'se path =' in line:
+                if 'root://' in line:
+                    haddXrootd = True
+                    wlcg_path = line.split(' ')[-1]
+                elif 'srm://' in line:
+                    downloadFromSE = True
+
+    # -- merge outputs
+
+    # measure time elapsed without merging
+    gctime = time.time() - gctime
+
+    # try remote merging via XRootD first, if requested
     if haddXrootd:
         try:
             wrapper_logger.info("Merging output files via XrootD")
 
-            subprocess.call(['hadd_xrootd.py', '-o', workdir_path + 'out.root', '-i', srm_path + "*.root"])
+            subprocess.call(['hadd_xrootd.py', '-o', workdir_path + 'out.root', '-i', wlcg_path + "*.root"])
         except Exception as err:
             print "hadd via XRootD failed"
             print err
             downloadFromSE = True
+
+    # download if remote merging via XRootD not requested (or if it failed)
     if downloadFromSE:
         try:
             subprocess.check_call(['downloadFromSE.py', config_path, '-o', output_glob, '-s'])
@@ -235,7 +245,8 @@ def run_gc(config_path, output_glob, workdir_path):
         except subprocess.CalledProcessError:
             print "downloadFromSE.py failed"
             sys.exit(1)
-    gctime = time.time() - gctime
+
+    # merge downloaded files (if no remote merging)
     if haddXrootd is not True or downloadFromSE is True:
         print output_glob
         print glob.glob(output_glob+"*.root")
@@ -246,6 +257,8 @@ def run_gc(config_path, output_glob, workdir_path):
         else:
             print "Batch job failed to produce any output (%s)" % output_glob
             sys.exit(1)
+
+    # return time taken by grid-control
     return gctime
 
 
