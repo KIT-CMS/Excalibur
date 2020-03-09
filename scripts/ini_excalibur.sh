@@ -90,7 +90,8 @@ elif [ $USER = "dsavoiu" ]; then
     #export EXCALIBUR_WORK=/storage/c/dsavoiu/excalibur_work
     export EXCALIBUR_WORK=/ceph/dsavoiu/work
     #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/dsavoiu/Excalibur"
-    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Excalibur"
+    #export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Excalibur"
+    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/dsavoiu/Excalibur"
     export HARRY_REMOTE_USER="dsavoiu"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
     if [[ $HOSTNAME = *bms* ]]; then
