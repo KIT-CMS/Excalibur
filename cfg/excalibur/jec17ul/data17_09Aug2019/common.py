@@ -1,7 +1,6 @@
 JEC_BASE='Summer19UL17'
-JEC_VERSION='V1_SimpleL1'
+JEC_VERSION='V1'
 
-#JER = 'Fall17_V2'  # set this to 'None' to turn JER smearing off
 JER = None
 
 SE_PATH_PREFIXES = dict(

@@ -1,21 +1,21 @@
+
 import configtools
 import os
 import sys
 
 # -- import common information
 sys.path.append(os.path.dirname(__file__))
-from common_simple import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
+from common import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
 
-RUN='BCDEFGH'
-CH='mm'
-JEC='{}_{}'.format(JEC_BASE, JEC_VERSION)
+RUN='BCDEF'
+CH='ee'
+JEC='{}_{}SimpleL1'.format(JEC_BASE, JEC_VERSION)
 
 
 def config():
     cfg = configtools.getConfig('mc', 2017, CH, JEC=JEC, JER=JER)
     cfg["InputFiles"].set_input(
-        #path="{}/rvoncube/Skimming/ZJet_DYJetsToLL_Summer19-madgraphMLM_mc2017_realistic_v6-v3_GT_106X_mc2017_realistic_v6/*.root".format(SE_PATH_PREFIXES['xrootd_gridka_nrg']),
-	path="/storage/gridka-nrg/mhorzela/Skimming/ZJet_DYJetsToLL_Summer19-madgraphMLM_realistic_v6-v3/job_1003_output.root"
+        path="{}/mhorzela/Skimming/ZJet_DYJetsToLL_Summer19-madgraphMLM_realistic_v6-v3/*.root".format(SE_PATH_PREFIXES["xrootd_gridka_nrg"]),
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
 
@@ -26,5 +26,10 @@ def config():
     cfg['CrossSection'] = 6077.22  # from XSDB: https://cms-gen-dev.cern.ch/xsdb/?searchQuery=DAS=DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8
 
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
+
+    cfg['ApplyElectronVID'] = True
+    cfg['ElectronVIDName'] = "Fall17-94X-V2"
+    cfg['ElectronVIDType'] = "cutbased"
+    cfg['ElectronVIDWorkingPoint'] = "tight"
 
     return cfg
