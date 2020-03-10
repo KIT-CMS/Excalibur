@@ -63,13 +63,7 @@ if [ -d "/storage/a/$USER/zjet" ]; then
 fi
 
 # Set some user specific variables
-if [ $USER = "cheidecker" ]; then
-    export EXCALIBURBRILSSH="cheideck@lxplus.cern.ch"
-    export EXCALIBUR_WORK=/portal/ekpbms3/home/cheidecker/excalibur_work
-    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/cheidecker/Excalibur"
-    export HARRY_USERPC="ekplx26.ekp.kit.edu"
-    export X509_USER_PROXY="/tmp/x509up_u12088"
-elif [ $USER = "tberger" ]; then
+if [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     export HARRY_REMOTE_USER="tberger"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
