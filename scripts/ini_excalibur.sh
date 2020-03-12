@@ -127,7 +127,7 @@ elif [ $USER = "tfesenbecker" ]; then
 
 fi
 
-source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
+# source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
 
 
