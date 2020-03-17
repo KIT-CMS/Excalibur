@@ -47,7 +47,7 @@ def getBaseConfig(tagged=False, **kwargs):
                     'ZJetTreeConsumer',  # writes out ntuples into root file
                     'cutflow_histogram',  # writes out cutflow into root file
                     ],
-                'EventWeight': 'eventWeight',  # new weight that sums up all other weights, 
+                'EventWeight': 'eventWeight',  # new weight that sums up all other weights,
                 #TODO: unify weight name and remove other appearances
                 'Processors': [], # Overwritten/cleaned by expand function, set cuts in data.py or mc.py
                 'Quantities': [
@@ -131,7 +131,7 @@ def data(cfg, **kwargs):
         # insert smearer and sorter after the matching producer
         cfg['Processors'].insert(cfg['Processors'].index('producer:JetSorter'), 'producer:JERSmearer',)
 
-        
+
 def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
     cfg['Processors'] += [
@@ -198,7 +198,7 @@ def mc(cfg, **kwargs):
 
     # cfg['GenZMassRange']= 20. # not used by ValidGenZFilter, TODO: Remove this and use ZMassRange
     # cfg['DeltaRRadiationJet'] = 1  # TODO: Usage?
-    
+
     cfg['CutAlphaMax'] = 0.3  # TODO: Move to more general position
     cfg['CutBetaMax'] = 0.1  # TODO: Move to more general position if necessary
     cfg['GenJets'] = 'ak4GenJetsNoNu'
@@ -224,7 +224,7 @@ def mc(cfg, **kwargs):
         # insert smearer and sorter after the matching producer
         cfg['Processors'][cfg['Processors'].index("producer:RecoJetGenJetMatchingProducer")+1:1] = ["producer:JERSmearer", "producer:JetSorter"]
 
-        
+
 def _2016(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
     cfg['CutJetID'] = 'loose'  # choose event-based JetID selection
@@ -247,7 +247,7 @@ def _2016(cfg, **kwargs):
     # TODO: Use official CERT naming
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_BCDEFGH_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
 
-    
+
 def _2017(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
@@ -276,7 +276,7 @@ def _2018(cfg, **kwargs):
 
 
 def data_2016(cfg, **kwargs):
-    _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (interval of validity) 
+    _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (interval of validity)
     # (for selecting the right jet eta-phi cleaning file)
 
     # object-based eta-phi cleaning (recommended jul. 2018)
@@ -286,7 +286,7 @@ def data_2016(cfg, **kwargs):
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
-    
+
 def data_2017(cfg, **kwargs):
     # -- modifications for JEC V10 (jun. 2018 JERC)
 
@@ -308,7 +308,7 @@ def data_2017(cfg, **kwargs):
 def data_2018(cfg, **kwargs):
     # no data customization for 2018 (yet)
     pass
-    
+
 def mc_2016(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
     pass
@@ -317,7 +317,7 @@ def mc_2016(cfg, **kwargs):
 def mc_2017(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
     pass
-    
+
 def mc_2018(cfg, **kwargs):
     # no MC customization for 2018 (yet)
     pass
@@ -378,7 +378,7 @@ def ee(cfg, **kwargs):
     cfg['CutAlphaMax'] = 0.3
     cfg['CutZPtMin'] = 30.0
 
-    
+
 def mcee(cfg, **kwargs):
     cfg['Pipelines']['default']['Quantities'] += [
         'ngenelectrons',
@@ -416,7 +416,7 @@ def mcee(cfg, **kwargs):
             'filter:GenZPtCut',
             ]
 
-    
+
 def _2016ee(cfg, **kwargs):
     # -- ZJetValidElectronsProducer
     cfg['ElectronID'] = "user"
@@ -424,12 +424,12 @@ def _2016ee(cfg, **kwargs):
     cfg['ElectronVIDName'] = "Summer16-80X-V1"
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
-    
+
     # -- double electron triggers:
     cfg['HltPaths']= [
-        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 
-        'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ', 
-        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL', 
+        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
+        'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
+        'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
         'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL']
 
 
@@ -451,7 +451,7 @@ def _2018ee(cfg, **kwargs):
     _2017ee(cfg, **kwargs)  # use 2017 as base
     cfg['ElectronVIDName'] = "Fall17-94X-V1"
 
-    
+
 def data_2016ee(cfg, **kwargs):
     pass
 
@@ -467,7 +467,7 @@ def mc_2016ee(cfg, **kwargs):
 def mc_2017ee(cfg, **kwargs):
     pass
 
-    
+
 def mm(cfg, **kwargs):
     cfg['Muons'] = 'muons'
     # The order of these producers is important!
@@ -574,8 +574,6 @@ def mcmm(cfg, **kwargs):
 
 def _2016mm(cfg, **kwargs):
     cfg['HltPaths'] = ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
-    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/')
-    cfg['MuonEnergyCorrection'] = 'RoccoR2016'
 
 
 def _2017mm(cfg, **kwargs):
