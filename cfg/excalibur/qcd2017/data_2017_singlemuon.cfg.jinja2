@@ -6,9 +6,7 @@ JEC = '{{ jec }}'
 def config():
     cfg = configtools.getConfig('data', {{ year }}, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        bmspath1='root://cmsxrootd-redirectors.gridka.de//store/user/mschnepf/Skimming/{{ dataset }}_{{ skimming_run }}/*.root',
-#        bmspathB1='file:///portal/ekpbms1/home/mschnepf/QCD/excalibur/CMSSW_10_6_5/src/Excalibur/job_0_output.root',
-
+        bmspath='{{ dataset_files }}',
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts'],
@@ -43,6 +41,8 @@ def config():
     cfg['MuonID'] = 'tight'
     cfg['CutMuonPtMin'] = 28.0
     cfg['CutMuonEtaMax'] = 2.4
+    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/')
+    cfg['MuonEnergyCorrection'] = 'RoccoR{{ year }}'
     cfg['ZMassRange'] = 20.0
     cfg['CutLeadingJetPtMin'] = 20.0
     cfg['MinPUJetID'] = -0.2 
@@ -56,8 +56,8 @@ def config():
 ##### LeptonSF files: #####
     cfg['LeptonSFVariation'] = True
     cfg['LeptonSFReversedAxes'] = True
-    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/ID_EfficienciesAndSF_BCDEF_Nov17Nov2017.root")
-    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/Iso_EfficienciesAndSF_BCDEF_Nov17Nov2017.root")
+    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/ID_EfficienciesAndSF_BCDEF_Data_Run17Nov2017.root")
+    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/Iso_EfficienciesAndSF_BCDEF_Data_Run17Nov2017.root")
     cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/Trigger_EfficienciesAndSF_BCDEF_Nov17Nov2017.root")
 #    cfg['LeptonTrackingSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Tracking_EfficienciesAndSF_BCDEFGH.root")
     cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_pt_abseta'
