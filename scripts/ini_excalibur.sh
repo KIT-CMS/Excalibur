@@ -108,7 +108,7 @@ elif [ $USER = "msauter" ]; then
 elif [ $USER = "mschnepf" ]; then
     echo "Profil: mschnepf"
     export EXCALIBUR_WORK=/ceph/mschnepf/excalibur_work/
-    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/mschnepf/Excalibur"
+    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/mschnepf/Excalibur"
     GCPATH=/home/mschnepf/htcondor/grid-control
     export PATH=$PATH:$GCPATH:$GCPATH/scripts
 
