@@ -46,8 +46,8 @@ def config():
     cfg['MuonID'] = 'tight'
     cfg['CutMuonPtMin'] = 28.0
     cfg['CutMuonEtaMax'] = 2.4
-    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/')
-    cfg['MuonEnergyCorrection'] = 'RoccoR{{ year }}'
+    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017.txt')
+    cfg['MuonEnergyCorrection'] = 'rochcorr2017'
     cfg['ZMassRange'] = 20.0
     cfg['CutLeadingJetPtMin'] = 20.0
     cfg['MinPUJetID'] = -0.2 
