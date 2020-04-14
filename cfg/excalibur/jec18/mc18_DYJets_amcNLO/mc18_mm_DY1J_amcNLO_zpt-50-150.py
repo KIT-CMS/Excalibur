@@ -30,6 +30,8 @@ def config():
     cfg['JetIDVersion'] = 2018  # for object-based JetID
     cfg['CutJetIDVersion'] = 2018  # for event-based JetID
 
+    cfg['PUJetIDModuleName'] = 'pileupJetId'
+
     return cfg
 
 # python getGeneratorWeight.py -n NONE /storage/gridka-nrg/cheideck/Skimming/ZJet_DY1JetsToLL_Autumn18_LHEZpT_50-150_amcnloFXFX-pythia8_upgrade2018_realistic_v15-v1/*.root

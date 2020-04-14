@@ -23,4 +23,6 @@ def config():
     cfg['ProvideL2ResidualCorrections'] = True
     cfg = configtools.expand(cfg, ['basiccuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
+    cfg['PUJetIDModuleName'] = 'pileupJetId'
+
     return cfg
