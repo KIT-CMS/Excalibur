@@ -107,4 +107,8 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, JetEtaPhiCleanerFile)
     IMPL_SETTING_STRINGLIST(JetEtaPhiCleanerHistogramNames)
     IMPL_SETTING(double, JetEtaPhiCleanerHistogramValueMaxValid)
+
+    //ZJetPUWeightProducer
+    IMPL_SETTING_STRINGLIST_DEFAULT(ZJetPUWeightFiles, {})
+    IMPL_SETTING_STRINGLIST_DEFAULT(ZJetPUWeightSuffixes, {})
 };

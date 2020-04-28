@@ -19,6 +19,7 @@
 #include "Excalibur/Compile/interface/Producers/ZJetDressedMuonsProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetGenParticleProducer.h"
 #include "Excalibur/Compile/interface/Producers/ZJetPartonProducer.h"
+#include "Excalibur/Compile/interface/Producers/ZJetPUWeightProducer.h"
 // filters
 #include "Excalibur/Compile/interface/Filters/ZJetCutsFilter.h"
 
@@ -97,6 +98,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new GenZeemmProducer();
     else if(id == ZJetGenMuonProducer().GetProducerId())
         return new ZJetGenMuonProducer();
+    else if(id == ZJetPUWeightProducer().GetProducerId())
+        return new ZJetPUWeightProducer();
     else
         return KappaFactory::createProducer(id);
 }
