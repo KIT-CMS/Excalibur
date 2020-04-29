@@ -38,6 +38,11 @@ def config():
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
+    cfg['EnableTypeIModification'] = False
+    
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17ul/Summer19UL17_V1/hotjets-UL17.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17"]
+
     return cfg
 """
 
