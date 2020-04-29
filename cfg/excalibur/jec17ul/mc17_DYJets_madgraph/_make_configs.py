@@ -15,9 +15,9 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from common import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
 
-RUN='{run}'
+RUNS={runs}
 CH='{ch}'
-JEC='{{}}_{{}}_{jecv_suffix}'.format(JEC_BASE, JEC_VERSION)
+JEC='{{0}}_{{1}}_{jecv_suffix}'.format(JEC_BASE, JEC_VERSION)
 
 
 def config():
@@ -27,8 +27,10 @@ def config():
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
 
+    cfg['Pipelines']['default']['Quantities'] += ['puWeight{{}}'.format(runperiod) for runperiod in {runs}]
     cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
-    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/mc_weights/mc17ul_DYJets_madgraph_data_15May18/PUWeights_{run}_15May2018_DYJetsToLL_madgraphMLM.root')
+
+    cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/mc_weights/mc17ul_DYJets_madgraph_data_15May18/PUWeights_' + ''.join({runs}) + '_15May2018_DYJetsToLL_madgraphMLM.root')
     cfg['NumberGeneratedEvents'] = 101077576
     cfg['GeneratorWeight'] = 1.0
     cfg['CrossSection'] = 6077.22  # from XSDB: https://cms-gen-dev.cern.ch/xsdb/?searchQuery=DAS=DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8
@@ -40,28 +42,33 @@ def config():
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
+    cfg['Processors'] += ['producer:ZJetPUWeightProducer']
+    cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17_DYJets_madgraph/PUWeights_{{}}_17Nov2017_DY1JetsToLL_Fall17-madgraphMLM_realistic_v10-v1.root'.format(runperiod)) for runperiod in {runs}]
+    cfg['ZJetPUWeightSuffixes'] = ['{{}}'.format(runperiod) for runperiod in {runs}]
+
     return cfg
 """
 
 def make():
-    for jecv_suffix in ('SimpleL1', 'ComplexL1'):
-      for ch in ("mm", "ee"):
-        for run in ('B', 'C', 'D', 'E', 'F'):
-          _cfg = TEMPLATE.format(
-            run=run,
-            jecv_suffix=jecv_suffix,
-            ch=ch,
-            input_path=INPUT_TEMPLATE.format(
-              userpath='mhorzela/Skimming',
-            ),
-          )
-          _fname = "mc17_{ch}_{run}_DYJets_Madgraph_JEC{jecv_suffix}.py".format(
-            jecv_suffix=jecv_suffix,
-            ch=ch,  
-            run=run,          
-          )
-          with open(_fname, 'w') as _f:
-            _f.write(_cfg)
+  runs = ['B','C','D','E','F']
+
+  for jecv_suffix in ('SimpleL1', 'ComplexL1'):
+    for ch in ("mm", "ee"):
+      _cfg = TEMPLATE.format(
+        runs=runs,
+        jecv_suffix=jecv_suffix,
+        ch=ch,
+        input_path=INPUT_TEMPLATE.format(
+          userpath='mhorzela/Skimming',
+        ),
+      )
+      _fname = "mc17_{ch}_{runs}_DYJets_Madgraph_JEC{jecv_suffix}.py".format(
+        jecv_suffix=jecv_suffix,
+        ch=ch,  
+        runs=''.join(runs),          
+      )
+      with open(_fname, 'w') as _f:
+        _f.write(_cfg)
 
 if __name__ == '__main__':    
     make()
