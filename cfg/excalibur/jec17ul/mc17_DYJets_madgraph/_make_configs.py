@@ -28,7 +28,7 @@ def config():
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
 
     cfg['Pipelines']['default']['Quantities'] += ['puWeight{{}}'.format(runperiod) for runperiod in {runs}]
-    
+    cfg['Pipelines']['default']['Quantities'] += ['genWeight_{{}}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
     cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
 
     cfg['MPFSplittingJetPtMin'] = 15.
@@ -50,16 +50,21 @@ def config():
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17_DYJets_madgraph/PUWeights_{{}}_17Nov2017_DY1JetsToLL_Fall17-madgraphMLM_realistic_v10-v1.root'.format(runperiod)) for runperiod in {runs}]
     cfg['ZJetPUWeightSuffixes'] = ['{{}}'.format(runperiod) for runperiod in {runs}]
 
+    cfg['Processors'] += ['producer:ZJetGenWeightProducer']
+    cfg['ZJetGenWeightNames'] = {lheWeightNames}
+
     return cfg
 """
 
 def make():
   runs = ['B','C','D','E','F']
+  lheWeightNames = ['nominal','isrDefup','isrDefdown','fsrDefup','fsrDefdown']
 
   for jecv_suffix in ('SimpleL1', 'ComplexL1'):
     for ch in ("mm", "ee"):
       _cfg = TEMPLATE.format(
         runs=runs,
+        lheWeightNames=lheWeightNames,
         jecv_suffix=jecv_suffix,
         ch=ch,
         input_path=INPUT_TEMPLATE.format(
