@@ -111,4 +111,7 @@ class ZJetSettings : public KappaSettings
     //ZJetPUWeightProducer
     IMPL_SETTING_STRINGLIST_DEFAULT(ZJetPUWeightFiles, {})
     IMPL_SETTING_STRINGLIST_DEFAULT(ZJetPUWeightSuffixes, {})
+
+    //ZJetGENWeightProducer
+    IMPL_SETTING_STRINGLIST_DEFAULT(ZJetGenWeightNames, {})
 };
