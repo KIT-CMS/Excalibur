@@ -196,6 +196,9 @@ def mc(cfg, **kwargs):
     cfg['CrossSection'] = -1  # need to be set in individual config file
     cfg['BaseWeight'] =   1000  # pb^-1 -> fb^-1, default unit: fb^-1
 
+    # ZJetGenWeightProducer
+    cfg['GenEventInfoMetadata'] = 'genEventInfoMetadata'
+
     # cfg['GenZMassRange']= 20. # not used by ValidGenZFilter, TODO: Remove this and use ZMassRange
     # cfg['DeltaRRadiationJet'] = 1  # TODO: Usage?
 
