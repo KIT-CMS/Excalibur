@@ -205,7 +205,7 @@ def mc(cfg, **kwargs):
 
     # ZJetGenWeightProducer
     cfg['GenEventInfoMetadata'] = 'genEventInfoMetadata'
-    cfg['ZJetGenWeightNames'] = {lheWeightNames}
+    cfg['ZJetGenWeightNames'] = lheWeightNames
 
     # cfg['GenZMassRange']= 20. # not used by ValidGenZFilter, TODO: Remove this and use ZMassRange
     # cfg['DeltaRRadiationJet'] = 1  # TODO: Usage?
