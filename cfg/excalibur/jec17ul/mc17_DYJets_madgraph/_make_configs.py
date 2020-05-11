@@ -50,7 +50,6 @@ def config():
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17_DYJets_madgraph/PUWeights_{{}}_17Nov2017_DY1JetsToLL_Fall17-madgraphMLM_realistic_v10-v1.root'.format(runperiod)) for runperiod in {runs}]
     cfg['ZJetPUWeightSuffixes'] = ['{{}}'.format(runperiod) for runperiod in {runs}]
 
-    cfg['Processors'] += ['producer:ZJetGenWeightProducer']
     cfg['ZJetGenWeightNames'] = {lheWeightNames}
 
     return cfg
