@@ -55,8 +55,8 @@ void ZJetPUWeightProducer::Produce(ZJetEvent const& event, ZJetProduct& product,
     {
         unsigned int puBin = static_cast<unsigned int>(static_cast<double>(event.m_genEventInfo->nPUMean) * m_bins[iPUweight]);
         if (puBin < m_pileupWeights[iPUweight].size())
-            product.m_weights[m_pileupWeightNames[iPUweight]] = m_pileupWeights[iPUweight].at(puBin);
+            product.m_optionalWeights[m_pileupWeightNames[iPUweight]] = m_pileupWeights[iPUweight].at(puBin);
         else
-            product.m_weights[m_pileupWeightNames[iPUweight]] = 1.0;
+            product.m_optionalWeights[m_pileupWeightNames[iPUweight]] = 1.0;
     }
 }
