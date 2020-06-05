@@ -17,7 +17,8 @@ from common import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
 
 RUNS={runs}
 CH='{ch}'
-JEC='{{0}}_{{1}}_{jecv_suffix}'.format(JEC_BASE, JEC_VERSION)
+#JEC='{{0}}_{{1}}_{jecv_suffix}'.format(JEC_BASE, JEC_VERSION)
+JEC='{{0}}_{{1}}'.format(JEC_BASE, JEC_VERSION)
 
 
 def config():
@@ -29,7 +30,7 @@ def config():
 
     cfg['Pipelines']['default']['Quantities'] += ['puWeight{{}}'.format(runperiod) for runperiod in {runs}]
     cfg['Pipelines']['default']['Quantities'] += ['genWeight_{{}}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
-    cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
+    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2L3Res'])
 
     cfg['MPFSplittingJetPtMin'] = 15.
     cfg['JNPFJetPtMin'] = 15.
@@ -39,12 +40,18 @@ def config():
     cfg['GeneratorWeight'] = 1.0
     cfg['CrossSection'] = 6077.22  # from XSDB: https://cms-gen-dev.cern.ch/xsdb/?searchQuery=DAS=DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8
 
+    cfg['CutBackToBack'] = 0.44
+
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
     cfg['ApplyElectronVID'] = True
     cfg['ElectronVIDName'] = "Fall17-94X-V2"
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
+
+    cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
+    cfg['CutJetIDVersion'] = '2017UL'  # for event-based JetID
+    cfg['CutJetIDFirstNJets'] = 2
 
     cfg['Processors'] += ['producer:ZJetPUWeightProducer']
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17_DYJets_madgraph/PUWeights_{{}}_17Nov2017_DY1JetsToLL_Fall17-madgraphMLM_realistic_v10-v1.root'.format(runperiod)) for runperiod in {runs}]
@@ -59,8 +66,9 @@ def make():
   runs = ['B','C','D','E','F']
   lheWeightNames = ['nominal','isrDefup','isrDefdown','fsrDefup','fsrDefdown']
 
-  for jecv_suffix in ('SimpleL1', 'ComplexL1'):
-    for ch in ("mm", "ee"):
+  #for jecv_suffix in ['SimpleL1', 'ComplexL1']:
+  for jecv_suffix in ['SimpleL1']:
+    for ch in ["mm", "ee"]:
       _cfg = TEMPLATE.format(
         runs=runs,
         lheWeightNames=lheWeightNames,
