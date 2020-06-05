@@ -17,7 +17,9 @@ from common import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
 
 RUN='{run}'
 CH='{ch}'
-JEC='{{}}_Run{{}}_{{}}_{jecv_suffix}'.format(JEC_BASE, RUN, JEC_VERSION)
+#JEC='{{0}}_Run{{1}}_{{2}}_{jecv_suffix}'.format(JEC_BASE, RUN, JEC_VERSION)
+JEC='{{0}}_Run{{1}}_{{2}}'.format(JEC_BASE, RUN, JEC_VERSION)
+
 
 
 def config():
@@ -27,7 +29,9 @@ def config():
     )
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Collisions17/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt')]
 
-    cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res'])
+    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
+
+    cfg['CutBackToBack'] = 0.44
 
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
@@ -38,6 +42,10 @@ def config():
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
+    cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
+    cfg['CutJetIDVersion'] = 'UL2017'  # for event-based JetID
+    cfg['CutJetIDFirstNJets'] = 2
+
     cfg['EnableTypeIModification'] = False
     
     cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17ul/Summer19UL17_V1/hotjets-UL17.root")
@@ -47,9 +55,9 @@ def config():
 """
 
 def make():
-    for jecv_suffix in ('SimpleL1', 'ComplexL1'):
-      for ch in ("mm", "ee"):
-        for run in ('B', 'C', 'D', 'E', 'F'):
+    for jecv_suffix in ['SimpleL1']:
+      for ch in ["mm", "ee"]:
+        for run in ['B', 'C', 'D', 'E', 'F']:
 
           _cfg = TEMPLATE.format(
             run=run,
