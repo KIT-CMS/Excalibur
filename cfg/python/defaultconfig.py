@@ -142,7 +142,7 @@ def mc(cfg, **kwargs):
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
         'producer:ZJetTrueGenMuonsProducer',
-        'producer:ZJetGenWeightProducer'
+        #'producer:ZJetGenWeightProducer'
         ]
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
@@ -172,8 +172,8 @@ def mc(cfg, **kwargs):
         'numberGeneratedEventsWeight','crossSectionPerEventWeight','generatorWeight','puWeight',
         ]
     
-    lheWeightNames = ['nominal','isrDefup','isrDefdown','fsrDefup','fsrDefdown']
-    cfg['Pipelines']['default']['Quantities'] += ['genWeight_{}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
+    #lheWeightNames = ['nominal','isrDefup','isrDefdown','fsrDefup','fsrDefdown']
+    #cfg['Pipelines']['default']['Quantities'] += ['genWeight_{}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
 
     # RecoJetGenPartonMatchingProducer Settings
     cfg['DeltaRMatchingRecoJetGenParticle'] = 0.3
@@ -202,7 +202,7 @@ def mc(cfg, **kwargs):
 
     # ZJetGenWeightProducer
     cfg['GenEventInfoMetadata'] = 'genEventInfoMetadata'
-    cfg['ZJetGenWeightNames'] = lheWeightNames
+    #cfg['ZJetGenWeightNames'] = lheWeightNames
 
     # cfg['GenZMassRange']= 20. # not used by ValidGenZFilter, TODO: Remove this and use ZMassRange
     # cfg['DeltaRRadiationJet'] = 1  # TODO: Usage?
