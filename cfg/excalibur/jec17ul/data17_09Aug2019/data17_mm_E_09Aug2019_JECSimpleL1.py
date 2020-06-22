@@ -9,7 +9,9 @@ from common import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
 
 RUN='E'
 CH='mm'
-JEC='{}_Run{}_{}_SimpleL1'.format(JEC_BASE, RUN, JEC_VERSION)
+#JEC='{0}_Run{1}_{2}_SimpleL1'.format(JEC_BASE, RUN, JEC_VERSION)
+JEC='{0}_Run{1}_{2}'.format(JEC_BASE, RUN, JEC_VERSION)
+
 
 
 def config():
@@ -17,9 +19,12 @@ def config():
     cfg["InputFiles"].set_input(
         path="{}/mhorzela/Skimming/ZJet_DoubleMuon_Run2017E_09Aug2019_UL2017-v1/*.root".format(SE_PATH_PREFIXES["xrootd_gridka_nrg"]),
     )
-    cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
+    cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Collisions17/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt')]
 
-    cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res'])
+    cfg['Pipelines']['default']['Quantities'] += ['jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf']
+    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
+
+    cfg['CutBackToBack'] = 0.44
 
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
@@ -29,5 +34,14 @@ def config():
     cfg['ElectronVIDName'] = "Fall17-94X-V2"
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
+
+    cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
+    cfg['CutJetIDVersion'] = 'UL2017'  # for event-based JetID
+    cfg['CutJetIDFirstNJets'] = 2
+
+    cfg['EnableTypeIModification'] = False
+    
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17ul/Summer19UL17_V1/hotjets-UL17.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17"]
 
     return cfg
