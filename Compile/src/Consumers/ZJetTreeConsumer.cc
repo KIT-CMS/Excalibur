@@ -869,10 +869,34 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "mpf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.GetMPF(product.GetMet(settings, event));
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mpflead", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetMPFlead(settings, event);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mpfjets", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetMPFjets(settings, event);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "mpfunclustered", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetMPFunclustered(settings, event);
+        });
     
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "rawmpf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.GetMPF(product.GetMet(settings, event, "None"));
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "rawmpflead", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetMPFlead(settings, event, "None");
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "rawmpfjets", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetMPFjets(settings, event, "None");
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "rawmpfunclustered", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetMPFunclustered(settings, event, "None");
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mettype1pt", [settings](ZJetEvent const& event, ZJetProduct const& product) {

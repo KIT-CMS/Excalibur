@@ -313,6 +313,66 @@ class ZJetProduct : public KappaProduct
         return 1.0 + scalPtEt / scalPtSq;
     }
 
+    // Calculate splitted MPFs
+    // MPF_lead
+    double GetMPFlead(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+    {
+        if(GetValidJetCount(settings, event, corrLevel) < 1) {
+            return 0;
+        }
+        else {
+            KLV* leadingjet = GetValidJet(settings, event, 0, corrLevel);
+            if(leadingjet->p4.Pt() < settings.GetMPFSplittingJetPtMin()) return 0;
+
+            double scalPtEt = m_z.p4.Px() * leadingjet->p4.Px() + m_z.p4.Py() * leadingjet->p4.Py();
+            double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
+            return - scalPtEt / scalPtSq;
+        }
+    }
+
+    double GetMPFlead(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetMPFlead(settings, event, settings.GetCorrectionLevel());
+    }
+
+    // MPF_jets
+    double GetMPFjets(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+    {
+        if(GetValidJetCount(settings, event, corrLevel) < 2) {
+            return 0;
+        }
+        else
+        {
+            double scalPtEt = 0;
+            double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
+            for(uint index = 1; index < GetValidJetCount(settings, event, corrLevel); index++)
+            {
+                KLV* jet = GetValidJet(settings, event, index, corrLevel);
+                if(jet->p4.Pt() < settings.GetMPFSplittingJetPtMin()) break;
+
+                scalPtEt += m_z.p4.Px() * jet->p4.Px() + m_z.p4.Py() * jet->p4.Py();
+            }
+            return - scalPtEt / scalPtSq;
+        }
+    }
+
+    double GetMPFjets(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetMPFjets(settings, event, settings.GetCorrectionLevel());
+    }
+
+    // MPF_unclustered
+    double GetMPFunclustered(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+    {
+        //TODO: #57 implement independent calculation of the unclustered energy contribution
+        return GetMPF(GetMet(settings, event, corrLevel)) - GetMPFlead(settings, event, corrLevel) - GetMPFjets(settings, event, corrLevel);
+    }
+
+    double GetMPFunclustered(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetMPFunclustered(settings, event, settings.GetCorrectionLevel());
+    }
+
     // Calculate RPF
     double GetRPF(const KLV* jetRecoil) const
     {
