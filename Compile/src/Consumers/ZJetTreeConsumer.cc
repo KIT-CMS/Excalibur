@@ -548,12 +548,6 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             return jetRecoil ? product.GetJetRecoil(settings, event)->p4.Eta()
                              : DefaultValues::UndefinedFloat;
         });
-    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
-        "jetrpf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
-            const KLV* jetRecoil = product.GetJetRecoil(settings, event);
-            return jetRecoil ? product.GetRPF(jetRecoil)
-                             : DefaultValues::UndefinedFloat;
-        });
 
     // Gen jets
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
