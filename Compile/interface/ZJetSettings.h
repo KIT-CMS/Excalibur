@@ -22,8 +22,10 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(float, TypeIModExcludeJetAbsEtaMin, 0.0)
     IMPL_SETTING_DEFAULT(float, TypeIModExcludeJetAbsEtaMax, 0.0)
 
-    // MPF splitting for bias studies (recommended march 5th for UL2017 JECs)
+    // MPF splitting for bias studies (recommended march 5th, 2020 for UL2017 JECs)
     IMPL_SETTING(float, MPFSplittingJetPtMin)
+    // JNPF (recommended on mail june 26th, 2020 for UL2017 JECs)
+    IMPL_SETTING(float, JNPFJetPtMin)
 
     // JetRecoilProducer
     IMPL_SETTING(float, JetRecoilMinPtThreshold)

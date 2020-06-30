@@ -308,9 +308,7 @@ class ZJetProduct : public KappaProduct
     // Calculate MPF
     double GetMPF(const KLV* met) const
     {
-        double scalPtEt = m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
-        double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
-        return 1.0 + scalPtEt / scalPtSq;
+        return 1.0 + GetTransverseProjectionFraction(&met->p4, &m_z.p4);
     }
 
     // Calculate splitted MPFs
@@ -324,9 +322,7 @@ class ZJetProduct : public KappaProduct
             KLV* leadingjet = GetValidJet(settings, event, 0, corrLevel);
             if(leadingjet->p4.Pt() < settings.GetMPFSplittingJetPtMin()) return 0;
 
-            double scalPtEt = m_z.p4.Px() * leadingjet->p4.Px() + m_z.p4.Py() * leadingjet->p4.Py();
-            double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
-            return - scalPtEt / scalPtSq;
+            return (-1.) * GetTransverseProjectionFraction(&leadingjet->p4, &m_z.p4);
         }
     }
 
@@ -343,16 +339,15 @@ class ZJetProduct : public KappaProduct
         }
         else
         {
-            double scalPtEt = 0;
-            double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
+            RMFLV jetcontrib;
             for(uint index = 1; index < GetValidJetCount(settings, event, corrLevel); index++)
             {
                 KLV* jet = GetValidJet(settings, event, index, corrLevel);
                 if(jet->p4.Pt() < settings.GetMPFSplittingJetPtMin()) break;
 
-                scalPtEt += m_z.p4.Px() * jet->p4.Px() + m_z.p4.Py() * jet->p4.Py();
+                jetcontrib += jet->p4;
             }
-            return - scalPtEt / scalPtSq;
+            return (-1.) * GetTransverseProjectionFraction(&jetcontrib, &m_z.p4);
         }
     }
 
@@ -374,10 +369,10 @@ class ZJetProduct : public KappaProduct
     }
 
     // Helper method for MPF
-    double GetNegativeTransverseProjectionFraction(const KLV* klvProj, const KLV* klvRef) {
-        double scalPtEt = klvRef->p4.Px() * klvProj->p4.Px() + klvRef->p4.Py() * klvProj->p4.Py();
-        double scalPtSq = klvRef->p4.Px() * klvRef->p4.Px()  + klvRef->p4.Py() * klvRef->p4.Py();
-        return -scalPtEt / scalPtSq;
+    static double GetTransverseProjectionFraction(const RMFLV* lvProj, const RMFLV* lvRef) {
+        double scalPtEt = lvRef->Px() * lvProj->Px() + lvRef->Py() * lvProj->Py();
+        double scalPtSq = lvRef->Px() * lvRef->Px()  + lvRef->Py() * lvRef->Py();
+        return scalPtEt / scalPtSq;
     }
 
     // Calculate JNPF
@@ -389,9 +384,10 @@ class ZJetProduct : public KappaProduct
             double scalPtEt = 0;
             double scalPtSqjet = 0;
             KLV* met = GetMet(settings, event, corrLevel);
-            for(uint index = 1; index < GetValidJetCount(settings, event, corrLevel); index++)
+            for(uint index = 0; index < GetValidJetCount(settings, event, corrLevel); index++)
             {    
                 KLV* jet = GetValidJet(settings, event, index, corrLevel);
+                if(jet->p4.Pt() < settings.GetJNPFJetPtMin()) break;
                 scalPtEt += jet->p4.Px() * met->p4.Px() + jet->p4.Py() * met->p4.Py() + jet->p4.Pz() * met->p4.Pz();
                 scalPtSqjet += jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py() + jet->p4.Pz() * jet->p4.Pz();
             }
