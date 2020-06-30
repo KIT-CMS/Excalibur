@@ -373,12 +373,15 @@ class ZJetProduct : public KappaProduct
         return GetMPFunclustered(settings, event, settings.GetCorrectionLevel());
     }
 
-    // Calculate RPF
+    // Helper method for MPF
     double GetNegativeTransverseProjectionFraction(const KLV* klvProj, const KLV* klvRef) {
         double scalPtEt = klvRef->p4.Px() * klvProj->p4.Px() + klvRef->p4.Py() * klvProj->p4.Py();
         double scalPtSq = klvRef->p4.Px() * klvRef->p4.Px()  + klvRef->p4.Py() * klvRef->p4.Py();
         return -scalPtEt / scalPtSq
     }
+
+    // Calculate RPF
+    double GetRPF(const KLV* jetRecoil) const
     {
         double scalPtEt = m_z.p4.Px() * jetRecoil->p4.Px() + m_z.p4.Py() * jetRecoil->p4.Py();
         double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
