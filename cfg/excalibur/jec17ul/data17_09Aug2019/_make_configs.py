@@ -29,6 +29,9 @@ def config():
 
     cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res'])
 
+    cfg['MPFSplittingJetPtMin'] = 15.
+    cfg['JNPFJetPtMin'] = 15.
+
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
     cfg['ProvideL2ResidualCorrections'] = True
