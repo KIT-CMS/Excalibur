@@ -388,10 +388,10 @@ class ZJetProduct : public KappaProduct
             {    
                 KLV* jet = GetValidJet(settings, event, index, corrLevel);
                 if(jet->p4.Pt() < settings.GetJNPFJetPtMin()) break;
-                scalPtEt += jet->p4.Px() * met->p4.Px() + jet->p4.Py() * met->p4.Py() + jet->p4.Pz() * met->p4.Pz();
-                scalPtSqjet += jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py() + jet->p4.Pz() * jet->p4.Pz();
+                scalPtEt += jet->p4.Px() * met->p4.Px() + jet->p4.Py() * met->p4.Py();
+                scalPtSqjet += jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py();
             }
-            double scalPtSqmet = met->p4.Px() * met->p4.Px()  + met->p4.Py() * met->p4.Py() + met->p4.Pz() * met->p4.Pz();
+            double scalPtSqmet = met->p4.Px() * met->p4.Px()  + met->p4.Py() * met->p4.Py();
 
             if(scalPtSqjet == 0 || scalPtSqmet == 0) return DefaultValues::UndefinedDouble;
             return scalPtEt / (sqrt(scalPtSqjet) * sqrt(scalPtSqmet));
