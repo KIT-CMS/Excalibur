@@ -25,6 +25,8 @@ def getBaseConfig(tagged=False, **kwargs):
         'TypeIJetPtMin': 15.,
         'EnableMetPhiCorrection': False,
         'MetPhiCorrectionParameters': [], # Please set this later depending on input type
+        # MPF contribution splitting
+        'MPFSplittingJetPtMin': 15.,
         # JetRecoilProducer Settings
         'JetRecoilMinPtThreshold': 15.,  # currently not in use
         # Valid Jet Selection
