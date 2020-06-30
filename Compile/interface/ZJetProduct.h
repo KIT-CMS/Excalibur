@@ -380,6 +380,33 @@ class ZJetProduct : public KappaProduct
         return -scalPtEt / scalPtSq
     }
 
+    // Calculate JNPF
+    double GetJNPF(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+    {
+        if(GetValidJetCount(settings, event, corrLevel) < 1) return DefaultValues::UndefinedDouble;
+        else 
+        {
+            double scalPtEt = 0;
+            double scalPtSqjet = 0;
+            KLV* met = GetMet(settings, event, corrLevel);
+            for(uint index = 1; index < GetValidJetCount(settings, event, corrLevel); index++)
+            {    
+                KLV* jet = GetValidJet(settings, event, index, corrLevel);
+                scalPtEt += jet->p4.Px() * met->p4.Px() + jet->p4.Py() * met->p4.Py() + jet->p4.Pz() * met->p4.Pz();
+                scalPtSqjet += jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py() + jet->p4.Pz() * jet->p4.Pz();
+            }
+            double scalPtSqmet = met->p4.Px() * met->p4.Px()  + met->p4.Py() * met->p4.Py() + met->p4.Pz() * met->p4.Pz();
+
+            if(scalPtSqjet == 0 || scalPtSqmet == 0) return DefaultValues::UndefinedDouble;
+            return scalPtEt / (sqrt(scalPtSqjet) * sqrt(scalPtSqmet));
+        }
+    }
+
+    double GetJNPF(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetJNPF(settings, event, settings.GetCorrectionLevel());
+    }
+
     // Calculate RPF
     double GetRPF(const KLV* jetRecoil) const
     {

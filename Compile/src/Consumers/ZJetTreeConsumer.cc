@@ -909,6 +909,19 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                              product.GetMet(settings, event, "None")->p4).Pt());
         });
 
+    //////////
+    // JNPF //
+    //////////
+
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "jnpf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetJNPF(settings, event);
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+        "rawjnpf", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return product.GetJNPF(settings, event, "None");
+        });
+
     ///////////////
     // Z LEPTONS //
     ///////////////
