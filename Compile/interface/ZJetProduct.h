@@ -381,22 +381,23 @@ class ZJetProduct : public KappaProduct
         if(GetValidJetCount(settings, event, corrLevel) < 1) return DefaultValues::UndefinedDouble;
         else 
         {
+            double scalPtSqZ = m_z.p4.Px() * m_z.p4.Px()  + m_z.p4.Py() * m_z.p4.Py();
+            if(scalPtSqZ == 0) return DefaultValues::UndefinedDouble;
+
             double scalPtjet = 0;
-            KLV* met = GetMet(settings, event, corrLevel);
             for(uint index = 0; index < GetValidJetCount(settings, event, corrLevel); index++)
             {    
                 KLV* jet = GetValidJet(settings, event, index, corrLevel);
                 if(jet->p4.Pt() < settings.GetJNPFJetPtMin()) break;
 
-                double scalPtEt = jet->p4.Px() * met->p4.Px() + jet->p4.Py() * met->p4.Py();
+                double scalPtEt = jet->p4.Px() * m_z.p4.Px() + jet->p4.Py() * m_z.p4.Py();
                 double scalPtSqjet = jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py();
+
                 if(scalPtSqjet == 0) return DefaultValues::UndefinedDouble;
                 scalPtjet += scalPtEt/sqrt(scalPtSqjet);
             }
-            double scalPtSqmet = met->p4.Px() * met->p4.Px()  + met->p4.Py() * met->p4.Py();
-
-            if(scalPtSqmet == 0) return DefaultValues::UndefinedDouble;
-            return scalPtjet / sqrt(scalPtSqmet);
+            
+            return scalPtjet / sqrt(scalPtSqZ);
         }
     }
 
