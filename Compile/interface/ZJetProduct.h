@@ -369,7 +369,8 @@ class ZJetProduct : public KappaProduct
     }
 
     // Helper method for MPF
-    static double GetTransverseProjectionFraction(const RMFLV* lvProj, const RMFLV* lvRef) {
+    static double GetTransverseProjectionFraction(const RMFLV* lvProj, const RMFLV* lvRef) 
+    {
         double scalPtEt = lvRef->Px() * lvProj->Px() + lvRef->Py() * lvProj->Py();
         double scalPtSq = lvRef->Px() * lvRef->Px()  + lvRef->Py() * lvRef->Py();
         return scalPtEt / scalPtSq;
@@ -381,24 +382,26 @@ class ZJetProduct : public KappaProduct
         if(GetValidJetCount(settings, event, corrLevel) < 1) return DefaultValues::UndefinedDouble;
         else 
         {
-            double scalPtSqZ = m_z.p4.Px() * m_z.p4.Px()  + m_z.p4.Py() * m_z.p4.Py();
-            if(scalPtSqZ == 0) return DefaultValues::UndefinedDouble;
-
-            double scalPtjet = 0;
+            double jnpf = 0;
             for(uint index = 0; index < GetValidJetCount(settings, event, corrLevel); index++)
             {    
                 KLV* jet = GetValidJet(settings, event, index, corrLevel);
                 if(jet->p4.Pt() < settings.GetTypeIJetPtMin()) break;
 
-                double scalPtEt = jet->p4.Px() * m_z.p4.Px() + jet->p4.Py() * m_z.p4.Py();
-                double scalPtSqjet = jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py();
-
-                if(scalPtSqjet == 0) return DefaultValues::UndefinedDouble;
-                scalPtjet += scalPtEt/sqrt(scalPtSqjet);
+                jnpf += GetTransverseAngleCosine(&jet->p4, &m_z.p4);
             }
-            
-            return scalPtjet / sqrt(scalPtSqZ);
+            return jnpf;
         }
+    }
+
+    // Helper method for JNPF
+    static double GetTransverseAngleCosine(const RMFLV* lvProj, const RMFLV* lvRef) 
+    {
+        double scalPtSqRef = lvRef->Px() * lvRef->Px() + lvRef->Py() * lvRef->Py();
+        double scalPtSqProj = lvProj->Px() * lvProj->Px() + lvProj->Py() + lvProj->Py();
+        double scalPtProd = lvRef->Px() * lvProj->Px() + lvRef->Py() * lvProj->Py();
+        if(scalPtSqRef == 0 || scalPtSqProj == 0) return 0;
+        return scalPtProd / (sqrt(scalPtSqRef) * sqrt(scalPtSqProj));
     }
 
     double GetJNPF(ZJetSettings const& settings, ZJetEvent const& event) const
