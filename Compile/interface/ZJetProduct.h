@@ -388,7 +388,7 @@ class ZJetProduct : public KappaProduct
             for(uint index = 0; index < GetValidJetCount(settings, event, corrLevel); index++)
             {    
                 KLV* jet = GetValidJet(settings, event, index, corrLevel);
-                if(jet->p4.Pt() < settings.GetJNPFJetPtMin()) break;
+                if(jet->p4.Pt() < settings.GetTypeIJetPtMin()) break;
 
                 double scalPtEt = jet->p4.Px() * m_z.p4.Px() + jet->p4.Py() * m_z.p4.Py();
                 double scalPtSqjet = jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py();
