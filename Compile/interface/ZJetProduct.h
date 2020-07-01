@@ -394,6 +394,11 @@ class ZJetProduct : public KappaProduct
         }
     }
 
+    double GetJNPF(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetJNPF(settings, event, settings.GetCorrectionLevel());
+    }
+
     // Helper method for JNPF
     static double GetTransverseAngleCosine(const RMFLV* lvProj, const RMFLV* lvRef) 
     {
@@ -404,10 +409,6 @@ class ZJetProduct : public KappaProduct
         return scalPtProd / (sqrt(scalPtSqRef) * sqrt(scalPtSqProj));
     }
 
-    double GetJNPF(ZJetSettings const& settings, ZJetEvent const& event) const
-    {
-        return GetJNPF(settings, event, settings.GetCorrectionLevel());
-    }
 
     // Reco jet - gen parton matching result
     KGenParticle* GetMatchedGenParton(ZJetEvent const& event,
