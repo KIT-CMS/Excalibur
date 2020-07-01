@@ -391,7 +391,7 @@ class ZJetProduct : public KappaProduct
                 double scalPtEt = jet->p4.Px() * met->p4.Px() + jet->p4.Py() * met->p4.Py();
                 double scalPtSqjet = jet->p4.Px() * jet->p4.Px()  + jet->p4.Py() * jet->p4.Py();
                 if(scalPtSqjet == 0) return DefaultValues::UndefinedDouble;
-                scalPtjet += scalPtEt/scalPtSqjet;
+                scalPtjet += scalPtEt/sqrt(scalPtSqjet);
             }
             double scalPtSqmet = met->p4.Px() * met->p4.Px()  + met->p4.Py() * met->p4.Py();
 
