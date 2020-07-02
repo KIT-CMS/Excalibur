@@ -12,6 +12,7 @@ CH='mm'
 JEC='{}_{}_SimpleL1'.format(JEC_BASE, JEC_VERSION)
 
 
+
 def config():
     cfg = configtools.getConfig('mc', 2017, CH, JEC=JEC, JER=JER)
     cfg["InputFiles"].set_input(

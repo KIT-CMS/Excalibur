@@ -28,7 +28,11 @@ def config():
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
 
     cfg['Pipelines']['default']['Quantities'] += ['puWeight{{}}'.format(runperiod) for runperiod in {runs}]
+    
     cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
+
+    cfg['MPFSplittingJetPtMin'] = 15.
+    cfg['JNPFJetPtMin'] = 15.
 
     cfg['PileupWeightFile'] = os.path.join(configtools.getPath() , 'data/pileup/mc_weights/mc17ul_DYJets_madgraph_data_15May18/PUWeights_' + ''.join({runs}) + '_15May2018_DYJetsToLL_madgraphMLM.root')
     cfg['NumberGeneratedEvents'] = 101077576

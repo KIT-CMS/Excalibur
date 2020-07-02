@@ -308,18 +308,107 @@ class ZJetProduct : public KappaProduct
     // Calculate MPF
     double GetMPF(const KLV* met) const
     {
-        double scalPtEt = m_z.p4.Px() * met->p4.Px() + m_z.p4.Py() * met->p4.Py();
-        double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
-        return 1.0 + scalPtEt / scalPtSq;
+        return 1.0 + GetTransverseProjectionFraction(&met->p4, &m_z.p4);
     }
 
-    // Calculate RPF
-    double GetRPF(const KLV* jetRecoil) const
+    // Calculate splitted MPFs
+    // MPF_lead
+    double GetMPFlead(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
     {
-        double scalPtEt = m_z.p4.Px() * jetRecoil->p4.Px() + m_z.p4.Py() * jetRecoil->p4.Py();
-        double scalPtSq = m_z.p4.Px() * m_z.p4.Px() + m_z.p4.Py() * m_z.p4.Py();
-        return -scalPtEt / scalPtSq;
+        if(GetValidJetCount(settings, event, corrLevel) < 1) {
+            return 0;
+        }
+        else {
+            KLV* leadingjet = GetValidJet(settings, event, 0, corrLevel);
+            if(leadingjet->p4.Pt() < settings.GetMPFSplittingJetPtMin()) return 0;
+
+            return (-1.) * GetTransverseProjectionFraction(&leadingjet->p4, &m_z.p4);
+        }
     }
+
+    double GetMPFlead(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetMPFlead(settings, event, settings.GetCorrectionLevel());
+    }
+
+    // MPF_jets
+    double GetMPFjets(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+    {
+        if(GetValidJetCount(settings, event, corrLevel) < 2) {
+            return 0;
+        }
+        else
+        {
+            RMFLV jetcontrib;
+            for(uint index = 1; index < GetValidJetCount(settings, event, corrLevel); index++)
+            {
+                KLV* jet = GetValidJet(settings, event, index, corrLevel);
+                if(jet->p4.Pt() < settings.GetMPFSplittingJetPtMin()) break;
+
+                jetcontrib += jet->p4;
+            }
+            return (-1.) * GetTransverseProjectionFraction(&jetcontrib, &m_z.p4);
+        }
+    }
+
+    double GetMPFjets(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetMPFjets(settings, event, settings.GetCorrectionLevel());
+    }
+
+    // MPF_unclustered
+    double GetMPFunclustered(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+    {
+        //TODO: #57 implement independent calculation of the unclustered energy contribution
+        return GetMPF(GetMet(settings, event, corrLevel)) - GetMPFlead(settings, event, corrLevel) - GetMPFjets(settings, event, corrLevel);
+    }
+
+    double GetMPFunclustered(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetMPFunclustered(settings, event, settings.GetCorrectionLevel());
+    }
+
+    // Helper method for MPF
+    static double GetTransverseProjectionFraction(const RMFLV* lvProj, const RMFLV* lvRef) 
+    {
+        double scalPtEt = lvRef->Px() * lvProj->Px() + lvRef->Py() * lvProj->Py();
+        double scalPtSq = lvRef->Px() * lvRef->Px()  + lvRef->Py() * lvRef->Py();
+        return scalPtEt / scalPtSq;
+    }
+
+    // Calculate JNPF
+    double GetJNPF(ZJetSettings const& settings, ZJetEvent const& event, std::string corrLevel) const
+    {
+        if(GetValidJetCount(settings, event, corrLevel) < 1) return DefaultValues::UndefinedDouble;
+        else 
+        {
+            double jnpf = 0;
+            for(uint index = 0; index < GetValidJetCount(settings, event, corrLevel); index++)
+            {    
+                KLV* jet = GetValidJet(settings, event, index, corrLevel);
+                if(jet->p4.Pt() < settings.GetTypeIJetPtMin()) break;
+
+                jnpf += GetTransverseAngleCosine(&jet->p4, &m_z.p4);
+            }
+            return jnpf;
+        }
+    }
+
+    double GetJNPF(ZJetSettings const& settings, ZJetEvent const& event) const
+    {
+        return GetJNPF(settings, event, settings.GetCorrectionLevel());
+    }
+
+    // Helper method for JNPF
+    static double GetTransverseAngleCosine(const RMFLV* lvProj, const RMFLV* lvRef) 
+    {
+        double scalPtSqRef = lvRef->Px() * lvRef->Px() + lvRef->Py() * lvRef->Py();
+        double scalPtSqProj = lvProj->Px() * lvProj->Px() + lvProj->Py() + lvProj->Py();
+        double scalPtProd = lvRef->Px() * lvProj->Px() + lvRef->Py() * lvProj->Py();
+        if(scalPtSqRef == 0 || scalPtSqProj == 0) return 0;
+        return scalPtProd / (sqrt(scalPtSqRef) * sqrt(scalPtSqProj));
+    }
+
 
     // Reco jet - gen parton matching result
     KGenParticle* GetMatchedGenParton(ZJetEvent const& event,
