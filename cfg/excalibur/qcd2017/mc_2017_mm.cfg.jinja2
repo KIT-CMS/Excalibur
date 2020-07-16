@@ -6,40 +6,51 @@ JEC = '{{ jec }}'
 def config():
     cfg = configtools.getConfig('mc', {{ year }}, 'mm', JEC=JEC)
     cfg["InputFiles"].set_input(
-        #bmspath="root://cmsxrootd-kit.gridka.de//store/user/mschnepf/Skimming/ZJet_DYJetsToLL_13TeV-madgraphMLM_upgrade2018_realistic_v10-v2/*.root",
-        #bmspath="root://cmsxrootd-kit.gridka.de//store/user/mschnepf/Skimming/ZJet_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_RunIIFall17MiniAODv2-PU2017RECOPF_12Apr2018_94X_mc2017_realistic_v14-v1_v2/*.root",
-        #bmspath="/portal/ekpbms3/home/mschnepf/skimming/software/CMSSW_10_2_0/src/Kappa/Skimming/zjet/cfg/102X/1020_DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_RunIIFall17MiniAODv2-PU2017RECOPF_12Apr2018_94X_mc2017_realistic_v14-v1/*.root",
         bmspath="{{ dataset_files }}",
-
-
         )
     cfg = configtools.expand(cfg, 
                                 ['nocuts','zjetcuts','genzjetcuts'],
                                 ['None','L1L2L3'])
-    configtools.add_quantities(cfg, [   #'mu1IDSFWeight','mu1IsoSFWeight','mu1TrackingSFWeight','mu1TriggerSFWeight',
-                                        #'mu2IDSFWeight','mu2IsoSFWeight','mu2TrackingSFWeight','mu2TriggerSFWeight',
-                                        'leptonIDSFWeight','leptonIDSFWeightUp','leptonIDSFWeightDown',
-                                        'leptonIsoSFWeight','leptonIsoSFWeightUp','leptonIsoSFWeightDown',
-                                        'leptonTrackingSFWeight','leptonTrackingSFWeightUp','leptonTrackingSFWeightDown',
-                                        'leptonTriggerSFWeight','leptonTriggerSFWeightUp','leptonTriggerSFWeightDown',
-                                        'jet1puidraw',
-                                        ])
+    configtools.remove_quantities(cfg, [
+        'jet1area','jet1l1', 'jet1rc', 'jet1l2','jet1ptraw', 'jet1ptl1',
+        'mpf', 'rawmpf', 'rawmet', 'rawmetphi', 'sumet','mettype1vecpt', 'mettype1pt',
+        ])
+    configtools.add_quantities(cfg, [
+        'parton1flavour','parton1pt','parton1y','parton1phi','parton1mass',
+        'parton2flavour','parton2pt','parton2y','parton2phi','parton2mass',
+        'jet1puidraw',
+        ])
 
 ##### Set Trigger: ######
+# not needed for MC
 #    cfg['HltPaths'] = [                                            
          # -- lowest pT unprescaled trigger for the whole of 2017                
          # https://indico.cern.ch/event/682891/contributions/2810364/attachments/1570825/2477991/20171206_CMSWeek_MuonHLTReport_KPLee_v3_1.pdf         'HLT_IsoMu27',                          
 #         'HLT_IsoMu27',                          
 #     ]                                                       
-
 ##### Add Producers: #####
     cfg['Processors'] = ['producer:MuonTriggerMatchingProducer',] + cfg['Processors']
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
-    cfg['Processors'] += ['producer:LeptonIDSFProducer','producer:LeptonIsoSFProducer','producer:LeptonTriggerSFProducer','producer:LeptonSFProducer',]
+    #cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:PFCandidatesProducer',)
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer',)
+    cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetGenPhotonsProducer',)
+    cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetDressedGenMuonsProducer',)
+
 ##### Specify input sources for Jets & Muons: #####
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
+    cfg['MaxZJetDressedMuonDeltaR'] = 0.1
+    cfg['ValidMuonsInput'] = "corrected"
+
+##### Jets
+    cfg['GenJets'] = 'ak4GenJetsNoNu'
+    cfg['TaggedJets'] = 'ak4PFJetsCHS'
+    cfg['UseObjectJetYCut'] = True
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{{ jec }}/{{ jec }}')
     cfg['JetID'] = 'loose'
+    cfg['PUJetID'] = 'medium'
+    cfg['DeltaRMatchingRecoJetGenJet'] = 0.2
+    cfg['CutLeadingJetPtMin'] = 10.0
+    cfg['MinPUJetID'] = -0.2
 
 ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonIso'] = 'loose_{{ year }}'
@@ -49,28 +60,6 @@ def config():
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017.txt')
     cfg['MuonEnergyCorrection'] = 'rochcorr2017'
     cfg['ZMassRange'] = 20.0
-    cfg['CutLeadingJetPtMin'] = 20.0
-    cfg['MinPUJetID'] = -0.2 
-
-#### Select Jets ######
-    cfg['TaggedJets'] = 'ak{{ jet_radius }}PFJetsCHS'
-    cfg['GenJets'] = 'ak4GenJetsNoNu'   
-#    cfg['RC'] = False
-
-#    cfg['CutLeadingJetPtMin'] = 0
-#    cfg['TypeIJetPtMin'] =0
-
-##### LeptonSF files: #####
-    cfg['LeptonSFVariation'] = True
-    cfg['LeptonSFReversedAxes'] = True
-    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/ID_EfficienciesAndSF_BCDEF_MC_Run17Nov2017.root")
-    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/Iso_EfficienciesAndSF_BCDEF_MC_Run17Nov2017.root")
-    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017/Trigger_EfficienciesAndSF_BCDEF_Nov17Nov2017.root")
-#    cfg['LeptonTrackingSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016latest/Tracking_EfficienciesAndSF_BCDEFGH.root")
-    cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_genTracks_pt_abseta'
-    cfg['LeptonIsoSFHistogramName'] = 'NUM_LooseRelIso_DEN_TightIDandIPCut_pt_abseta'
-    cfg['LeptonTriggerSFHistogramName'] = 'IsoMu27_PtEtaBins/efficienciesMC/pt_abseta_MC'
-
 
 ##### MC specific properties: #####
     cfg['NumberGeneratedEvents'] = {{ number_generated_events }} # from geteventsscript (./getGeneratorWeight.py -n NONE /storage/gridka-nrg/.../*.root
