@@ -50,6 +50,6 @@ void ZJetGenWeightProducer::Produce(ZJetEvent const& event,
 
 	for(const auto& lheWeightNamePair: m_lheWeightNamesMap)
 	{ 
-		product.m_optionalWeights[lheWeightNamePair.first] = event.m_genEventInfo->getLheWeight(lheWeightNamePair.second, true);
+		product.m_optionalWeights[lheWeightNamePair.first] = event.m_genEventInfo->getLheWeight(lheWeightNamePair.second, false);
 	}
 }
