@@ -29,8 +29,10 @@ def config():
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Collisions17/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt')]
 
     cfg['Pipelines']['default']['Quantities'] += ['puWeight{{}}'.format(runperiod) for runperiod in {runs}]
-    #cfg['Pipelines']['default']['Quantities'] += ['genWeight_{{}}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
+    cfg['Pipelines']['default']['Quantities'] += ['genWeight_{{}}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
     cfg['Pipelines']['default']['Quantities'] += ['jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf']
+    cfg['Pipelines']['default']['Quantities'] += ['jnpf', 'rawjnpf', 'mpflead', 'rawmpflead', 'mpfjets', 'rawmpfjets', 'mpfunclustered', 'rawmpfunclustered']
+
     cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
 
     cfg['MPFSplittingJetPtMin'] = 15.
@@ -50,15 +52,34 @@ def config():
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
-    cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
+    {comment_ee}cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetValidElectronsProducer'), 'producer:ElectronCorrectionsProducer',)
+    {comment_ee}cfg['ApplyElectronEnergyCorrections'] = True
+    {comment_ee}cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
+
+    cfg['CutJetID'] = 'tightlepveto'  # choose event-based CutJetID (Excalibur) selection, alternatively use JetID (Artus)
     cfg['CutJetIDVersion'] = '2017UL'  # for event-based JetID
     cfg['CutJetIDFirstNJets'] = 2
+
+    {comment_mm}cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
+    {comment_mm}cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017UL.txt')
+    {comment_mm}cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
 
     cfg['Processors'] += ['producer:ZJetPUWeightProducer']
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17_DYJets_madgraph/PUWeights_{{}}_17Nov2017_DY1JetsToLL_Fall17-madgraphMLM_realistic_v10-v1.root'.format(runperiod)) for runperiod in {runs}]
     cfg['ZJetPUWeightSuffixes'] = ['{{}}'.format(runperiod) for runperiod in {runs}]
 
-    #cfg['ZJetGenWeightNames'] = {lheWeightNames}
+    cfg['Processors'] += ['producer:ZJetGenWeightProducer']
+    cfg['ZJetGenWeightNames'] = {lheWeightNames}
+
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17ul/Summer19UL17_V2/hotjets-UL17_v2.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17_plus_hbpw89"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+
+    cfg['HltPaths']= [
+        {comment_ee}'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL'
+        {comment_mm}'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8'
+        ]
 
     return cfg
 """
@@ -78,6 +99,8 @@ def make():
         input_path=INPUT_TEMPLATE.format(
           userpath='mhorzela/Skimming',
         ),
+        comment_mm='' if ch == 'mm' else '#',
+        comment_ee='' if ch == 'ee' else '#',
       )
       _fname = "mc17_{ch}_{runs}_DYJets_Madgraph_JEC{jecv_suffix}.py".format(
         jecv_suffix=jecv_suffix,

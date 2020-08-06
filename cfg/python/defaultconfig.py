@@ -229,7 +229,7 @@ def mc(cfg, **kwargs):
     _jer_string = kwargs.get('JER', None)
     if _jer_string is not None:
         cfg['JER'] = os.path.join(configtools.getPath(), '../JRDatabase/textFiles/{0}_MC/{0}_MC'.format(_jer_string))
-        cfg['JERMethod'] = "hybrid"  # options: "hybrid" or "stochastic"
+        cfg['JERMethod'] = "stochastic"  # options: "hybrid" or "stochastic"
         cfg['JERSmearerSeed'] = 92837465
 
         # insert smearer and sorter after the matching producer
@@ -322,12 +322,23 @@ def data_2018(cfg, **kwargs):
 
 def mc_2016(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
-    pass
-
+    
+    # object-based eta-phi cleaning (recommended jul. 2018)
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_07Aug2017_Legacy/hotjets-run{}.root".format(_jec_iov))
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
 def mc_2017(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
-    pass
+
+    # object-based eta-phi cleaning (recommended jun. 2018)
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
 def mc_2018(cfg, **kwargs):
     # no MC customization for 2018 (yet)
