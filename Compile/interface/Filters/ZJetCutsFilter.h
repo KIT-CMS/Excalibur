@@ -881,3 +881,45 @@ class ValidGenZCut : public ZJetFilterBase
     float ZMassRange = 0;
     float ZMass = 90;
 };
+
+////////////////
+// MET Filter //
+////////////////
+
+class METFiltersFilter : public ZJetFilterBase {
+
+  public:
+    std::string GetFilterId() const override { return "METFiltersFilter"; }
+
+    METFiltersFilter() : ZJetFilterBase() {}
+
+    void OnLumi(ZJetEvent const& event, ZJetSettings const& settings) override {
+      if (metFilterBitIndices.empty()) {
+        if (!event.m_triggerObjectMetadata) {
+          LOG(FATAL) << "No trigger object metadata branch given. Please specify using setting \"TriggerInfos\".";
+        }
+        if (!event.m_triggerObjects) {
+          LOG(FATAL) << "No trigger objects branch given. Please specify using setting \"TriggerObjects\".";
+        }
+        for (const auto& filterName : settings.GetMETFilterNames()) {
+          size_t index = event.m_triggerObjectMetadata->metFilterPos(filterName);
+          metFilterBitIndices.push_back(index);
+        }
+      }
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override {
+      for (const size_t metFilterIndex : metFilterBitIndices) {
+        if (!event.m_triggerObjects->passesMetFilter(metFilterIndex)) {
+          // At least one required MetFilter is not passed. Reject Event.
+          return false;
+        }
+      }
+      return true;
+    }
+
+  private:
+    std::vector<size_t> metFilterBitIndices;
+};

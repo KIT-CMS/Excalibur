@@ -103,6 +103,8 @@ def getBaseConfig(tagged=False, **kwargs):
         'EventMetadata' : 'eventInfo',
         'LumiMetadata' : 'lumiInfo',
         'VertexSummary': 'goodOfflinePrimaryVerticesSummary',
+        'TriggerInfos': 'triggerObjectMetadata',
+        'TriggerObjects': 'triggerObjects'
     }
     if tagged:
         cfg['Pipelines']['default']['Quantities'] += ['jet1btagpf','jet1btag', 'jet1qgtag']
