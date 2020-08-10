@@ -59,7 +59,6 @@ void JERSmearer::Init(ZJetSettings const& settings) {
 
     // create the random number generator
     m_randomNumberGenerator = std::mt19937(settings.GetJERSmearerSeed());
-    std::cout << "test" << std::endl;
 }
 
 void JERSmearer::Produce(ZJetEvent const& event,
