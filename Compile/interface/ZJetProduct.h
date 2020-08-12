@@ -403,7 +403,7 @@ class ZJetProduct : public KappaProduct
     static double GetTransverseAngleCosine(const RMFLV* lvProj, const RMFLV* lvRef) 
     {
         double scalPtSqRef = lvRef->Px() * lvRef->Px() + lvRef->Py() * lvRef->Py();
-        double scalPtSqProj = lvProj->Px() * lvProj->Px() + lvProj->Py() + lvProj->Py();
+        double scalPtSqProj = lvProj->Px() * lvProj->Px() + lvProj->Py() * lvProj->Py();
         double scalPtProd = lvRef->Px() * lvProj->Px() + lvRef->Py() * lvProj->Py();
         if(scalPtSqRef == 0 || scalPtSqProj == 0) return 0;
         return scalPtProd / (sqrt(scalPtSqRef) * sqrt(scalPtSqProj));
