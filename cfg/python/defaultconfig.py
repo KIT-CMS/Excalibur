@@ -147,6 +147,7 @@ def mc(cfg, **kwargs):
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
         'producer:ZJetTrueGenMuonsProducer',
+        #'producer:ZJetGenWeightProducer'
         ]
     cfg['GenParticles'] = 'genParticles'
     cfg['Pipelines']['default']['Quantities'] += [
@@ -175,6 +176,9 @@ def mc(cfg, **kwargs):
         'x1','x2','qScale',  # qScale taken from hard process saved in MC
         'numberGeneratedEventsWeight','crossSectionPerEventWeight','generatorWeight','puWeight',
         ]
+    
+    #lheWeightNames = ['nominal','isrDefup','isrDefdown','fsrDefup','fsrDefdown']
+    #cfg['Pipelines']['default']['Quantities'] += ['genWeight_{}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
 
     # RecoJetGenPartonMatchingProducer Settings
     cfg['DeltaRMatchingRecoJetGenParticle'] = 0.3
@@ -201,6 +205,10 @@ def mc(cfg, **kwargs):
     cfg['CrossSection'] = -1  # need to be set in individual config file
     cfg['BaseWeight'] =   1000  # pb^-1 -> fb^-1, default unit: fb^-1
 
+    # ZJetGenWeightProducer
+    cfg['GenEventInfoMetadata'] = 'genEventInfoMetadata'
+    #cfg['ZJetGenWeightNames'] = lheWeightNames
+
     # cfg['GenZMassRange']= 20. # not used by ValidGenZFilter, TODO: Remove this and use ZMassRange
     # cfg['DeltaRRadiationJet'] = 1  # TODO: Usage?
 
@@ -223,7 +231,7 @@ def mc(cfg, **kwargs):
     _jer_string = kwargs.get('JER', None)
     if _jer_string is not None:
         cfg['JER'] = os.path.join(configtools.getPath(), '../JRDatabase/textFiles/{0}_MC/{0}_MC'.format(_jer_string))
-        cfg['JERMethod'] = "hybrid"  # options: "hybrid" or "stochastic"
+        cfg['JERMethod'] = "stochastic"  # options: "hybrid" or "stochastic"
         cfg['JERSmearerSeed'] = 92837465
 
         # insert smearer and sorter after the matching producer
@@ -316,12 +324,23 @@ def data_2018(cfg, **kwargs):
 
 def mc_2016(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
-    pass
-
+    
+    # object-based eta-phi cleaning (recommended jul. 2018)
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_07Aug2017_Legacy/hotjets-run{}.root".format(_jec_iov))
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
 def mc_2017(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
-    pass
+
+    # object-based eta-phi cleaning (recommended jun. 2018)
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
 def mc_2018(cfg, **kwargs):
     # no MC customization for 2018 (yet)
