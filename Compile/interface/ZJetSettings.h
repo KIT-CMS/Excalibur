@@ -90,6 +90,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, CutJetID)
     IMPL_SETTING(std::string, CutJetIDVersion)
     IMPL_SETTING(unsigned, CutJetIDFirstNJets)
+    IMPL_SETTING_STRINGLIST_DEFAULT(METFilterNames, {})
 
     // LeptonSFProducer
     IMPL_SETTING(std::string, LeptonIDSFRootfile)

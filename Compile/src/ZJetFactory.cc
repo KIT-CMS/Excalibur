@@ -162,6 +162,8 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new ValidZCut();
     else if (id == ValidGenZCut().GetFilterId())
         return new ValidGenZCut();
+    else if (id == METFiltersFilter().GetFilterId())
+        return new METFiltersFilter();
     else
         return KappaFactory::createFilter(id);
 }
