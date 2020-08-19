@@ -1,6 +1,8 @@
 
 #include "boost/algorithm/string/join.hpp"
 
+#include "Artus/Utility/interface/DefaultValues.h"
+
 #include "Excalibur/Compile/interface/Producers/ZJetGenWeightProducer.h"
 
 
@@ -11,6 +13,8 @@ std::string ZJetGenWeightProducer::GetProducerId() const {
 
 void ZJetGenWeightProducer::Init(ZJetSettings const& settings) {
 	ZJetProducerBase::Init(settings);
+
+	m_isDefaultWeight = false;
 
     if(settings.GetInputIsData())
 	{
@@ -26,7 +30,7 @@ void ZJetGenWeightProducer::Init(ZJetSettings const& settings) {
 }
 
 
-void ZJetGenWeightProducer::OnLumi(ZJetEvent const& event, ZJetSettings const& settings)
+void ZJetGenWeightProducer::OnRun(ZJetEvent const& event, ZJetSettings const& settings)
 {
 	assert(event.m_genEventInfoMetadata);
 
@@ -34,10 +38,28 @@ void ZJetGenWeightProducer::OnLumi(ZJetEvent const& event, ZJetSettings const& s
 	if(m_lheWeightNamesMap.empty())
 	{
 		auto tmp_lheWeightNamesMap = event.m_genEventInfoMetadata->getLheWeightNamesMap(m_requestedNames);
-		for(const auto& lheWeightNamePair: tmp_lheWeightNamesMap)
+		if(tmp_lheWeightNamesMap.empty())
 		{
-			m_lheWeightNamesMap["genWeight_" + lheWeightNamePair.first] = lheWeightNamePair.second;
+			LOG(WARNING) << "[ZJetGenWeightProducer] Running on a skim without weight variations! Setting weights to default value (1.0)!";
+			m_isDefaultWeight =  true; 
+
+			for (const auto& requestedName: m_requestedNames)
+			{
+				m_lheWeightNamesMap["genWeight_" + requestedName] = DefaultValues::UndefinedInt;
+			}
+			
+			
 		}
+		else
+		{
+			for(const auto& lheWeightNamePair: tmp_lheWeightNamesMap)
+			{
+				m_lheWeightNamesMap["genWeight_" + lheWeightNamePair.first] = lheWeightNamePair.second;
+			}
+		}
+		
+		
+		
 	}
 }
 
@@ -50,6 +72,17 @@ void ZJetGenWeightProducer::Produce(ZJetEvent const& event,
 
 	for(const auto& lheWeightNamePair: m_lheWeightNamesMap)
 	{ 
-		product.m_optionalWeights[lheWeightNamePair.first] = event.m_genEventInfo->getLheWeight(lheWeightNamePair.second, false);
+		if(!m_isDefaultWeight)
+		{
+			product.m_optionalWeights[lheWeightNamePair.first] = event.m_genEventInfo->getLheWeight(lheWeightNamePair.second, false);
+		}
+		else
+		{
+			product.m_optionalWeights[lheWeightNamePair.first] = 1.0;
+		}
+		
 	}
+
+
+	
 }
