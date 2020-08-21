@@ -21,7 +21,7 @@ public:
 
 	void Init(ZJetSettings const& settings) override;
 
-    void OnLumi(ZJetEvent const& event, ZJetSettings const& settings) override;
+    void OnRun(ZJetEvent const& event, ZJetSettings const& settings) override;
 
 	void Produce(ZJetEvent const& event, ZJetProduct& product,
 	                     ZJetSettings const& settings) const override;
@@ -30,5 +30,6 @@ public:
 private:
     std::vector<std::string> m_requestedNames;
     std::map<std::string, size_t> m_lheWeightNamesMap;
+    bool m_isDefaultWeight;
 
 };
