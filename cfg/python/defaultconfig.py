@@ -176,7 +176,7 @@ def mc(cfg, **kwargs):
         'x1','x2','qScale',  # qScale taken from hard process saved in MC
         'numberGeneratedEventsWeight','crossSectionPerEventWeight','generatorWeight','puWeight',
         ]
-    
+
     #lheWeightNames = ['nominal','isrDefup','isrDefdown','fsrDefup','fsrDefdown']
     #cfg['Pipelines']['default']['Quantities'] += ['genWeight_{}'.format(lheWeightName) for lheWeightName in {lheWeightNames}]
 
@@ -287,6 +287,13 @@ def _2018(cfg, **kwargs):
     cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2018_13TeV.txt')
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt')]
 
+    # object-based eta-phi cleaning
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = "CHANGEME"
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["CHANGEME"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+
 
 def data_2016(cfg, **kwargs):
     _jec_iov = kwargs['IOV']  # mandatory kwarg indicating IOV (interval of validity)
@@ -324,7 +331,7 @@ def data_2018(cfg, **kwargs):
 
 def mc_2016(cfg, **kwargs):
     # TODO: move PUWeightFile here if possible
-    
+
     # object-based eta-phi cleaning (recommended jul. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
     cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
