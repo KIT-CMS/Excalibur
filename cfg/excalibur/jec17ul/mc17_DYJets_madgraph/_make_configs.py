@@ -65,7 +65,7 @@ def config():
     {comment_mm}cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
 
     cfg['Processors'] += ['producer:ZJetPUWeightProducer']
-    cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17_DYJets_madgraph/PUWeights_{{}}_17Nov2017_DY1JetsToLL_Fall17-madgraphMLM_realistic_v10-v1.root'.format(runperiod)) for runperiod in {runs}]
+    cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17ul_DYJets_madgraph_data_15May18/PUWeights_{{}}_15May2018_DYJetsToLL_madgraphMLM.root'.format(runperiod)) for runperiod in {runs}]
     cfg['ZJetPUWeightSuffixes'] = ['{{}}'.format(runperiod) for runperiod in {runs}]
 
     cfg['Processors'] += ['producer:ZJetGenWeightProducer']
