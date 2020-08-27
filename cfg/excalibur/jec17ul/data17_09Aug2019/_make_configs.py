@@ -31,7 +31,11 @@ def config():
 
     cfg['Pipelines']['default']['Quantities'] += ['jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf']
     cfg['Pipelines']['default']['Quantities'] += ['jnpf', 'rawjnpf', 'mpflead', 'rawmpflead', 'mpfjets', 'rawmpfjets', 'mpfunclustered', 'rawmpfunclustered']
-    
+
+    cfg['Pipelines']['default']['Processors'].insert(cfg['Processors'].index('filter:HltFilter') + 1, 'filter:METFiltersFilter')
+    cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
+        "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_ecalBadCalibReducedMINIAODFilter"]
+
     cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
     cfg['CutBackToBack'] = 0.44
@@ -61,7 +65,7 @@ def config():
     {comment_mm}cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
 
     cfg['EnableTypeIModification'] = False
-    
+
     cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17ul/Summer19UL17_V2/hotjets-UL17_v2.root")
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17_plus_hbpw89"]
@@ -80,7 +84,7 @@ def make():
             jecv_suffix=jecv_suffix,
             ch=ch,
             input_path=INPUT_TEMPLATE.format(
-              run=run, 
+              run=run,
               pd='DoubleMuon' if ch == 'mm' else 'DoubleEG',
               userpath='mhorzela/Skimming',
             ),
@@ -90,10 +94,10 @@ def make():
           _fname = "data17_{ch}_{run}_09Aug2019_JEC{jecv_suffix}.py".format(
             run=run,
             jecv_suffix=jecv_suffix,
-            ch=ch,            
+            ch=ch,
           )
           with open(_fname, 'w') as _f:
             _f.write(_cfg)
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     make()

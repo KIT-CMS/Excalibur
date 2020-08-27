@@ -52,17 +52,18 @@ def config():
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
-    {comment_ee}cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetValidElectronsProducer'), 'producer:ElectronCorrectionsProducer',)
-    {comment_ee}cfg['ApplyElectronEnergyCorrections'] = True
-    {comment_ee}cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
+    if CH == 'ee':
+        cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetValidElectronsProducer'), 'producer:ElectronCorrectionsProducer',)
+        cfg['ApplyElectronEnergyCorrections'] = True
+        cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
+    elif CH == 'mm':
+        cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
+        cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017UL.txt')
+        cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based CutJetID (Excalibur) selection, alternatively use JetID (Artus)
     cfg['CutJetIDVersion'] = '2017UL'  # for event-based JetID
     cfg['CutJetIDFirstNJets'] = 2
-
-    {comment_mm}cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
-    {comment_mm}cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017UL.txt')
-    {comment_mm}cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
 
     cfg['Processors'] += ['producer:ZJetPUWeightProducer']
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17ul_DYJets_madgraph_data_15May18/PUWeights_{{}}_15May2018_DYJetsToLL_madgraphMLM.root'.format(runperiod)) for runperiod in {runs}]
@@ -77,9 +78,11 @@ def config():
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
     cfg['HltPaths']= [
-        {comment_ee}'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL'
-        {comment_mm}'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8'
-        ]
+        {
+            'ee': 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
+            'mm': HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8'
+        }[CH]
+    ]
 
     return cfg
 """
@@ -98,17 +101,15 @@ def make():
         ch=ch,
         input_path=INPUT_TEMPLATE.format(
           userpath='mhorzela/Skimming',
-        ),
-        comment_mm='' if ch == 'mm' else '#',
-        comment_ee='' if ch == 'ee' else '#',
+        )
       )
       _fname = "mc17_{ch}_{runs}_DYJets_Madgraph_JEC{jecv_suffix}.py".format(
         jecv_suffix=jecv_suffix,
-        ch=ch,  
-        runs=''.join(runs),          
+        ch=ch,
+        runs=''.join(runs),
       )
       with open(_fname, 'w') as _f:
         _f.write(_cfg)
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     make()
