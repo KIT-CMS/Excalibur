@@ -97,14 +97,19 @@ void JERSmearer::Produce(ZJetEvent const& event,
             }
 
             // compute and apply the pT smearing factor
+            double jecSmearFactor = 1.0;
             if ((matchedGenJet) && (m_smearingMethod == JERSmearer::SmearingMethod::HYBRID)) {
                 // match found and hybrid method requested -> smear using scaling method
-                recoJets[iJet]->p4 *= 1 + (jetResolutionScaleFactor - 1) * (recoJets[iJet]->p4.Pt() - matchedGenJet->p4.Pt())/recoJets[iJet]->p4.Pt();
+                jecSmearFactor = 1 + (jetResolutionScaleFactor - 1) * (recoJets[iJet]->p4.Pt() - matchedGenJet->p4.Pt())/recoJets[iJet]->p4.Pt();
             }
             else if ((m_smearingMethod == JERSmearer::SmearingMethod::STOCHASTIC) || (!matchedGenJet)) {
                 // match not found or stochastic method requested -> draw pT smearing factor from a normal distribution
-                recoJets[iJet]->p4 *= 1 + std::normal_distribution<>(0, jetResolution)(m_randomNumberGenerator) * std::sqrt(std::max(jetResolutionScaleFactor * jetResolutionScaleFactor - 1, 0.0));
+                jecSmearFactor = 1 + std::normal_distribution<>(0, jetResolution)(m_randomNumberGenerator) * std::sqrt(std::max(jetResolutionScaleFactor * jetResolutionScaleFactor - 1, 0.0));
             }
+
+            // apply factor (prevent negative values)
+            if (jecSmearFactor > 0)
+                recoJets[iJet]->p4 *= jecSmearFactor;
         }
     }
 }
