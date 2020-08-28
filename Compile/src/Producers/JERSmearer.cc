@@ -108,8 +108,7 @@ void JERSmearer::Produce(ZJetEvent const& event,
             }
 
             // apply factor (prevent negative values)
-            if (jecSmearFactor > 0)
-                recoJets[iJet]->p4 *= jecSmearFactor;
+            recoJets[iJet]->p4 *= (jecSmearFactor < 0) ? 0.0 : jecSmearFactor;
         }
     }
 }
