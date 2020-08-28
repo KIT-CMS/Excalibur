@@ -45,6 +45,7 @@ def config():
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
     cfg['ProvideL2ResidualCorrections'] = True
+    cfg['ProvideL2L3ResidualCorrections'] = False
 
     cfg['ApplyElectronVID'] = True
     cfg['ElectronVIDName'] = "Fall17-94X-V2"
