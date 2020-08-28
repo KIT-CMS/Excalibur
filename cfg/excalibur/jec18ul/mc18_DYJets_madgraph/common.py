@@ -1,7 +1,5 @@
-JEC_BASE='Summer19UL17'
-JEC_VERSION='V4'
-JEC_BASE='Autumn18'
-JEC_VERSION='V19'
+JEC_BASE='Summer19UL18'
+JEC_VERSION='V2'
 
 #JER = 'Fall17_V2'  # set this to 'None' to turn JER smearing off
 JER = None
