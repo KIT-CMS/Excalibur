@@ -260,6 +260,13 @@ def _2016(cfg, **kwargs):
     # TODO: Use official CERT naming
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_BCDEFGH_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
 
+    # object-based eta-phi cleaning
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = "CHANGEME"
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["CHANGEME"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+
 
 def _2017(cfg, **kwargs):
     cfg['Pipelines']['default']['Processors'] += ['filter:JetIDCut',] # if you want to use object-based JetID selection, use 'JetID' in cfg
@@ -278,6 +285,13 @@ def _2017(cfg, **kwargs):
     cfg['Minbxsec'] = 69.2
     cfg['NPUFile'] = os.path.join(configtools.getPath(), 'data/pileup/pumean_data2017_13TeV.txt')
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt')]
+
+    # object-based eta-phi cleaning
+    # -> invalidate jets according to eta-phi masks provided in a external ROOT file
+    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    cfg['JetEtaPhiCleanerFile'] = "CHANGEME"
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["CHANGEME"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
 def _2018(cfg, **kwargs):
     _2017(cfg, **kwargs)  # user 2017 config as base

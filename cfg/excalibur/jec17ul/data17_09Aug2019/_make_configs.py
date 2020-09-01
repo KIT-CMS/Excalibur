@@ -17,7 +17,6 @@ from common import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
 
 RUN='{run}'
 CH='{ch}'
-#JEC='{{0}}_Run{{1}}_{{2}}_{jecv_suffix}'.format(JEC_BASE, RUN, JEC_VERSION)
 JEC='{{0}}_Run{{1}}_{{2}}'.format(JEC_BASE, RUN, JEC_VERSION)
 
 
@@ -34,7 +33,7 @@ def config():
 
     cfg['Pipelines']['default']['Processors'].insert(cfg['Processors'].index('filter:HltFilter') + 1, 'filter:METFiltersFilter')
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
-        "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_ecalBadCalibReducedMINIAODFilter"]
+        "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
 
     cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
@@ -52,17 +51,18 @@ def config():
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
-    {comment_ee}cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetValidElectronsProducer'), 'producer:ElectronCorrectionsProducer',)
-    {comment_ee}cfg['ApplyElectronEnergyCorrections'] = True
-    {comment_ee}cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
+    if CH == 'ee':
+        cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetValidElectronsProducer'), 'producer:ElectronCorrectionsProducer',)
+        cfg['ApplyElectronEnergyCorrections'] = True
+        cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
+    elif CH == 'mm':
+        cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
+        cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017UL.txt')
+        cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based CutJetID (Excalibur) selection, alternatively use JetID (Artus)
     cfg['CutJetIDVersion'] = 'UL2017'  # for event-based JetID
     cfg['CutJetIDFirstNJets'] = 2
-
-    {comment_mm}cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
-    {comment_mm}cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017UL.txt')
-    {comment_mm}cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
 
     cfg['EnableTypeIModification'] = False
 
@@ -71,33 +71,33 @@ def config():
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17_plus_hbpw89"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
+    cfg['HltPaths']= {{
+        'ee': 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
+        'mm': HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8'
+    }}[CH]
+
     return cfg
 """
 
 def make():
-    for jecv_suffix in ['SimpleL1']:
-      for ch in ["mm", "ee"]:
-        for run in ['B', 'C', 'D', 'E', 'F']:
+  for ch in ["mm", "ee"]:
+    for run in ['B', 'C', 'D', 'E', 'F']:
 
-          _cfg = TEMPLATE.format(
-            run=run,
-            jecv_suffix=jecv_suffix,
-            ch=ch,
-            input_path=INPUT_TEMPLATE.format(
-              run=run,
-              pd='DoubleMuon' if ch == 'mm' else 'DoubleEG',
-              userpath='mhorzela/Skimming',
-            ),
-            comment_mm='' if ch == 'mm' else '#',
-            comment_ee='' if ch == 'ee' else '#',
-          )
-          _fname = "data17_{ch}_{run}_09Aug2019_JEC{jecv_suffix}.py".format(
-            run=run,
-            jecv_suffix=jecv_suffix,
-            ch=ch,
-          )
-          with open(_fname, 'w') as _f:
-            _f.write(_cfg)
+      _cfg = TEMPLATE.format(
+        run=run,
+        ch=ch,
+        input_path=INPUT_TEMPLATE.format(
+          run=run,
+          pd='DoubleMuon' if ch == 'mm' else 'DoubleEG',
+          userpath='mhorzela/Skimming'
+        ),
+      )
+      _fname = "data17_{ch}_{run}_09Aug2019_JEC.py".format(
+        run=run,
+        ch=ch,
+      )
+      with open(_fname, 'w') as _f:
+        _f.write(_cfg)
 
 if __name__ == '__main__':
     make()

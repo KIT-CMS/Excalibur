@@ -17,7 +17,6 @@ from common import JEC_BASE, JEC_VERSION, JER, SE_PATH_PREFIXES
 
 RUNS={runs}
 CH='{ch}'
-#JEC='{{0}}_{{1}}_{jecv_suffix}'.format(JEC_BASE, JEC_VERSION)
 JEC='{{0}}_{{1}}'.format(JEC_BASE, JEC_VERSION)
 
 
@@ -33,6 +32,10 @@ def config():
     cfg['Pipelines']['default']['Quantities'] += ['jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf']
     cfg['Pipelines']['default']['Quantities'] += ['jnpf', 'rawjnpf', 'mpflead', 'rawmpflead', 'mpfjets', 'rawmpfjets', 'mpfunclustered', 'rawmpfunclustered']
 
+    cfg['Pipelines']['default']['Processors'].insert(cfg['Processors'].index('filter:HltFilter') + 1, 'filter:METFiltersFilter')
+    cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
+        "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
+    
     cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
 
     cfg['MPFSplittingJetPtMin'] = 15.
@@ -65,6 +68,8 @@ def config():
     cfg['CutJetIDVersion'] = '2017UL'  # for event-based JetID
     cfg['CutJetIDFirstNJets'] = 2
 
+    cfg['EnableTypeIModification'] = False
+
     cfg['Processors'] += ['producer:ZJetPUWeightProducer']
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc17ul_DYJets_madgraph_data_15May18/PUWeights_{{}}_15May2018_DYJetsToLL_madgraphMLM.root'.format(runperiod)) for runperiod in {runs}]
     cfg['ZJetPUWeightSuffixes'] = ['{{}}'.format(runperiod) for runperiod in {runs}]
@@ -77,12 +82,10 @@ def config():
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17_plus_hbpw89"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
-    cfg['HltPaths']= [
-        {
-            'ee': 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
-            'mm': HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8'
-        }[CH]
-    ]
+    cfg['HltPaths']= {{
+        'ee': 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
+        'mm': HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8'
+    }}[CH]
 
     return cfg
 """
@@ -91,25 +94,21 @@ def make():
   runs = ['B','C','D','E','F']
   lheWeightNames = ['nominal','isrDefup','isrDefdown','fsrDefup','fsrDefdown']
 
-  #for jecv_suffix in ['SimpleL1', 'ComplexL1']:
-  for jecv_suffix in ['SimpleL1']:
-    for ch in ["mm", "ee"]:
-      _cfg = TEMPLATE.format(
-        runs=runs,
-        lheWeightNames=lheWeightNames,
-        jecv_suffix=jecv_suffix,
-        ch=ch,
-        input_path=INPUT_TEMPLATE.format(
-          userpath='mhorzela/Skimming',
-        )
+  for ch in ["mm", "ee"]:
+    _cfg = TEMPLATE.format(
+      runs=runs,
+      lheWeightNames=lheWeightNames,
+      ch=ch,
+      input_path=INPUT_TEMPLATE.format(
+        userpath='mhorzela/Skimming',
       )
-      _fname = "mc17_{ch}_{runs}_DYJets_Madgraph_JEC{jecv_suffix}.py".format(
-        jecv_suffix=jecv_suffix,
-        ch=ch,
-        runs=''.join(runs),
-      )
-      with open(_fname, 'w') as _f:
-        _f.write(_cfg)
+    )
+    _fname = "mc17_{ch}_{runs}_DYJets_Madgraph_JEC.py".format(
+      ch=ch,
+      runs=''.join(runs),
+    )
+    with open(_fname, 'w') as _f:
+      _f.write(_cfg)
 
 if __name__ == '__main__':
     make()
