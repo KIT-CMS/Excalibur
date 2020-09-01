@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+import re
+import sys
+
+_HELPTEXT="""
+Simple convenience script/command for substituting the local GridKA-NRG mount point on
+ETP machines (i.e. '/storage/gridka-nrg') with the corresponding XRootD grid prefix
+(i.e. 'root://cmsxrootd-redirectors.gridka.de:1094//store/user') in file lists.
+Created mainly for use with glob expressions on the local mount, can be extended
+to other use cases if necessary.
+
+Example usage
+-------------
+
+Assuming `myCommand` supports multiple grid paths, the following command:
+
+  $ myCommand `pathsub_local_grid /storage/gridka-nrg/USER/DIR/*.root`
+
+expands to:
+
+  $ myCommand root://cmsxrootd-redirectors.gridka.de:1094//store/user/USER/DIR/0.root \\
+              root://cmsxrootd-redirectors.gridka.de:1094//store/user/USER/DIR/1.root \\
+              root://cmsxrootd-redirectors.gridka.de:1094//store/user/USER/DIR/2.root ...
+
+"""
+
+
+RULE_STORAGE_GRIDKA_NRG = (re.compile('^/storage/gridka-nrg'), 'root://cmsxrootd-redirectors.gridka.de:1094//store/user')
+
+if __name__ == '__main__':
+    if(len(sys.argv) <= 1 or '--help' in sys.argv or '-h' in sys.argv):
+        print(_HELPTEXT)
+        exit(1)
+
+    print(
+        ' '.join(
+            re.sub(RULE_STORAGE_GRIDKA_NRG[0], RULE_STORAGE_GRIDKA_NRG[1], fname)
+            for fname in sys.argv[1:]
+        )
+    )
