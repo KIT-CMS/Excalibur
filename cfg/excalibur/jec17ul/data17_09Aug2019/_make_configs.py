@@ -72,8 +72,8 @@ def config():
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
     cfg['HltPaths']= {{
-        'ee': 'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL',
-        'mm': HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8'
+        'ee': ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL'],
+        'mm': ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8']
     }}[CH]
 
     return cfg
