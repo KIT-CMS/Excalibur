@@ -35,7 +35,7 @@ def config():
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
         "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
 
-    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res'])
+    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
     cfg['MPFSplittingJetPtMin'] = 15.
     cfg['JNPFJetPtMin'] = 15.
@@ -45,7 +45,7 @@ def config():
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
 
     cfg['ProvideL2ResidualCorrections'] = True
-    cfg['ProvideL2L3ResidualCorrections'] = False
+    cfg['ProvideL2L3ResidualCorrections'] = True
 
     cfg['ApplyElectronVID'] = True
     cfg['ElectronVIDName'] = "Fall17-94X-V2"
