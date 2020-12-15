@@ -120,4 +120,11 @@ class ZJetSettings : public KappaSettings
 
     //ZJetGENWeightProducer
     IMPL_SETTING_STRINGLIST_DEFAULT(ZJetGenWeightNames, {})
+
+    //PrefiringWeightProducer
+    IMPL_SETTING(std::string, PrefiringJetWeightFilename)
+    IMPL_SETTING(std::string, PrefiringJetWeightHistName)
+    IMPL_SETTING(std::string, PrefiringPhotonWeightFilename)
+    IMPL_SETTING(std::string, PrefiringPhotonWeightHistName)
+ 
 };

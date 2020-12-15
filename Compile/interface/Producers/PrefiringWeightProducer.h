@@ -12,11 +12,11 @@ class PrefiringWeightProducer : public ZJetProducerBase
 {
     public:
         std::string GetProducerId() const override;
-//        PrefiringWeightProducer() : ZJetProducerBase() {};
+        PrefiringWeightProducer() : ZJetProducerBase() {};
         void Init(ZJetSettings const& settings);
         void Produce(ZJetEvent const& event,
                      ZJetProduct& product,
-                     ZJetSettings const& settings) ;
+                     ZJetSettings const& settings) const override;
         enum fluctuations { central = 0, up, down };
 
     private:
@@ -25,6 +25,6 @@ class PrefiringWeightProducer : public ZJetProducerBase
  
         TH2F* h_prefmap_photon;
         TH2F* h_prefmap_jet;
-        double getPrefiringRate(double eta, double pt, fluctuations var);
-
+        double getPrefiringRate(double eta, double pt, TH2F* h_prefmap, fluctuations var) const;
+        double prefiringRateSystUnc_;
 };

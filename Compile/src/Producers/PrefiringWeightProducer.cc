@@ -3,17 +3,16 @@
 
 #include <boost/algorithm/string.hpp>
 #include "TH2.h"
-#include "TGraphAsymmErrors.h"
 #include <stdio.h>
-
+#include "Kappa/DataFormats/interface/Kappa.h"
 
 std::string PrefiringWeightProducer::GetProducerId() const { return "PrefiringWeightProducer"; }
 
 void PrefiringWeightProducer::Init(ZJetSettings const& settings)
 {
-    const std::string prefiringJetWeightFilePath = settings.GetPrefiringJetWeightFile();
+    const std::string prefiringJetWeightFilePath = settings.GetPrefiringJetWeightFilename();
     const std::string prefiringJetWeightHistName = settings.GetPrefiringJetWeightHistName();
-    const std::string prefiringPhotonWeightFilePath = settings.GetPrefiringPhotonWeightFile();
+    const std::string prefiringPhotonWeightFilePath = settings.GetPrefiringPhotonWeightFilename();
     const std::string prefiringPhotonWeightHistName = settings.GetPrefiringPhotonWeightHistName();
 
     // open file containing prefireing jet weight map
@@ -54,10 +53,7 @@ void PrefiringWeightProducer::Init(ZJetSettings const& settings)
 
 }
 
-double PrefiringWeightProducer::getPrefiringRate(double eta,
-                                                 double pt,
-                                                 TH2F* h_prefmap,
-                                                 fluctuations fluctuation) const
+double PrefiringWeightProducer::getPrefiringRate(double eta, double pt, TH2F* h_prefmap, fluctuations fluctuation) const
 {
     if (h_prefmap == nullptr)
         LOG(ERROR) << "Prefiring map histogram not found";
@@ -87,11 +83,12 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
     double nonPrefiringProba[3] = {1., 1., 1.};  //0: central, 1: up, 2: down
     for (const auto fluct : {fluctuations::central, fluctuations::up, fluctuations::down}) {
         // applying the prefiring maps to photons in the affected regions.
-        for (std::vector<KPhoton>::iterator photon = event.m_pfPhotons->begin(); photon != event.m_pfPhoton->end();
-                 ++photon)
+        for (unsigned int iph = 0; iph<product.m_pfPhotons.size(); ++iph)
         {
-            double pt_gam = photon.pt();
-            double eta_gam = photon.eta();
+            KLV photon;
+            photon.p4 = product.m_pfPhotons[iph]->p4;
+            double pt_gam = photon.p4.Pt();
+            double eta_gam = photon.p4.Eta();
             if (pt_gam < 20.)
                 continue;
             if (fabs(eta_gam) < 2.)
@@ -102,11 +99,12 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
             nonPrefiringProba[fluct] *= (1. - prefiringprob_gam);
         }
         // applying the prefiring maps to jets in the affected regions.
-        for (std::vector<TJet>::iterator jet = event.m_basicJets->begin();  jet != event.m_basicJets->end(); ++jet)
+        for (unsigned int iJet = 0; iJet < event.m_tjets->size();  ++iJet)
         {
-            double pt_jet = jet.pt();
-            double eta_jet = jet.eta();
-            double phi_jet = jet.phi();
+            KLV jet;
+            jet.p4 = event.m_tjets[iJet].p4;
+            double pt_jet = jet.p4.Pt();
+            double eta_jet = jet.p4.eta();
             if (pt_jet < 20.)
                 continue;
             if (fabs(eta_jet) < 2.)
@@ -115,11 +113,12 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
                 continue;
             //Loop over photons to remove overlap
             double nonprefiringprobfromoverlappingphotons = 1.;
-            for (const auto& photon : *thePhotons)
+            for (unsigned int iph = 0; iph<product.m_pfPhotons.size(); ++iph)
             {
-                double pt_gam = photon.pt();
-                double eta_gam = photon.eta();
-                double phi_gam = photon.phi();
+                KLV photon;
+                photon.p4 = product.m_pfPhotons[iph]->p4;
+                double pt_gam = photon.p4.Pt();
+                double eta_gam = photon.p4.eta();
                 if (pt_gam < 20.)
                     continue;
                 if (fabs(eta_gam) < 2.)
@@ -133,6 +132,7 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
                 nonprefiringprobfromoverlappingphotons *= (1. - prefiringprob_gam);
 
             }
+            double nonprefiringprobfromoverlappingjet = 1. - getPrefiringRate(eta_jet, pt_jet, h_prefmap_jet, fluct);
             if (nonprefiringprobfromoverlappingphotons == 1.)
             {
                 nonPrefiringProba[fluct] *= nonprefiringprobfromoverlappingjet;
