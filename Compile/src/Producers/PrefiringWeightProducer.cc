@@ -47,9 +47,12 @@ void PrefiringWeightProducer::Init(ZJetSettings const& settings)
     // read in the weight maps
     h_prefmap_photon = (TH2F*) prefiringPhotonWeightFile->Get(prefiringPhotonWeightHistName.c_str());
     // detach ownership of object and close file
+    if (!h_prefmap_photon)
+    {
+        LOG(ERROR) << "Histogram " << prefiringPhotonWeightHistName.c_str() << " not in file";
+    }
     h_prefmap_photon->SetDirectory(0);
     prefiringPhotonWeightFile->Close();
-   
 
 }
 
@@ -102,7 +105,7 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
         for (unsigned int iJet = 0; iJet < event.m_tjets->size();  ++iJet)
         {
             KLV jet;
-            jet.p4 = event.m_tjets[iJet].p4;
+            jet.p4 = event.m_tjets->at(iJet).p4;
             double pt_jet = jet.p4.Pt();
             double eta_jet = jet.p4.eta();
             if (pt_jet < 20.)
@@ -151,9 +154,9 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
             //Last case: if overlapping photons have a non prefiring rate smaller than the jet, don't consider the jet in the event weight, and do nothing.
         }
     }
-    product.m_weights["prefiringWeight"] =  1./nonPrefiringProba[0];
-    product.m_weights["prefiringWeightUp"] =  1./nonPrefiringProba[1];
-    product.m_weights["prefiringWeightDown"] =  1./nonPrefiringProba[2];
+    product.m_optionalWeights["prefiringWeight"] =  1./nonPrefiringProba[0];
+    product.m_optionalWeights["prefiringWeightUp"] =  1./nonPrefiringProba[1];
+    product.m_optionalWeights["prefiringWeightDown"] =  1./nonPrefiringProba[2];
   
 }
 
