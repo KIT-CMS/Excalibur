@@ -129,12 +129,6 @@ def data(cfg, **kwargs):
     else:
         cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jec_string))
     _jer_string = kwargs.get('JER', None)
-    if _jer_string is not None:
-        cfg['JER'] = os.path.join(configtools.getPath(), '../JRDatabase/textFiles/{0}_DATA/{0}_DATA'.format(_jer_string))
-        cfg['JERMethod'] = "stochastic"
-        cfg['JERSmearerSeed'] = 92837465
-        # insert smearer and sorter after the matching producer
-        cfg['Processors'].insert(cfg['Processors'].index('producer:JetSorter'), 'producer:JERSmearer',)
 
 
 def mc(cfg, **kwargs):
@@ -234,8 +228,9 @@ def mc(cfg, **kwargs):
         cfg['JERMethod'] = "stochastic"  # options: "hybrid" or "stochastic"
         cfg['JERSmearerSeed'] = 92837465
 
-        # insert smearer and sorter after the matching producer
-        cfg['Processors'][cfg['Processors'].index("producer:RecoJetGenJetMatchingProducer")+1:1] = ["producer:JERSmearer", "producer:JetSorter"]
+        # insert smearer in front of TypeI-MET producer
+        cfg['Processors'].insert(cfg['Processors'].index("producer:TypeIMETProducer"), "producer:JERSmearer")
+
 
 
 def _2016(cfg, **kwargs):
@@ -344,6 +339,7 @@ def data_2018(cfg, **kwargs):
     pass
 
 def mc_2016(cfg, **kwargs):
+    _jec_iov = kwargs['IOV']
     # TODO: move PUWeightFile here if possible
 
     # object-based eta-phi cleaning (recommended jul. 2018)
