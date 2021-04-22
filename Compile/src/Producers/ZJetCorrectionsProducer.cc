@@ -164,6 +164,9 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
     if (settings.GetRC()) {
         CorrectJetCollection("None", "RC", m_rc, event, product, settings);
     }
+    // copy corrected L1 Jets for Type I MET calculation
+    product.m_unsmearedL1Jets = product.m_correctedZJets;
+
     CorrectJetCollection("L1", "L1L2L3", m_l2, event, product,
                          settings);  // Output is named L1L2L3 since L1L2 -> L1L2L3 does not do
                                      // anything and we need L1L2L3 for further corrections/access

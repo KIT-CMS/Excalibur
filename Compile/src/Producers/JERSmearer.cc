@@ -13,6 +13,11 @@ void JERSmearer::Init(ZJetSettings const& settings) {
     if (settings.GetInputIsData())
         LOG(FATAL) << "[JERSmearer] Attempt to smear jets with JER in data! Aborting.";
 
+    // check for smearing flag
+    if (KappaTools::tolower(settings.GetJER()) == "none")
+        LOG(FATAL) << "[JERSmearer] skipped: JER is set to None. Remove from producers, if you don't"
+                   << " want to run JER smearing.";
+
     // convert usual algo name (ak5PFJetsCHS) to txt file algo name (AK5PFchs)
     std::string jetName = "Jets";
     if (settings.GetTaggedJets().find("Tagged") != std::string::npos)
