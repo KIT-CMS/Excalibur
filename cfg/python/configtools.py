@@ -49,7 +49,7 @@ def getConfig(inputtype, year, channel, **kwargs):
 	# Adjust met input if CHS jets are requested
 	if "CHS" in cfg['TaggedJets'] or "Puppi" in cfg['TaggedJets']:
 		cfg['Met'] = cfg['Met'] + 'CHS'
-
+	# TODO: add check for the correct order of the sorter and the Type I Met producer
 	return cfg
 
 

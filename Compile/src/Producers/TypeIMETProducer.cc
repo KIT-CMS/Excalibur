@@ -56,7 +56,7 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
 
             // Only consider jets with Pt above TypeIJetPtMin
             if (corrJet->p4.Pt() > settings.GetTypeIJetPtMin()) {
-                KLV* l1Jet = (SafeMap::Get(product.m_correctedZJets, m_l1Corr).at(jetIndex)).get();
+                KLV* l1Jet = (SafeMap::Get(product.m_unsmearedL1Jets, m_l1Corr).at(jetIndex)).get();
                 // propagate *vector* p4 difference to MET
                 correction.p4 += l1Jet->p4 - corrJet->p4;
                 // propagate *scalar* pT difference to sumEt

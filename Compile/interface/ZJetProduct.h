@@ -25,6 +25,9 @@ class ZJetProduct : public KappaProduct
     // product after creation
     std::map<std::string, std::vector<std::shared_ptr<KJet>>> m_correctedZJets;
 
+    // unsmeared corrected L1 jets for Type I MET
+    std::map<std::string, std::vector<std::shared_ptr<KJet>>> m_unsmearedL1Jets;
+
     // Added by ZJetCorrectionsProducer, necessary to cross-check the applied JEC factors: pT of
     // jets has to be saved BEFORE sorting
     float jetpt_l1 = 0;
