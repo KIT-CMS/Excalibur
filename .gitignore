@@ -18,6 +18,7 @@ work.*
 *__init__.py
 *.formatted
 *.root
+
 !data/pileup/*.root
 !data/pileup/*/*.root
 !data/pileup/*/*/*.root
@@ -25,6 +26,11 @@ work.*
 !data/cleaning/*.root
 !data/cleaning/*/*.root
 !data/cleaning/*/*/*.root
+
+cfg/excalibur/*/*/*.py
+!_make_configs.py
+!common.py
+
 !ntuples/*.root
 !test/*.root
 logs/
@@ -40,3 +46,4 @@ store
 
 # PyCharm IDE directory
 .idea
+.vscode/settings.json
