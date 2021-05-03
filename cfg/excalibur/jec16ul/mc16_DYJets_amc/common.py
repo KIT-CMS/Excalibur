@@ -43,13 +43,13 @@ def config(ch, run, jec):
         APV=True
         IOVS = ['BCD', 'EFearly']
         postfix = 'preVFP_v8'
-        inputfiles = "{}/dsavoiu/Skimming/ZJet_DYJetsToLL_Summer20-amcatnloFXFX_mcRun2_asymptotic_preVFP_v8/*.root"
+        inputfiles = "{}/rvoncube/Skimming/ZJet_DYJetsToLL_Summer20-amcatnloFXFX_mcRun2_asymptotic_preVFP_v8/*.root"
     else:
         APV=False
         runs = 'FlateGH'
         IOVS = ['Flate', 'G', 'H']
         postfix = 'v13'
-        inputfiles = "{}/dsavoiu/Skimming/ZJet_DYJetsToLL_Summer20-amcatnloFXFX_mcRun2_asymptotic_v13/*.root"
+        inputfiles = "{}/rvoncube/Skimming/ZJet_DYJetsToLL_Summer20-amcatnloFXFX_mcRun2_asymptotic_v13/*.root"
 
     _jer = JER["APV" if APV else "nonAPV"]
     cfg = configtools.getConfig('mc', 2016, ch, bunchcrossing='25ns', IOV=run, JER=_jer, JEC=jec)

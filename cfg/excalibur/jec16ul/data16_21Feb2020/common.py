@@ -49,7 +49,7 @@ def config(ch, run, jec):
         _jsonFiles.append("H")
 
     cfg["InputFiles"].set_input(**{
-        'path'+_run: "{}/mhorzela/Skimming/ZJet_{}_Run2016{}_21Feb2020_UL2016/*.root".format(
+        'path'+_run: "{}/rvoncube/Skimming/ZJet_{}_Run2016{}_21Feb2020_UL2016/*.root".format(
             SE_PATH_PREFIXES['xrootd_gridka_nrg'],
             {'ee': 'DoubleEG', 'mm': 'DoubleMuon'}[ch],
             _run
