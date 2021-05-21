@@ -95,8 +95,7 @@ def getBaseConfig(tagged=False, **kwargs):
             'producer:ValidTaggedJetsProducer',  # builds jet collection
             'producer:ValidZllJetsProducer',  # applies lepton cleaning, needs to run before the 'ZJetCorrectionsProducer'
             'producer:ZJetCorrectionsProducer',  # applies correction factors
-            'producer:TypeIMETProducer',  # applies type-1 correction, can run on unsorted collections
-            'producer:JetSorter',  # sorts jets
+
             # 'producer:JetRecoilProducer',  # produces jet recoil observables, use if neccessary
             ],
         # Wire Kappa objects
@@ -114,7 +113,11 @@ def getBaseConfig(tagged=False, **kwargs):
 def data(cfg, **kwargs):
     cfg['InputIsData'] = True
     cfg['Processors'] = ['filter:JsonFilter']+cfg['Processors']+['producer:HltProducer','filter:HltFilter',]
-    cfg['Processors'] += ['producer:NPUProducer']
+    cfg['Processors'] += [
+        'producer:NPUProducer',
+        'producer:TypeIMETProducer',  # applies type-1 correction, can run on unsorted collections
+        'producer:JetSorter' # sorts jets
+        ]
     cfg['ProvideL2L3ResidualCorrections'] = True
     #cfg['ProvideL2ResidualCorrections'] = True
     cfg['Pipelines']['default']['Quantities'] += ['jet1ptl1l2l3', 'jet1res']  # TODO: restructure as mentioned above
@@ -141,6 +144,8 @@ def mc(cfg, **kwargs):
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
         'producer:ZJetTrueGenMuonsProducer',
+        'producer:TypeIMETProducer',  # applies type-1 correction, can run on unsorted collections
+        'producer:JetSorter',  # sorts jets
         #'producer:ZJetGenWeightProducer'
         ]
     cfg['GenParticles'] = 'genParticles'
@@ -310,7 +315,6 @@ def data_2016(cfg, **kwargs):
 
     # object-based eta-phi cleaning (recommended jul. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
-    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_07Aug2017_Legacy/hotjets-run{}.root".format(_jec_iov))
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
@@ -344,7 +348,6 @@ def mc_2016(cfg, **kwargs):
 
     # object-based eta-phi cleaning (recommended jul. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
-    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16/data16_07Aug2017_Legacy/hotjets-run{}.root".format(_jec_iov))
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
