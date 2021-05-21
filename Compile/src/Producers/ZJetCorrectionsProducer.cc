@@ -180,10 +180,10 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
         std::vector<std::shared_ptr<KJet>> newJets;  // create new vector to store the new, independent
                                                      // pointers
         // loop over each vector element to dereference the values to get rid of the old pointers...
-        for (int vecIndex = 0; vecIndex < tempJets.size(); vecIndex++) {
-            std::shared_ptr<KJet> newPointer = new std::shared_ptr<KJet>;
+        for (unsigned int vecIndex = 0; vecIndex < tempJets.size(); vecIndex++) {
+            std::shared_ptr<KJet> newPointer;
             *newPointer = *tempJets[vecIndex++];
-            newJets.push_back(*newPointer);  // push_back new pointers
+            newJets.push_back(newPointer);  // push_back new pointers
         }
         // add each iteration to the new map
         product.m_unsmearedL1Jets.insert(std::make_pair(it->first, newJets));
