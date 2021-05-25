@@ -173,8 +173,9 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
      * PS: there must be a better way... TODO
      ****/
 
+    product.m_unsmearedL1Jets = product.m_correctedZJets;
     // loop over all map keys
-    for (const auto& map_entry : m_unsmearedL1Jets) {
+    for (const auto& map_entry : product.m_unsmearedL1Jets) {
         std::vector<std::shared_ptr<KJet>> newJets;  // create new vector to store the new, independent
                                                      // pointers
         // loop over each vector element to dereference the values to get rid of the old pointers...
