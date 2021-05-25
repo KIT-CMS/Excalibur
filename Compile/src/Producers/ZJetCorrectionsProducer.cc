@@ -174,19 +174,18 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
      ****/
 
     // loop over all map keys
-    for (std::map<std::string, std::vector<std::shared_ptr<KJet>>>::const_iterator it = product.m_correctedZJets.begin();
-        it != product.m_correctedZJets.end(); ++it) {
-        std::vector<std::shared_ptr<KJet>> tempJets = it->second;  // create a temporary copy of vec
+    for (const auto& map_entry : m_unsmearedL1Jets) {
         std::vector<std::shared_ptr<KJet>> newJets;  // create new vector to store the new, independent
                                                      // pointers
         // loop over each vector element to dereference the values to get rid of the old pointers...
-        for (unsigned int vecIndex = 0; vecIndex < tempJets.size(); vecIndex++) {
-            std::shared_ptr<KJet> newPointer;
-            *newPointer = *tempJets[vecIndex++];
-            newJets.push_back(newPointer);  // push_back new pointers
+        for (const auto& v : map_entry.second) {
+            KJet temp = *v;
+            auto newShared = std::shared_ptr<KJet>(new KJet(temp));
+            newJets.push_back(newShared);  // push_back new pointers
         }
         // add each iteration to the new map
-        product.m_unsmearedL1Jets.insert(std::make_pair(it->first, newJets));
+        product.m_unsmearedL1Jets[map_entry.first] = newJets;
+        newJets.clear();
     }
 
     CorrectJetCollection("L1", "L1L2L3", m_l2, event, product,
