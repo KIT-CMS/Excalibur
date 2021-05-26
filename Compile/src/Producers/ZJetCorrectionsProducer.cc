@@ -164,8 +164,30 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
     if (settings.GetRC()) {
         CorrectJetCollection("None", "RC", m_rc, event, product, settings);
     }
-    // copy corrected L1 Jets for Type I MET calculation
+
+    // deep copy corrected L1 Jets for Type I MET calculation
+    /****
+     * For the TypeIMet it is necessary to use the unsmeared L1 jets (L1RC).
+     * Therefore, we have to disentangle the shared pointer construct of the m_correctedZJets,
+     * since the JERSmearer runs before the TypeIMetProducer
+     * PS: there must be a better way... TODO
+     ****/
+
     product.m_unsmearedL1Jets = product.m_correctedZJets;
+    // loop over all map keys
+    for (const auto& map_entry : product.m_unsmearedL1Jets) {
+        std::vector<std::shared_ptr<KJet>> newJets;  // create new vector to store the new, independent
+                                                     // pointers
+        // loop over each vector element to dereference the values to get rid of the old pointers...
+        for (const auto& v : map_entry.second) {
+            KJet temp = *v;
+            auto newShared = std::shared_ptr<KJet>(new KJet(temp));
+            newJets.push_back(newShared);  // push_back new pointers
+        }
+        // add each iteration to the new map
+        product.m_unsmearedL1Jets[map_entry.first] = newJets;
+        newJets.clear();
+    }
 
     CorrectJetCollection("L1", "L1L2L3", m_l2, event, product,
                          settings);  // Output is named L1L2L3 since L1L2 -> L1L2L3 does not do

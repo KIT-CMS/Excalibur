@@ -78,8 +78,9 @@ def config(ch, run, jec):
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath(), 'data/pileup/mc_weights/mc16ul_DYJets_amcatnlo/PUWeights_{}_DYJetsToLL_Summer20-amcatnloFXFX_mcRun2_asymptotic_{}.root'.format(runperiod, postfix)) for runperiod in IOVS]
     cfg['ZJetPUWeightSuffixes'] = ['{}'.format(runperiod) for runperiod in IOVS]
 
-    cfg['Processors'] += ['producer:ZJetGenWeightProducer']
-    cfg['ZJetGenWeightNames'] = ['nominal', 'isrDefup', 'isrDefdown', 'fsrDefup', 'fsrDefdown']
+    # redundant?!
+    # cfg['Processors'] += ['producer:ZJetGenWeightProducer']
+    # cfg['ZJetGenWeightNames'] = ['nominal', 'isrDefup', 'isrDefdown', 'fsrDefup', 'fsrDefdown']
 
     cfg['Pipelines']['default']['Quantities'] += ['puWeight{}'.format(runperiod) for runperiod in IOVS]
     cfg['Pipelines']['default']['Quantities'] += ['genWeight_{}'.format(lheWeightName) for lheWeightName in lheWeightNames]
