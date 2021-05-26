@@ -7,8 +7,8 @@ JEC_VERSION = 'V5'
 
 # set JER to 'None' to turn JER smearing off
 JER = {
-    "APV": "Summer20UL16APV_JRV2",
-    "nonAPV": "Summer20UL16_JRV2"
+    "APV": "Summer20UL16APV_JRV3",
+    "nonAPV": "Summer20UL16_JRV3"
     }
 
 SE_PATH_PREFIXES = dict(
@@ -77,10 +77,6 @@ def config(ch, run, jec):
     cfg['Processors'] += ['producer:ZJetPUWeightProducer']
     cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath(), 'data/pileup/mc_weights/mc16ul_DYJets_amcatnlo/PUWeights_{}_DYJetsToLL_Summer20-amcatnloFXFX_mcRun2_asymptotic_{}.root'.format(runperiod, postfix)) for runperiod in IOVS]
     cfg['ZJetPUWeightSuffixes'] = ['{}'.format(runperiod) for runperiod in IOVS]
-
-    # redundant?!
-    # cfg['Processors'] += ['producer:ZJetGenWeightProducer']
-    # cfg['ZJetGenWeightNames'] = ['nominal', 'isrDefup', 'isrDefdown', 'fsrDefup', 'fsrDefdown']
 
     cfg['Pipelines']['default']['Quantities'] += ['puWeight{}'.format(runperiod) for runperiod in IOVS]
     cfg['Pipelines']['default']['Quantities'] += ['genWeight_{}'.format(lheWeightName) for lheWeightName in lheWeightNames]
