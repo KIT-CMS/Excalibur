@@ -3,7 +3,7 @@ import os
 import configtools
 
 JEC_BASE = 'Summer19UL16'
-JEC_VERSION = 'V5'
+JEC_VERSION = 'V7'
 
 # set JER to 'None' to turn JER smearing off
 JER = {
