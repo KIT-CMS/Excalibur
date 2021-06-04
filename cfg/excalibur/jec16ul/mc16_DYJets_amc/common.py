@@ -47,7 +47,7 @@ def config(ch, run, jec):
     else:
         APV=False
         runs = 'FlateGH'
-        IOVS = ['Flate', 'G', 'H']
+        IOVS = ['Flate', 'G', 'H', 'FlateGH']
         postfix = 'v13'
         inputfiles = "{}/rvoncube/Skimming/ZJet_DYJetsToLL_Summer20-amcatnloFXFX_mcRun2_asymptotic_v13/*.root"
 
