@@ -481,7 +481,8 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        : DefaultValues::UndefinedFloat;
         });
     // add additional Jets: (default: jet3)
-    for (unsigned i = 2; i < 3; ++i) {
+    for (unsigned i = 2; i < 10; ++i) {
+
         LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
             "jet"+ std::to_string(i+1) +"pt", [i, settings](ZJetEvent const& event, ZJetProduct const& product) {
                 return (product.GetValidJetCount(settings, event) > i)
@@ -506,7 +507,13 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                        ? product.GetValidJet(settings, event, i)->p4.Rapidity()
                        : DefaultValues::UndefinedFloat;
             });
-        }
+        LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
+            "jet"+ std::to_string(i+1) +"ptraw", [i, settings](ZJetEvent const& event, ZJetProduct const& product) {
+                return (product.GetValidJetCount(settings, event) > i)
+                        ? product.GetValidJet(settings, event, i, "None")->p4.Pt()
+                        : DefaultValues::UndefinedFloat;
+            });
+}
     // General jet stuff
     LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
         "njets", [settings](ZJetEvent const& event, ZJetProduct const& product) {

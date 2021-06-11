@@ -56,6 +56,7 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
 
             // Only consider jets with Pt above TypeIJetPtMin
             if (corrJet->p4.Pt() > settings.GetTypeIJetPtMin()) {
+                std::cout << jetIndex+1 << " " << (SafeMap::Get(product.m_correctedZJets, m_corrLevels[corrLevelIndex]).at(jetIndex)).get()->p4.Pt() << " " << product.m_validJets.at(jetIndex)->p4.Pt() << " " << (SafeMap::Get(product.m_correctedZJets, m_l1Corr).at(jetIndex)).get()->p4.Pt() << " " << product.m_validJets.at(jetIndex)->p4.Eta() << " " << product.m_validJets.at(jetIndex)->p4.Phi() << " " << (SafeMap::Get(product.m_correctedZJets, m_corrLevels[corrLevelIndex]).at(jetIndex)).get()->p4.E() << " " << (SafeMap::Get(product.m_correctedZJets, m_corrLevels[corrLevelIndex]).at(jetIndex)).get()->p4.M() << std::endl;
                 KLV* l1Jet = (SafeMap::Get(product.m_unsmearedL1Jets, m_l1Corr).at(jetIndex)).get();
                 // propagate *vector* p4 difference to MET
                 correction.p4 += l1Jet->p4 - corrJet->p4;
@@ -64,11 +65,14 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
             }
         }
         KMET corrMET = *event.m_met;
+	std::cout << "rawMET: " << corrMET.p4.Pt() << " " << corrMET.p4.Phi() << std::endl;
         corrMET.p4 += correction.p4;
+
 
         // Eta of MET is always zero
         corrMET.p4.SetEta(0.0f);
         corrMET.sumEt = event.m_met->sumEt + sumEtCorrection;
+        std::cout << "rawMET: " << corrMET.p4.Pt() << " " << corrMET.p4.Phi()  << std::endl;
 
         // Apply MET-phi-corrections
         if (settings.GetEnableMetPhiCorrection()) {

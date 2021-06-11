@@ -48,13 +48,14 @@ def config(ch, run, jec):
         _inputRuns.append("H")
         _jsonFiles.append("H")
 
-    cfg["InputFiles"].set_input(**{
+    """cfg["InputFiles"].set_input(**{
         'path'+_run: "{}/rvoncube/Skimming/ZJet_{}_Run2016{}_21Feb2020_UL2016/*.root".format(
             SE_PATH_PREFIXES['xrootd_gridka_nrg'],
             {'ee': 'DoubleEG', 'mm': 'DoubleMuon'}[ch],
             _run
         ) for _run in _inputRuns}
-    )
+    )"""
+    cfg["InputFiles"].set_input(path="/work/jec/KappaSkim_UL16_DoubleEG_synch.root")
 
     cfg['JsonFiles'] =  [
         os.path.join(configtools.getPath(),'data/json/Collisions16/Cert_{}_13TeV_Legacy2016_Collisions16_JSON.txt'.format(
@@ -79,6 +80,11 @@ def config(ch, run, jec):
     cfg['Pipelines']['default']['Quantities'] += ['jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf']
     cfg['Pipelines']['default']['Quantities'] += ['jnpf', 'rawjnpf', 'mpflead', 'rawmpflead', 'mpfjets', 'rawmpfjets', 'mpfunclustered', 'rawmpfunclustered']
 
+    cfg['Pipelines']['default']['Quantities'] += ['jet{}pt'.format(i) for i in range(3,10)]
+    cfg['Pipelines']['default']['Quantities'] += ['jet{}ptraw'.format(i) for i in range(3,10)]
+    cfg['Pipelines']['default']['Quantities'] += ['jet{}eta'.format(i) for i in range(3,10)]
+    cfg['Pipelines']['default']['Quantities'] += ['jet{}y'.format(i) for i in range(3,10)]
+    cfg['Pipelines']['default']['Quantities'] += ['jet{}phi'.format(i) for i in range(3,10)]
     cfg['Pipelines']['default']['Processors'].insert(cfg['Processors'].index('filter:HltFilter') + 1, 'filter:METFiltersFilter')
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
         "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
