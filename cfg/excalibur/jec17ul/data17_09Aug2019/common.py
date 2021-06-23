@@ -1,5 +1,5 @@
 JEC_BASE='Summer19UL17'
-JEC_VERSION='V5'
+JEC_VERSION='V6'
 
 JER = None
 
