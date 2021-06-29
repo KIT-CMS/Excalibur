@@ -27,9 +27,9 @@ def config():
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
         "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
 
-    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
+    cfg = configtools.expand(cfg, ['nocuts','basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
-    cfg['CutBackToBack'] = 0.44
+    cfg['CutBackToBack'] = 0.34
 
     cfg['MPFSplittingJetPtMin'] = 15.
     cfg['JNPFJetPtMin'] = 15.

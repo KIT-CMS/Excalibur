@@ -90,7 +90,7 @@ def config(ch, run, jec):
         "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
 
 
-    cfg['CutBackToBack'] = 0.44
+    cfg['CutBackToBack'] = 0.34
 
     cfg['MPFSplittingJetPtMin'] = 15.
     cfg['JNPFJetPtMin'] = 15.
