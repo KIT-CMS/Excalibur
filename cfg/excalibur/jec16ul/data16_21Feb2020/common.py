@@ -55,7 +55,7 @@ def config(ch, run, jec):
             _run
         ) for _run in _inputRuns}
     )"""
-    cfg["InputFiles"].set_input(path="/work/jec/KappaSkim_UL16_DoubleEG_synch.root")
+    cfg["InputFiles"].set_input(path="/work/jec/KappaSkim_UL16_DoubleEG_synch_fall17V1.root")
 
     cfg['JsonFiles'] =  [
         os.path.join(configtools.getPath(),'data/json/Collisions16/Cert_{}_13TeV_Legacy2016_Collisions16_JSON.txt'.format(
@@ -72,7 +72,7 @@ def config(ch, run, jec):
     cfg['CutJetIDFirstNJets'] = 2
 
     cfg['ApplyElectronVID'] = True
-    cfg['ElectronVIDName'] = "Fall17-94X-V2"
+    cfg['ElectronVIDName'] = "Fall17-94X-V1"
     cfg['ElectronVIDType'] = "cutbased"
     cfg['ElectronVIDWorkingPoint'] = "tight"
 
@@ -80,11 +80,11 @@ def config(ch, run, jec):
     cfg['Pipelines']['default']['Quantities'] += ['jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf']
     cfg['Pipelines']['default']['Quantities'] += ['jnpf', 'rawjnpf', 'mpflead', 'rawmpflead', 'mpfjets', 'rawmpfjets', 'mpfunclustered', 'rawmpfunclustered']
 
-    cfg['Pipelines']['default']['Quantities'] += ['jet{}pt'.format(i) for i in range(3,10)]
-    cfg['Pipelines']['default']['Quantities'] += ['jet{}ptraw'.format(i) for i in range(3,10)]
-    cfg['Pipelines']['default']['Quantities'] += ['jet{}eta'.format(i) for i in range(3,10)]
-    cfg['Pipelines']['default']['Quantities'] += ['jet{}y'.format(i) for i in range(3,10)]
-    cfg['Pipelines']['default']['Quantities'] += ['jet{}phi'.format(i) for i in range(3,10)]
+    #cfg['Pipelines']['default']['Quantities'] += ['jet{}pt'.format(i) for i in range(3,10)]
+    #cfg['Pipelines']['default']['Quantities'] += ['jet{}ptraw'.format(i) for i in range(3,10)]
+    #cfg['Pipelines']['default']['Quantities'] += ['jet{}eta'.format(i) for i in range(3,10)]
+    #cfg['Pipelines']['default']['Quantities'] += ['jet{}y'.format(i) for i in range(3,10)]
+    #cfg['Pipelines']['default']['Quantities'] += ['jet{}phi'.format(i) for i in range(3,10)]
     cfg['Pipelines']['default']['Processors'].insert(cfg['Processors'].index('filter:HltFilter') + 1, 'filter:METFiltersFilter')
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
         "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
@@ -102,13 +102,13 @@ def config(ch, run, jec):
     cfg['ProvideL2ResidualCorrections'] = True
     cfg['ProvideL2L3ResidualCorrections'] = True
 
-    cfg = configtools.expand(cfg, ['basiccuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
+    cfg = configtools.expand(cfg, ['nocuts', 'basiccuts', 'finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
     cfg['JERMethod'] = "hybrid"  # options: "hybrid" or "stochastic"
 
     if ch == 'ee':
         cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetValidElectronsProducer'), 'producer:ElectronCorrectionsProducer',)
-        cfg['ApplyElectronEnergyCorrections'] = True
+        cfg['ApplyElectronEnergyCorrections'] = False
         cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
         cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ']
         cfg["CutElectronSubPtMin"] = 15.0
