@@ -268,7 +268,8 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
                     return (product.GetValidJetCount(settings, event) > iJet)
                                ? ValidJetsProducer::passesJetID(dynamic_cast<KBasicJet*>(product.GetValidJet(settings, event, iJet)),
                                                                 jetIDVersionEnumType,
-                                                                jetIDEnumType)
+                                                                jetIDEnumType,
+                                                                settings)
                                : DefaultValues::UndefinedFloat;
                });
         }
@@ -2104,7 +2105,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "invalidjet1idloose", [settings](event_type const& event, product_type const& product) {
             return (product.GetInvalidJetCount(settings, event) > 0)
                     ? ValidJetsProducer::passesJetID(product.m_invalidJets[0],
-                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE, settings)
                     : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -2117,7 +2118,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "invalidjet2idloose", [settings](event_type const& event, product_type const& product) {
             return (product.GetInvalidJetCount(settings, event) > 1)
                     ? ValidJetsProducer::passesJetID(product.m_invalidJets[1],
-                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE, settings)
                     : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -2130,7 +2131,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "invalidjet3idloose", [settings](event_type const& event, product_type const& product) {
             return (product.GetInvalidJetCount(settings, event) > 2)
                     ? ValidJetsProducer::passesJetID(product.m_invalidJets[2],
-                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE)
+                        KappaEnumTypes::JetIDVersion::ID2016, KappaEnumTypes::JetID::LOOSE, settings)
                     : DefaultValues::UndefinedFloat;
         });
     // incoming partons
