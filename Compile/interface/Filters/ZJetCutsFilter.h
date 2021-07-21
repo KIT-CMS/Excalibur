@@ -559,7 +559,8 @@ class JetIDCut : public ZJetFilterBase
                                     ? ValidJetsProducer::passesJetID(
                                           dynamic_cast<KBasicJet*>(product.GetValidJet(settings, event, iJet)),
                                           m_jetIDVersionEnumType,
-                                          m_jetIDEnumType)
+                                          m_jetIDEnumType,
+                                          settings)
                                     : false;
             // return immediately on non-passing jet
             if (!_jetPassesID) {
