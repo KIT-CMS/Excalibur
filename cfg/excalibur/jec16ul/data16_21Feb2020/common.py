@@ -89,6 +89,7 @@ def config(ch, run, jec):
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
         "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
 
+    cfg['CutJetIDFirstNJets'] = 1
 
     cfg['CutBackToBack'] = 0.34
 
