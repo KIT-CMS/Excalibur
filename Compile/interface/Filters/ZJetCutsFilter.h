@@ -175,6 +175,11 @@ class MuonPtCut : public ZJetFilterBase
     {
         ZJetFilterBase::Init(settings);
         muonPtMin = settings.GetCutMuonPtMin();
+        if (settings.GetCutMuonSubPtMin() != -1.0) {
+          muonSubPtMin = settings.GetCutMuonSubPtMin();
+        } else {
+          muonSubPtMin = muonPtMin;
+        }
     }
 
     bool DoesEventPass(ZJetEvent const& event,
@@ -185,13 +190,14 @@ class MuonPtCut : public ZJetFilterBase
         bool allPassed = true;
         allPassed = allPassed && product.m_validMuons[0]->p4.Pt() > muonPtMin;
         allPassed = product.m_validMuons.size() >= 2
-                        ? (allPassed && product.m_validMuons[1]->p4.Pt() > muonPtMin)
+                        ? (allPassed && product.m_validMuons[1]->p4.Pt() > muonSubPtMin)
                         : allPassed;
         return allPassed;
     }
 
   private:
     float muonPtMin = 0;
+    float muonSubPtMin = 0;
 };
 
 //////////////
@@ -241,6 +247,11 @@ class ElectronPtCut : public ZJetFilterBase
     {
         ZJetFilterBase::Init(settings);
         electronPtMin = settings.GetCutElectronPtMin();
+        if (settings.GetCutElectronSubPtMin() != -1.0) {
+          electronSubPtMin = settings.GetCutElectronSubPtMin();
+        } else {
+          electronSubPtMin = electronPtMin;
+        }
     }
 
     bool DoesEventPass(ZJetEvent const& event,
@@ -251,13 +262,14 @@ class ElectronPtCut : public ZJetFilterBase
         bool allPassed = true;
         allPassed = allPassed && product.m_validElectrons[0]->p4.Pt() > electronPtMin;
         allPassed = product.m_validElectrons.size() >= 2
-                        ? (allPassed && product.m_validElectrons[1]->p4.Pt() > electronPtMin)
+                        ? (allPassed && product.m_validElectrons[1]->p4.Pt() > electronSubPtMin)
                         : allPassed;
         return allPassed;
     }
 
   private:
     float electronPtMin = 0;
+    float electronSubPtMin = 0;
 };
 
 //////////////////
@@ -653,6 +665,11 @@ class GenMuonPtCut : public ZJetFilterBase
     {
         ZJetFilterBase::Init(settings);
         muonPtMin = settings.GetCutMuonPtMin();
+        if (settings.GetCutMuonSubPtMin() != -1.0) {
+          muonSubPtMin = settings.GetCutMuonSubPtMin();
+        } else {
+          muonSubPtMin = muonPtMin;
+        }
     }
 
     bool DoesEventPass(ZJetEvent const& event,
@@ -667,13 +684,14 @@ class GenMuonPtCut : public ZJetFilterBase
                         : allPassed; product.m_genMuons[0]->p4.Phi()*/
         allPassed = allPassed && product.m_genMuons[0]->p4.Pt() > muonPtMin;
         allPassed = product.m_genMuons.size() >= 2
-                        ? (allPassed && product.m_genMuons[1]->p4.Pt() > muonPtMin)
+                        ? (allPassed && product.m_genMuons[1]->p4.Pt() > muonSubPtMin)
                         : allPassed;
         return allPassed;
-    }   
+    }
 
   private:
     float muonPtMin = 0;
+    float muonSubPtMin = 0;
 };
 
 //////////////////
