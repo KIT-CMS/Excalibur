@@ -68,7 +68,7 @@ def config(ch, run, jec):
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based CutJetID (Excalibur) selection, alternatively use JetID (Artus)
     cfg['CutJetIDVersion'] = 'UL2016'  # for event-based JetID
-    cfg['CutJetIDFirstNJets'] = 2
+    cfg['CutJetIDFirstNJets'] = 1
 
     cfg['ApplyElectronVID'] = True
     cfg['ElectronVIDName'] = "Fall17-94X-V2"

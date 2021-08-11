@@ -96,7 +96,7 @@ def config(ch, run, jec):
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based CutJetID (Excalibur) selection, alternatively use JetID (Artus)
     cfg['CutJetIDVersion'] = '2016UL'  # for event-based JetID
-    cfg['CutJetIDFirstNJets'] = 2
+    cfg['CutJetIDFirstNJets'] = 1
 
     cfg['NumberGeneratedEvents'] = 92353657 if APV else 95237235
     cfg['GeneratorWeight'] = 1.0

@@ -64,7 +64,7 @@ def config():
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based CutJetID (Excalibur) selection, alternatively use JetID (Artus)
     cfg['CutJetIDVersion'] = 'UL2017'  # for event-based JetID
-    cfg['CutJetIDFirstNJets'] = 2
+    cfg['CutJetIDFirstNJets'] = 1
 
     cfg['EnableTypeIModification'] = False
 

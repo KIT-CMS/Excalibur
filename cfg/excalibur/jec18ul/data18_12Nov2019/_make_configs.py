@@ -66,7 +66,7 @@ def config():
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = '2018UL'  # for event-based JetID
-    cfg['CutJetIDFirstNJets'] = 2
+    cfg['CutJetIDFirstNJets'] = 1
 
     cfg['EnableTypeIModification'] = False
 

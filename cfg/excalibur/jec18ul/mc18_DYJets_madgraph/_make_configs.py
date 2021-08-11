@@ -65,7 +65,7 @@ def config():
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = '2018UL'  # for event-based JetID
-    cfg['CutJetIDFirstNJets'] = 2
+    cfg['CutJetIDFirstNJets'] = 1
 
     cfg['Processors'] += ['producer:ZJetPUWeightProducer']
     # cfg['ZJetPUWeightFiles'] = [os.path.join(configtools.getPath() ,'data/pileup/mc_weights/mc18ul_DYJets_madgraph_data_12Nov19/PUWeights_{{}}_12Nov2019_DYJetsToLL_madgraphMLM.root'.format(runperiod)) for runperiod in {runs}]
