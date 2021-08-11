@@ -105,6 +105,7 @@ def config(ch, run, jec):
         cfg['ApplyElectronEnergyCorrections'] = True
         cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
         cfg['HltPaths']= ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ']
+        cfg["CutElectronSubPtMin"] = 15.0
 
 
     if ch == 'mm':
@@ -112,6 +113,7 @@ def config(ch, run, jec):
         cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2016{}UL.txt'.format('a' if APV else 'b'))
         cfg['MuonEnergyCorrection'] = 'rochcorr2016ul'
         cfg['HltPaths']= ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ']
+        cfg["CutMuonSubPtMin"] = 10.0
 
 
     return cfg

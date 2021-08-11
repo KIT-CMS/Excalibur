@@ -56,11 +56,13 @@ def config():
         cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetValidElectronsProducer'), 'producer:ElectronCorrectionsProducer',)
         cfg['ApplyElectronEnergyCorrections'] = True
         cfg['ElectronEnergyCorrectionTags'] = ["electronCorrection:ecalTrkEnergyPostCorr"]
+        cfg["CutElectronSubPtMin"] = 15.0
     # TODO: Update to 2018
     # elif CH == 'mm':
     #     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer',)
     #     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/RoccoR2017UL.txt')
     #     cfg['MuonEnergyCorrection'] = 'rochcorr2017ul'
+    #     cfg["CutMuonSubPtMin"] = 10.0
 
     cfg['CutJetID'] = 'tightlepveto'  # choose event-based JetID selection
     cfg['CutJetIDVersion'] = '2018UL'  # for event-based JetID
