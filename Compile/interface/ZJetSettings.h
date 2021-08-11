@@ -73,8 +73,10 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(unsigned, CutNMuonsMin)
     IMPL_SETTING(unsigned, CutNMuonsMax)
     IMPL_SETTING(float, CutMuonPtMin)
+    IMPL_SETTING_DEFAULT(float, CutMuonSubPtMin, -1.0) // Sub leading Muon for asymmetric cuts. If not explicitly set, symmetric cuts will be applied.
     IMPL_SETTING(float, CutMuonEtaMax)
     IMPL_SETTING(float, CutElectronPtMin)
+    IMPL_SETTING_DEFAULT(float, CutElectronSubPtMin, -1.0) // Sub leading Electron for asymmetric cuts. If not explicitly set, symmetric cuts will be applied.
     IMPL_SETTING(float, CutElectronEtaMax)
     IMPL_SETTING(float, CutLeadingJetPtMin)
     IMPL_SETTING(float, CutLeadingJetEtaMax)
