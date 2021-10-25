@@ -4,8 +4,7 @@ which can then be edited manually. Note: existing configs with matching names wi
 be overwritten!
 """
 
-INPUT_TEMPLATE = '"{{}}/{userpath}/ZJet_DYJetsToLL_Summer19-amcatnlo_realistic_v6-v2/*.root".format(SE_PATH_PREFIXES["xrootd_gridka_nrg"])'
-
+INPUT_TEMPLATE = '"{{}}/{userpath}/ZJet_DYJetsToLL_Summer20_MiniAODv2-amcatnloFXFX_realistic_v9-v2/*.root".format(SE_PATH_PREFIXES["xrootd_gridka_nrg"])'
 TEMPLATE = """
 import configtools
 import os
@@ -32,7 +31,7 @@ def config():
     cfg['Pipelines']['default']['Quantities'] += ['jet1chf', 'jet1nhf', 'jet1ef', 'jet1mf', 'jet1hfhf', 'jet1hfemf', 'jet1pf']
     cfg['Pipelines']['default']['Quantities'] += ['jnpf', 'rawjnpf', 'mpflead', 'rawmpflead', 'mpfjets', 'rawmpfjets', 'mpfunclustered', 'rawmpfunclustered']
 
-    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3'])
+    cfg = configtools.expand(cfg, ['basiccuts'], ['None', 'L1', 'L1L2L3'])
 
     cfg['JERMethod'] = 'hybrid'
 
@@ -95,7 +94,7 @@ def make():
       lheWeightNames=lheWeightNames,
       ch=ch,
       input_path=INPUT_TEMPLATE.format(
-        userpath='rvoncube/Skimming',
+        userpath='rhofsaess/Skimming',
       )
     )
     _fname = "mc17_{ch}_{runs}_DYJets_amcatnlo_JEC.py".format(

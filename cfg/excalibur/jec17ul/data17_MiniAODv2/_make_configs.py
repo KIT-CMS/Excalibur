@@ -4,7 +4,7 @@ which can then be edited manually. Note: existing configs with matching names wi
 be overwritten!
 """
 
-INPUT_TEMPLATE = '"{{}}/{userpath}/ZJet_{pd}_Run2017{run}_09Aug2019_UL2017-v1/*.root".format(SE_PATH_PREFIXES["xrootd_gridka_nrg"])'
+INPUT_TEMPLATE = '"{{}}/{userpath}/ZJet_{pd}_Run2017{run}_UL2017_MiniAODv2-v1/*.root".format(SE_PATH_PREFIXES["xrootd_gridka_nrg"])'
 
 TEMPLATE = """
 import configtools
@@ -33,9 +33,9 @@ def config():
 
     cfg['Pipelines']['default']['Processors'].insert(cfg['Processors'].index('filter:HltFilter') + 1, 'filter:METFiltersFilter')
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
-        "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter"]
+        "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"]  # "Flag_BadPFMuonDzFilter" 
 
-    cfg = configtools.expand(cfg, ['basiccuts','finalcuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
+    cfg = configtools.expand(cfg, ['basiccuts'], ['None', 'L1', 'L1L2L3', 'L1L2Res', 'L1L2L3Res'])
 
     cfg['CutBackToBack'] = 0.44
 
@@ -75,7 +75,7 @@ def config():
 
     cfg['HltPaths']= {{
         'ee': ['HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL'],
-        'mm': ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8']
+        'mm': ['HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8']
     }}[CH]
 
     return cfg
@@ -91,10 +91,10 @@ def make():
         input_path=INPUT_TEMPLATE.format(
           run=run,
           pd='DoubleMuon' if ch == 'mm' else 'DoubleEG',
-          userpath='rvoncube/Skimming'
+          userpath='rhofsaess/Skimming'
         ),
       )
-      _fname = "data17_{ch}_{run}_09Aug2019_JEC.py".format(
+      _fname = "data17_{ch}_{run}_MiniAODv2_JEC.py".format(
         run=run,
         ch=ch,
       )
