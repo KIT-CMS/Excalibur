@@ -1,26 +1,32 @@
 #!/bin/bash
 
+if [ ! -z "$ZSH_VERSION" ]; then
+    this_file="${(%):-%x}"
+else
+    this_file="${BASH_SOURCE[0]}"
+fi
+
 # get path of Excalibur relative to location of this script
-export EXCALIBURPATH=$(dirname $(dirname $(readlink -mf ${BASH_SOURCE[0]})))
-export EXCALIBURCONFIGS=$EXCALIBURPATH/cfg/excalibur
-export ARTUSPATH=$EXCALIBURPATH/../Artus
-export PLOTCONFIGS=$EXCALIBURPATH/Plotting/configs
-export PYTHONLINKDIR=$EXCALIBURPATH/../python-links 
-export PATH=$PATH:$CMSSW_BASE/../grid-control:$CMSSW_BASE/../grid-control/scripts
+export EXCALIBURPATH="$(dirname $(dirname $(readlink -mf "$this_file")))"
+export EXCALIBURCONFIGS="$EXCALIBURPATH/cfg/excalibur"
+export ARTUSPATH="$EXCALIBURPATH/../Artus"
+export PLOTCONFIGS="$EXCALIBURPATH/Plotting/configs"
+export PYTHONLINKDIR="$EXCALIBURPATH/../python-links"
+export PATH="$PATH:$CMSSW_BASE/../grid-control:$CMSSW_BASE/../grid-control/scripts"
 
 # source Artus ini script
-source $ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh
-export PATH=$ARTUSPATH/Utility/scripts:$PATH
+source "$ARTUSPATH/Configuration/scripts/ini_ArtusAnalysis.sh"
+export PATH="$ARTUSPATH/Utility/scripts:$PATH"
 
 # set the environment
-export BOOSTPATH=$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/LIBDIR=//p')
-export BOOSTLIB=$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/LIBDIR=/-L/p')
-export BOOSTINC=$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/INCLUDE=/-isystem /p')
-export BOOSTVER=$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/Version : //p')
+export BOOSTPATH="$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/LIBDIR=//p')"
+export BOOSTLIB="$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/LIBDIR=/-L/p')"
+export BOOSTINC="$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/INCLUDE=/-isystem /p')"
+export BOOSTVER="$(test ! -z ${CMSSW_BASE} && cd ${CMSSW_BASE} && scram tool info boost | sed -n 's/Version : //p')"
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ARTUSPATH:$BOOSTPATH
-export PATH=$PATH:$EXCALIBURPATH/scripts:$ARTUSPATH/Utility/scripts:$ARTUSPATH/KappaAnalysis/scripts:$ARTUSPATH/Consumer/scripts:$ARTUSPATH/HarryPlotter/scripts
-export PYTHONPATH=$PYTHONPATH:$EXCALIBURPATH/cfg/python:$EXCALIBURPATH/cfg/excalibur:$PLOTCONFIGS:$PYTHONLINKDIR
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ARTUSPATH:$BOOSTPATH"
+export PATH="$PATH:$EXCALIBURPATH/scripts:$ARTUSPATH/Utility/scripts:$ARTUSPATH/KappaAnalysis/scripts:$ARTUSPATH/Consumer/scripts:$ARTUSPATH/HarryPlotter/scripts"
+export PYTHONPATH="$PYTHONPATH:$EXCALIBURPATH/cfg/python:$EXCALIBURPATH/cfg/excalibur:$PLOTCONFIGS:$PYTHONLINKDIR"
 export USERPC=`who am i | sed 's/.*(\([^]]*\)).*/\1/g'`
 
 # This function creates a folder with links to python directories, like SCRAM
