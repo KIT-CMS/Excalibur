@@ -130,7 +130,10 @@ elif [ $USER = "tfesenbecker" ]; then
     export EXCALIBUR_WORK=/portal/ekpbms3/home/tfesenbecker/excalibur_work
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tfesenbecker/Excalibur"
 
-
+elif [ $USER = "cverstege" ]; then
+    echo "Profil: cverstege"
+    export EXCALIBUR_WORK=/ceph/cverstege/excalibur_work
+    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/cverstege/Excalibur"
 fi
 
 # source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
