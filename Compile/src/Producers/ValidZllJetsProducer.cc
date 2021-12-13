@@ -1,5 +1,7 @@
 #include "Excalibur/Compile/interface/Producers/ValidZllJetsProducer.h"
 
+#include "KappaTools/Toolbox/interface/StringTools.h"
+
 
 // -- ValidZllJetsProducer
 
@@ -7,8 +9,35 @@ std::string ValidZllJetsProducer::GetProducerId() const { return "ValidZllJetsPr
 
 void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
 
+    // get and validate pileup jet ID method
+    std::string puJetIDSetting = KappaTools::tolower(settings.GetPUJetID());
+    if (puJetIDSetting == "value") {
+        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::VALUE;
+    }
+    else if (puJetIDSetting == "none") {
+        LOG(WARNING) << "ValidZllJetsProducer: Config variable 'PUJetID' is set to 'none', which " <<
+                        "is deprecated and will be removed in the future. Use 'value' instead.";
+        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::VALUE;
+    }
+    else if (puJetIDSetting == "file") {
+        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::FILE;
+    }
+    else if (puJetIDSetting == "loose") {
+        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::LOOSE;
+    }
+    else if (puJetIDSetting == "medium") {
+        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::MEDIUM;
+    }
+    else if (puJetIDSetting == "tight") {
+        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::TIGHT;
+    }
+    else {
+        // fell through -> invalid string supplied
+        LOG(FATAL) << "ValidZllJetsProducer: Unknown value '" << puJetIDSetting << "' for setting 'puJetIDSetting'. "
+                   << "Expected one of: file, loose, medium, tight, value";
+    }
+
     minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
-    PUJetID = settings.GetPUJetID();
     minPUJetID = settings.GetMinPUJetID();
     PUJetIDModuleName = settings.GetPUJetIDModuleName();
     maxLeadingJetY = settings.GetCutLeadingJetYMax();
@@ -28,22 +57,22 @@ bool ValidZllJetsProducer::DoesJetPass(const KBasicJet* jet, ZJetEvent const& ev
     // check that PUJetID is above configured minimal value
     const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...
     if (kJet) {
-        if (PUJetID == "none") {
+        if (m_puJetIDWorkingPoint == ValidZllJetsProducer::PUJetIDWorkingPoint::VALUE) {
             if (kJet->getTag(PUJetIDModuleName+"fullDiscriminant", event.m_jetMetadata) < minPUJetID) {
                 return false;
             }
         }
-        else if (PUJetID == "loose") {
+        else if (m_puJetIDWorkingPoint == ValidZllJetsProducer::PUJetIDWorkingPoint::LOOSE) {
             if (!bool(int(kJet->getTag(PUJetIDModuleName+"fullId", event.m_jetMetadata)) & (1 << 2))) {
                 return false;
             }
         }
-        else if (PUJetID == "medium") {
+        else if (m_puJetIDWorkingPoint == ValidZllJetsProducer::PUJetIDWorkingPoint::MEDIUM) {
             if (!bool(int(kJet->getTag(PUJetIDModuleName+"fullId", event.m_jetMetadata)) & (1 << 1))) {
                 return false;
             }
         }
-        else if (PUJetID == "tight") {
+        else if (m_puJetIDWorkingPoint == ValidZllJetsProducer::PUJetIDWorkingPoint::TIGHT) {
             if (!bool(int(kJet->getTag(PUJetIDModuleName+"fullId", event.m_jetMetadata)) & (1 << 0))) {
                 return false;
             }
