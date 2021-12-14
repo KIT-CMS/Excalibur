@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TH2F.h"
 #include "Excalibur/Compile/interface/ZJetTypes.h"
 
 
@@ -15,12 +16,32 @@
  *
  *  MinZllJetDeltaRVeto (type: float) :
  *      minimal required distance between jets and leptons from Z decay
- * PUJetID (type: string):
- *      sets working point of puJetID to 'loose', 'medium', 'tight'. Choose 'value' to use a minimal value of 'pile-up jet ID'.
- *      Needs to be defined in skim file, typically as 'pileupJetId:fullId'
- * MinPUJetID (type: float) :
- *      minimal required value of 'pile-up jet ID' for jet to be valid. Only used if working point is set to 'value'!
- *      Needs to be defined in skim file, typically as 'pileupJetId:fullDiscriminant'
+ *
+ *  PUJetID (type: string) : one of {'loose', 'medium', 'tight', 'value', 'file'}
+ *      sets working point of puJetID.
+ *
+ *      If 'loose', 'medium' or 'tight', a pre-computed working point is used (needs to exist in the skim,
+ *      typically as 'pileupJetId:fullId' under jet metadata).
+ *
+ *      If 'value', a cut is applied on the full pileup jet ID MVA discriminant (needs to exist in the skim,
+ *      typically as 'pileupJetId:fullDiscriminant' under jet metadata). Jets with a full discriminant larger
+ *      than this value are considered valid/non-pileup jets. The same value is used in all phase space
+ *      regions and can be configured via the setting 'MinPUJetID'.
+ *
+ *      If 'file', the same procedure as for 'value' is used, but the minimal cut value is read from a ROOT
+ *      file depending on the depending on the jet pT/eta. The filename and histogram name can be configured
+ *      via the settings 'MinPUJetIDFile' and 'MinPUJetIDHistogramName', respectively.
+ *
+ *  MinPUJetID (type: float) :
+ *      minimal required value of 'pile-up jet ID' for jet to be valid. Only used if 'PUJetID' is set to 'value'
+ *
+ *  MinPUJetIDFile (type: string) :
+ *      ROOT file containing pT and eta-dependent minimal values of 'pile-up jet ID' for jet to be valid.
+ *      Only used if 'PUJetID' is set to 'file'.
+ *
+ *  MinPUJetIDHistogramName (type: string) :
+ *      name of a TH2F with inside `MinPUJetIDFile` from which to obtain the minimum value of the pileup jet ID
+ *      full MVA discriminant. The 'x' and 'y' axes must correspond to the 'pT' and 'absEta' of the jet.
  *
  *  Note: for the lepton veto to work, the Z-boson must be present in the product.
  *        This requires running either the `ZmmProducer` or the `ZeeProducer`
@@ -37,7 +58,8 @@ class ValidZllJetsProducer : public ZJetProducerBase {
         LOOSE = 1,
         MEDIUM = 2,
         TIGHT = 3,
-        VALUE = 4
+        VALUE = 4,
+        FILE = 5
     };
 
     ValidZllJetsProducer() : ZJetProducerBase() {}
@@ -67,9 +89,12 @@ class ValidZllJetsProducer : public ZJetProducerBase {
 
   private:
     float minZllJetDeltaRVeto;
+
     PUJetIDWorkingPoint m_puJetIDWorkingPoint;
-    float minPUJetID;
-    std::string PUJetIDModuleName;
+    std::string m_puJetIDMetadataTag;
+    TH2F* m_puJetIDMinValueHistogram;
+    float m_puJetIDMinValue;
+
     float maxLeadingJetY;
     bool  objectJetY;
 };
