@@ -92,6 +92,7 @@ def getBaseConfig(tagged=False, **kwargs):
             },
         # Processors
         'Processors': [
+            'producer:ValidLeptonsProducer',  # build valid leptons from subclasses, needed for JetLeptonLowerDeltaRCut in ValidTaggedJetsProducer
             'producer:ValidTaggedJetsProducer',  # builds jet collection
             'producer:ValidZllJetsProducer',  # applies lepton cleaning, needs to run before the 'ZJetCorrectionsProducer'
             'producer:ZJetCorrectionsProducer',  # applies correction factors
