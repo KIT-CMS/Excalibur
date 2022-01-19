@@ -701,34 +701,13 @@ def createFileList(infiles, fast=False):
             # check if xrootd protocol used for getting input file list
             elif url.scheme in ('root', 'xroot'):
                 print "Use pyxrootd tools"
-                # unwrap forwarding proxies
-                proxy_header = ''
-                origin_url = urlparse.urlsplit(url.path.lstrip('/'))
-                while origin_url.scheme in ('root', 'xroot'):
-                    proxy_header += url.scheme + '://' + url.netloc + (
-                            '/' * (len(url.path)-len(url.path.lstrip('f')))
-                    )
-                    url = origin_url
-                    origin_url = urlparse.urlsplit(url.path.lstrip('/'))
-                gridserver = 'root://' + url.netloc
-                gridpath = url.path[1:].rpartition('*')[0]
-
-                from XRootD import client
-                from XRootD.client.flags import DirListFlags, OpenFlags, MkDirFlags, QueryCode
-                myclient = client.FileSystem(gridserver)
-                print 'Getting file list from XRootD server'
-                status, listing = myclient.dirlist(gridpath, DirListFlags.LOCATE, timeout=10)
-                if status == '' or listing is not None:
-                    entry_prefix = proxy_header + gridserver + '/' + gridpath
-                    for entry in listing:
-                        if entry.name.endswith('.root'):
-                            entry_url = entry_prefix + entry.name
-                            if entry_url not in out_files:
-                                out_files.append(entry_url)
-                    print "Successfully queried " + str(len(out_files)) + " files!"
-                else:
-                    print "Error getting list of files!"
-                    print status, listing
+                from xrootdglob import glob
+                try:
+                    out_files.extend(glob(files, raise_error=True))
+                    print("Successfully queried {} files!".format(len(out_files)))
+                except RuntimeError as err:
+                    print("Error getting list of files!")
+                    print(err)
                     exit(1)
 
             # use local file system for getting input file list
