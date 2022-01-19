@@ -8,7 +8,9 @@ class ZJetSettings : public KappaSettings
     // ValidZllJetsProducer
     IMPL_SETTING(float, MinZllJetDeltaRVeto)
     IMPL_SETTING(std::string, PUJetID)
-    IMPL_SETTING(float, MinPUJetID)
+    IMPL_SETTING_DEFAULT(float, MinPUJetID, -9999.0)
+    IMPL_SETTING_DEFAULT(std::string, MinPUJetIDFile, "")
+    IMPL_SETTING_DEFAULT(std::string, MinPUJetIDHistogramName, "")
     IMPL_SETTING(std::string, PUJetIDModuleName)
     IMPL_SETTING(bool, UseObjectJetYCut)
 
