@@ -135,7 +135,7 @@ def ZJet():
         # output_glob = options.work + "out/*.root"
         output_glob = options.work + "out/"
         if options.parallel_merge is None:
-            gctime = run_gc(config_path=config_path, output_glob=output_glob, workdir_path=options.work)
+            gctime = run_gc(config_path=config_path, output_glob=output_glob, workdir_path=options.work, pseudo_hadd=options.pseudo_hadd)
         else:
             gctime = run_gc_pmerge(config_path=config_path, output_glob=output_glob, workdir_path=options.work,
                                    mergers=options.parallel_merge)
@@ -185,7 +185,7 @@ def ZJet():
     return gctime
 
 
-def run_gc(config_path, output_glob, workdir_path):
+def run_gc(config_path, output_glob, workdir_path, pseudo_hadd=False):
     """
     Run a GC job and merge the output
 
@@ -195,6 +195,8 @@ def run_gc(config_path, output_glob, workdir_path):
     :type output_glob: str
     :param workdir_path: path to Artus workdir
     :type workdir_path: str
+    :param pseudo_hadd: If pseudo_hadd should be used instead of normal hadd.
+    :type pesudo_hadd: bool
     """
     wrapper_logger.info("running: go.py %s", config_path)
     gctime = time.time()
@@ -216,7 +218,7 @@ def run_gc(config_path, output_glob, workdir_path):
             if 'se path =' in line:
                 if 'root://' in line:
                     haddXrootd = True
-                    wlcg_path = line.split(' ')[-1]
+                    wlcg_path = line.split(' ')[-1].strip()
                 elif 'srm://' in line:
                     downloadFromSE = True
 
@@ -225,15 +227,32 @@ def run_gc(config_path, output_glob, workdir_path):
     # measure time elapsed without merging
     gctime = time.time() - gctime
 
-    # try remote merging via XRootD first, if requested
-    if haddXrootd:
+    # try pseudo_hadd first
+    if pseudo_hadd and not haddXrootd:
+        print("Pseudo_hadd does not work with srm paths, use xrootd instead!")
+        print("Falling back to regular hadd methods.")
+        pseudo_hadd = False
+    elif pseudo_hadd and haddXrootd:
+        try:
+            wrapper_logger.info("Merging output files via pseudo_hadd")
+            subprocess.check_call(['pseudo_hadd.py', workdir_path + 'out.root', wlcg_path + "/*.root"])
+        except KeyboardInterrupt:
+            sys.exit(0)
+        except subprocess.CalledProcessError as err:
+            print("Pseudo_hadd failed:")
+            print(err)
+            print("Falling back to regular hadd methods.")
+            pseudo_hadd = False
+
+    # try remote merging via XRootD after, if requested
+    if haddXrootd and not pseudo_hadd:
         try:
             wrapper_logger.info("Merging output files via XrootD")
-
-            subprocess.call(['hadd_xrootd.py', '-o', workdir_path + 'out.root', '-i', wlcg_path + "*.root"])
-        except Exception as err:
-            print "hadd via XRootD failed"
-            print err
+            subprocess.check_call(['hadd_xrootd.py', workdir_path + 'out.root', wlcg_path + "/*.root"])
+        except KeyboardInterrupt:
+            sys.exit(0)
+        except subprocess.CalledProcessError as err:
+            print(err)
             downloadFromSE = True
 
     # download if remote merging via XRootD not requested (or if it failed)
@@ -393,6 +412,8 @@ Have fun. ;)
         help="set the number of files per job (overwrites -j|--jobs)")
     batch_parser.add_argument('--parallel-merge', metavar='MERGE_THREADS', type=int, default=None, nargs='?', const=2,
         help="Merge output in parallel while GC is running [Default: %(const)s threads]")
+    batch_parser.add_argument('--pseudo-hadd', action='store_true',
+        help="use ROOT TChain proxies instead of merging the output files via hadd")
 
     opt = parser.parse_args()
 
