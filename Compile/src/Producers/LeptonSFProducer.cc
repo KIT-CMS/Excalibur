@@ -17,6 +17,7 @@ needed tags:
 - LeptonIsoSFVariation          Vary IsoSF by error. Choices: up, down, None
 - LeptonTrackingSFVariation     Vary TrackingSF by error. Choices: up, down, None
 - LeptonTriggerSFVariation      Vary TriggerSF by error. Choices: up, down, None
+- LeptonRecoSFVariation         Vary RecoSF by error. Choices: up, down, None
 
 maybe also relevant:
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentification (SF files for MVA
@@ -468,3 +469,99 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
         }
     }
 }
+
+/////////////////////
+// LeptonRecoSF //
+/////////////////////
+
+std::string LeptonRecoSFProducer::GetProducerId() const { return "LeptonRecoSFProducer"; }
+
+void LeptonRecoSFProducer::Init(ZJetSettings const& settings)
+{
+    m_sffile = settings.GetLeptonRecoSFRootfile();
+    if (settings.GetLeptonSFVariation() == true) {
+        LOG(INFO) << "LeptonRecoSFProducer: varying scale factor UP and DOWN one sigma";
+    }
+
+    if(settings.GetChannel() == "mm"){
+        histoname = settings.GetLeptonRecoSFHistogramName();
+    }
+    else{
+        LOG(ERROR) << "LeptonRecoSFProducer not implemented for this channel";
+    }
+
+    GetEtaAxis2D(m_etarev2D,histoname);
+    m_absoluteeta   = m_etarev2D[0];
+    m_reversed_axes = m_etarev2D[1];
+    m_2D            = m_etarev2D[2];
+    if (m_reversed_axes)
+    {
+        m_etabins = &m_ybins;
+        m_ptbins = &m_xbins;
+    }
+    else
+    {
+        m_etabins = &m_xbins;
+        m_ptbins = &m_ybins;
+    }
+    // Get file
+    LOG(INFO) << "Loading lepton scale factors for Reco " << m_id << ": File " << m_sffile
+              << ", Histogram " << histoname;
+    TFile file(m_sffile.c_str(), "READONLY");
+    TH2F* sfhisto = (TH2F*)file.Get(histoname.c_str());
+
+    // Get the pT and eta bin borders
+    for (int ix = 0; ix <= sfhisto->GetNbinsX(); ++ix){
+        m_xbins.emplace_back(2 * sfhisto->GetXaxis()->GetBinCenter(ix) -
+                             sfhisto->GetXaxis()->GetBinLowEdge(ix));
+    }
+    for (int iy = 0; iy <= sfhisto->GetNbinsY(); ++iy){
+        m_ybins.emplace_back(2 * sfhisto->GetYaxis()->GetBinCenter(iy) -
+                             sfhisto->GetYaxis()->GetBinLowEdge(iy));
+    }
+    // Fill the m_sf array with the values from the root histo
+    for (int ix = 1; ix <= sfhisto->GetNbinsX(); ix++) {
+        for (int iy = 1; iy <= sfhisto->GetNbinsY(); iy++) {
+            m_sf[ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinContent(ix, iy));
+            m_er[ix - 1][iy - 1] = static_cast<float>(sfhisto->GetBinError(ix, iy));
+        }
+    }
+    file.Close();
+}
+void LeptonRecoSFProducer::Produce(ZJetEvent const& event,
+                                    ZJetProduct& product,
+                                    ZJetSettings const& settings) const
+{
+    if(product.m_zValid){
+        LOG(DEBUG) << "\n[LeptonRecoSFProducer]\n";
+        LOG(DEBUG) << "Apply LeptonRecoSFVariation: " << settings.GetLeptonSFVariation();
+        float sf1 = 1/GetScaleFactor(0, *product.m_zLeptons.first);
+        float sf2 = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        product.m_weights["zl1RecoSFWeight"] = sf1;
+        product.m_weights["zl2RecoSFWeight"] = sf2;
+        product.m_weights["leptonRecoSFWeight"] = sf1*sf2;
+        LOG(DEBUG) << "sf1: " << sf1 << ", sf2: " << sf2;
+        if (settings.GetLeptonSFVariation() == true) {
+            // up has -1 since it's inside the denominator, down +1
+            float sf1u = 1/GetScaleFactor(-1, *product.m_zLeptons.first);
+            float sf1d = 1/GetScaleFactor(+1, *product.m_zLeptons.first);
+            float sf2u = 1/GetScaleFactor(-1, *product.m_zLeptons.second);
+            float sf2d = 1/GetScaleFactor(+1, *product.m_zLeptons.second);
+            product.m_weights["zl1RecoSFWeightUp"] = sf1u;
+            product.m_weights["zl1RecoSFWeightDown"] = sf1d;
+            product.m_weights["zl2RecoSFWeightUp"] = sf2u;
+            product.m_weights["zl2RecoSFWeightDown"] = sf2d;
+            // proper error propagation needed
+            product.m_weights["leptonRecoSFWeightUp"] = sf1u*sf2u;
+            product.m_weights["leptonRecoSFWeightDown"] = sf1d*sf2d;
+            if(settings.GetDebugVerbosity() > 1) {
+                LOG(DEBUG) << "zl1RecoSFWeightUp: " << sf1u << ", zl1RecoSFWeightDown: " << sf1d;
+                LOG(DEBUG) << "zl2RecoSFWeightUp: " << sf2u << ", zl2RecoSFWeightDown: " << sf2d;
+                LOG(DEBUG) << "leptonRecoSFWeightUp: " << sf1u*sf2u << ", leptonRecoSFWeightDown: " << sf1d*sf2d;
+            }
+        }
+    } else {
+        LOG(FATAL) << "No valid Z found. Can't apply LeptonSF.";
+    }
+}
+

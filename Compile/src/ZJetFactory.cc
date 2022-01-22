@@ -73,6 +73,8 @@ ProducerBaseUntemplated* ZJetFactory::createProducer(std::string const& id)
         return new LeptonTrackingSFProducer();
     else if (id == LeptonTriggerSFProducer().GetProducerId())
         return new LeptonTriggerSFProducer();
+    else if (id == LeptonRecoSFProducer().GetProducerId())
+        return new LeptonRecoSFProducer();
     else if(id == RecoZmmProducer().GetProducerId())
         return new RecoZmmProducer();
     else if(id == RecoZeeProducer().GetProducerId())
