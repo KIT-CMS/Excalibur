@@ -66,6 +66,8 @@ void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
     minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
     maxLeadingJetY = settings.GetCutLeadingJetYMax();
     objectJetY = settings.GetUseObjectJetYCut();
+    maxJetEta = settings.GetMaxJetEta();
+    objectJetEta = settings.GetUseObjectJetEtaCut();
 }
 
 bool ValidZllJetsProducer::DoesJetPass(const KBasicJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
@@ -118,6 +120,12 @@ bool ValidZllJetsProducer::DoesJetPass(const KBasicJet* jet, ZJetEvent const& ev
             return false;
         }
     }
+    // invalidate all jets with absolute eta outside configured value
+    if (objectJetEta) {
+        if (std::abs(jet->p4.Eta()) > maxJetEta) {
+            return false;
+        }
+    }
 
     // all checks passed -> jet is valid
     return true;
@@ -152,3 +160,4 @@ bool ValidZllGenJetsProducer::DoesJetPass(const KLV& genJet, ZJetEvent const& ev
     // all checks passed -> genjet is valid
     return true;
 }
+

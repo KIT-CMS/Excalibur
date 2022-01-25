@@ -13,6 +13,8 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(std::string, MinPUJetIDHistogramName, "")
     IMPL_SETTING(std::string, PUJetIDModuleName)
     IMPL_SETTING(bool, UseObjectJetYCut)
+    IMPL_SETTING_DEFAULT(float, MaxJetEta, 0.0)
+    IMPL_SETTING_DEFAULT(bool, UseObjectJetEtaCut, false)
 
     // TypeIMETProducer
     IMPL_SETTING(float, TypeIJetPtMin)

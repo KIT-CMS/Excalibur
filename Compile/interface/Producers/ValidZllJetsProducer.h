@@ -97,6 +97,8 @@ class ValidZllJetsProducer : public ZJetProducerBase {
 
     float maxLeadingJetY;
     bool  objectJetY;
+    float maxJetEta;
+    bool objectJetEta;
 };
 
 
