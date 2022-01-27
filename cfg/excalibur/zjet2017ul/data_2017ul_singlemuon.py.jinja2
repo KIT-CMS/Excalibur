@@ -25,7 +25,7 @@ def config():
         cfg['Pipelines'].pop(rm)
 
     ##### Set Trigger: ######
-    cfg['HltPaths'] = ['HLT_IsoMu24']
+    cfg['HltPaths'] = ['HLT_IsoMu27']
 
     ##### Set Golden JSON ####
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/{{ good_run_json }}')]
@@ -61,12 +61,12 @@ def config():
     cfg['TaggedJets'] = 'ak{{ jet_radius }}PFJetsCHS'
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{{ jec }}/{{ jec }}')
 
-    cfg['JetIDVersion'] = 'UL2018'
+    cfg['JetIDVersion'] = 'UL2017'
     cfg['JetID'] = 'tightlepveto'
 
     cfg['PUJetID'] = 'file'
     cfg['MinPUJetIDFile'] = os.path.join(configtools.getPath(), "data/pujetid/puJetIDMVAWorkingPoints.root")
-    cfg['MinPUJetIDHistogramName'] = "puJetIDMVAWorkingPoint_AK4PFCHS_2018UL_Tight"
+    cfg['MinPUJetIDHistogramName'] = "puJetIDMVAWorkingPoint_AK4PFCHS_2017UL_Tight"
 
     cfg['JetLeptonLowerDeltaRCut'] = 0.4
     cfg['OnlyCleanZLeptons'] = True
@@ -78,14 +78,14 @@ def config():
     cfg['CutLeadingJetYMax'] = 2.4
 
     cfg['EnableTypeIModification'] = False  # disable TypeIMET corrections, not recommended
-    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec18ul/Summer19UL18_V1/hotjets-UL18.root")
-    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul18_plus_hem1516_and_hbp2m1"]
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17ul/Summer19UL17_V2/hotjets-UL17_v2.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17_plus_hbpw89"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
     ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
-    cfg['CutMuonPtMin'] = 25.0
+    cfg['CutMuonPtMin'] = 28.0
     cfg['CutMuonEtaMax'] = 2.4
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/{{ roccor }}')
     cfg['MuonEnergyCorrection'] = 'rochcorr{{ year }}ul'
@@ -94,22 +94,22 @@ def config():
     ##### LeptonSF files: #####
     cfg['LeptonSFVariation'] = True
     # Reco efficiencies
-    cfg['LeptonRecoSFYear'] = '2018'
+    cfg['LeptonRecoSFYear'] = '2017'
 
     # ID efficiencies
-    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2018ul/Efficiencies_muon_generalTracks_Z_Run2018_UL_ID.root")
+    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017ul/Efficiencies_muon_generalTracks_Z_Run2017_UL_ID.root")
     cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_TrackerMuons_abseta_pt'
 
     # ISO efficiencies
-    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2018ul/Efficiencies_muon_generalTracks_Z_Run2018_UL_ISO.root")
+    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017ul/Efficiencies_muon_generalTracks_Z_Run2017_UL_ISO.root")
     cfg['LeptonIsoSFHistogramName'] = 'NUM_TightRelIso_DEN_TightIDandIPCut_abseta_pt'
 
     # Trigger efficiencies
-    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2018ul/Efficiencies_muon_generalTracks_Z_Run2018_UL_SingleMuonTriggers.root")
-    cfg['LeptonTriggerSFHistogramName'] = 'NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight_eta_pt'
+    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2017ul/Efficiencies_muon_generalTracks_Z_Run2017_UL_SingleMuonTriggers.root")
+    cfg['LeptonTriggerSFHistogramName'] = 'NUM_IsoMu27_DEN_CutBasedIdTight_and_PFIsoTight_eta_pt'
 
     ##### Prefiring Weights ######
-    cfg['DataEraECAL'] = "None"
+    cfg['DataEraECAL'] = "UL2017BtoF"
     cfg['DataEraMuon'] = "20172018"
     cfg['PrefiringL1MapsPath'] = os.path.join(configtools.getPath(),"data/prefiring/L1PrefiringMaps.root")
     cfg['L1MuonParametrizationsPath'] = os.path.join(configtools.getPath(),"data/prefiring/L1MuonPrefiringParametrisations.root")
