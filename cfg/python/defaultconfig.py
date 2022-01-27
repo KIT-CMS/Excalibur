@@ -137,8 +137,8 @@ def data(cfg, **kwargs):
 
 def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
+    cfg['Processors'] = ['producer:GenParticleProducer']+cfg['Processors']
     cfg['Processors'] += [
-        'producer:GenParticleProducer',
         'producer:ValidZllGenJetsProducer',
         'producer:RecoJetGenPartonMatchingProducer',
         #'producer:GenJetGenPartonMatchingProducer',
@@ -589,11 +589,10 @@ def mcmm(cfg, **kwargs):
         # 'genmu2pt','genmu2eta','genmu2phi','genmu2mass',
         ]
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZmmProducer',)
-    cfg['Processors'] += [
-    #        'producer:GenZmmProducer', #Use this for Status 1 muons
-            #'producer:ValidGenZmmProducer', #Use this for original muons  # TODO: get working
-            'producer:RecoMuonGenParticleMatchingProducer',  # TODO: Check order of producers
-            ]
+    # add muon matching before the valid muon producer, so we can use the matched muons for better rochester corrections
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:RecoMuonGenParticleMatchingProducer')
+    # match all muons, not just valid, since we need the matching to produce valid muons out of the correcetd ones...
+    cfg['RecoMuonMatchingGenParticleMatchAllMuons'] = True
     cfg['Pipelines']['default']['Processors'] += [
         'filter:MinNGenMuonsCut',
         'filter:MaxNGenMuonsCut',
