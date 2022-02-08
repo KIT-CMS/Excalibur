@@ -91,9 +91,9 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(float, CutGenHTMax)
     IMPL_SETTING(float, GenZMassRange)
     IMPL_SETTING(std::string, CutEtaPhiCleaningFile)
-    IMPL_SETTING(std::string, CutJetID)
-    IMPL_SETTING(std::string, CutJetIDVersion)
-    IMPL_SETTING(unsigned, CutJetIDFirstNJets)
+    IMPL_SETTING_DEFAULT(std::string, CutJetID, "none")
+    IMPL_SETTING_DEFAULT(std::string, CutJetIDVersion, "none")
+    IMPL_SETTING_DEFAULT(unsigned, CutJetIDFirstNJets, 1)
     IMPL_SETTING_STRINGLIST_DEFAULT(METFilterNames, {})
 
     // LeptonSFProducer

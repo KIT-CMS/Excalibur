@@ -553,12 +553,10 @@ class JetIDCut : public ZJetFilterBase
     void Init(ZJetSettings const& settings) override
     {
         ZJetFilterBase::Init(settings);
-        const std::string jetID = settings.GetCutJetID();
-        const std::string jetIDVersion = settings.GetCutJetIDVersion();
 
-        // store the jet ID and jet ID version as enum types for fast evaluation
-        m_jetIDEnumType = KappaEnumTypes::ToJetID(jetID);
-        m_jetIDVersionEnumType = KappaEnumTypes::ToJetIDVersion(jetIDVersion);
+        // store the CutJetID and CutJetIDVersion as enum types for fast evaluation
+        m_jetIDEnumType = KappaEnumTypes::ToJetID(settings.GetCutJetID());
+        m_jetIDVersionEnumType = KappaEnumTypes::ToJetIDVersion(settings.GetCutJetIDVersion());
         m_numJets = settings.GetCutJetIDFirstNJets();
     }
 
@@ -566,19 +564,31 @@ class JetIDCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        for (unsigned int iJet = 0; iJet < m_numJets; ++iJet) {
-            bool _jetPassesID = (product.GetValidJetCount(settings, event) > iJet)
-                                    ? ValidJetsProducer::passesJetID(
-                                          dynamic_cast<KBasicJet*>(product.GetValidJet(settings, event, iJet)),
-                                          m_jetIDVersionEnumType,
-                                          m_jetIDEnumType,
-                                          settings)
-                                    : false;
-            // return immediately on non-passing jet
-            if (!_jetPassesID) {
-                return false;
+	    LOG(DEBUG) << "\n[JetIDCut]";
+	    LOG(DEBUG) << "CutJetID: " << settings.GetCutJetID() << ", CutJetIDVersion: " << settings.GetCutJetIDVersion();
+	    if (m_jetIDEnumType == KappaEnumTypes::JetID::NONE) {
+	        LOG(WARNING) << "JetID Cut selected but no CutJetID given!";
+	        LOG(DEBUG) << "JetID Cut skipped!\n";
+	        return true;
+	    } else {
+    	    LOG(DEBUG) << "Apply event-based jetID cut.";
+            for (unsigned int iJet = 0; iJet < m_numJets; ++iJet) {
+                bool _jetPassesID = (product.GetValidJetCount(settings, event) > iJet)
+                                        ? ValidJetsProducer::passesJetID(
+                                              dynamic_cast<KBasicJet*>(product.GetValidJet(settings, event, iJet)),
+                                              m_jetIDVersionEnumType,
+                                              m_jetIDEnumType,
+                                              settings)
+                                        : false;
+                // return immediately on non-passing jet
+                if (!_jetPassesID) {
+                    LOG(DEBUG) << "JetID cut not passed!\n";
+                    return false;
+                }
             }
-        }
+       	}
+
+       	LOG(DEBUG) << "First " << m_numJets << " jets passed the JetID cut!\n";
         return true;  // first 'm_numJets' Jets passed ID
     }
 
