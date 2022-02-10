@@ -199,5 +199,9 @@ class LeptonRecoSFProducer : public LeptonSFProducer{
     void Produce(ZJetEvent const& event,
                  ZJetProduct& product,
                  ZJetSettings const& settings) const override;
-};
+    std::tuple<float, float> GetHighPtEff(KLV const& lepton) const;
+    std::string m_year;
 
+  protected:
+    virtual float GetScaleFactor(float err_shift, KLV const& lepton) const;
+};
