@@ -190,3 +190,14 @@ class LeptonTrackingSFProducer : public LeptonSFProducer{
                 ZJetProduct& product,
                 ZJetSettings const& settings) const override;
  };
+
+class LeptonRecoSFProducer : public LeptonSFProducer{
+  public:
+    std::string GetProducerId() const override;
+    LeptonRecoSFProducer() : LeptonSFProducer() {}
+    void Init(ZJetSettings const& settings) override;
+    void Produce(ZJetEvent const& event,
+                 ZJetProduct& product,
+                 ZJetSettings const& settings) const override;
+};
+
