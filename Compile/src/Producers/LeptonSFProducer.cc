@@ -478,6 +478,8 @@ std::string LeptonRecoSFProducer::GetProducerId() const { return "LeptonRecoSFPr
 
 void LeptonRecoSFProducer::Init(ZJetSettings const& settings)
 {
+    m_year = settings.GetLeptonRecoSFYear();
+    LOG(INFO) << this->GetProducerId() << ": using year " << m_year << " for highPt SFs.";
     m_sffile = settings.GetLeptonRecoSFRootfile();
     if (settings.GetLeptonSFVariation() == true) {
         LOG(INFO) << "LeptonRecoSFProducer: varying scale factor UP and DOWN one sigma";
@@ -532,8 +534,8 @@ void LeptonRecoSFProducer::Produce(ZJetEvent const& event,
                                     ZJetProduct& product,
                                     ZJetSettings const& settings) const
 {
+    LOG(DEBUG) << "\n[" << this->GetProducerId() << "]";
     if(product.m_zValid){
-        LOG(DEBUG) << "\n[LeptonRecoSFProducer]\n";
         LOG(DEBUG) << "Apply LeptonRecoSFVariation: " << settings.GetLeptonSFVariation();
         float sf1 = 1/GetScaleFactor(0, *product.m_zLeptons.first);
         float sf2 = 1/GetScaleFactor(0, *product.m_zLeptons.second);
@@ -561,7 +563,143 @@ void LeptonRecoSFProducer::Produce(ZJetEvent const& event,
             }
         }
     } else {
-        LOG(FATAL) << "No valid Z found. Can't apply LeptonSF.";
+        LOG(DEBUG) << "No valid Z found. Only applying SFs to Z leptons.";
     }
 }
 
+float LeptonRecoSFProducer::GetScaleFactor(float err_shift, KLV const& lepton) const {
+    float eff, eff_err;
+    if ((lepton.p4.P() > 50.0 && std::abs(lepton.p4.Eta()) < 1.6) ||
+        (lepton.p4.P() > 100.0 && std::abs(lepton.p4.Eta()) < 2.4)) {
+        std::tie(eff, eff_err) = GetHighPtEff(lepton);
+        return eff + err_shift*eff_err;
+    }
+    // else fall back to given histo at medium/low pt
+    return LeptonSFProducer::GetScaleFactor(err_shift, lepton);
+}
+
+std::tuple<float, float> LeptonRecoSFProducer::GetHighPtEff(KLV const& lepton) const {
+    float eta = std::abs(lepton.p4.Eta());
+    if (m_year=="2018") {
+        // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonUL2018#High_pT_above_120_GeV
+        if (eta < 1.6) {
+            if (50.0 < lepton.p4.P() && lepton.p4.P() < 100.0)
+                return std::make_tuple(0.9943, 0.0007);
+            if (100.0 < lepton.p4.P() && lepton.p4.P() < 150.0)
+                return std::make_tuple(0.9948, 0.0007);
+            else if (150.0 < lepton.p4.P() && lepton.p4.P() < 200.0)
+                return std::make_tuple(0.9950, 0.0009);
+            else if (200.0 < lepton.p4.P() && lepton.p4.P() < 300.0)
+                return std::make_tuple(0.994, 0.001);
+            else if (300.0 < lepton.p4.P() && lepton.p4.P() < 400.0)
+                return std::make_tuple(0.9914, 0.0009);
+            else if (400.0 < lepton.p4.P() && lepton.p4.P() < 600.0)
+                return std::make_tuple(0.993, 0.002);
+            else if (600.0 < lepton.p4.P() && lepton.p4.P() < 1500.0)
+                return std::make_tuple(0.991, 0.004);
+            else if (1500.0 < lepton.p4.P() && lepton.p4.P() < 3500.0)
+                return std::make_tuple(1.0, 0.1);
+        }
+        else if (1.6 < eta && eta < 2.4) {
+            if (100.0 < lepton.p4.P() && lepton.p4.P() < 150.0)
+                return std::make_tuple(0.993, 0.001);
+            else if (150.0 < lepton.p4.P() && lepton.p4.P() < 200.0)
+                return std::make_tuple(0.990, 0.001);
+            else if (200.0 < lepton.p4.P() && lepton.p4.P() < 300.0)
+                return std::make_tuple(0.988, 0.001);
+            else if (300.0 < lepton.p4.P() && lepton.p4.P() < 400.0)
+                return std::make_tuple(0.981, 0.002);
+            else if (400.0 < lepton.p4.P() && lepton.p4.P() < 600.0)
+                return std::make_tuple(0.983, 0.003);
+            else if (600.0 < lepton.p4.P() && lepton.p4.P() < 1500.0)
+                return std::make_tuple(0.978, 0.006);
+            else if (1500.0 < lepton.p4.P() && lepton.p4.P() < 3500.0)
+                return std::make_tuple(0.98, 0.03);
+        } else {
+            LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
+            return std::make_tuple(1.0, 0.0);
+        }
+    } else if (m_year=="2017") {
+        // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonUL2017#High_pT_above_120_GeV
+        if (eta < 1.6) {
+            if (50.0 < lepton.p4.P() && lepton.p4.P() < 100.0)
+                return std::make_tuple(0.9938, 0.0006);
+            if (100.0 < lepton.p4.P() && lepton.p4.P() < 150.0)
+                return std::make_tuple(0.9950, 0.0007);
+            else if (150.0 < lepton.p4.P() && lepton.p4.P() < 200.0)
+                return std::make_tuple(0.996, 0.001);
+            else if (200.0 < lepton.p4.P() && lepton.p4.P() < 300.0)
+                return std::make_tuple(0.996, 0.001);
+            else if (300.0 < lepton.p4.P() && lepton.p4.P() < 400.0)
+                return std::make_tuple(0.994, 0.001);
+            else if (400.0 < lepton.p4.P() && lepton.p4.P() < 600.0)
+                return std::make_tuple(1.003, 0.006);
+            else if (600.0 < lepton.p4.P() && lepton.p4.P() < 1500.0)
+                return std::make_tuple(0.987, 0.003);
+            else if (1500.0 < lepton.p4.P() && lepton.p4.P() < 3500.0)
+                return std::make_tuple(0.9, 0.1);
+        }
+        else if (1.6 < eta && eta < 2.4) {
+            if (100.0 < lepton.p4.P() && lepton.p4.P() < 150.0)
+                return std::make_tuple(0.993, 0.001);
+            else if (150.0 < lepton.p4.P() && lepton.p4.P() < 200.0)
+                return std::make_tuple(0.989, 0.001);
+            else if (200.0 < lepton.p4.P() && lepton.p4.P() < 300.0)
+                return std::make_tuple(0.986, 0.001);
+            else if (300.0 < lepton.p4.P() && lepton.p4.P() < 400.0)
+                return std::make_tuple(0.989, 0.001);
+            else if (400.0 < lepton.p4.P() && lepton.p4.P() < 600.0)
+                return std::make_tuple(0.983, 0.003);
+            else if (600.0 < lepton.p4.P() && lepton.p4.P() < 1500.0)
+                return std::make_tuple(0.986, 0.006);
+            else if (1500.0 < lepton.p4.P() && lepton.p4.P() < 3500.0)
+                return std::make_tuple(1.01, 0.01);
+        } else {
+            LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
+            return std::make_tuple(1.0, 0.0);
+        }
+    } else if (m_year=="2016") {
+        // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonUL2016#High_pT_above_120_GeV
+        if (eta < 1.6) {
+            if (50.0 < lepton.p4.P() && lepton.p4.P() < 100.0)
+                return std::make_tuple(0.9914, 0.0008);
+            if (100.0 < lepton.p4.P() && lepton.p4.P() < 150.0)
+                return std::make_tuple(0.9936, 0.0009);
+            else if (150.0 < lepton.p4.P() && lepton.p4.P() < 200.0)
+                return std::make_tuple(0.993, 0.001);
+            else if (200.0 < lepton.p4.P() && lepton.p4.P() < 300.0)
+                return std::make_tuple(0.993, 0.002);
+            else if (300.0 < lepton.p4.P() && lepton.p4.P() < 400.0)
+                return std::make_tuple(0.990, 0.004);
+            else if (400.0 < lepton.p4.P() && lepton.p4.P() < 600.0)
+                return std::make_tuple(0.990, 0.003);
+            else if (600.0 < lepton.p4.P() && lepton.p4.P() < 1500.0)
+                return std::make_tuple(0.989, 0.004);
+            else if (1500.0 < lepton.p4.P() && lepton.p4.P() < 3500.0)
+                return std::make_tuple(0.8, 0.3);
+        }
+        else if (1.6 < eta && eta < 2.4) {
+            if (100.0 < lepton.p4.P() && lepton.p4.P() < 150.0)
+                return std::make_tuple(0.993, 0.001);
+            else if (150.0 < lepton.p4.P() && lepton.p4.P() < 200.0)
+                return std::make_tuple(0.991, 0.001);
+            else if (200.0 < lepton.p4.P() && lepton.p4.P() < 300.0)
+                return std::make_tuple(0.985, 0.001);
+            else if (300.0 < lepton.p4.P() && lepton.p4.P() < 400.0)
+                return std::make_tuple(0.981, 0.002);
+            else if (400.0 < lepton.p4.P() && lepton.p4.P() < 600.0)
+                return std::make_tuple(0.979, 0.004);
+            else if (600.0 < lepton.p4.P() && lepton.p4.P() < 1500.0)
+                return std::make_tuple(0.978, 0.005);
+            else if (1500.0 < lepton.p4.P() && lepton.p4.P() < 3500.0)
+                return std::make_tuple(0.9, 0.2);
+        } else {
+            LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
+            return std::make_tuple(1.0, 0.0);
+        }
+    } else if (m_year != "none") {
+        LOG(FATAL) << "No high pt RecoSF available for year " << m_year;
+    }
+    LOG(ERROR) << "No RecoSF available for this year. Using 1+/-0";
+    return std::make_tuple(1.0, 0.0);
+}
