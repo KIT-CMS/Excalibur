@@ -129,9 +129,12 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_STRINGLIST_DEFAULT(ZJetGenWeightNames, {})
 
     //PrefiringWeightProducer
-    IMPL_SETTING(std::string, PrefiringJetWeightFilename)
-    IMPL_SETTING(std::string, PrefiringJetWeightHistName)
-    IMPL_SETTING(std::string, PrefiringPhotonWeightFilename)
-    IMPL_SETTING(std::string, PrefiringPhotonWeightHistName)
- 
+    IMPL_SETTING(std::string, PrefiringL1MapsPath)
+    IMPL_SETTING(std::string, L1MuonParametrizationsPath)
+    IMPL_SETTING(std::string, DataEraECAL)
+    IMPL_SETTING(std::string, DataEraMuon)
+    IMPL_SETTING_DEFAULT(bool, UseJetEMPt, false)
+    IMPL_SETTING_DEFAULT(double, PrefiringRateSystematicUnctyECAL, 0.2)
+    IMPL_SETTING_DEFAULT(double, PrefiringRateSystematicUnctyMuon, 0.2)
+    IMPL_SETTING_DEFAULT(double, JetMaxMuonFraction, 0.5)
 };
