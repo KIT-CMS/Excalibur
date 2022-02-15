@@ -26,6 +26,7 @@ work.*
 !data/cleaning/*.root
 !data/cleaning/*/*.root
 !data/cleaning/*/*/*.root
+!data/prefiring/*.root
 
 cfg/excalibur/*/*/*.py
 !_make_configs.py
