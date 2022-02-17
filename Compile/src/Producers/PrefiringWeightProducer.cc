@@ -44,6 +44,7 @@ void PrefiringWeightProducer::Init(ZJetSettings const& settings)
             << "Photon map not found. All photons prefiring weights set to 1.";
     }
     h_prefmap_photon_ = (TH2F*) file_prefiringmaps_->Get(mapphotonfullname);
+    h_prefmap_photon_->SetDirectory(0); // Necessary to avoid segfaults after closing the file
     TString mapjetfullname =
         (useEMpt_) ? "L1prefiring_jetemptvseta_" + dataeraEcal_ : "L1prefiring_jetptvseta_" + dataeraEcal_;
     if (!file_prefiringmaps_->Get(mapjetfullname)) {
@@ -53,6 +54,7 @@ void PrefiringWeightProducer::Init(ZJetSettings const& settings)
         LOG(ERROR) << this->GetProducerId() << ": " << "Jet map not found. All jets prefiring weights set to 1.";
     }
     h_prefmap_jet_ = (TH2F*) file_prefiringmaps_->Get(mapjetfullname);
+    h_prefmap_jet_->SetDirectory(0); // Necessary to avoid segfaults after closing the file
     file_prefiringmaps_->Close();
 
     std::string fnameMuon = settings.GetL1MuonParametrizationsPath();
