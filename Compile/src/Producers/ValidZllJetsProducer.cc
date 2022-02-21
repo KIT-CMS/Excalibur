@@ -70,14 +70,6 @@ void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
 
 bool ValidZllJetsProducer::DoesJetPass(const KBasicJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
 
-    // check if the leptons from the Z boson decay are too near the jet
-    if (product.m_zValid) {
-        if ((ROOT::Math::VectorUtil::DeltaR(jet->p4, product.m_zLeptons.first->p4) < minZllJetDeltaRVeto) ||
-            (ROOT::Math::VectorUtil::DeltaR(jet->p4, product.m_zLeptons.second->p4) < minZllJetDeltaRVeto)) {
-            return false;
-        }
-    }
-
     // check that PUJetID is above configured minimal value
     const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...
     if (kJet) {
