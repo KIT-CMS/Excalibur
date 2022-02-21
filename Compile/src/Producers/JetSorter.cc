@@ -7,9 +7,10 @@ void JetSorter::Produce(ZJetEvent const& event,
                         ZJetSettings const& settings) const
 {
     // Iterate over all jet correction levels
+    LOG(DEBUG) << "\n[JetSorter]";
     for (std::map<std::string, std::vector<std::shared_ptr<KJet>>>::const_iterator itlevel =
              product.m_correctedZJets.begin();
-         itlevel != product.m_correctedZJets.end(); ++itlevel) {
+        itlevel != product.m_correctedZJets.end(); ++itlevel) {
         std::sort(product.m_correctedZJets[itlevel->first].begin(),
                   product.m_correctedZJets[itlevel->first].end(),
                   [](std::shared_ptr<KJet> jet1, std::shared_ptr<KJet> jet2)

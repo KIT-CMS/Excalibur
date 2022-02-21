@@ -7,15 +7,15 @@
 /**
  * Filter class with cuts for ZJet analysis.
  *
- * min nleptons (el + mu) 
+ * min nleptons (el + mu)
  * max nleptons (el + mu)
- * leadinglep pt 
- * min nmuons    ***Not needed anymore [stefan wayand]
- * max nmuons    ***Not needed anymore [stefan wayand]
- * muon pt       ***Not needed anymore [stefan wayand]
- * muon eta      ***Not needed anymore [stefan wayand]
- * electron pt   ***Not needed anymore [stefan wayand]
- * electron eta  ***Not needed anymore [stefan wayand]
+ * leadinglep pt
+ * min nmuons
+ * max nmuons
+ * muon pt
+ * muon eta
+ * electron pt
+ * electron eta
  * leading jet pt
  * leading jet eta
  * z pt
@@ -23,7 +23,7 @@
  * alpha (second jet pt to z pt)
  */
 //////////////////
-// Min nLeptons //
+// Min nLeptons // +++CURRENTLY NOT USED+++
 //////////////////
 class MinNLeptonsCut : public ZJetFilterBase
 {
@@ -42,7 +42,15 @@ class MinNLeptonsCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return ( (product.m_validMuons.size() + product.m_validElectrons.size()) >= nLeptonsMin);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_validLaptons: " << product.m_validLeptons.size() << ", Cut: " << nLeptonsMin ;
+        if (product.m_validLeptons.size() >= nLeptonsMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -50,7 +58,7 @@ class MinNLeptonsCut : public ZJetFilterBase
 };
 
 //////////////////
-// Max nLeptons //
+// Max nLeptons // +++CURRENTLY NOT USED+++
 //////////////////
 class MaxNLeptonsCut : public ZJetFilterBase
 {
@@ -69,7 +77,15 @@ class MaxNLeptonsCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return ( (product.m_validMuons.size() + product.m_validElectrons.size()) <= nLeptonsMax);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_validLaptons: " << product.m_validLeptons.size() << ", Cut: " << nLeptonsMax ;
+        if (product.m_validLeptons.size() <= nLeptonsMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -78,7 +94,7 @@ class MaxNLeptonsCut : public ZJetFilterBase
 
 
 ///////////////////////
-// leading lepton Pt //
+// leading lepton Pt // +++CURRENTLY NOT USED+++
 ///////////////////////
 class LeadingLeptonPtCut : public ZJetFilterBase
 {
@@ -97,9 +113,12 @@ class LeadingLeptonPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "leadingLeptonPtMin: " << leadingLeptonPtMin;
+        LOG(WARNING) << "THIS CUT IS OUTDATED AND HAS TO BE REVIEWED!";
         // Only the first two muons need to pass this cut
 	if (product.m_validMuons.size() > 0 && product.m_validMuons[0]->p4.Pt() > leadingLeptonPtMin) return true;
-        if (product.m_validElectrons.size() > 0 && product.m_validElectrons[0]->p4.Pt() > leadingLeptonPtMin) return true;  
+        if (product.m_validElectrons.size() > 0 && product.m_validElectrons[0]->p4.Pt() > leadingLeptonPtMin) return true;
         return false;
     }
 
@@ -127,7 +146,15 @@ class MinNMuonsCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_validMuons.size() >= nMuonsMin);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_validMuons: " << product.m_validMuons.size() << " >= " << nMuonsMin;
+        if (product.m_validMuons.size() >= nMuonsMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -154,7 +181,15 @@ class MaxNMuonsCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_validMuons.size() <= nMuonsMax);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_validMuons: " << product.m_validMuons.size() << " <= " << nMuonsMax;
+        if (product.m_validMuons.size() <= nMuonsMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -175,10 +210,12 @@ class MuonPtCut : public ZJetFilterBase
     {
         ZJetFilterBase::Init(settings);
         muonPtMin = settings.GetCutMuonPtMin();
-        if (settings.GetCutMuonSubPtMin() != -1.0) {
+        if (settings.GetCutMuonSubPtMin() != -1.0) { // -1.0 is the default value
           muonSubPtMin = settings.GetCutMuonSubPtMin();
+          LOG(DEBUG) << "Asymmetric muon pt cut used with: " << muonSubPtMin;
         } else {
-          muonSubPtMin = muonPtMin;
+          muonSubPtMin = muonPtMin;  // if not set, use symmetric lepton cut
+          LOG(DEBUG) << "Use symmetric muon pt cut with: " << muonSubPtMin;
         }
     }
 
@@ -186,13 +223,23 @@ class MuonPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        // Only the first two muons need to pass this cut
-        bool allPassed = true;
-        allPassed = allPassed && product.m_validMuons[0]->p4.Pt() > muonPtMin;
-        allPassed = product.m_validMuons.size() >= 2
-                        ? (allPassed && product.m_validMuons[1]->p4.Pt() > muonSubPtMin)
-                        : allPassed;
-        return allPassed;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutMuonPtMin: " << muonPtMin << ", CutMuonSubPtMin: " << muonSubPtMin;
+        // Only the two muons of the Z lepton need to pass this cut
+        if (product.m_zValid == false) {
+            LOG(FATAL) << "No valid Z! Please check if the ValidZ cut was already applied.";
+        }
+        if (settings.GetDebugVerbosity() > 0) {
+            LOG(DEBUG) << "leading: " << product.m_zLeptons.first->p4;
+            LOG(DEBUG) << "sub-leading: " << product.m_zLeptons.second->p4;
+        }
+        if (product.m_zLeptons.first->p4.Pt() > muonPtMin && product.m_zLeptons.second->p4.Pt() > muonSubPtMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -220,13 +267,23 @@ class MuonEtaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        // Only the first two muons need to pass this cut
-        bool allPassed = true;
-        allPassed = allPassed && std::abs(product.m_validMuons[0]->p4.Eta()) < muonEtaMax;
-        allPassed = product.m_validMuons.size() >= 2
-                        ? (allPassed && std::abs(product.m_validMuons[1]->p4.Eta()) < muonEtaMax)
-                        : allPassed;
-        return allPassed;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutMuonEtaMax: " << muonEtaMax;
+        // Only the two muons of the Z lepton need to pass this cut
+        if (product.m_zValid == false) {
+            LOG(FATAL) << "No valid Z! Please check if the ValidZ cut was already applied.";
+        }
+        if (settings.GetDebugVerbosity() > 0) {
+            LOG(DEBUG) << "leading: " << product.m_zLeptons.first->p4;
+            LOG(DEBUG) << "sub-leading: " << product.m_zLeptons.second->p4;
+        }
+        if (product.m_zLeptons.first->p4.Eta() < muonEtaMax && product.m_zLeptons.second->p4.Eta() < muonEtaMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -249,8 +306,10 @@ class ElectronPtCut : public ZJetFilterBase
         electronPtMin = settings.GetCutElectronPtMin();
         if (settings.GetCutElectronSubPtMin() != -1.0) {
           electronSubPtMin = settings.GetCutElectronSubPtMin();
+          LOG(DEBUG) << "Asymmetric electron pt cut used with: " << electronSubPtMin;
         } else {
           electronSubPtMin = electronPtMin;
+          LOG(DEBUG) << "Use symmetric electron pt cut with: " << electronSubPtMin;
         }
     }
 
@@ -258,13 +317,23 @@ class ElectronPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        // Only the first two Electrons need to pass this cut
-        bool allPassed = true;
-        allPassed = allPassed && product.m_validElectrons[0]->p4.Pt() > electronPtMin;
-        allPassed = product.m_validElectrons.size() >= 2
-                        ? (allPassed && product.m_validElectrons[1]->p4.Pt() > electronSubPtMin)
-                        : allPassed;
-        return allPassed;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutElectronPtMin: " << electronPtMin << ", CutElectronSubPtMin: " << electronSubPtMin;
+        // Only the two electrons of the Z lepton need to pass this cut
+        if (product.m_zValid == false) {
+            LOG(FATAL) << "No valid Z! Please check if the ValidZ cut was already applied.";
+        }
+        if (settings.GetDebugVerbosity() > 0) {
+            LOG(DEBUG) << "leading: " << product.m_zLeptons.first->p4;
+            LOG(DEBUG) << "sub-leading: " << product.m_zLeptons.second->p4;
+        }
+        if (product.m_zLeptons.first->p4.Pt() > electronPtMin && product.m_zLeptons.second->p4.Pt() > electronSubPtMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -292,14 +361,24 @@ class ElectronEtaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        // Only the first two electrons need to pass this cut
-        bool allPassed = true;
-        allPassed = allPassed && std::abs(product.m_validElectrons[0]->p4.Eta()) < electronEtaMax;
-        allPassed =
-            product.m_validElectrons.size() >= 2
-                ? (allPassed && std::abs(product.m_validElectrons[1]->p4.Eta()) < electronEtaMax)
-                : allPassed;
-        return allPassed;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutElectronEtaMax: " << electronEtaMax;
+        // Only the two electrons of the Z lepton need to pass this cut
+        if (product.m_zValid == false) {
+            LOG(FATAL) << "No valid Z! Please check if the ValidZ cut was already applied.";
+        }
+        if (settings.GetDebugVerbosity() > 0) {
+            LOG(DEBUG) << "leading: " << product.m_zLeptons.first->p4;
+            LOG(DEBUG) << "sub-leading: " << product.m_zLeptons.second->p4;
+        }
+        if (product.m_zLeptons.first->p4.Eta() < electronEtaMax &&
+            product.m_zLeptons.second->p4.Eta() < electronEtaMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -326,9 +405,38 @@ class LeadingJetPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.GetValidJetCount(settings, event) > 0)
-                ? (product.GetValidPrimaryJet(settings, event)->p4.Pt() > leadingJetPtMin)
-                : false;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "LeadingJetPtMin: " << leadingJetPtMin;
+        LOG(DEBUG) << "LEVEL: " << settings.GetCorrectionLevel();
+        int valids = product.m_validJets.size();
+        int jetcount = product.GetValidJetCount(settings, event, settings.GetCorrectionLevel());
+        LOG(DEBUG) << "Number of m_validJets= " << valids << ", Number of corrected jets: " << jetcount <<"\n";
+        if (product.m_validJets.size() > 0) {
+            if (settings.GetDebugVerbosity() > 0) {
+                LOG(DEBUG) << "m_validJets:";
+                for (auto jet = product.m_validJets.begin(); jet != product.m_validJets.end();
+                     ++jet) {
+                    std::cout << (*jet)->p4 << std::endl;
+                }
+                LOG(DEBUG) << "\ncorrected jets: ";
+                for (int index = 0; index < jetcount; index++) {
+                    auto myjet =
+                        product.GetValidJet(settings, event, index, settings.GetCorrectionLevel());
+                    LOG(DEBUG) << "Index: " << index << ", " << myjet->p4;
+                }
+            }
+            LOG(DEBUG) << "Corrected leading Jet: " << product.GetValidPrimaryJet(settings, event)->p4;
+        } else {
+            LOG(DEBUG) << "+++++++ No valid jet left! ++++++++";
+            return false;
+        }
+        if (product.GetValidPrimaryJet(settings, event)->p4.Pt() > leadingJetPtMin){
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -355,9 +463,22 @@ class LeadingJetEtaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.GetValidJetCount(settings, event) > 0)
-                ? (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Eta()) < leadingJetEtaMax)
-                : false;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutLeadingJetEtaMax: " << leadingJetEtaMax;
+
+        if (!(product.GetValidJetCount(settings, event) > 0)) {
+            LOG(DEBUG) << "+++++++ No valid jet left! ++++++++";
+            return false;
+        }
+
+        LOG(DEBUG) << "abs(Eta): " << std::abs(product.GetValidPrimaryJet(settings, event)->p4.Eta());
+        if (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Eta()) < leadingJetEtaMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -384,9 +505,22 @@ class LeadingJetYCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.GetValidJetCount(settings, event) > 0)
-                ? (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Rapidity()) < leadingJetYMax)
-                : false;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutLeadingJetYMax: " << leadingJetYMax;
+
+        if (!(product.GetValidJetCount(settings, event) > 0)) {
+            LOG(DEBUG) << "+++++++ No valid jet left! ++++++++";
+            return false;
+        }
+
+        LOG(DEBUG) << "abs(Rapidity): " << std::abs(product.GetValidPrimaryJet(settings, event)->p4.Rapidity());
+        if (std::abs(product.GetValidPrimaryJet(settings, event)->p4.Rapidity()) < leadingJetYMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -413,9 +547,21 @@ class PhistaretaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_zValid) 
-                    ? (product.GetPhiStarEta(event) > phistaretaMin)
-                    : false;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutPhistaretaMin: " << phistaretaMin;
+
+        if (product.m_zValid == false) {
+            LOG(FATAL) << "No valid Z! Please check if the ValidZ cut was already applied.";
+        }
+
+        LOG(DEBUG) << "PhiStarEta: " << product.GetPhiStarEta(event);
+        if (product.GetPhiStarEta(event) > phistaretaMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -442,7 +588,20 @@ class ZPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_z.p4.Pt() > zPtMin);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutZPtMin: " << zPtMin;
+        if (product.m_zValid == false) {
+            LOG(FATAL) << "No valid Z! Please check if the ValidZ cut was already applied.";
+        }
+
+        LOG(DEBUG) << "Z Pt: " << product.m_z.p4.Pt();
+        if (product.m_z.p4.Pt() > zPtMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -472,7 +631,24 @@ class ValidZCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_zValid && std::abs(product.m_z.p4.M()-ZMass)<ZMassRange);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Accepted Z mass: " << ZMass << " (pdg) +- " << settings.GetZMassRange()
+                   << " (mass window)";
+        LOG(DEBUG) << "Valid Z available? (0:No|1:Yes) " << product.m_zValid << ", reconstructed Z mass: "
+                   << product.m_z.p4.M();
+
+        if (product.m_zValid == false) {
+            LOG(DEBUG) << "No Z available! Cut not passed!";
+            return false;
+        }
+
+        if (std::abs(product.m_z.p4.M()-ZMass) < ZMassRange) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
   private:
     float ZMassRange = 0;
@@ -499,10 +675,22 @@ class BackToBackCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutBackToBack: " << backToBack;
+
         // ||Delta phi(Z, jet1)| - pi| < 0.34
         double deltaPhi = ROOT::Math::VectorUtil::DeltaPhi(
             product.m_z.p4, product.GetValidPrimaryJet(settings, event)->p4);
-        return M_PI - std::abs(deltaPhi) < backToBack;
+        LOG(DEBUG) << "Delta Phi: " << deltaPhi << " => pi - dPhi = " << M_PI - std::abs(deltaPhi);
+
+        if (M_PI - std::abs(deltaPhi) < backToBack) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
+
     }
 
   private:
@@ -510,7 +698,7 @@ class BackToBackCut : public ZJetFilterBase
 };
 
 ///////////
-// Alpha //
+// Alpha // +++CURRENTLY NOT USED+++
 ///////////
 class AlphaCut : public ZJetFilterBase
 {
@@ -529,11 +717,23 @@ class AlphaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutAlphaMax: " << alphaMax;
+
         // Always true if there is only one jet in the event
-        return (product.GetValidJetCount(settings, event) > 1)
-                   ? (product.GetValidJet(settings, event, 1)->p4.Pt() <
-                      alphaMax * product.m_z.p4.Pt())
-                   : true;
+        if (!(product.GetValidJetCount(settings, event) > 1)) {
+            LOG(DEBUG) << "Not enough jets for alpha calculation!";
+            LOG(WARNING) << "Alpha Cut skipped!";
+            return true;
+        }
+
+        if (product.GetValidJet(settings, event, 1)->p4.Pt() < alphaMax * product.m_z.p4.Pt()) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -564,10 +764,12 @@ class JetIDCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-	    LOG(DEBUG) << "\n[JetIDCut]";
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
 	    LOG(DEBUG) << "CutJetID: " << settings.GetCutJetID() << ", CutJetIDVersion: " << settings.GetCutJetIDVersion();
+        LOG(DEBUG) << "Apply JetID on the first " << m_numJets << " jets.";
+
 	    if (m_jetIDEnumType == KappaEnumTypes::JetID::NONE) {
-	        LOG(WARNING) << "JetID Cut selected but no CutJetID given!";
+	        LOG(DEBUG) << "JetID Cut in pipeline but no CutJetID given!";
 	        LOG(DEBUG) << "JetID Cut skipped!\n";
 	        return true;
 	    } else {
@@ -588,7 +790,7 @@ class JetIDCut : public ZJetFilterBase
             }
        	}
 
-       	LOG(DEBUG) << "First " << m_numJets << " jets passed the JetID cut!\n";
+       	LOG(DEBUG) << "First (" << m_numJets << ") jets passed the JetID cut!\n";
         return true;  // first 'm_numJets' Jets passed ID
     }
 
@@ -619,14 +821,22 @@ class MinNGenMuonsCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_genMuons: " << product.m_genMuons.size() << " >= " << nMuonsMin;
+
 	/*unsigned int nMuons = 0;
 	for(unsigned int i = 0; i < product.m_genLeptonsFromBosonDecay.size();i++){
 		if(std::abs(product.m_genLeptonsFromBosonDecay.at(i)->pdgId) == 13)
 			nMuons++;
 	}*/
-	
 	//return(nMuons>=nMuonsMin);
-	return(product.m_genMuons.size()>=nMuonsMin);
+        if (product.m_genMuons.size() >= nMuonsMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -653,8 +863,17 @@ class MaxNGenMuonsCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_genMuons: " << product.m_genMuons.size() << " <= " << nMuonsMax;
+
         //return (product.m_genLeptonsFromBosonDecay.size() <= nMuonsMax);
-	return (product.m_genMuons.size() <= nMuonsMax);
+        if (product.m_genMuons.size() <= nMuonsMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -662,7 +881,7 @@ class MaxNGenMuonsCut : public ZJetFilterBase
 };
 
 ////////////////
-// GenMuon Pt //
+// GenMuon Pt // 
 ////////////////
 class GenMuonPtCut : public ZJetFilterBase
 {
@@ -686,6 +905,16 @@ class GenMuonPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "+++ This filter is applied on ALL genMuons! +++";
+        if (settings.GetCutMuonSubPtMin() != -1.0) {
+            LOG(DEBUG) << "Using asymmetric pt cut:";
+            LOG(DEBUG) << "Leading muon pt cut:" << muonPtMin; 
+            LOG(DEBUG) << "Sub-leading muon pt cut: " << muonSubPtMin;
+        } else {
+            LOG(DEBUG) << "Using symmetric pt cut for leading and sub-leading muon: " << muonPtMin;
+        }
+
         // Only the first two muons need to pass this cut
         bool allPassed = true;
         /*allPassed = allPassed && product.m_genLeptonsFromBosonDecay.at(0)->p4.Pt() > muonPtMin;
@@ -696,6 +925,11 @@ class GenMuonPtCut : public ZJetFilterBase
         allPassed = product.m_genMuons.size() >= 2
                         ? (allPassed && product.m_genMuons[1]->p4.Pt() > muonSubPtMin)
                         : allPassed;
+        if (allPassed) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+        }
         return allPassed;
     }
 
@@ -705,7 +939,7 @@ class GenMuonPtCut : public ZJetFilterBase
 };
 
 //////////////////
-// Gen Muon Eta //
+// Gen Muon Eta //  
 //////////////////
 class GenMuonEtaCut : public ZJetFilterBase
 {
@@ -724,6 +958,9 @@ class GenMuonEtaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "+++ This filter is applied on ALL genMuons! +++";
+        LOG(DEBUG) << "CutMuonEtaNax: " << muonEtaMax;
         // Only the first two muons need to pass this cut
         bool allPassed = true;
         /*allPassed = allPassed && std::fabs(product.m_genLeptonsFromBosonDecay.at(0)->p4.Eta()) < muonEtaMax;
@@ -734,6 +971,11 @@ class GenMuonEtaCut : public ZJetFilterBase
         allPassed = product.m_genMuons.size() >= 2
                        ? (allPassed && std::fabs(product.m_genMuons[1]->p4.Eta()) < muonEtaMax)
                         : allPassed;
+        if (allPassed) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+        }
         return allPassed;
     }
 
@@ -761,9 +1003,20 @@ class GenPhistaretaCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_genBosonLVFound)
-                    ? (product.GetGenPhiStarEta(event) > phistaretaMin)
-                    : false;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutPhiStaretaMin: " << phistaretaMin;
+        if (product.m_genBosonLVFound) {
+            LOG(DEBUG) << "GenPhiStarEta: " << product.GetGenPhiStarEta(event);                 
+            if (product.GetGenPhiStarEta(event) > phistaretaMin) {
+                LOG(DEBUG) << this->GetFilterId() << " passed!";
+                return true;
+            } else {
+                LOG(DEBUG) << this->GetFilterId() << " not passed!";
+                return false;
+            }
+        } else {
+            LOG(DEBUG) << "product.m_genBosonLVFound == false => Event vetoed!";
+        }
     }
 
   private:
@@ -790,7 +1043,17 @@ class GenZPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_genBosonLV.Pt() > zPtMin);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutZPtMin: " << zPtMin;
+        LOG(DEBUG) << "Pt: " << product.m_genBosonLV.Pt();
+
+        if (product.m_genBosonLV.Pt() > zPtMin) {
+            LOG(DEBUG) <<  this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
     }
 
   private:
@@ -798,7 +1061,7 @@ class GenZPtCut : public ZJetFilterBase
 };
 
 ////////////////////
-// Leading Jet Pt //
+//LeadingGenJet Pt//
 ////////////////////
 class LeadingGenJetPtCut : public ZJetFilterBase
 {
@@ -817,9 +1080,21 @@ class LeadingGenJetPtCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_simpleGenJets.size()>0)
-                ? (product.m_simpleGenJets.at(0)->p4.Pt() > leadingJetPtMin)
-                : false;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "GetCutLeadingJetPtMin: " << leadingJetPtMin;
+        if (product.m_simpleGenJets.size() > 0) {
+            LOG(DEBUG) << "Leading GenJet Pt: " << product.m_simpleGenJets.at(0)->p4.Pt();
+            if (product.m_simpleGenJets.at(0)->p4.Pt() > leadingJetPtMin) {
+                LOG(DEBUG) <<  this->GetFilterId() << " passed!";
+                return true;
+            } else {
+                LOG(DEBUG) << this->GetFilterId() << " not passed!";
+                return false;
+            }
+        } else {
+            LOG(DEBUG) << "No m_simpleGenJets available!";
+            return false;
+        }
     }
 
   private:
@@ -827,7 +1102,7 @@ class LeadingGenJetPtCut : public ZJetFilterBase
 };
 
 //////////////////////////////
-// Leading Gen Jet Rapidity //
+// Leading Gen Jet Rapidity // 
 //////////////////////////////
 class LeadingGenJetYCut : public ZJetFilterBase
 {
@@ -846,9 +1121,21 @@ class LeadingGenJetYCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_simpleGenJets.size()>0)
-                ? (std::abs(product.m_simpleGenJets.at(0)->p4.Rapidity()) < leadingJetYMax)
-                : false;
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutLeadingJetYMax: " << leadingJetYMax;
+        if (product.m_simpleGenJets.size() > 0) {
+            LOG(DEBUG) << "Leading GenJet Rapidity: " << product.m_simpleGenJets.at(0)->p4.Rapidity();
+            if (product.m_simpleGenJets.at(0)->p4.Pt() < leadingJetYMax) {
+                LOG(DEBUG) <<  this->GetFilterId() << " passed!";
+                return true;
+            } else {
+                LOG(DEBUG) << this->GetFilterId() << " not passed!";
+                return false;
+            }
+        } else {
+            LOG(DEBUG) << "No m_simpleGenJets available!";
+            return false;
+        }
     }
 
   private:
@@ -856,7 +1143,7 @@ class LeadingGenJetYCut : public ZJetFilterBase
 };
 
 ///////////
-// GenHT //
+// GenHT // 
 ///////////
 class GenHTCut : public ZJetFilterBase
 {
@@ -875,6 +1162,17 @@ class GenHTCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutGenHTMax: " << genhtMax;
+        LOG(DEBUG) << "GenHT: " << product.GetGenHT(event);
+        if (product.GetGenHT(event) < genhtMax) {
+            LOG(DEBUG) <<  this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
+
         return (product.GetGenHT(event) < genhtMax);
     }
 
@@ -883,7 +1181,7 @@ class GenHTCut : public ZJetFilterBase
 };
 
 ///////////////
-// ValidGenZ //
+// ValidGenZ //  
 ///////////////
 
 class ValidGenZCut : public ZJetFilterBase
@@ -904,8 +1202,23 @@ class ValidGenZCut : public ZJetFilterBase
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override
     {
-        return (product.m_genBosonLVFound && std::fabs(product.m_genBosonLV.mass() - ZMass) < ZMassRange);
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "ZMassRange: " << ZMassRange;
+        if (product.m_genBosonLVFound == false) {
+            LOG(DEBUG) << "No valid genBosonLVFound. Cut not passed!";
+            return false;
+        } else {
+            LOG(DEBUG) << "Z gen mass: " << product.m_genBosonLV.mass();
+            if(std::fabs(product.m_genBosonLV.mass() - ZMass) < ZMassRange) {
+                LOG(DEBUG) << this->GetFilterId() << " passed!";
+                return true;
+            } else {
+                LOG(DEBUG) << this->GetFilterId() << " not passed!";
+                return false;
+            }
+        }
     }
+
   private:
     float ZMassRange = 0;
     float ZMass = 90;
@@ -940,12 +1253,15 @@ class METFiltersFilter : public ZJetFilterBase {
     bool DoesEventPass(ZJetEvent const& event,
                        ZJetProduct const& product,
                        ZJetSettings const& settings) const override {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
       for (const size_t metFilterIndex : metFilterBitIndices) {
         if (!event.m_triggerObjects->passesMetFilter(metFilterIndex)) {
           // At least one required MetFilter is not passed. Reject Event.
+          LOG(DEBUG) << "METFilter with index: " << metFilterIndex << " not passed!";
           return false;
         }
       }
+      LOG(DEBUG) << "All METFilters passed!";
       return true;
     }
 

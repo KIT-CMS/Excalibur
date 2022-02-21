@@ -33,6 +33,7 @@ void TypeIMETProducer::Produce(ZJetEvent const& event,
                                ZJetProduct& product,
                                ZJetSettings const& settings) const
 {
+    LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";	
     // Iterate over the jet collection
     for (unsigned int corrLevelIndex = 0; corrLevelIndex < m_corrLevels.size(); ++corrLevelIndex) {
         KLV correction;
