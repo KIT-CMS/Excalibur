@@ -48,7 +48,7 @@ class MinNLeptonsCut : public ZJetFilterBase
             LOG(DEBUG) << this->GetFilterId() << " passed!";
             return true;
         } else {
-            LOG(DEBUG) << this->GetFilterId() << "not passed!";
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
             return false;
         }
     }
@@ -83,7 +83,7 @@ class MaxNLeptonsCut : public ZJetFilterBase
             LOG(DEBUG) << this->GetFilterId() << " passed!";
             return true;
         } else {
-            LOG(DEBUG) << this->GetFilterId() << "not passed!";
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
             return false;
         }
     }
@@ -411,9 +411,6 @@ class LeadingJetPtCut : public ZJetFilterBase
         int valids = product.m_validJets.size();
         int jetcount = product.GetValidJetCount(settings, event, settings.GetCorrectionLevel());
         LOG(DEBUG) << "Number of m_validJets= " << valids << ", Number of corrected jets: " << jetcount <<"\n";
-        if (valids != jetcount) {
-            LOG(ERROR) << "++++ Jet lost! Please investigate!! ++++";  // TODO!
-        }
         if (product.m_validJets.size() > 0) {
             if (settings.GetDebugVerbosity() > 0) {
                 LOG(DEBUG) << "m_validJets:";
@@ -469,7 +466,7 @@ class LeadingJetEtaCut : public ZJetFilterBase
         LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
         LOG(DEBUG) << "CutLeadingJetEtaMax: " << leadingJetEtaMax;
 
-        if ((product.GetValidJetCount(settings, event) > 0) == false) {
+        if (!(product.GetValidJetCount(settings, event) > 0)) {
             LOG(DEBUG) << "+++++++ No valid jet left! ++++++++";
             return false;
         }
@@ -511,7 +508,7 @@ class LeadingJetYCut : public ZJetFilterBase
         LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
         LOG(DEBUG) << "CutLeadingJetYMax: " << leadingJetYMax;
 
-        if ((product.GetValidJetCount(settings, event) > 0) == false) {
+        if (!(product.GetValidJetCount(settings, event) > 0)) {
             LOG(DEBUG) << "+++++++ No valid jet left! ++++++++";
             return false;
         }
@@ -724,7 +721,7 @@ class AlphaCut : public ZJetFilterBase
         LOG(DEBUG) << "CutAlphaMax: " << alphaMax;
 
         // Always true if there is only one jet in the event
-        if ((product.GetValidJetCount(settings, event) > 1) == false) {
+        if (!(product.GetValidJetCount(settings, event) > 1)) {
             LOG(DEBUG) << "Not enough jets for alpha calculation!";
             LOG(WARNING) << "Alpha Cut skipped!";
             return true;

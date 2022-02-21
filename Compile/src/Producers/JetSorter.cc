@@ -11,16 +11,9 @@ void JetSorter::Produce(ZJetEvent const& event,
     for (std::map<std::string, std::vector<std::shared_ptr<KJet>>>::const_iterator itlevel =
              product.m_correctedZJets.begin();
         itlevel != product.m_correctedZJets.end(); ++itlevel) {
-	if(settings.GetDebugVerbosity() > 1) {
-            LOG(DEBUG) << "corr lvl: " << itlevel->first;
-            LOG(DEBUG) << "size before sort: " << product.m_correctedZJets[itlevel->first].size();
-	}
         std::sort(product.m_correctedZJets[itlevel->first].begin(),
                   product.m_correctedZJets[itlevel->first].end(),
                   [](std::shared_ptr<KJet> jet1, std::shared_ptr<KJet> jet2)
                       -> bool { return jet1->p4.Pt() > jet2->p4.Pt(); });
-	if(settings.GetDebugVerbosity() > 1) {
-            LOG(DEBUG) << "size after sort: " << product.m_correctedZJets[itlevel->first].size();
-	}
     }
 }
