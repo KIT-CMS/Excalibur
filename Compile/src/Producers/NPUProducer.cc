@@ -37,7 +37,7 @@ void NPUProducer::Produce(ZJetEvent const& event,
     const unsigned long ls = event.m_eventInfo->nLumi;
     float npu = 0;
     float npurms = 0;
-    LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+    LOG(DEBUG) << "\n[" << this->GetProducerId() << "]";
     try {
         npu = m_pumean.at(run).at(ls);
         npurms = m_pumeanrms.at(run).at(ls);

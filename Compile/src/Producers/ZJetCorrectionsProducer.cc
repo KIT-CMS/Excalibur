@@ -159,7 +159,7 @@ void ZJetCorrectionsProducer::Produce(ZJetEvent const& event,
     // TODO(gfleig): Do we need more assertions?
     assert(event.m_pileupDensity);
     assert(event.m_vertexSummary);
-    LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+    LOG(DEBUG) << "\n[" << this->GetProducerId() << "]";
     CorrectJetCollection("None", "L1", m_l1, event, product, settings);
     if (settings.GetRC()) {
         CorrectJetCollection("None", "RC", m_rc, event, product, settings);
