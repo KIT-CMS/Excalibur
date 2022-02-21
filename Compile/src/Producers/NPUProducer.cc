@@ -18,8 +18,8 @@ void NPUProducer::Init(ZJetSettings const& settings)
         LOG(FATAL) << "Error in NPUProducer: Could not open luminosity file: " << file;
 
     while (f >> run >> ls >> lum >> xsrms >> xsavg) {
-        LOG(DEBUG) << run << " " << ls << " " << lum << " " << xsavg << " " << xsrms << ": "
-                   << (xsavg * minbxsec * 1000.0f) << " +/- " << (xsrms * minbxsec * 1000.0f);
+        //LOG(DEBUG) << run << " " << ls << " " << lum << " " << xsavg << " " << xsrms << ": "
+        //           << (xsavg * minbxsec * 1000.0f) << " +/- " << (xsrms * minbxsec * 1000.0f);
 
         if (xsrms < 0)
             LOG(FATAL) << "Error in PileupTruthProducer: RMS = " << xsrms << " < 0";
@@ -37,7 +37,7 @@ void NPUProducer::Produce(ZJetEvent const& event,
     const unsigned long ls = event.m_eventInfo->nLumi;
     float npu = 0;
     float npurms = 0;
-
+    LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
     try {
         npu = m_pumean.at(run).at(ls);
         npurms = m_pumeanrms.at(run).at(ls);
