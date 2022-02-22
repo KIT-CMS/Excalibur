@@ -410,26 +410,25 @@ class LeadingJetPtCut : public ZJetFilterBase
         LOG(DEBUG) << "LEVEL: " << settings.GetCorrectionLevel();
         int valids = product.m_validJets.size();
         int jetcount = product.GetValidJetCount(settings, event, settings.GetCorrectionLevel());
-        LOG(DEBUG) << "Number of m_validJets= " << valids << ", Number of corrected jets: " << jetcount <<"\n";
-        if (product.m_validJets.size() > 0) {
-            if (settings.GetDebugVerbosity() > 0) {
-                LOG(DEBUG) << "m_validJets:";
-                for (auto jet = product.m_validJets.begin(); jet != product.m_validJets.end();
-                     ++jet) {
-                    std::cout << (*jet)->p4 << std::endl;
-                }
-                LOG(DEBUG) << "\ncorrected jets: ";
-                for (int index = 0; index < jetcount; index++) {
-                    auto myjet =
-                        product.GetValidJet(settings, event, index, settings.GetCorrectionLevel());
-                    LOG(DEBUG) << "Index: " << index << ", " << myjet->p4;
-                }
-            }
-            LOG(DEBUG) << "Corrected leading Jet: " << product.GetValidPrimaryJet(settings, event)->p4;
-        } else {
+        LOG(DEBUG) << "Number of m_validJets: " << valids << ", Number of corrected jets: " << jetcount <<"\n";
+        if (settings.GetDebugVerbosity() > 0) {
+             LOG(DEBUG) << "m_validJets:";
+             for (auto jet = product.m_validJets.begin(); jet != product.m_validJets.end();
+                  ++jet) {
+                 std::cout << (*jet)->p4 << std::endl;
+             }
+             LOG(DEBUG) << "\ncorrected jets: ";
+             for (int index = 0; index < jetcount; index++) {
+                 auto myjet =
+                     product.GetValidJet(settings, event, index, settings.GetCorrectionLevel());
+                 LOG(DEBUG) << "Index: " << index << ", " << myjet->p4;
+             }
+        }
+        if (jetcount < 1) {
             LOG(DEBUG) << "+++++++ No valid jet left! ++++++++";
             return false;
         }
+        LOG(DEBUG) << "Corrected leading Jet: " << product.GetValidPrimaryJet(settings, event)->p4;
         if (product.GetValidPrimaryJet(settings, event)->p4.Pt() > leadingJetPtMin){
             LOG(DEBUG) << this->GetFilterId() << " passed!";
             return true;
