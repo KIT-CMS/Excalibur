@@ -120,17 +120,19 @@ void LeptonIDSFProducer::Produce(ZJetEvent const& event,
                                  ZJetSettings const& settings) const
 {
     if(product.m_zValid){
-        product.m_weights["zl1IDSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        product.m_weights["zl2IDSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        const auto* lep1 = product.m_originalLeptons.at(product.m_zLeptons.first);
+        const auto* lep2 = product.m_originalLeptons.at(product.m_zLeptons.second);
+        product.m_weights["zl1IDSFWeight"] = 1/GetScaleFactor(0, *lep1);
+        product.m_weights["zl2IDSFWeight"] = 1/GetScaleFactor(0, *lep2);
         product.m_weights["leptonIDSFWeight"] =
                 //some old SF files already include the inverse, make sure you use them the right way!
                 //GetScaleFactor(0, *product.m_zLeptons.first) * GetScaleFactor(0, *product.m_zLeptons.second);
-                1/GetScaleFactor(0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, *product.m_zLeptons.second);
+                1/GetScaleFactor(0, *lep1) * 1/GetScaleFactor(0, *lep2);
         if (settings.GetLeptonSFVariation() == true) {
             product.m_weights["leptonIDSFWeightUp"] =
-                1/GetScaleFactor(-1, *product.m_zLeptons.first) * 1/GetScaleFactor(-1, *product.m_zLeptons.second);
+                1/GetScaleFactor(-1, *lep1) * 1/GetScaleFactor(-1, *lep2);
             product.m_weights["leptonIDSFWeightDown"] =
-                1/GetScaleFactor( 1, *product.m_zLeptons.first) * 1/GetScaleFactor( 1, *product.m_zLeptons.second);
+                1/GetScaleFactor( 1, *lep1) * 1/GetScaleFactor( 1, *lep2);
         }
     }
     else {
@@ -214,17 +216,19 @@ void LeptonIsoSFProducer::Produce(ZJetEvent const& event,
                                  ZJetSettings const& settings) const
 {
     if(product.m_zValid){
-        product.m_weights["zl1IsoSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        product.m_weights["zl2IsoSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        const auto* lep1 = product.m_originalLeptons.at(product.m_zLeptons.first);
+        const auto* lep2 = product.m_originalLeptons.at(product.m_zLeptons.second);
+        product.m_weights["zl1IsoSFWeight"] = 1/GetScaleFactor(0, *lep1);
+        product.m_weights["zl2IsoSFWeight"] = 1/GetScaleFactor(0, *lep2);
         product.m_weights["leptonIsoSFWeight"] =
                 //some old SF files already include the inverse, make sure you use them the right way!
                 //GetScaleFactor(0, *product.m_zLeptons.first) * GetScaleFactor(0, *product.m_zLeptons.second);
-                1/GetScaleFactor(0, *product.m_zLeptons.first) * 1/GetScaleFactor(0, *product.m_zLeptons.second);
+                1/GetScaleFactor(0, *lep1) * 1/GetScaleFactor(0, *lep2);
         if (settings.GetLeptonSFVariation() == true) {
             product.m_weights["leptonIsoSFWeightUp"] =
-                1/GetScaleFactor(-1, *product.m_zLeptons.first) * 1/GetScaleFactor(-1, *product.m_zLeptons.second);
+                1/GetScaleFactor(-1, *lep1) * 1/GetScaleFactor(-1, *lep2);
             product.m_weights["leptonIsoSFWeightDown"] =
-                1/GetScaleFactor( 1, *product.m_zLeptons.first) * 1/GetScaleFactor( 1, *product.m_zLeptons.second);
+                1/GetScaleFactor( 1, *lep1) * 1/GetScaleFactor( 1, *lep2);
         }
     }
     else {
@@ -442,22 +446,22 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
                                  ZJetSettings const& settings) const
 {
     if(product.m_zValid){
-        product.m_weights["zl1TriggerSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        product.m_weights["zl2TriggerSFWeight"] = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        const auto* lep1 = product.m_originalLeptons.at(product.m_zLeptons.first);
+        const auto* lep2 = product.m_originalLeptons.at(product.m_zLeptons.second);
+        product.m_weights["zl1TriggerSFWeight"] = 1/GetScaleFactor(0, *lep1);
+        product.m_weights["zl2TriggerSFWeight"] = 1/GetScaleFactor(0, *lep2);
         product.m_weights["leptonTriggerSFWeight"] =
-            1/(1-(1-GetScaleFactor(0, *product.m_zLeptons.first)) * (1-GetScaleFactor(0, *product.m_zLeptons.second)));
+            1/(1-(1-GetScaleFactor(0, *lep1)) * (1-GetScaleFactor(0, *lep2)));
         if (settings.GetLeptonSFVariation() == true) {
             product.m_weights["leptonTriggerSFWeightUp"] =
-                //(1-(1-GetScaleFactor(2, -1, *product.m_zLeptons.first)) * (1-GetScaleFactor(2, -1, *product.m_zLeptons.second)))
                 1/(1-
-                  (1-GetScaleFactor(1, *product.m_zLeptons.first)  + 0.005*GetScaleFactor(0, *product.m_zLeptons.first))
-                * (1-GetScaleFactor(1, *product.m_zLeptons.second) + 0.005*GetScaleFactor(0, *product.m_zLeptons.second))
+                  (1-GetScaleFactor(1, *lep1) + 0.005*GetScaleFactor(0, *lep1))
+                * (1-GetScaleFactor(1, *lep2) + 0.005*GetScaleFactor(0, *lep2))
                 );
             product.m_weights["leptonTriggerSFWeightDown"] =
-                //(1-(1-GetScaleFactor(2, 1, *product.m_zLeptons.first)) * (1-GetScaleFactor(2, 1, *product.m_zLeptons.second)))
                 1/(1-
-                  (1-GetScaleFactor(-1, *product.m_zLeptons.first)  - 0.005*GetScaleFactor(0, *product.m_zLeptons.first))
-                * (1-GetScaleFactor(-1, *product.m_zLeptons.second) - 0.005*GetScaleFactor(0, *product.m_zLeptons.second))
+                  (1-GetScaleFactor(-1, *lep1) - 0.005*GetScaleFactor(0, *lep1))
+                * (1-GetScaleFactor(-1, *lep2) - 0.005*GetScaleFactor(0, *lep2))
                 );
         }
     }
@@ -536,19 +540,21 @@ void LeptonRecoSFProducer::Produce(ZJetEvent const& event,
 {
     LOG(DEBUG) << "\n[" << this->GetProducerId() << "]";
     if(product.m_zValid){
+        const auto* lep1 = product.m_originalLeptons.at(product.m_zLeptons.first);
+        const auto* lep2 = product.m_originalLeptons.at(product.m_zLeptons.second);
         LOG(DEBUG) << "Apply LeptonRecoSFVariation: " << settings.GetLeptonSFVariation();
-        float sf1 = 1/GetScaleFactor(0, *product.m_zLeptons.first);
-        float sf2 = 1/GetScaleFactor(0, *product.m_zLeptons.second);
+        float sf1 = 1/GetScaleFactor(0, *lep1);
+        float sf2 = 1/GetScaleFactor(0, *lep2);
         product.m_weights["zl1RecoSFWeight"] = sf1;
         product.m_weights["zl2RecoSFWeight"] = sf2;
         product.m_weights["leptonRecoSFWeight"] = sf1*sf2;
         LOG(DEBUG) << "sf1: " << sf1 << ", sf2: " << sf2;
         if (settings.GetLeptonSFVariation() == true) {
             // up has -1 since it's inside the denominator, down +1
-            float sf1u = 1/GetScaleFactor(-1, *product.m_zLeptons.first);
-            float sf1d = 1/GetScaleFactor(+1, *product.m_zLeptons.first);
-            float sf2u = 1/GetScaleFactor(-1, *product.m_zLeptons.second);
-            float sf2d = 1/GetScaleFactor(+1, *product.m_zLeptons.second);
+            float sf1u = 1/GetScaleFactor(-1, *lep1);
+            float sf1d = 1/GetScaleFactor(+1, *lep1);
+            float sf2u = 1/GetScaleFactor(-1, *lep2);
+            float sf2d = 1/GetScaleFactor(+1, *lep2);
             product.m_weights["zl1RecoSFWeightUp"] = sf1u;
             product.m_weights["zl1RecoSFWeightDown"] = sf1d;
             product.m_weights["zl2RecoSFWeightUp"] = sf2u;
