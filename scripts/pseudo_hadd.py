@@ -36,6 +36,8 @@ def MergeRootFiles(target, sourcefiles, check=False):
         if isinstance(obj, ROOT.TObjString):
             for fname in sourcefiles:
                 f = ROOT.TFile.Open(fname, "READ")
+                if not f:
+                    raise IOError('[ERROR] Failed to open file: {}'.format(fname))
                 f.cd(path)
                 key2 = ROOT.gDirectory.GetListOfKeys().FindObject(key.GetName())
                 string = key2.ReadObj().Clone()
@@ -51,6 +53,8 @@ def MergeRootFiles(target, sourcefiles, check=False):
             # corresponding histogram to the one pointed to by "h1"
             for fname in sourcefiles[1:]:
                 f = ROOT.TFile.Open(fname, "READ")
+                if not f:
+                    raise IOError('[ERROR] Failed to open file: {}'.format(fname))
                 # make sure we are at the correct directory level by cd'ing to path
                 f.cd(path)
                 key2 = ROOT.gDirectory.GetListOfKeys().FindObject(h1.GetName())
