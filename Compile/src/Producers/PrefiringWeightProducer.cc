@@ -16,12 +16,12 @@ std::string PrefiringWeightProducer::GetProducerId() const { return "PrefiringWe
 
 void PrefiringWeightProducer::Init(ZJetSettings const& settings)
 {
-    const std::string dataeraEcal_ = settings.GetDataEraECAL();
-    const std::string dataeraMuon_ = settings.GetDataEraMuon();
-    const bool useEMpt_ = settings.GetUseJetEMPt();
-    const double prefiringRateSystUncEcal_ = settings.GetPrefiringRateSystematicUnctyECAL();
-    const double prefiringRateSystUncMuon_ = settings.GetPrefiringRateSystematicUnctyMuon();
-    const double jetMaxMuonFraction_ = settings.GetJetMaxMuonFraction();
+    dataeraEcal_ = settings.GetDataEraECAL();
+    dataeraMuon_ = settings.GetDataEraMuon();
+    useEMpt_ = settings.GetUseJetEMPt();
+    prefiringRateSystUncEcal_ = settings.GetPrefiringRateSystematicUnctyECAL();
+    prefiringRateSystUncMuon_ = settings.GetPrefiringRateSystematicUnctyMuon();
+    jetMaxMuonFraction_ = settings.GetJetMaxMuonFraction();
 
     missingInputEcal_ = false;
     missingInputMuon_ = false;
@@ -125,7 +125,14 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
     const auto& thePhotons = product.m_pfPhotons;
 
     //Jets
-    const auto& theJets = product.m_correctedZJets["L1L2L3Res"];
+    auto& validJets = product.m_correctedZJets["L1L2L3"];
+    auto& invalidJets = product.m_correctedInvalidJets["L1L2L3"];
+    std::vector<std::shared_ptr<KJet>> theJets;
+    theJets.insert(theJets.end(), validJets.begin(), validJets.end());
+    theJets.insert(theJets.end(), invalidJets.begin(), invalidJets.end());
+    if (theJets.size() == 0) {
+        LOG(DEBUG) << this->GetProducerId() << ": Found 0 corrected Jets. This producer needs to run after the ZJetCorrectionsProducer";
+    }
 
     //Muons
     const auto& theMuons = event.m_muons;
@@ -239,22 +246,22 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
         }
     }
     //Move global prefire weights, as well as those for muons, photons, and jets, to the event
-    //Up and Down are switched, since we use the inverse and apply it to data.
-    product.m_optionalWeights["prefiringWeight"] =  1./nonPrefiringProba[0];
-    product.m_optionalWeights["prefiringWeightUp"] =  1./nonPrefiringProba[2];
-    product.m_optionalWeights["prefiringWeightDown"] =  1./nonPrefiringProba[1];
+    //Up and Down are switched, this is a bug in the original. -> Report it later
+    product.m_weights["prefiringWeight"] =  nonPrefiringProba[0];
+    product.m_optionalWeights["prefiringWeightUp"] =  nonPrefiringProba[2];
+    product.m_optionalWeights["prefiringWeightDown"] =  nonPrefiringProba[1];
 
-    product.m_optionalWeights["prefiringWeightECAL"] =  1./nonPrefiringProbaECAL[0];
-    product.m_optionalWeights["prefiringWeightECALUp"] =  1./nonPrefiringProbaECAL[2];
-    product.m_optionalWeights["prefiringWeightECALDown"] =  1./nonPrefiringProbaECAL[1];
+    product.m_optionalWeights["prefiringWeightECAL"] =  nonPrefiringProbaECAL[0];
+    product.m_optionalWeights["prefiringWeightECALUp"] =  nonPrefiringProbaECAL[2];
+    product.m_optionalWeights["prefiringWeightECALDown"] =  nonPrefiringProbaECAL[1];
 
-    product.m_optionalWeights["prefiringWeightMuon"] =  1./nonPrefiringProbaMuon[0];
-    product.m_optionalWeights["prefiringWeightMuonUp"] =  1./nonPrefiringProbaMuon[2];
-    product.m_optionalWeights["prefiringWeightMuonDown"] =  1./nonPrefiringProbaMuon[1];
-    product.m_optionalWeights["prefiringWeightMuonUpStat"] =  1./nonPrefiringProbaMuon[4];
-    product.m_optionalWeights["prefiringWeightMuonDownStat"] =  1./nonPrefiringProbaMuon[3];
-    product.m_optionalWeights["prefiringWeightMuonUpSyst"] =  1./nonPrefiringProbaMuon[6];
-    product.m_optionalWeights["prefiringWeightMuonDownSyst"] =  1./nonPrefiringProbaMuon[5];
+    product.m_optionalWeights["prefiringWeightMuon"] =  nonPrefiringProbaMuon[0];
+    product.m_optionalWeights["prefiringWeightMuonUp"] =  nonPrefiringProbaMuon[2];
+    product.m_optionalWeights["prefiringWeightMuonDown"] =  nonPrefiringProbaMuon[1];
+    product.m_optionalWeights["prefiringWeightMuonUpStat"] =  nonPrefiringProbaMuon[4];
+    product.m_optionalWeights["prefiringWeightMuonDownStat"] =  nonPrefiringProbaMuon[3];
+    product.m_optionalWeights["prefiringWeightMuonUpSyst"] =  nonPrefiringProbaMuon[6];
+    product.m_optionalWeights["prefiringWeightMuonDownSyst"] =  nonPrefiringProbaMuon[5];
 }
 
 double PrefiringWeightProducer::getPrefiringRateEcal(double eta,
