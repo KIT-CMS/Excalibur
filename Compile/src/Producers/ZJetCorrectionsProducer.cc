@@ -228,15 +228,24 @@ void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel,
                                                    ZJetSettings const& settings) const
 {
     // Create a copy of all jets in the event (first temporarily for the JEC)
-    unsigned long jetCount = product.GetValidJetCount(settings, event, inCorrLevel);
-    std::vector<KJet> correctJetsForJecTools(jetCount);
-    for (unsigned long jetIndex = 0; jetIndex < jetCount; ++jetIndex) {
+    unsigned long validJetCount = product.GetValidJetCount(settings, event, inCorrLevel);
+    std::vector<KJet> correctJetsForJecTools(validJetCount);
+    for (unsigned long jetIndex = 0; jetIndex < validJetCount; ++jetIndex) {
         correctJetsForJecTools[jetIndex] =
             *(static_cast<KJet*>(product.GetValidJet(settings, event, jetIndex, inCorrLevel)));
+    }
+    unsigned long invalidJetCount = product.GetInvalidJetCount(settings, event, inCorrLevel);
+    std::vector<KJet> correctInvalidJetsForJecTools(invalidJetCount);
+    for (unsigned long jetIndex = 0; jetIndex < invalidJetCount; ++jetIndex) {
+        correctInvalidJetsForJecTools[jetIndex] =
+            *(static_cast<KJet*>(product.GetInvalidJet(settings, event, jetIndex, inCorrLevel)));
     }
 
     // Apply jet energy corrections and uncertainty shift
     correctJets(&correctJetsForJecTools, factorizedJetCorrector, correctionUncertainty,
+                event.m_pileupDensity->rho, static_cast<int>(event.m_vertexSummary->nVertices),
+                -1.0f, settings.GetJetEnergyCorrectionUncertaintyShift(), false);
+    correctJets(&correctInvalidJetsForJecTools, factorizedJetCorrector, correctionUncertainty,
                 event.m_pileupDensity->rho, static_cast<int>(event.m_vertexSummary->nVertices),
                 -1.0f, settings.GetJetEnergyCorrectionUncertaintyShift(), false);
 
@@ -248,5 +257,13 @@ void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel,
          jet != correctJetsForJecTools.end(); ++jet) {
         product.m_correctedZJets[outCorrLevel][jetIndex] = std::shared_ptr<KJet>(new KJet(*jet));
         ++jetIndex;
+    }
+    product.m_correctedInvalidJets[outCorrLevel].clear();
+    product.m_correctedInvalidJets[outCorrLevel].resize(correctInvalidJetsForJecTools.size());
+    unsigned long invalidJetIndex = 0;
+    for (typename std::vector<KJet>::const_iterator jet = correctInvalidJetsForJecTools.begin();
+         jet != correctInvalidJetsForJecTools.end(); ++jet) {
+        product.m_correctedInvalidJets[outCorrLevel][invalidJetIndex] = std::shared_ptr<KJet>(new KJet(*jet));
+        ++invalidJetIndex;
     }
 }

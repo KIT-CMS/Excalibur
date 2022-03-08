@@ -24,6 +24,7 @@ class ZJetProduct : public KappaProduct
     // Added by ZJetCorrectionsProducer, shared pointers are necessary to keep the jets in the
     // product after creation
     std::map<std::string, std::vector<std::shared_ptr<KJet>>> m_correctedZJets;
+    std::map<std::string, std::vector<std::shared_ptr<KJet>>> m_correctedInvalidJets;
 
     // unsmeared corrected L1 jets for Type I MET
     std::map<std::string, std::vector<std::shared_ptr<KJet>>> m_unsmearedL1Jets;
@@ -165,9 +166,13 @@ class ZJetProduct : public KappaProduct
         if (corrLevel == "Gen") {
             return 0;
         }
-        // Invalid jets, no need for different correction levels
-        else {
+        // Uncorrected invalid jet
+        else if (corrLevel == "None") {
             return m_invalidJets.size();
+        }
+        // Corrected invalid jet
+        else {
+            return SafeMap::Get(m_correctedInvalidJets, corrLevel).size();
         }
     }
 
@@ -181,10 +186,22 @@ class ZJetProduct : public KappaProduct
                      unsigned long index,
                      std::string corrLevel) const
     {
-        assert(GetInvalidJetCount(settings, event, corrLevel) > index);
+        if (GetInvalidJetCount(settings, event, corrLevel) <= index) {
+            return 0;
+        }
 
-        // Invalid jets, no need for different correction levels
-        return static_cast<KLV*>(m_invalidJets[index]);
+        // Gen jets are always valid
+        if (corrLevel == "Gen") {
+            return 0;
+        }
+        // Uncorrected invalid jet
+        else if (corrLevel == "None") {
+            return static_cast<KLV*>(m_invalidJets[index]);
+        }
+        // Corrected invalid jet
+        else {
+            return (SafeMap::Get(m_correctedInvalidJets, corrLevel)[index]).get();
+        }
     }
 
     KLV* GetInvalidJet(ZJetSettings const& settings,
