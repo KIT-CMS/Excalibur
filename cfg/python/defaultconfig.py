@@ -528,10 +528,10 @@ def mm(cfg, **kwargs):
         'filter:LeadingJetEtaCut',
         'filter:MinNMuonsCut',
         'filter:MaxNMuonsCut',
+        'filter:ValidZCut', # includes Z mass cut
         'filter:MuonPtCut',
         'filter:MuonEtaCut',
         #'filter:ZFilter', # name has to end with 'Cut' :-P
-        'filter:ValidZCut', # includes Z mass cut
         'filter:ZPtCut',
         'filter:LeadingJetYCut',
         'filter:AlphaCut',
