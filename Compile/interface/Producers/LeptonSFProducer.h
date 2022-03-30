@@ -18,6 +18,7 @@ class LeptonSFProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   protected:
+    bool m_isData;
     std::string m_sffile;
     std::string histoname;
     std::string weightName;

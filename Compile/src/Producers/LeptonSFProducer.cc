@@ -38,6 +38,7 @@ std::string LeptonSFProducer::GetProducerId() const { return "LeptonSFProducer";
 
 void LeptonSFProducer::Init(ZJetSettings const& settings)
 {
+    m_isData = settings.GetInputIsData();
     // Get file
     LOG(INFO) << this->GetProducerId() << ": Loading file " << m_sffile << ", Histogram "
               << histoname;
@@ -69,22 +70,28 @@ void LeptonSFProducer::Produce(ZJetEvent const& event,
         std::tie(eff1, err1) = this->GetScaleFactorAndUnc(*lep1);
         std::tie(eff2, err2) = this->GetScaleFactorAndUnc(*lep2);
         float totEff = eff1 * eff2;
-        product.m_optionalWeights["zl1" + weightName] = eff1;
-        product.m_optionalWeights["zl2" + weightName] = eff2;
-        product.m_weights["lepton" + weightName] = totEff;
+        product.m_optionalWeights["zl1" + weightName] = m_isData ? 1.0 / eff1 : eff1;
+        product.m_optionalWeights["zl2" + weightName] = m_isData ? 1.0 / eff2 : eff2;
+        product.m_optionalWeights["lepton" + weightName] = m_isData ? 1.0 / totEff : totEff;
         LOG(DEBUG) << "Lepton1 SF: " << eff1 << ", Lepton2 SF: " << eff2;
         LOG(DEBUG) << "Total SF: " << totEff;
         LOG(DEBUG) << "Apply Variation: " << settings.GetLeptonSFVariation();
         if (settings.GetLeptonSFVariation() == true) {
-            product.m_optionalWeights["zl1" + weightName + "Up"] = eff1 + err1;
-            product.m_optionalWeights["zl1" + weightName + "Down"] = eff1 - err1;
-            product.m_optionalWeights["zl2" + weightName + "Up"] = eff2 + err2;
-            product.m_optionalWeights["zl2" + weightName + "Down"] = eff2 - err2;
+            product.m_optionalWeights["zl1" + weightName + "Up"] =
+                m_isData ? 1.0 / eff1 * (1 + err1) : eff1 + err1;
+            product.m_optionalWeights["zl1" + weightName + "Down"] =
+                m_isData ? 1.0 / eff1 * (1 - err1) : eff1 - err1;
+            product.m_optionalWeights["zl2" + weightName + "Up"] =
+                m_isData ? 1.0 / eff2 * (1 + err2) : eff2 + err2;
+            product.m_optionalWeights["zl2" + weightName + "Down"] =
+                m_isData ? 1.0 / eff2 * (1 - err2) : eff2 - err2;
             // uncertainties should be assumed as fully correlated
             // https://cms-talk.web.cern.ch/t/questions-on-the-combination-of-muon-tnp-uncertainties/5968
             float totErr = eff1 * err2 + eff2 * err1;
-            product.m_optionalWeights["lepton" + weightName + "Up"] = totEff + totErr;
-            product.m_optionalWeights["lepton" + weightName + "Down"] = totEff - totErr;
+            product.m_optionalWeights["lepton" + weightName + "Up"] =
+                m_isData ? 1.0 / totEff * (1 + totErr) : totEff + totErr;
+            product.m_optionalWeights["lepton" + weightName + "Down"] =
+                m_isData ? 1.0 / totEff * (1 - totErr) : totEff - totErr;
             if (settings.GetDebugVerbosity() > 1) {
                 LOG(DEBUG) << "Lepton1 SF up: " << eff1 + err1
                            << ", Lepton1 SF down: " << eff1 - err1;
@@ -262,21 +269,27 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
         std::tie(eff1, err1) = this->GetScaleFactorAndUnc(*lep1);
         std::tie(eff2, err2) = this->GetScaleFactorAndUnc(*lep2);
         float totEff = 1 - ((1 - eff1) * (1 - eff2));
-        product.m_optionalWeights["zl1" + weightName] = eff1;
-        product.m_optionalWeights["zl2" + weightName] = eff2;
-        product.m_weights["lepton" + weightName] = totEff;
+        product.m_optionalWeights["zl1" + weightName] = m_isData ? 1.0 / eff1 : eff1;
+        product.m_optionalWeights["zl2" + weightName] = m_isData ? 1.0 / eff2 : eff2;
+        product.m_optionalWeights["lepton" + weightName] = m_isData ? 1.0 / totEff : totEff;
         LOG(DEBUG) << "Lepton1 SF: " << eff1 << ", Lepton2 SF: " << eff2;
         LOG(DEBUG) << "Total SF: " << totEff;
         LOG(DEBUG) << "Apply Variation: " << settings.GetLeptonSFVariation();
         if (settings.GetLeptonSFVariation() == true) {
             // assume errors as fully correlated, add simple instead of quadrature
             float totErr = err1 * (1 - eff2) + err2 * (1 - eff1);
-            product.m_optionalWeights["zl1" + weightName + "Up"] = eff1 + err1;
-            product.m_optionalWeights["zl1" + weightName + "Down"] = eff1 - err1;
-            product.m_optionalWeights["zl2" + weightName + "Up"] = eff2 + err2;
-            product.m_optionalWeights["zl2" + weightName + "Down"] = eff2 - err2;
-            product.m_optionalWeights["lepton" + weightName + "Up"] = totEff + totErr;
-            product.m_optionalWeights["lepton" + weightName + "Down"] = totEff - totErr;
+            product.m_optionalWeights["zl1" + weightName + "Up"] =
+                m_isData ? 1.0 / eff1 * (1 + err1) : eff1 + err1;
+            product.m_optionalWeights["zl1" + weightName + "Down"] =
+                m_isData ? 1.0 / eff1 * (1 - err1) : eff1 - err1;
+            product.m_optionalWeights["zl2" + weightName + "Up"] =
+                m_isData ? 1.0 / eff2 * (1 + err2) : eff2 + err2;
+            product.m_optionalWeights["zl2" + weightName + "Down"] =
+                m_isData ? 1.0 / eff2 * (1 - err2) : eff2 - err2;
+            product.m_optionalWeights["lepton" + weightName + "Up"] =
+                m_isData ? 1.0 / totEff * (1 + totErr) : totEff + totErr;
+            product.m_optionalWeights["lepton" + weightName + "Down"] =
+                m_isData ? 1.0 / totEff * (1 - totErr) : totEff - totErr;
             if (settings.GetDebugVerbosity() > 1) {
                 LOG(DEBUG) << "Lepton1 SF up: " << eff1 + err1
                            << ", Lepton1 SF down: " << eff1 - err1;

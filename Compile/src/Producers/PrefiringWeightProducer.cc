@@ -16,6 +16,7 @@ std::string PrefiringWeightProducer::GetProducerId() const { return "PrefiringWe
 
 void PrefiringWeightProducer::Init(ZJetSettings const& settings)
 {
+    isData_ = settings.GetInputIsData();
     dataeraEcal_ = settings.GetDataEraECAL();
     dataeraMuon_ = settings.GetDataEraMuon();
     useEMpt_ = settings.GetUseJetEMPt();
@@ -247,21 +248,34 @@ void PrefiringWeightProducer::Produce(ZJetEvent const& event,
     }
     //Move global prefire weights, as well as those for muons, photons, and jets, to the event
     //Up and Down are switched, this is a bug in the original. -> Report it later
-    product.m_weights["prefiringWeight"] =  nonPrefiringProba[0];
-    product.m_optionalWeights["prefiringWeightUp"] =  nonPrefiringProba[2];
-    product.m_optionalWeights["prefiringWeightDown"] =  nonPrefiringProba[1];
+    float pref = nonPrefiringProba[0];
+    float pref_up = nonPrefiringProba[2] - nonPrefiringProba[0];
+    float pref_down = nonPrefiringProba[0] - nonPrefiringProba[1];
+    product.m_optionalWeights["prefiringWeight"] = isData_ ? 1.0/pref : pref;
+    product.m_optionalWeights["prefiringWeightUp"] = isData_ ? 1.0/pref * (1 + pref_down) : pref + pref_up;
+    product.m_optionalWeights["prefiringWeightDown"] = isData_ ? 1.0/pref * (1 - pref_up) : pref - pref_down;
 
-    product.m_optionalWeights["prefiringWeightECAL"] =  nonPrefiringProbaECAL[0];
-    product.m_optionalWeights["prefiringWeightECALUp"] =  nonPrefiringProbaECAL[2];
-    product.m_optionalWeights["prefiringWeightECALDown"] =  nonPrefiringProbaECAL[1];
+    float ecal = nonPrefiringProbaECAL[0];
+    float ecal_up = nonPrefiringProbaECAL[2] - nonPrefiringProbaECAL[0];
+    float ecal_down = nonPrefiringProbaECAL[0] - nonPrefiringProbaECAL[1];
+    product.m_optionalWeights["prefiringWeightECAL"] = isData_ ? 1.0/ecal : ecal;
+    product.m_optionalWeights["prefiringWeightECALUp"] = isData_ ? 1.0/ecal * (1 + ecal_down) : ecal + ecal_up;
+    product.m_optionalWeights["prefiringWeightECALDown"] = isData_ ? 1.0/ecal * (1 - ecal_up) : ecal - ecal_down;
 
-    product.m_optionalWeights["prefiringWeightMuon"] =  nonPrefiringProbaMuon[0];
-    product.m_optionalWeights["prefiringWeightMuonUp"] =  nonPrefiringProbaMuon[2];
-    product.m_optionalWeights["prefiringWeightMuonDown"] =  nonPrefiringProbaMuon[1];
-    product.m_optionalWeights["prefiringWeightMuonUpStat"] =  nonPrefiringProbaMuon[4];
-    product.m_optionalWeights["prefiringWeightMuonDownStat"] =  nonPrefiringProbaMuon[3];
-    product.m_optionalWeights["prefiringWeightMuonUpSyst"] =  nonPrefiringProbaMuon[6];
-    product.m_optionalWeights["prefiringWeightMuonDownSyst"] =  nonPrefiringProbaMuon[5];
+    float mu = nonPrefiringProbaMuon[0];
+    float mu_up = nonPrefiringProbaMuon[2] - nonPrefiringProbaMuon[0];
+    float mu_down = nonPrefiringProbaMuon[0] - nonPrefiringProbaMuon[1];
+    float mu_up_stat = nonPrefiringProbaMuon[4] - nonPrefiringProbaMuon[0];
+    float mu_down_stat = nonPrefiringProbaMuon[0] - nonPrefiringProbaMuon[3];
+    float mu_up_syst = nonPrefiringProbaMuon[6] - nonPrefiringProbaMuon[0];
+    float mu_down_syst = nonPrefiringProbaMuon[0] - nonPrefiringProbaMuon[5];
+    product.m_optionalWeights["prefiringWeightMuon"] = isData_ ? 1.0/mu : mu;
+    product.m_optionalWeights["prefiringWeightMuonUp"] =  isData_ ? 1.0/mu * (1 + mu_down) : mu + mu_up;
+    product.m_optionalWeights["prefiringWeightMuonDown"] = isData_ ? 1.0/mu * (1 - mu_up) : mu - mu_down;
+    product.m_optionalWeights["prefiringWeightMuonUpStat"] = isData_ ? 1.0/mu * (1 + mu_down_stat) : mu + mu_up_stat;
+    product.m_optionalWeights["prefiringWeightMuonDownStat"] = isData_ ? 1.0/mu * (1 - mu_up_stat) : mu - mu_down_stat;
+    product.m_optionalWeights["prefiringWeightMuonUpSyst"] = isData_ ? 1.0/mu * (1 + mu_down_syst) : mu + mu_up_syst;
+    product.m_optionalWeights["prefiringWeightMuonDownSyst"] = isData_ ? 1.0/mu * (1 - mu_up_syst) : mu - mu_down_syst;
 }
 
 double PrefiringWeightProducer::getPrefiringRateEcal(double eta,
