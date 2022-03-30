@@ -49,4 +49,5 @@ class PrefiringWeightProducer : public ZJetProducerBase
         double jetMaxMuonFraction_;
         bool missingInputEcal_;
         bool missingInputMuon_;
+        bool isData_;
 };
