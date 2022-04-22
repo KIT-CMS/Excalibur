@@ -19,6 +19,7 @@ class LeptonSFProducer : public ZJetProducerBase
 
   protected:
     bool m_isData;
+    bool m_correctedMuons;
     std::string m_sffile;
     std::string histoname;
     std::string weightName;
