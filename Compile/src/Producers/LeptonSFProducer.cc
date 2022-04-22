@@ -39,6 +39,7 @@ std::string LeptonSFProducer::GetProducerId() const { return "LeptonSFProducer";
 void LeptonSFProducer::Init(ZJetSettings const& settings)
 {
     m_isData = settings.GetInputIsData();
+    m_correctedMuons = (boost::algorithm::to_lower_copy(boost::algorithm::trim_copy(settings.GetValidMuonsInput())) == "corrected");
     // Get file
     LOG(INFO) << this->GetProducerId() << ": Loading file " << m_sffile << ", Histogram "
               << histoname;
@@ -63,8 +64,8 @@ void LeptonSFProducer::Produce(ZJetEvent const& event,
 {
     LOG(DEBUG) << "\n[" << this->GetProducerId() << "]";
     if (product.m_zValid) {
-        const auto* lep1 = product.m_originalLeptons.at(product.m_zLeptons.first);
-        const auto* lep2 = product.m_originalLeptons.at(product.m_zLeptons.second);
+        const auto* lep1 = m_correctedMuons ? product.m_originalLeptons.at(product.m_zLeptons.first) : product.m_zLeptons.first;
+        const auto* lep2 = m_correctedMuons ? product.m_originalLeptons.at(product.m_zLeptons.second) : product.m_zLeptons.second;
         float eff1, err1;
         float eff2, err2;
         std::tie(eff1, err1) = this->GetScaleFactorAndUnc(*lep1);
@@ -262,8 +263,8 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
 {
     LOG(DEBUG) << "\n[" << this->GetProducerId() << "]";
     if (product.m_zValid) {
-        const auto* lep1 = product.m_originalLeptons.at(product.m_zLeptons.first);
-        const auto* lep2 = product.m_originalLeptons.at(product.m_zLeptons.second);
+        const auto* lep1 = m_correctedMuons ? product.m_originalLeptons.at(product.m_zLeptons.first) : product.m_zLeptons.first;
+        const auto* lep2 = m_correctedMuons ? product.m_originalLeptons.at(product.m_zLeptons.second) : product.m_zLeptons.second;
         float eff1, err1;
         float eff2, err2;
         std::tie(eff1, err1) = this->GetScaleFactorAndUnc(*lep1);
