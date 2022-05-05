@@ -141,6 +141,8 @@ void ValidZllGenJetsProducer::Init(ZJetSettings const& settings) {
     minZllJetDeltaRVeto = settings.GetMinZllJetDeltaRVeto();
     maxLeadingJetY = settings.GetCutLeadingJetYMax();
     objectJetY = settings.GetUseObjectJetYCut();
+    maxJetEta = settings.GetMaxJetEta();
+    objectJetEta = settings.GetUseObjectJetEtaCut();
 }
 
 bool ValidZllGenJetsProducer::DoesJetPass(const KLV& genJet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
@@ -154,6 +156,11 @@ bool ValidZllGenJetsProducer::DoesJetPass(const KLV& genJet, ZJetEvent const& ev
     }
     if (objectJetY) {
         if (std::abs(genJet.p4.Rapidity()) > maxLeadingJetY) {
+            return false;
+        }
+    }
+    if (objectJetEta) {
+        if (std::abs(genJet.p4.Eta()) > maxJetEta) {
             return false;
         }
     }
