@@ -16,6 +16,10 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING_DEFAULT(float, MaxJetEta, 0.0)
     IMPL_SETTING_DEFAULT(bool, UseObjectJetEtaCut, false)
 
+    IMPL_SETTING(std::string, PUJetIDEffFilename)
+    IMPL_SETTING(std::string, PUJetIDEffHistogramName)
+    IMPL_SETTING(std::string, PUJetIDEffErrHistogramName)
+
     // TypeIMETProducer
     IMPL_SETTING(float, TypeIJetPtMin)
     IMPL_SETTING_DEFAULT(bool, EnableMetPhiCorrection, false)
