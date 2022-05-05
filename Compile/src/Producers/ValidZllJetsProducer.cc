@@ -8,6 +8,7 @@
 std::string ValidZllJetsProducer::GetProducerId() const { return "ValidZllJetsProducer"; }
 
 void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
+    JetCleanerBase::Init(settings);
 
     // get and validate pileup jet ID method
     std::string puJetIDSetting = KappaTools::tolower(settings.GetPUJetID());
@@ -70,7 +71,7 @@ void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
     objectJetEta = settings.GetUseObjectJetEtaCut();
 }
 
-bool ValidZllJetsProducer::DoesJetPass(const KBasicJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
+bool ValidZllJetsProducer::DoesJetPass(const KJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
 
     // check that PUJetID is above configured minimal value
     const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...

@@ -2,6 +2,7 @@
 
 #include "TH2F.h"
 #include "Excalibur/Compile/interface/ZJetTypes.h"
+#include "Excalibur/Compile/interface/Producers/JetCleaner.h"
 
 
 /**
@@ -9,8 +10,8 @@
  *
  *  This producer modifies the collection of valid jets (`product.m_validJets`) to
  *  conform to the specific requirements of the Z->ll+Jets analyses.
- *  This producer should be run after any ValidJetsProducers, as it vetoes previously
- *  produced jets.
+ *  This producer should be run after any ValidJetsProducers and the JEC Producer as it vetoes
+ *  previously produced jets. and PUJetID requires fully corrected Jets.
  *
  *  Configuration settings:
  *
@@ -50,7 +51,7 @@
  *         be `KJet`s (i.e. upcasting via `dynamic_cast<KJet*>(product.m_validJets[i])` must
  *         not return a nullptr). If this is not the case, no PUJetID veto is performed.
  */
-class ValidZllJetsProducer : public ZJetProducerBase {
+class ValidZllJetsProducer : public JetCleanerBase {
 
   public:
     // can choose between different pileup jet ID working points
@@ -62,30 +63,14 @@ class ValidZllJetsProducer : public ZJetProducerBase {
         FILE = 5
     };
 
-    ValidZllJetsProducer() : ZJetProducerBase() {}
+    virtual std::string GetProducerId() const override;
 
-    void Init(ZJetSettings const& settings) override;
+    ValidZllJetsProducer() : JetCleanerBase() {};
 
-    std::string GetProducerId() const override;
-
-    void Produce(ZJetEvent const& event,
-                 ZJetProduct& product,
-                 ZJetSettings const& settings) const override {
-
-        // remove jets from m_validJets if they are rejected by DoesJetPass()
-        product.m_validJets.erase(
-            std::remove_if(
-                product.m_validJets.begin(),
-                product.m_validJets.end(),
-                [&, this](const KBasicJet* jetPtr){
-                    return !this->DoesJetPass(jetPtr, event, product, settings);
-                }),
-            product.m_validJets.end()
-        );
-    };
+    void Init(ZJetSettings const& settings);
 
     // this should return true if a jet is valid
-    virtual bool DoesJetPass(const KBasicJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const;
+    virtual bool DoesJetPass(const KJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const;
 
   private:
     float minZllJetDeltaRVeto;
