@@ -107,8 +107,6 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, LeptonIsoSFHistogramName)
     IMPL_SETTING(std::string, LeptonTrackingSFHistogramName)
     IMPL_SETTING(std::string, LeptonTriggerSFHistogramName)
-    IMPL_SETTING(std::string, LeptonRecoSFRootfile)
-    IMPL_SETTING(std::string, LeptonRecoSFHistogramName)
     IMPL_SETTING_DEFAULT(std::string, LeptonRecoSFYear, "none")
     IMPL_SETTING_DEFAULT(bool, LeptonSFVariation, false)
     IMPL_SETTING_DEFAULT(std::string, Channel, "mm")

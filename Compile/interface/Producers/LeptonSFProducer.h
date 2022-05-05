@@ -75,8 +75,8 @@ class LeptonRecoSFProducer : public LeptonSFProducer
     void Init(ZJetSettings const& settings) override;
 
   protected:
-    void SetOverflowPtBin() override;
     std::tuple<float, float> GetScaleFactorAndUnc(KLV const& lepton) const override;
+    std::tuple<float, float> GetMediumPtEff(KLV const& lepton) const;
     std::tuple<float, float> GetHighPtEff(KLV const& lepton) const;
     std::string m_year;
 

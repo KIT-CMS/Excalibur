@@ -1,5 +1,6 @@
 #include "Excalibur/Compile/interface/Producers/LeptonSFProducer.h"
 
+#include <math.h>
 #include <boost/algorithm/string.hpp>
 #include "TFile.h"
 
@@ -314,64 +315,139 @@ std::string LeptonRecoSFProducer::GetProducerId() const { return "LeptonRecoSFPr
 void LeptonRecoSFProducer::Init(ZJetSettings const& settings)
 {
     weightName = "RecoSFWeight";
-    m_sffile = settings.GetLeptonRecoSFRootfile();
-    if (settings.GetLeptonSFVariation() == true) {
-        LOG(INFO) << this->GetProducerId() << ": SF variation up and down one sigma";
-    }
-    if (settings.GetChannel() == "mm") {
-        histoname = settings.GetLeptonRecoSFHistogramName();
-    } else {
+    if (settings.GetChannel() != "mm") {
         LOG(ERROR) << "LeptonIsoSFProducer not implemented for this channel";
     }
 
-    LeptonSFProducer::Init(settings);
-
     m_year = settings.GetLeptonRecoSFYear();
-    LOG(INFO) << this->GetProducerId() << ": using year " << m_year << " for highPt SFs.";
+    LOG(INFO) << this->GetProducerId() << ": using year " << m_year << " for RECO SFs.";
 }
 
 std::tuple<float, float> LeptonRecoSFProducer::GetScaleFactorAndUnc(KLV const& lepton) const
 {
+    if (10.0 < lepton.p4.Pt() && 200 < lepton.p4.Pt()) {
+        return GetMediumPtEff(lepton);
+    }
     if ((lepton.p4.P() > 50.0 && std::abs(lepton.p4.Eta()) < 1.6) ||
         (lepton.p4.P() > 100.0 && std::abs(lepton.p4.Eta()) < 2.4)) {
         return GetHighPtEff(lepton);
     }
-    // else fall back to given histo at medium/low pt
-    return LeptonSFProducer::GetScaleFactorAndUnc(lepton);
+    // else return 1 +/- 0
+    return std::make_tuple(1.0, 0.0);
 }
 
-void LeptonRecoSFProducer::SetOverflowPtBin()
+std::tuple<float, float> LeptonRecoSFProducer::GetMediumPtEff(KLV const& lepton) const
 {
-    // For RECO SF, the mean at the plateu (pt>5) is recommended as overflow.
-    // https://cms-talk.web.cern.ch/t/big-muon-reco-scale-factor-uncertainties-in-2018/7644
-    int nEta = m_reversed_axes ? sfhisto->GetNbinsY() : sfhisto->GetNbinsX();
-    int nPt = m_reversed_axes ? sfhisto->GetNbinsX() : sfhisto->GetNbinsY();
-    // start at bin 1, since 0 is underflow bin
-    for (int i = 1; i <= nEta; ++i) {
-        float numerator = 0.0;
-        float denominator = 0.0;
-        if (m_reversed_axes) {
-            for (int j = sfhisto->GetXaxis()->FindBin(5.0); j <= nPt; ++j) {
-                float eff = sfhisto->GetBinContent(j, i);
-                float err = sfhisto->GetBinError(j, i);
-                if (err == 0) continue;
-                denominator += 1 / (err * err);
-                numerator += eff / (err * err);
-            }
-            sfhisto->SetBinContent(nPt + 1, i, numerator / denominator);
-            sfhisto->SetBinError(nPt + 1, i, std::sqrt(1 / denominator));
-        } else {
-            for (int j = sfhisto->GetYaxis()->FindBin(5.0); j <= nPt; ++j) {
-                float eff = sfhisto->GetBinContent(i, j);
-                float err = sfhisto->GetBinError(i, j);
-                if (err == 0) continue;
-                denominator += 1 / (err * err);
-                numerator += eff / (err * err);
-            }
-            sfhisto->SetBinContent(i, nPt + 1, numerator / denominator);
-            sfhisto->SetBinError(i, nPt + 1, std::sqrt(1 / denominator));
+    float eta = std::abs(lepton.p4.Eta());
+    float sf = 1.0, stat = 0.0, syst = 0.0;
+    if (m_year == "2018") {
+        //https://gitlab.cern.ch/cms-muonPOG/muonefficiencies/-/blob/master/Run2/UL/2018/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt.json
+        if (eta < 0.9) {
+            sf = 0.9998088006315689;
+            stat = 6.498845788247257e-05;
+            syst = 0.0003823987368622994;
+        }
+        else if (eta < 1.2) {
+            sf = 0.99975470198026;
+            stat = 0.00011054079511271507;
+            syst = 0.0005221124230931915;
+        }
+        else if (eta < 2.1) {
+            sf = 0.9995842791862117;
+            stat = 7.574443994874554e-05;
+            syst = 0.0008314416275765346;
+        }
+        else if (eta < 2.4) {
+            sf = 0.9990341741614288;
+            stat = 0.00019911479235592246;
+            syst = 0.0017237408292350668;
+        }
+        else {
+            LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
         }
     }
+    else if (m_year == "2017") {
+        //https://gitlab.cern.ch/cms-muonPOG/muonefficiencies/-/blob/master/Run2/UL/2017/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt.json
+        if (eta < 0.9) {
+            sf = 0.9996742562806361;
+            stat = 7.650191371261136e-05;
+            syst = 0.0006514874387277825;
+        }
+        else if (eta < 1.2) {
+            sf = 0.9997813602035737;
+            stat = 0.00014496238686164667;
+            syst = 0.0004372795928526685;
+        }
+        else if (eta < 2.1) {
+            sf = 0.9994674742459532;
+            stat = 7.739510750489317e-05;
+            syst = 0.0010650515080936618;
+        }
+        else if (eta < 2.4) {
+            sf = 0.9993566412630517;
+            stat = 0.00022835790507860388;
+            syst = 0.0011810962222705494;
+        }
+        else {
+            LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
+        }
+    }
+    else if (m_year == "2016") {
+        //https://gitlab.cern.ch/cms-muonPOG/muonefficiencies/-/blob/master/Run2/UL/2016_postVFP/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt.json
+        if (eta < 0.9) {
+            sf = 1.0000406419782646;
+            stat = 0.00010260291858070426;
+            syst = 0.0014366927652431664;
+        }
+        else if (eta < 1.2) {
+            sf = 0.9997959311146515;
+            stat = 0.00019912837537507789;
+            syst = 0.0010917857343065423;
+        }
+        else if (eta < 2.1) {
+            sf = 0.9994928400570587;
+            stat = 0.00012513847429973846;
+            syst = 0.0014814654032937547;
+        }
+        else if (eta < 2.4) {
+            sf = 0.9990728619505579;
+            stat = 0.0002754474704705526;
+            syst = 0.0017364778744567663;
+        }
+        else {
+            LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
+        }
+    }
+    else if (m_year == "2016APV") {
+        //https://gitlab.cern.ch/cms-muonPOG/muonefficiencies/-/blob/master/Run2/UL/2016_preVFP/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt.json
+        if (eta < 0.9) {
+            sf = 0.9998229551300333;
+            stat = 0.0001538802103231026;
+            syst = 0.0003540897399334497;
+        }
+        else if (eta < 1.2) {
+            sf = 1.0001593416915515;
+            stat = 0.00019861903120026457;
+            syst = 0.00031024592139106355;
+        }
+        else if (eta < 2.1) {
+            sf = 0.9998936144006075;
+            stat = 0.00012188589514012365;
+            syst = 0.00021277119878493345;
+        }
+        else if (eta < 2.4) {
+            sf = 0.9990268820042745;
+            stat = 0.00027638902644996395;
+            syst = 0.0019462359914510508;
+        }
+        else {
+            LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
+        }
+    } else if (m_year != "none") {
+    LOG(FATAL) << "No high pt RecoSF available for year " << m_year;
+    }
+    float err = sqrt(pow(stat, 2.0) + pow(syst, 2.0));
+    return std::make_tuple(sf, err);
 }
 
 std::tuple<float, float> LeptonRecoSFProducer::GetHighPtEff(KLV const& lepton) const
@@ -461,7 +537,7 @@ std::tuple<float, float> LeptonRecoSFProducer::GetHighPtEff(KLV const& lepton) c
             LOG(ERROR) << "No RecoSF available for this p and eta region. Using 1+/-0";
             return std::make_tuple(1.0, 0.0);
         }
-    } else if (m_year == "2016") {
+    } else if (m_year == "2016APV" || m_year == "2016") {
         // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonUL2016#High_pT_above_120_GeV
         if (eta < 1.6) {
             if (lepton.p4.P() < 50.0)
