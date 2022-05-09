@@ -148,4 +148,6 @@ class ValidZllGenJetsProducer : public ZJetProducerBase {
     float minZllJetDeltaRVeto;
     float maxLeadingJetY;
     bool  objectJetY;
+    float maxJetEta;
+    bool objectJetEta;
 };
