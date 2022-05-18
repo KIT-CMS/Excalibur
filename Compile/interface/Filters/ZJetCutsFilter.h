@@ -526,6 +526,41 @@ class LeadingJetYCut : public ZJetFilterBase
     float leadingJetYMax = 0;
 };
 
+//////////////////////
+// JetEtaPhiCleaner //
+//////////////////////
+class JetEtaPhiCleanerCut : public ZJetFilterBase {
+    public:
+        std::string GetFilterId() const override { return "JetEtaPhiCleanerCut"; }
+        JetEtaPhiCleanerCut() : ZJetFilterBase() {}
+
+        void Init(ZJetSettings const& settings) override {
+            ZJetFilterBase::Init(settings);
+            vetoCleanedEvents = settings.GetCutVetoCleanedEvents();
+        }
+
+        bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override {
+            LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+            LOG(DEBUG) << "CutVetoCleanedEvents: (0:no veto|1:veto events if cleaned) " << vetoCleanedEvents;
+            if (vetoCleanedEvents) {
+                if (product.m_etaPhiCleaned == true) {
+                    LOG(DEBUG) << "Event vetoed due to " << this->GetFilterId();
+                    return false;
+                } else {
+                    LOG(DEBUG) << "No (relevant) Jet cleaned. " <<  this->GetFilterId() << " passed!";
+                    return true;
+                }
+            } else {
+                LOG(DEBUG) << "Object-based JetEtaPhiCleaner selected. Skipping the filter.";
+                return true;
+        }
+        }
+    private:
+        bool vetoCleanedEvents = false;
+};
+
 ////////////////
 // Phistareta //
 ////////////////
