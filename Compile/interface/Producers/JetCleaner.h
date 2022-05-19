@@ -75,18 +75,21 @@ class JetCleanerBase : public ZJetProducerBase {
                         jecLevelJetCollection.second.end(),
                         [&, this](auto jetSharedPtr){
                             bool removeJet = !this->DoesJetPass(jetSharedPtr.get(), event, product, settings);  // jet removed if true -> jet does not pass
-                            if (settings.GetCutVetoCleanedEvents() && jecLevelJetCollection.first == targetLevel && !product.m_etaPhiCleaned) {  // only check on max corr level
+                            if (settings.GetCutVetoCleanedEvents() && jecLevelJetCollection.first == targetLevel // only check on max corr level
+                                    && !product.m_etaPhiCleaned  // only check if event not vetoed yet
+                                    && removeJet) {  // only check jets that are removed
                                 auto jet_pt = jetSharedPtr.get()->p4.Pt();
                                 int count = 0;
-                                if ( jet_pt > settings.GetCutVetoJetsAbove()  // check all jets above value
-                                    && (removeJet) ) {
+                                if ( jet_pt > settings.GetCutVetoJetsAbove()){  // only check jets above threshold
+                                    // Check the index of a jet that is removed by counting the number of jets with higher pT
                                     // loop over all jets and check the index of the one to be removed...
                                     for (auto jet = jecLevelJetCollection.second.begin(); jet != jecLevelJetCollection.second.end() && !product.m_etaPhiCleaned; jet++) {
                                         if ( (*jet)->p4.Pt() > jet_pt ) {
                                             count++;
                                         }
                                     }
-                                    if ( count < settings.GetCutVetoNJets() && !product.m_etaPhiCleaned ) { // a relevant jet was cleaned => Veto event!
+                                    // if index < CutVetoNJets: veto event 
+                                    if (count < settings.GetCutVetoNJets()) {
                                         product.m_etaPhiCleaned = true;
                                         if (settings.GetDebugVerbosity() > 1) {
                                             LOG(DEBUG) << "VetoCleanedEvent: True ";
