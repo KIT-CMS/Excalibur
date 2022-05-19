@@ -42,16 +42,16 @@ class JetCleanerBase : public ZJetProducerBase {
  * Therefore, it is necessary to first find the leading jet if the event should
  * be vetoed beacause of the removal of the first N leading jets.
  *
- * For this, the allready implemented functionality is reused ( I know it is 
+ * For this, the already implemented functionality is reused ( I know it is 
  * ugly but as ever: time is short, sorry ...)
  * I copy and pasted the loop and check whether there are N jets with greater
  * pT then the one which should be removed. This has to be done in a separate
- * loop since the immidiate removal would prevent this.
+ * loop since the immediate removal would prevent this.
  * => we set the veto flag, if no N jets can be found that are grater than the 
  * one which is checked.
  *
- * In the end, the remove is always gets a false since this should only happen 
- * in the next loop...
+ * In the end, the remove always gets a false returend since this should only 
+ * happen in the next loop...
  *****************************************************************************/
         std::string targetLevel;
         if (settings.GetInputIsData()) {

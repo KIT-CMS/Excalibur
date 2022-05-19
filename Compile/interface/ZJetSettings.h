@@ -95,7 +95,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, CutEtaPhiCleaningFile)
     IMPL_SETTING_DEFAULT(bool, CutVetoCleanedEvents, false)  // true: cleaned events are vetoed according to the next two settings
     IMPL_SETTING_DEFAULT(float, CutVetoJetsAbove, -1.0)  // default: all        
-    IMPL_SETTING_DEFAULT(int, CutVetoNJets, 1)  // default: only check leading jet; to check all jets, use 999
+    IMPL_SETTING_DEFAULT(int, CutVetoNJets, 1)  // default: only check leading jet
     IMPL_SETTING_DEFAULT(std::string, CutJetID, "none")
     IMPL_SETTING_DEFAULT(std::string, CutJetIDVersion, "none")
     IMPL_SETTING_DEFAULT(unsigned, CutJetIDFirstNJets, 1)
