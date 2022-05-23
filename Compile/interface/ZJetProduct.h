@@ -63,6 +63,9 @@ class ZJetProduct : public KappaProduct
     RMFLV m_truez;
     bool m_truezfound = false;
 
+    // Flag for JetEtaPhi Cleaner
+    bool m_etaPhiCleaned = false;
+
     /////////////////////////////
     // Functions for Consumers //
     /////////////////////////////
