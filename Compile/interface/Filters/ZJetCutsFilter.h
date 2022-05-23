@@ -14,6 +14,8 @@
  * max nmuons
  * muon pt
  * muon eta
+ * min nelectrons
+ * max nelectrons
  * electron pt
  * electron eta
  * leading jet pt
@@ -288,6 +290,76 @@ class MuonEtaCut : public ZJetFilterBase
 
   private:
     float muonEtaMax = 0;
+};
+
+////////////////////
+// Min nElectrons //
+////////////////////
+class MinNElectronsCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "MinNElectronsCut"; }
+
+    MinNElectronsCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        nElectronsMin = settings.GetCutNElectronsMin();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_validElectrons: " << product.m_validElectrons.size() << " >= " << nElectronsMin;
+        if (product.m_validElectrons.size() >= nElectronsMin) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
+    }
+
+  private:
+    unsigned long nElectronsMin = 0;
+};
+
+////////////////////
+// Max nElectrons //
+////////////////////
+class MaxNElectronsCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "MaxNElectronsCut"; }
+
+    MaxNElectronsCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        nElectronsMax = settings.GetCutNElectronsMax();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "Number of m_validElectrons: " << product.m_validElectrons.size() << " <= " << nElectronsMax;
+        if (product.m_validElectrons.size() <= nElectronsMax) {
+            LOG(DEBUG) << this->GetFilterId() << " passed!";
+            return true;
+        } else {
+            LOG(DEBUG) << this->GetFilterId() << " not passed!";
+            return false;
+        }
+    }
+
+  private:
+    unsigned long nElectronsMax = 0;
 };
 
 /////////////////

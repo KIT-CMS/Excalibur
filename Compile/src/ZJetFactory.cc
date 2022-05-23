@@ -163,6 +163,10 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new MinNMuonsCut();
     else if (id == MaxNMuonsCut().GetFilterId())
         return new MaxNMuonsCut();
+    else if (id == MinNElectronsCut().GetFilterId())
+        return new MinNElectronsCut();
+    else if (id == MaxNElectronsCut().GetFilterId())
+        return new MaxNElectronsCut();
     else if (id == MinNGenMuonsCut().GetFilterId())
         return new MinNGenMuonsCut();
     else if (id == MaxNGenMuonsCut().GetFilterId())

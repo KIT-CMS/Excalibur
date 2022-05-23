@@ -94,7 +94,7 @@ def getBaseConfig(tagged=False, **kwargs):
         'Processors': [
             'producer:ValidLeptonsProducer',  # build valid leptons from subclasses, needed for JetLeptonLowerDeltaRCut in ValidTaggedJetsProducer
             'producer:ValidTaggedJetsProducer',  # builds jet collection
-            'producer:ValidZllJetsProducer',  # applies lepton cleaning, needs to run before the 'ZJetCorrectionsProducer'
+            #'producer:ValidZllJetsProducer', # NOTE: no default producer -> moved to specific configs
             'producer:ZJetCorrectionsProducer',  # applies correction factors
 
             # 'producer:JetRecoilProducer',  # produces jet recoil observables, use if neccessary
@@ -374,8 +374,8 @@ def ee(cfg, **kwargs):
     cfg['Processors'] = ['producer:ZJetValidElectronsProducer', 'producer:ZeeProducer',]+cfg['Processors']
 
     cfg['Pipelines']['default']['Processors'] = [
-        'filter:MinElectronsCountFilter',
-        'filter:MaxElectronsCountFilter',
+        'filter:MinNElectronsCut',
+        'filter:MaxNElectronsCut',
         'filter:ElectronPtCut',
         'filter:ElectronEtaCut',
         ### TODO: Move to baseconfig
@@ -412,8 +412,8 @@ def ee(cfg, **kwargs):
         'e2idloose', 'e2idmedium', 'e2idtight', #'e2idveto', # 'e2mvanontrig', 'e2mvatrig',
         'nelectrons', 'validz',
         ]
-    cfg['MinNElectrons'] = 2
-    cfg['MaxNElectrons'] = 3
+    cfg['CutNElectronsMin'] = 2
+    cfg['CutNElectronsMax'] = 3
     cfg['CutElectronPtMin'] = 25.0
     cfg['CutElectronEtaMax'] = 2.4
     cfg['CutLeadingJetPtMin'] = 12.0
