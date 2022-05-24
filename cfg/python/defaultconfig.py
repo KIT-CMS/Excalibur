@@ -113,7 +113,7 @@ def getBaseConfig(tagged=False, **kwargs):
 
 def data(cfg, **kwargs):
     cfg['InputIsData'] = True
-    cfg['Processors'] = ['filter:JsonFilter']+cfg['Processors']+['producer:HltProducer','filter:HltFilter',]
+    cfg['Processors'] = ['filter:JsonFilter', 'producer:HltProducer','filter:HltFilter'] + cfg['Processors']  # apply directly after producer for better performance
     cfg['Processors'] += [
         'producer:NPUProducer',
         'producer:TypeIMETProducer',  # applies type-1 correction, can run on unsorted collections
@@ -334,7 +334,7 @@ def data_2017(cfg, **kwargs):
 
     # object-based eta-phi cleaning (recommended jun. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
-    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
@@ -358,7 +358,7 @@ def mc_2017(cfg, **kwargs):
 
     # object-based eta-phi cleaning (recommended jun. 2018)
     # -> invalidate jets according to eta-phi masks provided in a external ROOT file
-    cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
+    #cfg['Processors'].insert(cfg['Processors'].index("producer:ZJetCorrectionsProducer") + 1, "producer:JetEtaPhiCleaner")
     cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec17/data17_17Nov2017_ReReco/hotjets-17runBCDEF_addEtaPhiMask_2018-06-11.root")
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hotfilter", "h2_additionalEtaPhiFilter"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
@@ -371,7 +371,7 @@ def ee(cfg, **kwargs):
     cfg['Electrons'] = 'electrons'
     cfg['ElectronMetadata'] = 'electronMetadata'
     # The order of these producers is important!
-    cfg['Processors'] = ['producer:ZJetValidElectronsProducer', 'producer:ZeeProducer',]+cfg['Processors']
+    cfg['Processors'] = ['producer:ZJetValidElectronsProducer', 'producer:RecoZeeProducer',]+cfg['Processors']
 
     cfg['Pipelines']['default']['Processors'] = [
         'filter:MinNElectronsCut',
