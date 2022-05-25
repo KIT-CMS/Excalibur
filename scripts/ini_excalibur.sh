@@ -68,6 +68,7 @@ if [ -d "/storage/a/$USER/zjet" ]; then
     export EXCALIBUR_WORK=/storage/a/$USER/zjet
 fi
 
+
 # Set some user specific variables
 if [ $USER = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
@@ -84,32 +85,7 @@ if [ $USER = "tberger" ]; then
     #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/tberger/Excalibur"
     export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tberger/Excalibur"
     #export EXCALIBUR_SE="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Excalibur"
-elif [ $USER = "dsavoiu" ]; then
-    export EXCALIBURBRILSSH="dsavoiu@lxplus.cern.ch"
-    #export EXCALIBUR_WORK=/portal/ekpbms1/home/dsavoiu/excalibur_work
-    #export EXCALIBUR_WORK=/storage/c/dsavoiu/excalibur_work
-    export EXCALIBUR_WORK=/ceph/dsavoiu/work
-    #export EXCALIBUR_SE="srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/dsavoiu/Excalibur"
-    #export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/dsavoiu/Excalibur"
-    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/dsavoiu/Excalibur"
-    export HARRY_REMOTE_USER="dsavoiu"
-    export HARRY_USERPC="ekplx32.ekp.kit.edu"
-    if [[ $HOSTNAME = *bms* ]]; then
-         export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/dsavoiu/public_html/plots_archive/{subdir}"
-         export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/dsavoiu/public_html/plots_archive/{subdir}"
-    fi
-elif [ $USER = "msauter" ]; then
-    echo "Profil: msauter"
-    export EXCALIBURBRILSSH="msauter@lxplus.cern.ch"
-    export EXCALIBUR_WORK=/portal/ekpbms2/home/msauter/zjets/
-    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/msauter/Excalibur"
-    export HARRY_REMOTE_USER="msauter"
-    export HARRY_USERPC="ekplx32.ekp.kit.edu"
-    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/msauter/Excalibur"
-    if [[ $HOSTNAME = *bms* ]]; then
-         export WEB_PLOTTING_MKDIR_COMMAND="mkdir -p /ekpwww/web/msauter/public_html/plots_archive/{subdir}"
-         export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/msauter/public_html/plots_archive/{subdir}"
-    fi
+
 
 elif [ $USER = "mschnepf" ]; then
     echo "Profil: mschnepf"
@@ -125,15 +101,15 @@ elif [ $USER = "mschnepf" ]; then
          export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/mschnepf/public_html/plots_archive/{subdir}"
     fi
 
-elif [ $USER = "tfesenbecker" ]; then
-    echo "Profil: tfesenbecker"
-    export EXCALIBUR_WORK=/portal/ekpbms3/home/tfesenbecker/excalibur_work
-    export EXCALIBUR_SE="srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/tfesenbecker/Excalibur"
-
 elif [ $USER = "cverstege" ]; then
     echo "Profil: cverstege"
-    export EXCALIBUR_WORK=/ceph/cverstege/excalibur_work
+    export EXCALIBUR_WORK=/work/cverstege/excalibur_work
     export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/cverstege/Excalibur"
+
+elif [ $USER = "mhorzela" ]; then
+    echo "Profile mhorzela"
+    export EXCALIBUR_WORK=/work/mhorzela/ZJet/excalibur_work
+    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/mhorzela/Excalibur"
 fi
 
 # source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
