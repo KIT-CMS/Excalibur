@@ -1238,7 +1238,7 @@ class LeadingGenJetYCut : public ZJetFilterBase
         LOG(DEBUG) << "CutLeadingJetYMax: " << leadingJetYMax;
         if (product.m_simpleGenJets.size() > 0) {
             LOG(DEBUG) << "Leading GenJet Rapidity: " << product.m_simpleGenJets.at(0)->p4.Rapidity();
-            if (product.m_simpleGenJets.at(0)->p4.Pt() < leadingJetYMax) {
+            if (std::fabs(product.m_simpleGenJets.at(0)->p4.Rapidity()) < leadingJetYMax) {
                 LOG(DEBUG) <<  this->GetFilterId() << " passed!";
                 return true;
             } else {
