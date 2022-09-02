@@ -139,7 +139,7 @@ def mc(cfg, **kwargs):
     cfg['InputIsData'] = False
     cfg['Processors'] = ['producer:GenParticleProducer']+cfg['Processors']
     cfg['Processors'] += [
-        'producer:ValidZllGenJetsProducer',
+        #'producer:ValidZllGenJetsProducer',  # +++ATTENTION+++  REMOVED FROM DEFAULT CONF!
         'producer:RecoJetGenPartonMatchingProducer',
         #'producer:GenJetGenPartonMatchingProducer',
         'producer:RecoJetGenJetMatchingProducer',
@@ -193,6 +193,7 @@ def mc(cfg, **kwargs):
     cfg['GenParticleStatus'] = 22  # PYTHIA8-status, see also http://home.thep.lu.se/~torbjorn/pythia81html/ParticleProperties.html
     #cfg['RecoJetMatchingGenParticleStatus'] = 1    # use pythia8 status instead of default=3
     # MC sample reweighting
+    cfg['Processors'] = ['producer:HltProducer','filter:HltFilter'] + cfg['Processors']  # apply directly after producer for better performance
     cfg['Processors'] += [
         # 'producer:ZJetPartonProducer',
         'producer:CrossSectionWeightProducer',
@@ -214,7 +215,7 @@ def mc(cfg, **kwargs):
 
     cfg['CutAlphaMax'] = 0.3  # TODO: Move to more general position
     cfg['CutBetaMax'] = 0.1  # TODO: Move to more general position if necessary
-    cfg['GenJets'] = 'ak4GenJetsNoNu'
+    cfg['GenJets'] = 'ak4GenJets'  # doesn't make a difference
     cfg['UseKLVGenJets'] = True  # Need to be true! DO NOT CHANGE!
 
     # -- process keyword arguments
@@ -436,7 +437,7 @@ def mcee(cfg, **kwargs):
         #'genParticleMatchDeltaR',
     ]
     # reco-gen electron matching producer
-    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZeeProducer',)
+    cfg['Processors'].insert(cfg['Processors'].index('producer:RecoJetGenPartonMatchingProducer'), 'producer:GenZeeProducer',)
     cfg['Processors'] += ['producer:RecoElectronGenParticleMatchingProducer']
     cfg['RecoElectronMatchingGenParticleStatus'] = 1  # take Pythia8 status 1 as default here
     # cfg['RecoElectronMatchingGenParticleStatus'] = 3
@@ -588,7 +589,7 @@ def mcmm(cfg, **kwargs):
         # 'genmu1pt','genmu1eta','genmu1phi','genmu1mass',
         # 'genmu2pt','genmu2eta','genmu2phi','genmu2mass',
         ]
-    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllGenJetsProducer'), 'producer:GenZmmProducer',)
+    cfg['Processors'].insert(cfg['Processors'].index('producer:RecoJetGenPartonMatchingProducer'), 'producer:GenZmmProducer',)
     # add muon matching before the valid muon producer, so we can use the matched muons for better rochester corrections
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:RecoMuonGenParticleMatchingProducer')
     # match all muons, not just valid, since we need the matching to produce valid muons out of the correcetd ones...
@@ -622,11 +623,11 @@ def _2016mm(cfg, **kwargs):
 
 def _2017mm(cfg, **kwargs):
     cfg['HltPaths'] = [
-        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ',
-        'HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ',
+        #'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ',
+        #'HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ',
         # -- lowest pT unprescaled trigger for the whole of 2017
         # https://indico.cern.ch/event/682891/contributions/2810364/attachments/1570825/2477991/20171206_CMSWeek_MuonHLTReport_KPLee_v3_1.pdf
-        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8',
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8',  # recommendation for JEC #CEDRIC
     ]
 
 def _2018mm(cfg, **kwargs):
