@@ -52,6 +52,7 @@ class ZJetSettings : public KappaSettings
     IMPL_SETTING(std::string, JER)
     IMPL_SETTING(std::string, JERMethod)
     IMPL_SETTING(int, JERSmearerSeed)
+    IMPL_SETTING_DEFAULT(int, JERShift, 0)
 
     // RecoJetGenJetMatchingProducer
     IMPL_SETTING_DEFAULT(double, DeltaRMatchingRecoJetGenJet, 0.25)

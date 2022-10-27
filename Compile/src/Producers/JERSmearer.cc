@@ -59,6 +59,21 @@ void JERSmearer::Init(ZJetSettings const& settings) {
     LOG(INFO) << "\t -- " << settings.GetJER() + "_PtResolution_" + algoName + ".txt" << std::endl;
     LOG(INFO) << "\t -- " << settings.GetJER() + "_SF_" + algoName + ".txt" << std::endl;
 
+    if (settings.GetJERShift() == 0) {
+        m_systematic_variation = Variation::NOMINAL;
+        LOG(INFO) << "Systematic JERShift NOMINAL";
+    }
+    else if (settings.GetJERShift() == 1) {
+        m_systematic_variation = Variation::UP;
+        LOG(INFO) << "Systematic JERShift UP";
+    }
+    else if (settings.GetJERShift() == -1) {
+        m_systematic_variation = Variation::DOWN;
+        LOG(INFO) << "Systematic JERShift DOWN";
+    }
+    else
+        LOG(ERROR) << "Invalid value for 'JERShift' parameter. Only -1, 0 or 1 are supported.";
+
     // create the resolution and resolution scale factor objects
     m_jetResolution.reset(new JME::JetResolution(settings.GetJER() + "_PtResolution_" + algoName + ".txt"));
     m_jetResolutionScaleFactor.reset(new JME::JetResolutionScaleFactor(settings.GetJER() + "_SF_" + algoName + ".txt"));
@@ -70,6 +85,8 @@ void JERSmearer::Init(ZJetSettings const& settings) {
 void JERSmearer::Produce(ZJetEvent const& event,
                          ZJetProduct& product,
                          ZJetSettings const& settings) const {
+    
+    LOG(DEBUG) << "[" << this->GetProducerId() << "]";
 
     // iterate over all jet correction levels
     for (std::map<std::string, std::vector<std::shared_ptr<KJet>>>::const_iterator itlevel = product.m_correctedZJets.begin();
@@ -89,7 +106,7 @@ void JERSmearer::Produce(ZJetEvent const& event,
             });
             double jetResolutionScaleFactor = m_jetResolutionScaleFactor->getScaleFactor({
                 {JME::Binning::JetEta, recoJets[iJet]->p4.Eta()}
-            }, Variation::NOMINAL);
+            }, m_systematic_variation);
             // get and validate matched gen jet
             const KLV* matchedGenJet = nullptr;
             if (matchedGenJetIndices[iJet] >= 0) {
