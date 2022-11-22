@@ -257,8 +257,8 @@ def _2016(cfg, **kwargs):
     # data settings also used to derive values for mc
     cfg['Minbxsec'] = 69.2
     cfg['NPUFile'] = os.path.join(configtools.getPath(),'data/pileup/pumean_data2016_13TeV.txt')
-    cfg['NPUSmearing'] = True
-    cfg['NPUSmearingSeed'] = 1
+    #cfg['NPUSmearing'] = True  # not necessary -> removed from default
+    #cfg['NPUSmearingSeed'] = 1  # not necessary -> removed from default
     # TODO: Use official CERT naming
     cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/Cert_BCDEFGH_13TeV_23Sep2016ReReco_Collisions16_JSON.txt')]
 
