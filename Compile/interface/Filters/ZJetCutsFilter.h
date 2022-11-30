@@ -279,7 +279,7 @@ class MuonEtaCut : public ZJetFilterBase
             LOG(DEBUG) << "leading: " << product.m_zLeptons.first->p4;
             LOG(DEBUG) << "sub-leading: " << product.m_zLeptons.second->p4;
         }
-        if (product.m_zLeptons.first->p4.Eta() < muonEtaMax && product.m_zLeptons.second->p4.Eta() < muonEtaMax) {
+        if (std::abs(product.m_zLeptons.first->p4.Eta()) < muonEtaMax && std::abs(product.m_zLeptons.second->p4.Eta()) < muonEtaMax) {
             LOG(DEBUG) << this->GetFilterId() << " passed!";
             return true;
         } else {
@@ -443,8 +443,8 @@ class ElectronEtaCut : public ZJetFilterBase
             LOG(DEBUG) << "leading: " << product.m_zLeptons.first->p4;
             LOG(DEBUG) << "sub-leading: " << product.m_zLeptons.second->p4;
         }
-        if (product.m_zLeptons.first->p4.Eta() < electronEtaMax &&
-            product.m_zLeptons.second->p4.Eta() < electronEtaMax) {
+        if (std::abs(product.m_zLeptons.first->p4.Eta()) < electronEtaMax &&
+            std::abs(product.m_zLeptons.second->p4.Eta()) < electronEtaMax) {
             LOG(DEBUG) << this->GetFilterId() << " passed!";
             return true;
         } else {
