@@ -25,9 +25,9 @@ class RecoJetGenJetMatchingProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   private:
-    void MatchCollection(ZJetEvent const& event,
-                         ZJetProduct& product,
-                         ZJetSettings const& settings,
-                         std::string const& corrLevel,
-                         double const deltaR) const;
+    std::vector<int> MatchCollection(ZJetEvent const& event,
+                                     ZJetProduct& product,
+                                     ZJetSettings const& settings,
+                                     std::string const& corrLevel,
+                                     double const deltaR) const;
 };
