@@ -48,6 +48,7 @@ class ZJetProduct : public KappaProduct
 
     // Added by RecoJetGenJetMatchingProducer
     boost::ptr_map<std::string, std::vector<int>> m_matchedGenJets;
+    boost::ptr_map<std::string, std::vector<int>> m_matchedGenJets4; //Delta R = 0.4 for PUJetID SFs
     
     // Added by PartonProducer
     std::vector<KGenParticle*> m_partons;

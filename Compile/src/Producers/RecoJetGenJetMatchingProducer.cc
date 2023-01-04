@@ -23,12 +23,15 @@ void RecoJetGenJetMatchingProducer::Produce(ZJetEvent const& event,
     for (std::map<std::string, std::vector<std::shared_ptr<KJet>>>::const_iterator itlevel =
              product.m_correctedZJets.begin();
          itlevel != product.m_correctedZJets.end(); ++itlevel) {
-        MatchCollection(event, product, settings, itlevel->first,
-                        settings.GetDeltaRMatchingRecoJetGenJet());
+
+        product.m_matchedGenJets[itlevel->first] = MatchCollection(
+            event, product, settings, itlevel->first, settings.GetDeltaRMatchingRecoJetGenJet());
+        product.m_matchedGenJets4[itlevel->first] = MatchCollection(
+            event, product, settings, itlevel->first, 0.4);
     }
 }
 
-void RecoJetGenJetMatchingProducer::MatchCollection(ZJetEvent const& event,
+std::vector<int> RecoJetGenJetMatchingProducer::MatchCollection(ZJetEvent const& event,
                                                     ZJetProduct& product,
                                                     ZJetSettings const& settings,
                                                     std::string const& corrLevel,
@@ -54,5 +57,5 @@ void RecoJetGenJetMatchingProducer::MatchCollection(ZJetEvent const& event,
     // Make use of KappaTools matcher
     std::vector<int> matchResult = matchSort_Matrix<KLV, KJet>(genJets, genJetCount, recoJets, jetCount, deltaR);
     // Store result in product
-    product.m_matchedGenJets[corrLevel] = matchResult;
+    return matchResult;
 }
