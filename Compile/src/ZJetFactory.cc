@@ -142,6 +142,8 @@ FilterBaseUntemplated* ZJetFactory::createFilter(std::string const& id)
         return new LeadingGenJetPtCut();
     else if (id == LeadingJetEtaCut().GetFilterId())
         return new LeadingJetEtaCut();
+    else if (id == LeadingGenJetEtaCut().GetFilterId())
+        return new LeadingGenJetEtaCut();
     else if (id == LeadingGenJetYCut().GetFilterId())
         return new LeadingGenJetYCut();
     else if (id == LeadingJetYCut().GetFilterId())

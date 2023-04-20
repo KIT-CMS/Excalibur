@@ -1,0 +1,118 @@
+import configtools
+import os
+import sys
+JEC = '{{ jec }}'
+IOV = ''  # needed for getting hotjets file, overwritten down below anyways
+
+def config():
+    cfg = configtools.getConfig('data', {{ year }}, 'mm', JEC=JEC, IOV=IOV)
+    cfg["InputFiles"].set_input(path='{{ dataset_files }}')
+    cfg = configtools.expand(cfg, ['zjetcuts'], ['None', 'L1L2L3Res'])
+    configtools.remove_quantities(cfg, [
+        'jet1area','jet1l1', 'jet1rc', 'jet1l2','jet1ptraw', 'jet1ptl1',
+        'mpf', 'rawmpf', 'rawmet', 'rawmetphi', 'sumet','mettype1vecpt', 'mettype1pt',
+        ])
+    configtools.add_quantities(cfg, [
+        "mu1pt", "mu1eta", "mu1phi", "mu2pt", "mu2eta", "mu2phi",
+        'leptonRecoSFWeight', 'leptonRecoSFWeightUp', 'leptonRecoSFWeightDown',
+        'leptonIsoSFWeight', 'leptonIsoSFWeightUp', 'leptonIsoSFWeightDown',
+        'leptonIDSFWeight', 'leptonIDSFWeightUp', 'leptonIDSFWeightDown',
+        'leptonTriggerSFWeight', 'leptonTriggerSFWeightUp', 'leptonTriggerSFWeightDown',
+        'prefiringWeight', 'prefiringWeightUp', 'prefiringWeightDown',
+        "njets20", 'nmuons', 'jet1puidraw', 'puJetIDWeight',
+        ])
+    # remove Pipelines without JEC, removing None from expand above creates invalid configs...
+    for rm in ['zjetcuts']:
+        cfg['Pipelines'].pop(rm)
+
+    ##### Set Trigger: ######
+    cfg['HltPaths'] = ['HLT_IsoMu24', 'HLT_IsoTkMu24']
+
+    ##### Set Golden JSON ####
+    cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/{{ good_run_json }}')]
+
+    ##### Add Producers: #####
+    # Add METFilters only on reco level
+    cfg['Pipelines']['zjetcuts_L1L2L3Res']['Processors'] += ['filter:METFiltersFilter']
+    cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
+                             "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_eeBadScFilter"]
+
+    # Apply Muon Corrections
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:MuonCorrectionsProducer')
+    # Dress Muons
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:PFCandidatesProducer')
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer')
+
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetCorrectionsProducer')+1, 'producer:PrefiringWeightProducer')
+
+    # Add LeptonSF Producers
+    cfg['Processors'] += ['producer:LeptonRecoSFProducer', 'producer:LeptonIDSFProducer', 'producer:LeptonIsoSFProducer', 'producer:LeptonTriggerSFProducer']
+
+    # Jet Producers
+    cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetCorrectionsProducer')+1, 'producer:ValidZllJetsProducer')
+
+    ##### Specify input sources for Jets & Muons: #####
+    cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
+    cfg['MaxZJetDressedMuonDeltaR'] = 0.1
+    cfg['ValidMuonsInput'] = "corrected"
+    cfg['PackedPFCandidates'] = 'pfCandidates'
+
+    ##### Jets
+    cfg['PUJetIDModuleName'] = 'pileupJetId'  # for slimmed Jets
+    cfg['TaggedJets'] = 'ak{{ jet_radius }}PFJetsCHS'
+    cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{{ jec }}/{{ jec }}')
+
+    cfg['JetIDVersion'] = 'UL2016'
+    cfg['JetID'] = 'tightlepveto'
+
+    cfg['PUJetID'] = 'file'
+    cfg['MinPUJetIDFile'] = os.path.join(configtools.getPath(), "data/pujetid/puJetIDMVAWorkingPoints.root")
+    cfg['MinPUJetIDHistogramName'] = "puJetIDMVAWorkingPoint_AK4PFCHS_2016UL_Tight"
+
+    cfg['JetLeptonLowerDeltaRCut'] = 0.4
+    cfg['OnlyCleanZLeptons'] = True
+
+    cfg['CutLeadingJetPtMin'] = 10.0
+
+    cfg['UseObjectJetYCut'] = True
+    cfg['UseObjectJetEtaCut'] = False
+    cfg['CutLeadingJetYMax'] = 2.4
+
+    cfg['EnableTypeIModification'] = False  # disable TypeIMET corrections, not recommended
+    cfg['JetEtaPhiCleanerFile'] = os.path.join(configtools.getPath(), "data/cleaning/jec16ul/Summer19UL16_V0/hotjets-UL16.root")
+    cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul16_plus_hbm2_hbp12_qie11", "h2hot_mc"]
+    cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
+
+    ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
+    cfg['MuonID'] = 'tight'
+    cfg['MuonIso'] = 'tight'
+    cfg['CutMuonPtMin'] = 25.0
+    cfg['CutMuonEtaMax'] = 2.4
+    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/{{ roccor }}')
+    cfg['MuonEnergyCorrection'] = 'rochcorr{{ year }}ul'
+    cfg['ZMassRange'] = 25.0
+
+    ##### LeptonSF files: #####
+    cfg['LeptonSFVariation'] = True
+    # Reco efficiencies
+    cfg['LeptonRecoSFYear'] = '2016'
+
+    # ID efficiencies
+    cfg['LeptonIDSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016ul_postVFP/Efficiencies_muon_generalTracks_Z_Run2016_UL_ID.root")
+    cfg['LeptonIDSFHistogramName'] = 'NUM_TightID_DEN_TrackerMuons_abseta_pt'
+
+    # ISO efficiencies
+    cfg['LeptonIsoSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016ul_postVFP/Efficiencies_muon_generalTracks_Z_Run2016_UL_ISO.root")
+    cfg['LeptonIsoSFHistogramName'] = 'NUM_TightRelIso_DEN_TightIDandIPCut_abseta_pt'
+
+    # Trigger efficiencies
+    cfg['LeptonTriggerSFRootfile'] = os.path.join(configtools.getPath(),"data/scalefactors/2016ul_postVFP/Efficiencies_muon_generalTracks_Z_Run2016_UL_SingleMuonTriggers.root")
+    cfg['LeptonTriggerSFHistogramName'] = 'NUM_IsoMu24_or_IsoTkMu24_DEN_CutBasedIdTight_and_PFIsoTight_eta_pt'
+
+    ##### Prefiring Weights ######
+    cfg['DataEraECAL'] = "UL2016postVFP"
+    cfg['DataEraMuon'] = "2016postVFP"
+    cfg['PrefiringL1MapsPath'] = os.path.join(configtools.getPath(),"data/prefiring/L1PrefiringMaps.root")
+    cfg['L1MuonParametrizationsPath'] = os.path.join(configtools.getPath(),"data/prefiring/L1MuonPrefiringParametrisations.root")
+
+    return cfg

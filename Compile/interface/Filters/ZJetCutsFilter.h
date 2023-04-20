@@ -1214,6 +1214,47 @@ class LeadingGenJetPtCut : public ZJetFilterBase
     float leadingJetPtMin = 0;
 };
 
+/////////////////////
+// Leading Gen Jet Eta //
+/////////////////////
+class LeadingGenJetEtaCut : public ZJetFilterBase
+{
+  public:
+    std::string GetFilterId() const override { return "LeadingGenJetEtaCut"; }
+
+    LeadingGenJetEtaCut() : ZJetFilterBase() {}
+
+    void Init(ZJetSettings const& settings) override
+    {
+        ZJetFilterBase::Init(settings);
+        leadingJetEtaMax = settings.GetCutLeadingJetEtaMax();
+    }
+
+    bool DoesEventPass(ZJetEvent const& event,
+                       ZJetProduct const& product,
+                       ZJetSettings const& settings) const override
+    {
+        LOG(DEBUG) << "\n[" << this->GetFilterId() << "]";
+        LOG(DEBUG) << "CutLeadingJetEtaMax: " << leadingJetEtaMax;
+        if (product.m_simpleGenJets.size() > 0) {
+            LOG(DEBUG) << "Leading GenJet Eta: " << product.m_simpleGenJets.at(0)->p4.Eta();
+            if (std::fabs(product.m_simpleGenJets.at(0)->p4.Eta()) < leadingJetEtaMax) {
+                LOG(DEBUG) <<  this->GetFilterId() << " passed!";
+                return true;
+            } else {
+                LOG(DEBUG) << this->GetFilterId() << " not passed!";
+                return false;
+            }
+        } else {
+            LOG(DEBUG) << "No m_simpleGenJets available!";
+            return false;
+        }
+    }
+
+  private:
+    float leadingJetEtaMax = 0;
+};
+
 //////////////////////////////
 // Leading Gen Jet Rapidity // 
 //////////////////////////////

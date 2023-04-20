@@ -60,6 +60,7 @@ class JERSmearer : public ZJetProducerBase
 
   private:
     SmearingMethod m_smearingMethod;
+    Variation m_systematic_variation;
     std::unique_ptr<JME::JetResolution> m_jetResolution;
     std::unique_ptr<JME::JetResolutionScaleFactor> m_jetResolutionScaleFactor;
 
