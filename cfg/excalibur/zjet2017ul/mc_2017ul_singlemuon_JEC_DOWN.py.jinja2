@@ -99,7 +99,7 @@ def config():
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul17_plus_hep17_plus_hbpw89"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
-    cfg['ProvideJECUncertainties'] = True
+    cfg['JetEnergyCorrectionUncertaintySource'] = '{{ jec_unc }}'
     cfg['JetEnergyCorrectionUncertaintyShift'] = -1
 
     # MC specific
