@@ -136,28 +136,24 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
         jecParameters.clear();
     }
     // JEU initialization
-    // JetEnergyCorrectionUncertaintyParameters is the file containing the uncertainties
-    // JetEnergyCorrectionUncertaintySource is the name of the uncertainty
-    if ((! settings.GetJetEnergyCorrectionUncertaintyParameters().empty()) &&
-		    (settings.GetJetEnergyCorrectionUncertaintyShift() != 0.0))
+    if (settings.GetJetEnergyCorrectionUncertaintyShift() != 0.0)
 		{
             LOG(INFO) << "\t -- Enabling JEC Uncertainty...";
 			JetCorrectorParameters* jecUncertaintyParameters = nullptr;
-			if (!settings.GetJetEnergyCorrectionUncertaintySource().empty()) {
-				jecUncertaintyParameters = new JetCorrectorParameters(
-						settings.GetJetEnergyCorrectionUncertaintyParameters(),
-						settings.GetJetEnergyCorrectionUncertaintySource()
-				);
+            std::string fname_unc = settings.GetJec() + "_" + "UncertaintySources" + "_" + algoName + ".txt";
+			if (settings.GetJetEnergyCorrectionUncertaintySource().empty()) {
+                LOG(FATAL) << "Undefined JetEnergyCorrectionUncertaintySource. Use 'Total' for full uncertainty.";
 			}
-			else {
-				jecUncertaintyParameters = new JetCorrectorParameters(settings.GetJetEnergyCorrectionUncertaintyParameters());
-			}
+			jecUncertaintyParameters = new JetCorrectorParameters(
+				fname_unc,
+				settings.GetJetEnergyCorrectionUncertaintySource()
+			);
 			if ((!jecUncertaintyParameters->isValid()) || (jecUncertaintyParameters->size() == 0))
 				LOG(FATAL) << "Invalid definition " << settings.GetJetEnergyCorrectionUncertaintySource() 
-				           << " in file " << settings.GetJetEnergyCorrectionUncertaintyParameters();
-			correctionUncertainty = new JetCorrectionUncertainty(*jecUncertaintyParameters);
-			LOG(DEBUG) << "\t\t" << settings.GetJetEnergyCorrectionUncertaintySource();
-			LOG(DEBUG) << "\t\t" << settings.GetJetEnergyCorrectionUncertaintyParameters();
+				           << " in file " << fname_unc;
+            LOG(DEBUG) << "\t\t" << "Using JEC uncertainty " << settings.GetJetEnergyCorrectionUncertaintySource();
+			LOG(DEBUG) << "\t\t" << "From file" << fname_unc;
+            correctionUncertainty = new JetCorrectionUncertainty(*jecUncertaintyParameters);
 		}
     else {
         LOG(INFO) << "\t -- Using mean JEC values. No JetEnergyCorrectionUncertaintyParameters and/or JetEnergyCorrectionUncertaintyShift supplied.";

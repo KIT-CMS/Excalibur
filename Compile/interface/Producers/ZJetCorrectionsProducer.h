@@ -15,8 +15,7 @@
    Required config tags:
    - JEC (path and prefix of the correction files)
    Optional:
-   - JetEnergyCorrectionUncertaintyParameters (default: empty, path of the uncertainty file)
-   - JetEnergyCorrectionUncertaintySource (default: "", name of the uncertainty)
+   - JetEnergyCorrectionUncertaintySource (default: "", name of the uncertainty, default is full)
    - JetEnergyCorrectionUncertaintyShift (default: 0.0, direction and scale of the uncertainty)
 
    Required packages (unfortunately, nobody knows a tag):
