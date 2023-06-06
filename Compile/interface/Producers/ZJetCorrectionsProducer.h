@@ -14,10 +14,9 @@
 
    Required config tags:
    - JEC (path and prefix of the correction files)
-   Not yet implemented:
-   (- JetEnergyCorrectionUncertaintyParameters (default: empty))
-   (- JetEnergyCorrectionUncertaintySource (default ""))
-   (- JetEnergyCorrectionUncertaintyShift (default 0.0))
+   Optional:
+   - JetEnergyCorrectionUncertaintySource (default: "", name of the uncertainty, default is full)
+   - JetEnergyCorrectionUncertaintyShift (default: 0.0, direction and scale of the uncertainty)
 
    Required packages (unfortunately, nobody knows a tag):
    git cms-addpkg CondFormats/JetMETObjects

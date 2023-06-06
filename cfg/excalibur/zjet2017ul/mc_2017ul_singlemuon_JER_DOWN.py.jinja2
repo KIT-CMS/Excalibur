@@ -60,7 +60,7 @@ def config():
 
     # Jet Producers
     cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetCorrectionsProducer')+1, 'producer:ValidZllJetsProducer')
-    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllJetsProducer')+1, 'producer:ValidZllGenJetsProducer')
+    cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer')+1, 'producer:ValidZllGenJetsProducer')
     cfg['Processors'] += ['producer:PUJetIDWeightProducer']
 
     ##### Specify input sources for Jets & Muons: #####

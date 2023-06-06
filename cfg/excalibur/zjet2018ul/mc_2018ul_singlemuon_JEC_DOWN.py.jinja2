@@ -60,7 +60,7 @@ def config():
 
     # Jet Producers
     cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetCorrectionsProducer')+1, 'producer:ValidZllJetsProducer')
-    cfg['Processors'].insert(cfg['Processors'].index('producer:ValidZllJetsProducer')+1, 'producer:ValidZllGenJetsProducer')
+    cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer')+1, 'producer:ValidZllGenJetsProducer')
     cfg['Processors'] += ['producer:PUJetIDWeightProducer']
 
     ##### Specify input sources for Jets & Muons: #####
@@ -99,7 +99,7 @@ def config():
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul18_plus_hem1516_and_hbp2m1"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
-    cfg['ProvideJECUncertainties'] = True
+    cfg['JetEnergyCorrectionUncertaintySource'] = '{{ jec_unc }}'
     cfg['JetEnergyCorrectionUncertaintyShift'] = -1
 
     # MC specific
