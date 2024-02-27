@@ -87,10 +87,10 @@ if [ $USER = "tberger" ]; then
     #export EXCALIBUR_SE="srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/tberger/Excalibur"
 
 
-elif [ $USER = "mschnepf" ]; then
-    echo "Profil: mschnepf"
+elif [ "$USER" = "mschnepf" ]; then
+    echo "Profile: mschnepf"
     export EXCALIBUR_WORK=/ceph/mschnepf/excalibur_work/
-    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/mschnepf/Excalibur"
+    export EXCALIBUR_SE="root://cmsxrootd-kit-disk.gridka.de//store/user/mschnepf/Excalibur"
     GCPATH=/home/mschnepf/htcondor/grid-control
     export PATH=$PATH:$GCPATH:$GCPATH/scripts
 
@@ -101,18 +101,16 @@ elif [ $USER = "mschnepf" ]; then
          export WEB_PLOTTING_COPY_COMMAND="rsync -u {source} /ekpwww/web/mschnepf/public_html/plots_archive/{subdir}"
     fi
 
-elif [ $USER = "cverstege" ]; then
-    echo "Profil: cverstege"
+elif [ "$USER" = "cverstege" ]; then
+    echo "Profile: cverstege"
     export EXCALIBUR_WORK=/work/cverstege/excalibur_work
-    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/cverstege/Excalibur"
+    export EXCALIBUR_SE="root://cmsxrootd-kit-disk.gridka.de//store/user/cverstege/Excalibur"
 
-elif [ $USER = "mhorzela" ]; then
-    echo "Profile mhorzela"
+elif [ "$USER" = "mhorzela" ]; then
+    echo "Profile: mhorzela"
     export EXCALIBUR_WORK=/work/mhorzela/ZJet/excalibur_work
-    export EXCALIBUR_SE="root://cmsxrootd-kit.gridka.de//store/user/mhorzela/Excalibur"
+    export EXCALIBUR_SE="root://cmsxrootd-kit-disk.gridka.de//store/user/mhorzela/Excalibur"
 fi
 
 # source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
 alias cs='sh $EXCALIBURPATH/scripts/condor_status.sh'
-
-
