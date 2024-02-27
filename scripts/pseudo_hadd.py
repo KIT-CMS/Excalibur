@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 """
 Based on https://root.cern.ch/doc/master/hadd_8C_source.html
-Instead of adding TTrees to the TChain and merging it, add the files, so that we only create a proxy file.
+Instead of adding TTrees to the TChain and merging it, add the files,
+so that we only create a proxy file.
 The original files need to be kept at the same path for this to work.
 """
 
-
-import os
 import ROOT
 import argparse
 
@@ -15,6 +14,7 @@ try:
 except ImportError:
     print("Importing xrootd failed. Can't access files via xrootd.")
     from glob import glob
+
 
 def MergeRootFiles(target, sourcefiles, check=False):
     path = target.GetPath().split(':')[-1]
@@ -65,7 +65,7 @@ def MergeRootFiles(target, sourcefiles, check=False):
                 f.Close()
             target.cd()
             h1.Write(key.GetName())
-        
+
         elif isinstance(obj, ROOT.TTree):
             tree_name = obj.GetName()
             tchain = ROOT.TChain(tree_name)
@@ -80,20 +80,17 @@ def MergeRootFiles(target, sourcefiles, check=False):
                     print("[INFO] Linking successful. Combined TChain yielded {} entries.".format(num_entries))
             target.cd()
             tchain.Write()
-        
+
         elif isinstance(obj, ROOT.TDirectory):
             # it's a subdirectory
             print("[INFO] Found subdirectory " + obj.GetName())
-            
             # create a new subdir of same name and title in the target file
             target.cd()
             newdir = target.mkdir(obj.GetName(), obj.GetTitle())
-            
             # newdir is now the starting point of another round of merging
             # newdir still knows its depth within the target file via
             # GetPath(), so we can still figure out where we are in the recursion
             MergeRootFiles(newdir, sourcefiles, check=check)
-            
         else:
             print("[WARNING] Unknown object type, name: " + obj.GetName() + " title: " + obj.GetTitle())
     target.SaveSelf(ROOT.kTRUE)
@@ -103,7 +100,7 @@ def MergeRootFiles(target, sourcefiles, check=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("TARGET", help="output root file", type=str)
-    parser.add_argument("INPUT", help="Input root files or XRootD path e.g. root://cmsxrootd-kit.gridka.de//store/user/myuser/*.root", type=str, nargs='+')
+    parser.add_argument("INPUT", help="Input root files or XRootD path e.g. root://cmsxrootd-kit-disk.gridka.de//store/user/myuser/*.root", type=str, nargs='+')
 
     parser.add_argument('-c', '--check', help="check that the linking was successful by calling GetEntries on the resulting TChain", action='store_true')
     parser.add_argument('-f', '--overwrite', help="overwrite an existing output file", action='store_true')
@@ -117,11 +114,10 @@ if __name__ == "__main__":
     print("pseudo_hadd Target file: {}".format(output_file))
     for i, filename in enumerate(filelist):
         print("pseudo_hadd Source file {}: {}".format(i, filename))
-        
+
     mode = "RECREATE" if args.overwrite else "NEW"
     target = ROOT.TFile.Open(output_file, mode)
     if not target:
         raise IOError("Target file '{}' already exists!".format(output_file))
     MergeRootFiles(target, filelist, args.check)
     target.Close()
-
