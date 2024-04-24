@@ -100,7 +100,7 @@ def MergeRootFiles(target, sourcefiles, check=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("TARGET", help="output root file", type=str)
-    parser.add_argument("INPUT", help="Input root files or XRootD path e.g. root://cmsxrootd-kit-disk.gridka.de//store/user/myuser/*.root", type=str, nargs='+')
+    parser.add_argument("INPUT", help="Input root files or XRootD path e.g. root://cmsdcache-kit-disk.gridka.de//store/user/myuser/*.root", type=str, nargs='+')
 
     parser.add_argument('-c', '--check', help="check that the linking was successful by calling GetEntries on the resulting TChain", action='store_true')
     parser.add_argument('-f', '--overwrite', help="overwrite an existing output file", action='store_true')

@@ -90,7 +90,7 @@ if [ $USER = "tberger" ]; then
 elif [ "$USER" = "mschnepf" ]; then
     echo "Profile: mschnepf"
     export EXCALIBUR_WORK=/ceph/mschnepf/excalibur_work/
-    export EXCALIBUR_SE="root://cmsxrootd-kit-disk.gridka.de//store/user/mschnepf/Excalibur"
+    export EXCALIBUR_SE="root://cmsdcache-kit-disk.gridka.de//store/user/mschnepf/Excalibur"
     GCPATH=/home/mschnepf/htcondor/grid-control
     export PATH=$PATH:$GCPATH:$GCPATH/scripts
 
@@ -104,12 +104,12 @@ elif [ "$USER" = "mschnepf" ]; then
 elif [ "$USER" = "cverstege" ]; then
     echo "Profile: cverstege"
     export EXCALIBUR_WORK=/work/cverstege/excalibur_work
-    export EXCALIBUR_SE="root://cmsxrootd-kit-disk.gridka.de//store/user/cverstege/Excalibur"
+    export EXCALIBUR_SE="root://cmsdcache-kit-disk.gridka.de//store/user/cverstege/Excalibur"
 
 elif [ "$USER" = "mhorzela" ]; then
     echo "Profile: mhorzela"
     export EXCALIBUR_WORK=/work/mhorzela/ZJet/excalibur_work
-    export EXCALIBUR_SE="root://cmsxrootd-kit-disk.gridka.de//store/user/mhorzela/Excalibur"
+    export EXCALIBUR_SE="root://cmsdcache-kit-disk.gridka.de//store/user/mhorzela/Excalibur"
 fi
 
 # source $ARTUSPATH/HarryPlotter/scripts/ini_harry.sh
