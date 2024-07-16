@@ -529,6 +529,10 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         "njets30", [settings](ZJetEvent const& event, ZJetProduct const& product) {
             return product.CountValidJetsAbovePt(settings, event, 30.0);
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "lheNOutPartons", [settings](ZJetEvent const& event, ZJetProduct const& product) {
+            return event.m_genEventInfo->lheNOutPartons;
+        });
 
     // Jet recoil
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
