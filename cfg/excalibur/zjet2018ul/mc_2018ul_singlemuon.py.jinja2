@@ -33,6 +33,10 @@ def config():
 
     cfg['Processors'] += ['producer:ZJetGenWeightProducer']
     cfg['ZJetGenWeightNames'] = ['nominal', 'isrDefup', 'isrDefdown', 'fsrDefup', 'fsrDefdown']
+    # add ME variations
+    for i in range(1001, 2081):
+        cfg['ZJetGenWeightNames'] += [str(i)]
+        configtools.add_quantities(cfg, ["genWeight_"+str(i)])
 
     ##### Set Trigger: ######
     cfg['Processors'].remove("filter:HltFilter")
