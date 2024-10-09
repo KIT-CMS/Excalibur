@@ -70,7 +70,7 @@ fi
 
 
 # Set some user specific variables
-if [ $USER = "tberger" ]; then
+if [ "$USER" = "tberger" ]; then
     export EXCALIBURBRILSSH="tberger@lxplus.cern.ch"
     export HARRY_REMOTE_USER="tberger"
     export HARRY_USERPC="ekplx32.ekp.kit.edu"
@@ -103,7 +103,7 @@ elif [ "$USER" = "mschnepf" ]; then
 
 elif [ "$USER" = "cverstege" ]; then
     echo "Profile: cverstege"
-    export EXCALIBUR_WORK=/work/cverstege/excalibur_work
+    export EXCALIBUR_WORK=/work/cverstege/gc_work/
     export EXCALIBUR_SE="root://cmsdcache-kit-disk.gridka.de//store/user/cverstege/Excalibur"
 
 elif [ "$USER" = "mhorzela" ]; then
