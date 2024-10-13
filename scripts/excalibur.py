@@ -445,7 +445,8 @@ Have fun. ;)
         opt.json = opt.cfg
         opt.cfg = opt.cfg[:-8]
     else:
-        opt.json = opt.cfg.rstrip('.json').rstrip('.py') + '.py.json'
+        cfg_name, ext = os.path.splitext(opt.cfg)
+        opt.json = cfg_name + '.py.json'
 
     # derive omitted values for fast and skip
     if opt.fast == []:
