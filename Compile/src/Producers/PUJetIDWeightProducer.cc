@@ -12,8 +12,8 @@ void PUJetIDWeightProducer::Init(ZJetSettings const& settings) {
     if (settings.GetPUJetID() != "none")
     {
         LOG(INFO) << "Loading PUJetID Efficiencies from file " << settings.GetPUJetIDEffFilename();
-        TFile PUEffFile(settings.GetPUJetIDEffFilename().c_str(), "READONLY");
-        if (PUEffFile.IsOpen() == false)
+        file_pueffs_ = std::make_unique<TFile>(settings.GetPUJetIDEffFilename().c_str(), "read");
+        if (!file_pueffs_)
         {
             LOG(FATAL) << "File for PUJetID scalefactors not found. Please check PUEffFilename.";
         }
@@ -21,23 +21,23 @@ void PUJetIDWeightProducer::Init(ZJetSettings const& settings) {
         std::string histName = settings.GetPUJetIDEffHistogramName();
         LOG(INFO) << "Loading histogram " << histName << " for PUJetID scalefactors";
         LOG(INFO) << "Using PUJetID " << settings.GetPUJetID() << ". Please verify the settings for the efficiency match the used PUJetID.";
-        m_sfhisto = (TH2F*)PUEffFile.Get(histName.c_str());
+        m_sfhisto = std::unique_ptr<TH2F>(static_cast<TH2F*>(file_pueffs_->Get(histName.c_str())));
         if (!m_sfhisto)
         {
-            LOG(FATAL)<<"No histogram found with name " << histName;
+            LOG(FATAL) << "No histogram found with name " << histName;
         }
         m_sfhisto->SetDirectory(0);
 
         std::string errHistName = settings.GetPUJetIDEffErrHistogramName();
         LOG(INFO) << "Loading histogram " << errHistName << " for PUJetID scalefactors uncertainties.";
-        m_errhisto = (TH2F*)PUEffFile.Get(errHistName.c_str());
+        m_errhisto = std::unique_ptr<TH2F>(static_cast<TH2F*>(file_pueffs_->Get(errHistName.c_str())));
         if (!m_errhisto)
         {
-            LOG(FATAL)<<"no uncertainty histogram found with name" << errHistName;
+            LOG(FATAL) << "No uncertainty histogram found with name " << errHistName;
         }
         m_errhisto->SetDirectory(0);
 
-        PUEffFile.Close();
+        file_pueffs_->Close();
     }
 }
 

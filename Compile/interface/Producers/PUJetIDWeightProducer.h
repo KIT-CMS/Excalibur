@@ -2,7 +2,7 @@
 
 #include "Excalibur/Compile/interface/ZJetTypes.h"
 #include "TH2.h"
-
+#include <memory>
 /**
  *  \brief Producer to create weight to consider PUJetID efficiency 
  *
@@ -39,6 +39,7 @@ class PUJetIDWeightProducer : public ZJetProducerBase {
                  ZJetSettings const& settings) const override;
 
   private:
-    TH2F* m_sfhisto;
-    TH2F* m_errhisto;
+    std::unique_ptr<TFile> file_pueffs_ = nullptr;
+    std::unique_ptr<TH2F> m_sfhisto = nullptr;
+    std::unique_ptr<TH2F> m_errhisto = nullptr;
 };

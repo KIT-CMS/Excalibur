@@ -44,13 +44,13 @@ void LeptonSFProducer::Init(ZJetSettings const& settings)
     // Get file
     LOG(INFO) << this->GetProducerId() << ": Loading file " << m_sffile << ", Histogram "
               << histoname;
-    TFile file(m_sffile.c_str(), "READONLY");
-    if (!file.Get(histoname.c_str())) {
+    std::unique_ptr<TFile> file = std::make_unique<TFile>(m_sffile.c_str(), "read");
+    if (!file->Get(histoname.c_str())) {
         LOG(FATAL) << "Failed to open histogram " << histoname << " from file " << m_sffile;
     }
-    sfhisto = (TH2F*)file.Get(histoname.c_str());
+    sfhisto = std::unique_ptr<TH2F>(static_cast<TH2F*>(file->Get(histoname.c_str())));
     sfhisto->SetDirectory(0);
-    file.Close();
+    file->Close();
 
     // use this pointer, so we call child class methods if overwritten.
     // set correct bools for further processing
@@ -318,6 +318,8 @@ void LeptonRecoSFProducer::Init(ZJetSettings const& settings)
     if (settings.GetChannel() != "mm") {
         LOG(ERROR) << "LeptonIsoSFProducer not implemented for this channel";
     }
+    m_isData = settings.GetInputIsData();
+    m_correctedMuons = (boost::algorithm::to_lower_copy(boost::algorithm::trim_copy(settings.GetValidMuonsInput())) == "corrected");
 
     m_year = settings.GetLeptonRecoSFYear();
     LOG(INFO) << this->GetProducerId() << ": using year " << m_year << " for RECO SFs.";

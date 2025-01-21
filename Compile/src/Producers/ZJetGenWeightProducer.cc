@@ -70,7 +70,8 @@ void ZJetGenWeightProducer::Produce(ZJetEvent const& event,
 {	
 	assert(event.m_genEventInfo);
 	// allocate once, before filling the weights
-	product.m_optionalWeights.reserve(product.m_optionalWeights.size()+m_lheWeightNamesMap.size());
+	// only works on unordered maps
+	// product.m_optionalWeights.reserve(product.m_optionalWeights.size()+m_lheWeightNamesMap.size());
 	if(!m_isDefaultWeight) {
 		for(const auto& lheWeightNamePair: m_lheWeightNamesMap) { 
 			product.m_optionalWeights[lheWeightNamePair.first] = event.m_genEventInfo->getLheWeight(lheWeightNamePair.second, false);

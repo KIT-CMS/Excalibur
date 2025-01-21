@@ -69,28 +69,23 @@ void PrefiringWeightProducer::Init(ZJetSettings const& settings)
         LOG(ERROR) << this->GetProducerId() << ": "
             << "File with muon parametrizations not found. All prefiring weights set to 1.";
     }
-    TString paramName = "L1prefiring_muonparam_0.0To0.2_" + dataeraMuon_;
-    parametrization0p0To0p2_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_0.2To0.3_" + dataeraMuon_;
-    parametrization0p2To0p3_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_0.3To0.55_" + dataeraMuon_;
-    parametrization0p3To0p55_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_0.55To0.83_" + dataeraMuon_;
-    parametrization0p55To0p83_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_0.83To1.24_" + dataeraMuon_;
-    parametrization0p83To1p24_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_1.24To1.4_" + dataeraMuon_;
-    parametrization1p24To1p4_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_1.4To1.6_" + dataeraMuon_;
-    parametrization1p4To1p6_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_1.6To1.8_" + dataeraMuon_;
-    parametrization1p6To1p8_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_1.8To2.1_" + dataeraMuon_;
-    parametrization1p8To2p1_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_2.1To2.25_" + dataeraMuon_;
-    parametrization2p1To2p25_ = (TF1*) file_prefiringparams_->Get(paramName);
-    paramName = "L1prefiring_muonparam_2.25To2.4_" + dataeraMuon_;
-    parametrization2p25To2p4_ = (TF1*) file_prefiringparams_->Get(paramName);
+
+    // Hilfsfunktion zum Laden und Zuweisen der TF1-Objekte
+    auto loadParametrization = [&](const std::string& name) -> std::unique_ptr<TF1> {
+        TF1* func = static_cast<TF1*>(file_prefiringparams_->Get(name.c_str()));
+        return std::unique_ptr<TF1>(func);
+    };
+    parametrization0p0To0p2_ = loadParametrization("L1prefiring_muonparam_0.0To0.2_" + dataeraMuon_);
+    parametrization0p2To0p3_ = loadParametrization("L1prefiring_muonparam_0.2To0.3_" + dataeraMuon_);
+    parametrization0p3To0p55_ = loadParametrization("L1prefiring_muonparam_0.3To0.55_" + dataeraMuon_);
+    parametrization0p55To0p83_ = loadParametrization("L1prefiring_muonparam_0.55To0.83_" + dataeraMuon_);
+    parametrization0p83To1p24_ = loadParametrization("L1prefiring_muonparam_0.83To1.24_" + dataeraMuon_);
+    parametrization1p24To1p4_ = loadParametrization("L1prefiring_muonparam_1.24To1.4_" + dataeraMuon_);
+    parametrization1p4To1p6_ = loadParametrization("L1prefiring_muonparam_1.4To1.6_" + dataeraMuon_);
+    parametrization1p6To1p8_ = loadParametrization("L1prefiring_muonparam_1.6To1.8_" + dataeraMuon_);
+    parametrization1p8To2p1_ = loadParametrization("L1prefiring_muonparam_1.8To2.1_" + dataeraMuon_);
+    parametrization2p1To2p25_ = loadParametrization("L1prefiring_muonparam_2.1To2.25_" + dataeraMuon_);
+    parametrization2p25To2p4_ = loadParametrization("L1prefiring_muonparam_2.25To2.4_" + dataeraMuon_);
 
     if (parametrization0p0To0p2_ == nullptr || parametrization0p2To0p3_ == nullptr ||
         parametrization0p3To0p55_ == nullptr || parametrization0p55To0p83_ == nullptr ||
@@ -105,8 +100,7 @@ void PrefiringWeightProducer::Init(ZJetSettings const& settings)
             << "Muon parametrization not found for at least one bin. All prefiring weights set to 1.";
     }
 
-    paramName = "L1prefiring_muonparam_HotSpot_" + dataeraMuon_;
-    parametrizationHotSpot_ = (TF1*) file_prefiringparams_->Get(paramName);
+    parametrizationHotSpot_ = loadParametrization("L1prefiring_muonparam_HotSpot_" + dataeraMuon_);
     file_prefiringparams_->Close();
     if ((dataeraMuon_.find("2016") != std::string::npos) && parametrizationHotSpot_ == nullptr) {
         missingInputMuon_ = true;

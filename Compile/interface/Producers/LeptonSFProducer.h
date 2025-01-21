@@ -18,14 +18,14 @@ class LeptonSFProducer : public ZJetProducerBase
                  ZJetSettings const& settings) const override;
 
   protected:
-    bool m_isData;
+    bool m_isData = false;
     bool m_correctedMuons;
     std::string m_sffile;
     std::string histoname;
     std::string weightName;
     bool m_reversed_axes;
     bool m_absoluteEta;
-    TH2F* sfhisto;
+    std::unique_ptr<TH2F> sfhisto = nullptr;
 
     virtual void SetEtaAxis2D(std::string histoname);
     virtual void SetOverflowPtBin();
