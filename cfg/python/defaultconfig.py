@@ -632,7 +632,7 @@ def _2017mm(cfg, **kwargs):
 
 def _2018mm(cfg, **kwargs):
     _2017mm(cfg, **kwargs)  # same as 2017
-    cfg['Year'] = 2017  # 2018 muon ID not implemented yet -> reset to 2017 as workaround
+    # cfg['Year'] = 2017  # 2018 muon ID not implemented yet -> reset to 2017 as workaround
 
 
 def data_2016mm(cfg, **kwargs):
