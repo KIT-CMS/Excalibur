@@ -77,6 +77,7 @@ bool ValidZllJetsProducer::DoesJetPass(const KJet* jet, ZJetEvent const& event, 
     const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...
     if (kJet) {
         const double puJetIDValue = kJet->getTag(m_puJetIDMetadataTag, event.m_jetMetadata);
+        // LOG(DEBUG) << "PUJetIDValue: " <<  puJetIDValue;
 
         if (m_puJetIDWorkingPoint == ValidZllJetsProducer::PUJetIDWorkingPoint::FILE) {
             // lookup bin indices in PUJetID histogram corresponding to the jet pT/absEta

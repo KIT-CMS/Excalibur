@@ -69,20 +69,16 @@ void ZJetGenWeightProducer::Produce(ZJetEvent const& event,
 		ZJetSettings const& settings) const
 {	
 	assert(event.m_genEventInfo);
-
-	for(const auto& lheWeightNamePair: m_lheWeightNamesMap)
-	{ 
-		if(!m_isDefaultWeight)
-		{
+	// allocate once, before filling the weights
+	product.m_optionalWeights.reserve(product.m_optionalWeights.size()+m_lheWeightNamesMap.size());
+	if(!m_isDefaultWeight) {
+		for(const auto& lheWeightNamePair: m_lheWeightNamesMap) { 
 			product.m_optionalWeights[lheWeightNamePair.first] = event.m_genEventInfo->getLheWeight(lheWeightNamePair.second, false);
 		}
-		else
-		{
+	}
+	else {
+		for(const auto& lheWeightNamePair: m_lheWeightNamesMap) { 
 			product.m_optionalWeights[lheWeightNamePair.first] = 1.0;
 		}
-		
 	}
-
-
-	
 }
