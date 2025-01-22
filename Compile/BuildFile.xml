@@ -1,5 +1,3 @@
-<Flags LDFLAGS="-rdynamic" />
-
 <use name="Kappa/DataFormats" />
 <use name="root" />
 <use name="rootmath" />
@@ -18,9 +16,11 @@
 
 
 <flags ADD_SUBDIR="1"/>
+<Flags LDFLAGS="-rdynamic" />
+<Flags CXXFLAGS="-g -O3 -funroll-loops -ftree-vectorize -fexpensive-optimizations -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -mavx2 -flto"/>
 
 <export>
-   <lib   name="1"/>
+   <lib name="1"/>
 </export>
 
 
