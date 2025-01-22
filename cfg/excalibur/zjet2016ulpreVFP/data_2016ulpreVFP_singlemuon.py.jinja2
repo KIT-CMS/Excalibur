@@ -64,9 +64,11 @@ def config():
     cfg['JetIDVersion'] = 'UL2016'
     cfg['JetID'] = 'tightlepveto'
 
-    cfg['PUJetID'] = 'file'
-    cfg['MinPUJetIDFile'] = os.path.join(configtools.getPath(), "data/pujetid/puJetIDMVAWorkingPoints.root")
-    cfg['MinPUJetIDHistogramName'] = "puJetIDMVAWorkingPoint_AK4PFCHS_2016UL_Tight"
+    cfg['PUJetIDModuleName'] = "pileupJetIdUpdated"
+    cfg['PUJetID'] = 'tight'
+    # cfg['PUJetID'] = 'file'
+    # cfg['MinPUJetIDFile'] = os.path.join(configtools.getPath(), "data/pujetid/puJetIDMVAWorkingPoints.root")
+    # cfg['MinPUJetIDHistogramName'] = "puJetIDMVAWorkingPoint_AK4PFCHS_2016UL_Tight"
 
     cfg['JetLeptonLowerDeltaRCut'] = 0.4
     cfg['OnlyCleanZLeptons'] = True
@@ -90,6 +92,7 @@ def config():
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/{{ roccor }}')
     cfg['MuonEnergyCorrection'] = 'rochcorr{{ year }}ul'
     cfg['ZMassRange'] = 25.0
+    cfg['CutZPtMin'] = 25.0
 
     ##### LeptonSF files: #####
     cfg['LeptonSFVariation'] = True
