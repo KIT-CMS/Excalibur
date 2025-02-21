@@ -32,12 +32,12 @@ def config():
     for rm in ['zjetcuts', 'genzjetcuts']:
         cfg['Pipelines'].pop(rm)
 
+    # add generator Weights
     cfg['Processors'] += ['producer:ZJetGenWeightProducer']
-    cfg['ZJetGenWeightNames'] = ['nominal', 'isrDefup', 'isrDefdown', 'fsrDefup', 'fsrDefdown']
-    # add ME variations
-    for i in range(1001, 2081):
-        cfg['ZJetGenWeightNames'] += [str(i)]
-        configtools.add_quantities(cfg, ["genWeight_"+str(i)])
+    cfg['ZJetGenWeightNames'] = {{ scale_weights }} + {{ pdf_weights }} + {{ ps_weights }}
+    configtools.add_quantities(cfg, {{ gen_weights_scale }})
+    configtools.add_quantities(cfg, {{ gen_weights_pdf }})
+    configtools.add_quantities(cfg, {{ gen_weights_ps }})
 
     ##### Set Trigger: ######
     cfg['Processors'].remove("filter:HltFilter")
