@@ -17,10 +17,10 @@ void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
         m_puJetIDMetadataTag = settings.GetPUJetIDModuleName() + "fullDiscriminant";
     }
     else if (puJetIDSetting == "none") {
-        LOG(WARNING) << "[ValidZllJetsProducer] Config variable 'PUJetID' is set to 'none', which "
-                     << "is deprecated and will be removed in the future. Use 'value' instead.";
-        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::VALUE;
-        m_puJetIDMetadataTag = settings.GetPUJetIDModuleName() + "fullDiscriminant";
+        LOG(WARNING) << "[ValidZllJetsProducer] Config variable 'PUJetID' is set to 'none'. "
+                     << "Skipping PUJetID veto.";
+        m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::NONE;
+        m_puJetIDMetadataTag = "";
     }
     else if (puJetIDSetting == "file") {
         m_puJetIDWorkingPoint = ValidZllJetsProducer::PUJetIDWorkingPoint::FILE;
@@ -75,7 +75,7 @@ bool ValidZllJetsProducer::DoesJetPass(const KJet* jet, ZJetEvent const& event, 
 
     // check that PUJetID is above configured minimal value
     const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...
-    if (kJet) {
+    if (kJet && (m_puJetIDWorkingPoint != ValidZllJetsProducer::PUJetIDWorkingPoint::NONE)) {
         const double puJetIDValue = kJet->getTag(m_puJetIDMetadataTag, event.m_jetMetadata);
         // LOG(DEBUG) << "PUJetIDValue: " <<  puJetIDValue;
 

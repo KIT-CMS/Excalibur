@@ -56,6 +56,7 @@ class ValidZllJetsProducer : public JetCleanerBase {
   public:
     // can choose between different pileup jet ID working points
     enum class PUJetIDWorkingPoint : int {
+        NONE = 0,
         LOOSE = 1,
         MEDIUM = 2,
         TIGHT = 3,
