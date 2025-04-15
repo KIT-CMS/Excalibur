@@ -34,6 +34,7 @@ def MergeRootFiles(target, sourcefiles, check=False):
         obj = key.ReadObj()
 
         if isinstance(obj, ROOT.TObjString):
+            continue  # skip TObjString objects
             for fname in sourcefiles:
                 f = ROOT.TFile.Open(fname, "READ")
                 if not f:
