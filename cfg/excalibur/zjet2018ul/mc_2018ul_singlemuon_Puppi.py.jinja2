@@ -1,41 +1,55 @@
 import configtools
 import os
-import sys
 JEC = '{{ jec }}'
+JER = '{{ jer }}'
+
 
 def config():
-    cfg = configtools.getConfig('data', {{ year }}, 'mm', JEC=JEC)
+    cfg = configtools.getConfig('mc', {{ year }}, 'mm', JEC=JEC, JER=JER)
     cfg["InputFiles"] = {{ dataset_files }}
-    cfg = configtools.expand(cfg, ['zjetcuts'], ['None', 'L1L2L3Res'])
+    cfg = configtools.expand(cfg, ['zjetcuts', 'genzjetcuts'], ['None', 'L1L2L3'])
     configtools.remove_quantities(cfg, [
-        'jet1area','jet1l1', 'jet1rc', 'jet1l2','jet1ptraw', 'jet1ptl1',
-        'mpf', 'rawmpf', 'rawmet', 'rawmetphi', 'sumet','mettype1vecpt', 'mettype1pt',
+        'jet1area', 'jet1l1', 'jet1rc', 'jet1l2', 'jet1ptraw', 'jet1ptl1',
+        'mpf', 'rawmpf', 'rawmet', 'rawmetphi', 'sumet', 'mettype1vecpt', 'mettype1pt',
         ])
     configtools.add_quantities(cfg, [
         "mu1pt", "mu1eta", "mu1phi", "mu2pt", "mu2eta", "mu2phi",
+        "genmu1pt", "genmu1eta", "genmu1phi", "genmu2pt", "genmu2eta", "genmu2phi",
         "mu1iso", "mu2iso",
         "muplusdxy", "muminusdxy", "mu1dxy", "mu2dxy",
         "muplusdz", "muminusdz", "mu1dz", "mu2dz",
-        'leptonRecoSFWeight', 'leptonRecoSFWeightUp', 'leptonRecoSFWeightDown',
-        'leptonIsoSFWeight', 'leptonIsoSFWeightUp', 'leptonIsoSFWeightDown',
-        'leptonIDSFWeight', 'leptonIDSFWeightUp', 'leptonIDSFWeightDown',
-        'leptonTriggerSFWeight', 'leptonTriggerSFWeightUp', 'leptonTriggerSFWeightDown',
-        'prefiringWeight', 'prefiringWeightUp', 'prefiringWeightDown',
-        "njets20", 'jet1puidraw', 'puJetIDWeight',
-        ])
-    # remove Pipelines without JEC, removing None from expand above creates invalid configs...
-    for rm in ['zjetcuts']:
+        "leptonRecoSFWeight", "leptonRecoSFWeightUp", "leptonRecoSFWeightDown",
+        "leptonIsoSFWeight", "leptonIsoSFWeightUp", "leptonIsoSFWeightDown",
+        "leptonIDSFWeight", "leptonIDSFWeightUp", "leptonIDSFWeightDown",
+        "leptonTriggerSFWeight", "leptonTriggerSFWeightUp", "leptonTriggerSFWeightDown",
+        "puJetIDWeight", "puJetIDWeightUp", "puJetIDWeightDown",
+        "prefiringWeight", "prefiringWeightUp", "prefiringWeightDown",
+        "crossSectionPerEventWeightDown", "crossSectionPerEventWeightUp",
+        "njets20", "ngenjets20", "puJetIDWeight",
+        "lheNOutPartons",
+        "puWeightUp", "puWeightDown",
+    ])
+
+    # remove unused Pipelines
+    for rm in ['zjetcuts', 'genzjetcuts']:
         cfg['Pipelines'].pop(rm)
 
-    ##### Set Trigger: ######
-    cfg['HltPaths'] = ['HLT_IsoMu24']
+    # add generator Weights
+    cfg['Processors'] += ['producer:ZJetGenWeightProducer']
+    cfg['ZJetGenWeightNames'] = {{ scale_weights }} + {{ pdf_weights }} + {{ ps_weights }}
+    configtools.add_quantities(cfg, {{ gen_weights_scale }})
+    configtools.add_quantities(cfg, {{ gen_weights_pdf }})
+    configtools.add_quantities(cfg, {{ gen_weights_ps }})
 
-    ##### Set Golden JSON ####
-    cfg['JsonFiles'] = [os.path.join(configtools.getPath(), 'data/json/{{ good_run_json }}')]
+    ##### Set Trigger: ######
+    cfg['Processors'].remove("filter:HltFilter")
+    cfg['HltPaths'] = ['HLT_IsoMu24']
+    for cut in ['zjetcuts_L1L2L3']:
+        cfg['Pipelines'][cut]['Processors'] = ["filter:HltFilter"] + cfg['Pipelines'][cut]['Processors']
 
     ##### Add Producers: #####
     # Add METFilters only on reco level
-    cfg['Pipelines']['zjetcuts_L1L2L3Res']['Processors'] += ['filter:METFiltersFilter']
+    cfg['Pipelines']['zjetcuts_L1L2L3']['Processors'] += ['filter:METFiltersFilter']
     cfg['METFilterNames'] = ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
                              "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_hfNoisyHitsFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"]
 
@@ -44,14 +58,20 @@ def config():
     # Dress Muons
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer'), 'producer:PFCandidatesProducer')
     cfg['Processors'].insert(cfg['Processors'].index('producer:ValidMuonsProducer')+1, 'producer:ZJetDressedMuonsProducer')
+    cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetGenPhotonsProducer')
+    cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer'), 'producer:ZJetDressedGenMuonsProducer')
 
     cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetCorrectionsProducer')+1, 'producer:PrefiringWeightProducer')
 
     # Add LeptonSF Producers
-    cfg['Processors'] += ['producer:LeptonRecoSFProducer', 'producer:LeptonIDSFProducer', 'producer:LeptonIsoSFProducer', 'producer:LeptonTriggerSFProducer']
+    for prod in ['producer:LeptonRecoSFProducer', 'producer:LeptonIDSFProducer', 'producer:LeptonIsoSFProducer', 'producer:LeptonTriggerSFProducer']:
+        cfg['Processors'].insert(cfg['Processors'].index('producer:EventWeightProducer'), prod)
 
     # Jet Producers
+    cfg['RC'] = False  # no RC for Puppi
     cfg['Processors'].insert(cfg['Processors'].index('producer:ZJetCorrectionsProducer')+1, 'producer:ValidZllJetsProducer')
+    cfg['Processors'].insert(cfg['Processors'].index('producer:GenZmmProducer')+1, 'producer:ValidZllGenJetsProducer')
+    # cfg['Processors'] += ['producer:PUJetIDWeightProducer']
 
     ##### Specify input sources for Jets & Muons: #####
     cfg['VertexSummary'] = 'offlinePrimaryVerticesSummary'
@@ -60,17 +80,21 @@ def config():
     cfg['PackedPFCandidates'] = 'pfCandidates'
 
     ##### Jets
-    cfg['TaggedJets'] = 'ak{{ jet_radius }}PFJetsCHS'
+    cfg['GenJets'] = 'ak{{ jet_radius }}GenJets'
+    cfg['TaggedJets'] = 'ak{{ jet_radius }}PFJetsPuppi''ak4PFJetsPuppi'
     cfg['Jec'] = os.path.join(configtools.getPath(), '../JECDatabase/textFiles/{{ jec }}/{{ jec }}')
 
     cfg['JetIDVersion'] = 'UL2018'
     cfg['JetID'] = 'tightlepveto'
 
-    cfg['PUJetIDModuleName'] = "pileupJetIdUpdated"
-    cfg['PUJetID'] = 'tight'
+    # cfg['PUJetIDModuleName'] = "pileupJetIdUpdated"
+    cfg['PUJetID'] = 'none'
     # cfg['PUJetID'] = 'file'
     # cfg['MinPUJetIDFile'] = os.path.join(configtools.getPath(), "data/pujetid/puJetIDMVAWorkingPoints.root")
     # cfg['MinPUJetIDHistogramName'] = "puJetIDMVAWorkingPoint_AK4PFCHS_2018UL_Tight"
+    cfg['PUJetIDEffFilename'] = os.path.join(configtools.getPath(), "data/scalefactors/run2UL/PUID_106XTraining_ULRun2_EffSFandUncties_v1.root")
+    cfg['PUJetIDEffHistogramName'] = 'h2_eff_sfUL2018_T'
+    cfg['PUJetIDEffErrHistogramName'] = 'h2_eff_sfUL2018_T_Systuncty'
 
     cfg['JetLeptonLowerDeltaRCut'] = 0.4
     cfg['OnlyCleanZLeptons'] = True
@@ -86,12 +110,20 @@ def config():
     cfg['JetEtaPhiCleanerHistogramNames'] = ["h2hot_ul18_plus_hem1516_and_hbp2m1"]
     cfg['JetEtaPhiCleanerHistogramValueMaxValid'] = 9.9   # >=10 means jets should be invalidated
 
+    # MC specific
+    cfg['JetEnergyCorrectionUncertaintySource'] = 'Total'
+    cfg['JetEnergyCorrectionUncertaintyShift'] = 0.0
+    cfg['DeltaRMatchingRecoMuonGenParticle'] = 0.2
+    cfg['DeltaRMatchingRecoJetGenJet'] = 0.2
+    cfg["JERMethod"] = "hybrid"
+    cfg["JERShift"] = 0
+
     ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
     cfg['CutMuonPtMin'] = 25.0
     cfg['CutMuonEtaMax'] = 2.4
-    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/{{ roccor }}')
+    cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(), '../Artus/KappaAnalysis/data/rochcorr/{{ roccor }}')
     cfg['MuonEnergyCorrection'] = 'rochcorr{{ year }}ul'
     cfg['ZMassRange'] = 25.0
     cfg['CutZPtMin'] = 25.0
@@ -118,5 +150,17 @@ def config():
     cfg['DataEraMuon'] = "20172018"
     cfg['PrefiringL1MapsPath'] = os.path.join(configtools.getPath(),"data/prefiring/L1PrefiringMaps.root")
     cfg['L1MuonParametrizationsPath'] = os.path.join(configtools.getPath(),"data/prefiring/L1MuonPrefiringParametrisations.root")
+
+    ##### MC specific properties: #####
+    cfg['NumberGeneratedEvents'] = {{ number_generated_events }}
+    cfg['GeneratorWeight'] = {{ generator_weight }} 
+    cfg['CrossSection'] = {{ cross_section }}
+    cfg['CrossSectionUp'] = {{ cross_section_up }}
+    cfg['CrossSectionDown'] = {{ cross_section_down }}
+    # PileUP reweighting, use additional Excalbur Producer for variations
+    cfg['PileupWeightFile'] = '{{ pileup_weight_file }}'
+    cfg['Processors'] += ['producer:ZJetPUWeightProducer']
+    cfg['ZJetPUWeightFiles'] = ['{{ pileup_weight_file_up }}', '{{ pileup_weight_file_down }}']
+    cfg['ZJetPUWeightSuffixes'] = ['Up', 'Down']
 
     return cfg
