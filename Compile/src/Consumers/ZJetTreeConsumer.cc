@@ -1110,7 +1110,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
                  muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() > 0)
-                    return (*muon)->pfIso();
+                    return (*muon)->pfIsoR04();
             }
             return DefaultValues::UndefinedFloat;
         });
@@ -1173,7 +1173,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             for (std::vector<KMuon*>::const_iterator muon = product.m_validMuons.begin();
                  muon != product.m_validMuons.end(); ++muon) {
                 if ((*muon)->charge() < 0)
-                    return (*muon)->pfIso();
+                    return (*muon)->pfIsoR04();
             }
             return DefaultValues::UndefinedFloat;
         });
@@ -1217,7 +1217,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mu1iso", [](event_type const& event, product_type const& product) {
-            return product.m_validMuons.size() >= 1 ? product.m_validMuons[0]->pfIso()
+            return product.m_validMuons.size() >= 1 ? product.m_validMuons[0]->pfIsoR04()
                                                     : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -1287,7 +1287,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "mu2iso", [](event_type const& event, product_type const& product) {
-            return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->pfIso()
+            return product.m_validMuons.size() >= 2 ? product.m_validMuons[1]->pfIsoR04()
                                                     : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -1736,7 +1736,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muinv1iso", [](event_type const& event, product_type const& product) {
-            return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->pfIso()
+            return product.m_invalidMuons.size() >= 1 ? product.m_invalidMuons[0]->pfIsoR04()
                                                       : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
@@ -1769,7 +1769,7 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "muinv2iso", [](event_type const& event, product_type const& product) {
-            return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->pfIso()
+            return product.m_invalidMuons.size() >= 2 ? product.m_invalidMuons[1]->pfIsoR04()
                                                       : DefaultValues::UndefinedFloat;
         });
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
