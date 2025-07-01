@@ -950,6 +950,30 @@ void ZJetTreeConsumer::Init(ZJetSettings const& settings)
             else
                 return 0;
         });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "genznpromptleptons", [](event_type const& event, product_type const& product) {
+            if (product.m_genLeptonsFromBosonDecay.size() < 2)
+                return DefaultValues::UndefinedInt;
+            int nPrompt = 0;
+            for (const auto* lep : {
+                product.m_genLeptonsFromBosonDecay[0], product.m_genLeptonsFromBosonDecay[1]}) {
+                if (lep && lep->isPromptFinalState())
+                    ++nPrompt;
+            }
+            return nPrompt;
+        });
+    LambdaNtupleConsumer<ZJetTypes>::AddIntQuantity(
+        "genznhardleptons", [](event_type const& event, product_type const& product) {
+            if (product.m_genLeptonsFromBosonDecay.size() < 2)
+                return DefaultValues::UndefinedInt;
+            int nHard = 0;
+            for (const auto* lep : {
+                product.m_genLeptonsFromBosonDecay[0], product.m_genLeptonsFromBosonDecay[1]}) {
+                if (lep && lep->fromHardProcessFinalState())
+                    ++nHard;
+            }
+            return nHard;
+        });
     // leading Z decay lepton
     LambdaNtupleConsumer<ZJetTypes>::AddFloatQuantity(
         "zl1pt", [](event_type const& event, product_type const& product) {
