@@ -122,6 +122,11 @@ class ZJetSettings : public KappaSettings
    
     // ZJetDressedMuonsProducer
     IMPL_SETTING(float, MaxZJetDressedMuonDeltaR)
+    IMPL_SETTING_DEFAULT(float, MaxMuonEta, 0.0)
+    IMPL_SETTING_DEFAULT(bool, UseObjectMuonEtaCut, false)
+    IMPL_SETTING_DEFAULT(float, MinMuonPt, 0.0)
+    IMPL_SETTING_DEFAULT(bool, UseObjectMuonPtCut, false)
+    IMPL_SETTING_DEFAULT(bool, ObjectTauMuons, false)
     //GenZProducers
     //IMPL_SETTING_DEFAULT(float, GenZMassRange, 20.0)
 

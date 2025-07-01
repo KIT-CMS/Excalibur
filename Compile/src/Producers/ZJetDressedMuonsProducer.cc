@@ -16,7 +16,10 @@ std::string ZJetDressedMuonsProducer::GetProducerId() const { return "ZJetDresse
 void ZJetDressedMuonsProducer::Init(ZJetSettings const& settings)
 {
     maxZJetDressedMuonDeltaR = settings.GetMaxZJetDressedMuonDeltaR();
-
+    m_minMuonPt = settings.GetMinMuonPt();
+    m_maxMuonEta = settings.GetMaxMuonEta();
+    m_useObjectMuonPtCut = settings.GetUseObjectMuonPtCut();
+    m_useObjectMuonEtaCut = settings.GetUseObjectMuonEtaCut();
 }
 
 void ZJetDressedMuonsProducer::Produce(ZJetEvent const& event,
@@ -26,6 +29,10 @@ void ZJetDressedMuonsProducer::Produce(ZJetEvent const& event,
     //std::cout << "no. of pfcandidates: " << ((KPFCandidates*) event.m_packedPFCandidates)->size() << std::endl;
     //std::cout << "no. of photons: " << (std::vector<const KPFCandidate*> product.m_pfPhotons)->size() << std::endl;
     //std::cout << "no. of photons: " <<  product.m_pfPhotons.size() << std::endl;
+    
+    // Vector to store muons that pass object-level cuts after dressing
+    std::vector<KMuon*> validDressedMuons;
+    
     for (unsigned int imu=0; imu < product.m_validMuons.size(); imu++) {
         // KLV dressedMuon;
         KLV photon;
@@ -44,10 +51,33 @@ void ZJetDressedMuonsProducer::Produce(ZJetEvent const& event,
             }
         }
         //std::cout << "muon " << imu+1 << " after dressing: " << product.m_validMuons[imu]->p4 << std::endl;
+        
+        // Apply object-level cuts after dressing
+        bool passesObjectCuts = true;
+        
+        // Apply pT cut if enabled
+        if (m_useObjectMuonPtCut && product.m_validMuons[imu]->p4.Pt() < m_minMuonPt) {
+            passesObjectCuts = false;
+        }
+        
+        // Apply eta cut if enabled
+        if (m_useObjectMuonEtaCut && std::abs(product.m_validMuons[imu]->p4.Eta()) > m_maxMuonEta) {
+            passesObjectCuts = false;
+        }
+        
+        // No tau veto for reco muons
+        
+        if (passesObjectCuts) {
+            validDressedMuons.push_back(product.m_validMuons[imu]);
+        }
+        
         //product.m_dressedMuons.push_back(&dressedMuon);
         //std::cout << product.m_dressedMuons[imu] << std::endl;
         //product.m_dressedMuons.push_back(&((KLV*)product.m_validMuons[imu])->p4);
     }
+    
+    // Replace the collection with only muons that pass object-level cuts
+    product.m_validMuons = validDressedMuons;
 }
 
 std::string ZJetDressedGenMuonsProducer::GetProducerId() const { return "ZJetDressedGenMuonsProducer"; }
@@ -56,14 +86,29 @@ void ZJetDressedGenMuonsProducer::Init(ZJetSettings const& settings)
 {
     // requires ZJetGenPhotonsProducer!
     maxZJetDressedMuonDeltaR = settings.GetMaxZJetDressedMuonDeltaR();
-
+    m_minMuonPt = settings.GetMinMuonPt();
+    m_maxMuonEta = settings.GetMaxMuonEta();
+    m_useObjectMuonPtCut = settings.GetUseObjectMuonPtCut();
+    m_useObjectMuonEtaCut = settings.GetUseObjectMuonEtaCut();
+    m_objectTauMuons = settings.GetObjectTauMuons();
 }
 
 void ZJetDressedGenMuonsProducer::Produce(ZJetEvent const& event,
                                  ZJetProduct& product,
                                  ZJetSettings const& settings) const
 {
+    // Vector to store gen muons that pass object-level cuts after dressing
+    std::vector<KGenParticle*> validDressedGenMuons;
+    
     for (unsigned int imu=0; imu < product.m_genMuons.size(); imu++) {
+        // Check tau veto first (before dressing)
+        if (m_objectTauMuons) {
+            // Check if this gen muon comes from tau decay
+            if (product.m_genMuons[imu]->isDirectPromptTauDecayProductFinalState()) {
+                continue; // Skip this muon (tau veto)
+            }
+        }
+        
         // KLV dressedMuon;
         KLV photon;
         //product.m_dressedMuons = KLV();
@@ -81,10 +126,31 @@ void ZJetDressedGenMuonsProducer::Produce(ZJetEvent const& event,
             }
         }
         //std::cout << "muon " << imu+1 << " after dressing: " << product.m_validMuons[imu]->p4 << std::endl;
+        
+        // Apply object-level cuts after dressing
+        bool passesObjectCuts = true;
+        
+        // Apply pT cut if enabled
+        if (m_useObjectMuonPtCut && product.m_genMuons[imu]->p4.Pt() < m_minMuonPt) {
+            passesObjectCuts = false;
+        }
+        
+        // Apply eta cut if enabled
+        if (m_useObjectMuonEtaCut && std::abs(product.m_genMuons[imu]->p4.Eta()) > m_maxMuonEta) {
+            passesObjectCuts = false;
+        }
+        
+        if (passesObjectCuts) {
+            validDressedGenMuons.push_back(product.m_genMuons[imu]);
+        }
+        
         //product.m_dressedMuons.push_back(&dressedMuon);
         //std::cout << product.m_dressedMuons[imu] << std::endl;
         //product.m_dressedMuons.push_back(&((KLV*)product.m_validMuons[imu])->p4);
     }
+    
+    // Replace the collection with only gen muons that pass object-level cuts
+    product.m_genMuons = validDressedGenMuons;
 }
 
 std::string ZJetTrueGenMuonsProducer::GetProducerId() const { return "ZJetTrueGenMuonsProducer"; }

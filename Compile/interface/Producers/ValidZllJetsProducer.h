@@ -125,6 +125,14 @@ class ValidZllGenJetsProducer : public ZJetProducerBase {
                 product.m_simpleGenJets.push_back(&genJet);
             }
         }
+
+        // sort genJets by pT in descending order (highest pT first)
+        // genJets are sorted in the input files already, but this is to ensure
+        // that the order is correct in case the input files are not sorted
+        std::sort(product.m_simpleGenJets.begin(), product.m_simpleGenJets.end(),
+                  [](const KLV* jet1, const KLV* jet2) -> bool {
+                      return jet1->p4.Pt() > jet2->p4.Pt();
+                  });
     };
 
     // this should return true if a gen jet is valid

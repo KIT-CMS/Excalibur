@@ -12,6 +12,9 @@
  * Implements the following dressed muon definition:
  *    - dressed muons include the surrounding photons
  *      -> FSR can be estimated
+ *    - applies object-level cuts after dressing:
+ *      -> MinMuonPt: minimum pT cut (if UseObjectMuonPtCut enabled)
+ *      -> MaxMuonEta: maximum eta cut (if UseObjectMuonEtaCut enabled)
  *
  */
 
@@ -31,6 +34,10 @@ class ZJetDressedMuonsProducer : public ZJetProducerBase
 
   private:
     float maxZJetDressedMuonDeltaR;
+    float m_minMuonPt;
+    float m_maxMuonEta;
+    bool m_useObjectMuonPtCut;
+    bool m_useObjectMuonEtaCut;
 };
 
 class ZJetDressedGenMuonsProducer : public ZJetProducerBase
@@ -45,8 +52,14 @@ class ZJetDressedGenMuonsProducer : public ZJetProducerBase
     void Produce(ZJetEvent const& event,
                  ZJetProduct& product,
                  ZJetSettings const& settings) const override;
+                 
 private:
     float maxZJetDressedMuonDeltaR;
+    float m_minMuonPt;
+    float m_maxMuonEta;
+    bool m_useObjectMuonPtCut;
+    bool m_useObjectMuonEtaCut;
+    bool m_objectTauMuons;
 };
 
 class ZJetTrueGenMuonsProducer : public ZJetProducerBase
