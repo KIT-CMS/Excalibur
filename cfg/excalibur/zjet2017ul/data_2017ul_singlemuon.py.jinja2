@@ -89,10 +89,15 @@ def config():
     ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonID'] = 'tight'
     cfg['MuonIso'] = 'tight'
-    cfg['CutMuonPtMin'] = 28.0
+    cfg['CutMuonPtMin'] = 29.0
     cfg['CutMuonEtaMax'] = 2.4
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(),'../Artus/KappaAnalysis/data/rochcorr/{{ roccor }}')
     cfg['MuonEnergyCorrection'] = 'rochcorr{{ year }}ul'
+    # configure muon object cuts applied after dressing
+    cfg['UseObjectMuonPtCut'] = True
+    cfg['MinMuonPt'] = 29.0
+    cfg['UseObjectMuonEtaCut'] = True
+    cfg['MaxMuonEta'] = 2.4
     cfg['ZMassRange'] = 25.0
     cfg['CutZPtMin'] = 25.0
 

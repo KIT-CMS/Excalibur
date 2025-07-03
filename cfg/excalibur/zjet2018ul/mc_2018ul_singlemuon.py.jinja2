@@ -26,7 +26,7 @@ def config():
         "prefiringWeight", "prefiringWeightUp", "prefiringWeightDown",
         "crossSectionPerEventWeightDown", "crossSectionPerEventWeightUp",
         "njets20", "ngenjets20", "jet1puidraw", "puJetIDWeight",
-        "lheNOutPartons",
+        "lheNOutPartons", "genznpromptleptons", "genznhardleptons",
         "puWeightUp", "puWeightDown",
     ])
 
@@ -129,6 +129,12 @@ def config():
     cfg['CutMuonEtaMax'] = 2.4
     cfg['MuonRochesterCorrectionsFile'] = os.path.join(configtools.getPath(), '../Artus/KappaAnalysis/data/rochcorr/{{ roccor }}')
     cfg['MuonEnergyCorrection'] = 'rochcorr{{ year }}ul'
+    # configure muon object cuts applied after dressing
+    cfg['UseObjectMuonPtCut'] = True
+    cfg['MinMuonPt'] = 25.0
+    cfg['UseObjectMuonEtaCut'] = True
+    cfg['MaxMuonEta'] = 2.4
+    cfg['ObjectTauMuons'] = True  # Applied to gen muons only
     cfg['ZMassRange'] = 25.0
     cfg['CutZPtMin'] = 25.0
 
