@@ -29,10 +29,10 @@ void ZJetDressedMuonsProducer::Produce(ZJetEvent const& event,
     //std::cout << "no. of pfcandidates: " << ((KPFCandidates*) event.m_packedPFCandidates)->size() << std::endl;
     //std::cout << "no. of photons: " << (std::vector<const KPFCandidate*> product.m_pfPhotons)->size() << std::endl;
     //std::cout << "no. of photons: " <<  product.m_pfPhotons.size() << std::endl;
-    
+
     // Vector to store muons that pass object-level cuts after dressing
     std::vector<KMuon*> validDressedMuons;
-    
+
     for (unsigned int imu=0; imu < product.m_validMuons.size(); imu++) {
         // KLV dressedMuon;
         KLV photon;
@@ -40,42 +40,42 @@ void ZJetDressedMuonsProducer::Produce(ZJetEvent const& event,
         // dressedMuon.p4 = product.m_validMuons[imu]->p4;
         //std::cout << "muon " << imu+1 << " before dressing: " << product.m_validMuons[imu]->p4 << std::endl;
         for (unsigned int iph=0; iph<product.m_pfPhotons.size(); iph++) {
-            //if (std::abs(pfCandidate->pdgId) == 211) { 
+            //if (std::abs(pfCandidate->pdgId) == 211) {
             photon.p4 = product.m_pfPhotons[iph]->p4;
-            if (ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4) < maxZJetDressedMuonDeltaR) {
+            if ((ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4) < maxZJetDressedMuonDeltaR) && photon.p4.Pt() > 0.5) {
                 //std::cout << "photon candidate: " << pfCandidate->pdgId << std::endl;}
                 /*std::cout << "photon cone to muon: "
-                    << ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4 ) 
+                    << ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4 )
                     << std::endl;*/
                 product.m_validMuons[imu]->p4 += photon.p4;
             }
         }
         //std::cout << "muon " << imu+1 << " after dressing: " << product.m_validMuons[imu]->p4 << std::endl;
-        
+
         // Apply object-level cuts after dressing
         bool passesObjectCuts = true;
-        
+
         // Apply pT cut if enabled
         if (m_useObjectMuonPtCut && product.m_validMuons[imu]->p4.Pt() < m_minMuonPt) {
             passesObjectCuts = false;
         }
-        
+
         // Apply eta cut if enabled
         if (m_useObjectMuonEtaCut && std::abs(product.m_validMuons[imu]->p4.Eta()) > m_maxMuonEta) {
             passesObjectCuts = false;
         }
-        
+
         // No tau veto for reco muons
-        
+
         if (passesObjectCuts) {
             validDressedMuons.push_back(product.m_validMuons[imu]);
         }
-        
+
         //product.m_dressedMuons.push_back(&dressedMuon);
         //std::cout << product.m_dressedMuons[imu] << std::endl;
         //product.m_dressedMuons.push_back(&((KLV*)product.m_validMuons[imu])->p4);
     }
-    
+
     // Replace the collection with only muons that pass object-level cuts
     product.m_validMuons = validDressedMuons;
 }
@@ -99,7 +99,7 @@ void ZJetDressedGenMuonsProducer::Produce(ZJetEvent const& event,
 {
     // Vector to store gen muons that pass object-level cuts after dressing
     std::vector<KGenParticle*> validDressedGenMuons;
-    
+
     for (unsigned int imu=0; imu < product.m_genMuons.size(); imu++) {
         // Check tau veto first (before dressing)
         if (m_objectTauMuons) {
@@ -108,47 +108,47 @@ void ZJetDressedGenMuonsProducer::Produce(ZJetEvent const& event,
                 continue; // Skip this muon (tau veto)
             }
         }
-        
+
         // KLV dressedMuon;
         KLV photon;
         //product.m_dressedMuons = KLV();
         // dressedMuon.p4 = product.m_validMuons[imu]->p4;
         //std::cout << "muon " << imu+1 << " before dressing: " << product.m_validMuons[imu]->p4 << std::endl;
         for (unsigned int iph=0; iph<product.m_genPhotons.size(); iph++) {
-            //if (std::abs(pfCandidate->pdgId) == 211) { 
+            //if (std::abs(pfCandidate->pdgId) == 211) {
             photon.p4 = product.m_genPhotons[iph]->p4;
             if (ROOT::Math::VectorUtil::DeltaR( product.m_genMuons[imu]->p4, photon.p4) < maxZJetDressedMuonDeltaR) {
                 //std::cout << "photon candidate: " << pfCandidate->pdgId << std::endl;}
                 /*std::cout << "photon cone to muon: "
-                    << ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4 ) 
+                    << ROOT::Math::VectorUtil::DeltaR( product.m_validMuons[imu]->p4, photon.p4 )
                     << std::endl;*/
                 product.m_genMuons[imu]->p4 += photon.p4;
             }
         }
         //std::cout << "muon " << imu+1 << " after dressing: " << product.m_validMuons[imu]->p4 << std::endl;
-        
+
         // Apply object-level cuts after dressing
         bool passesObjectCuts = true;
-        
+
         // Apply pT cut if enabled
         if (m_useObjectMuonPtCut && product.m_genMuons[imu]->p4.Pt() < m_minMuonPt) {
             passesObjectCuts = false;
         }
-        
+
         // Apply eta cut if enabled
         if (m_useObjectMuonEtaCut && std::abs(product.m_genMuons[imu]->p4.Eta()) > m_maxMuonEta) {
             passesObjectCuts = false;
         }
-        
+
         if (passesObjectCuts) {
             validDressedGenMuons.push_back(product.m_genMuons[imu]);
         }
-        
+
         //product.m_dressedMuons.push_back(&dressedMuon);
         //std::cout << product.m_dressedMuons[imu] << std::endl;
         //product.m_dressedMuons.push_back(&((KLV*)product.m_validMuons[imu])->p4);
     }
-    
+
     // Replace the collection with only gen muons that pass object-level cuts
     product.m_genMuons = validDressedGenMuons;
 }
@@ -157,11 +157,11 @@ std::string ZJetTrueGenMuonsProducer::GetProducerId() const { return "ZJetTrueGe
 
 void ZJetTrueGenMuonsProducer::Init(ZJetSettings const& settings)
 {
-    
+
 }
 
 int ZJetTrueGenMuonsProducer::FindMom(int idx, ZJetEvent const& event) const{
-    
+
     for (unsigned int ip=0; ip < event.m_genParticles->size(); ip++) {
         for (unsigned int id=0; id < event.m_genParticles->at(ip).nDaughters(); id++) {
             if(event.m_genParticles->at(ip).daughterIndex(id) == idx) {
@@ -201,7 +201,7 @@ void ZJetTrueGenMuonsProducer::Produce(ZJetEvent const& event,
                     /*if (FindMom(im, event) == -1000){
                         break;
                     }*/
-                    
+
                     /*im = FindMom(im, event);
                     std::cout << "new mom found at index " << im << " with pdgId " << event.m_genParticles->at(im).pdgId << std::endl;
                     std::cout << event.m_genParticles->at(im).p4 << std::endl;
@@ -231,28 +231,28 @@ void ZJetTrueGenMuonsProducer::Produce(ZJetEvent const& event,
     }
 }
 
-            /*if (event.m_genParticles->at(ip).nDaughters()>1 && 
+            /*if (event.m_genParticles->at(ip).nDaughters()>1 &&
                 event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(0)).p4 == product.m_genMuons[imu]->p4 &&
                 event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(1)).pdgId == 22) {
                     assert(abs(event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(0)).pdgId) == 13);
                     //product.m_genMuons[imu]->p4 += event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(1)).p4;
                     product.m_genMuons[imu]->p4 = event.m_genParticles->at(ip).p4; // assumes that each muon radiates at most once!
             }*/
-                    
+
                     /*
                     std::cout << "genParticle no " << ip << " with pdgId "
                     << event.m_genParticles->at(ip).pdgId << ", status "
                     << event.m_genParticles->at(ip).status() << " and p4="
                     << event.m_genParticles->at(ip).p4 << " has the following daughters:" << std::endl;
                     for (unsigned int id=0; id<event.m_genParticles->at(ip).nDaughters(); id++) {
-                        std::cout << "daughter no. " << id << " is genParticle no " 
+                        std::cout << "daughter no. " << id << " is genParticle no "
                         << event.m_genParticles->at(ip).daughterIndex(id) << " with pdgId "
                         << event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(id)).pdgId << ", status "
                         << event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(id)).status() << " and p4="
                         << event.m_genParticles->at(event.m_genParticles->at(ip).daughterIndex(id)).p4 << std::endl;
                     }*/
         /*if (event.m_genParticles->at(ip).status()==1 || event.m_genParticles->at(ip).nDaughters() ==0) {
-            std::cout << "final state genParticle candidate: " << ip << " pdgId, status, nDaughters: " 
+            std::cout << "final state genParticle candidate: " << ip << " pdgId, status, nDaughters: "
                 << event.m_genParticles->at(ip).pdgId << " "
                 << event.m_genParticles->at(ip).status() << " "
                 << event.m_genParticles->at(ip).nDaughters() << std::endl;
@@ -280,7 +280,7 @@ std::string ZJetGenPhotonsProducer::GetProducerId() const { return "ZJetGenPhoto
 
 void ZJetGenPhotonsProducer::Init(ZJetSettings const& settings)
 {
-    
+
 }
 
 void ZJetGenPhotonsProducer::Produce(ZJetEvent const& event,

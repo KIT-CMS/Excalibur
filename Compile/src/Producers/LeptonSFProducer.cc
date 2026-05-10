@@ -327,7 +327,7 @@ void LeptonRecoSFProducer::Init(ZJetSettings const& settings)
 
 std::tuple<float, float> LeptonRecoSFProducer::GetScaleFactorAndUnc(KLV const& lepton) const
 {
-    if (10.0 < lepton.p4.Pt() && 200 < lepton.p4.Pt()) {
+    if (10.0 < lepton.p4.Pt() && lepton.p4.Pt() < 200.0) {
         return GetMediumPtEff(lepton);
     }
     if ((lepton.p4.P() > 50.0 && std::abs(lepton.p4.Eta()) < 1.6) ||
