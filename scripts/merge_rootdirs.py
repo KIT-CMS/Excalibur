@@ -37,8 +37,18 @@ def collect_objects(root_file, path="", obj_dict=None):
 
     dir = root_file.GetDirectory(path) if path else root_file
 
+    # GetListOfKeys() returns every cycle of every object. If an input file
+    # ever ends up with more than one cycle of the same tree/histogram (e.g.
+    # a shift's producer job got re-run against an already-existing output
+    # path), naively iterating all keys would merge each cycle in separately
+    # and silently double-count that object's entries. Keep only the latest
+    # cycle per name; dir.Get(name) already resolves to it.
+    seen_names = set()
     for key in dir.GetListOfKeys():
         name = key.GetName()
+        if name in seen_names:
+            continue
+        seen_names.add(name)
         obj = dir.Get(name).Clone()
         full_path = os.path.join(path, name)
         if isinstance(obj, ROOT.TDirectory):
