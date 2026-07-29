@@ -60,7 +60,7 @@ def MergeRootFiles(target, sourcefiles, check=False):
                 f.cd(path)
                 key2 = ROOT.gDirectory.GetListOfKeys().FindObject(h1.GetName())
                 if key2:
-                    h2 = key.ReadObj()
+                    h2 = key2.ReadObj()
                     h1.Add(h2)
                     del h2
                 f.Close()
