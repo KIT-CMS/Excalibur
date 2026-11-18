@@ -294,6 +294,27 @@ void LeptonTriggerSFProducer::Init(ZJetSettings const& settings)
     }
 
     LeptonSFProducer::Init(settings);
+
+    std::unique_ptr<TFile> file = std::make_unique<TFile>(m_sffile.c_str(), "read");
+    if (!file->Get((histoname + "_efficiencyData").c_str()) || !file->Get((histoname + "_efficiencyMC").c_str())) {
+        LOG(FATAL) << "Failed to open histogram " << histoname << "_efficiencyData or _efficiencyMC from file " << m_sffile;
+    }
+    effDataHisto = std::unique_ptr<TH2F>(static_cast<TH2F*>(file->Get((histoname + "_efficiencyData").c_str())));
+    effDataHisto->SetDirectory(0);
+    effMCHisto = std::unique_ptr<TH2F>(static_cast<TH2F*>(file->Get((histoname + "_efficiencyMC").c_str())));
+    effMCHisto->SetDirectory(0);
+    file->Close();
+    this->SetOverflowPtBin(effDataHisto.get());
+    this->SetOverflowPtBin(effMCHisto.get());
+}
+
+std::tuple<float, float> LeptonTriggerSFProducer::GetDataAndMCEfficiency(KLV const& lepton) const
+{
+    // zero outside the map, e.g. below the trigger threshold
+    float eta = m_absoluteEta ? std::abs(lepton.p4.Eta()) : lepton.p4.Eta();
+    int bin = m_reversed_axes ? sfhisto->FindBin(lepton.p4.Pt(), eta)
+                              : sfhisto->FindBin(eta, lepton.p4.Pt());
+    return std::make_tuple(effDataHisto->GetBinContent(bin), effMCHisto->GetBinContent(bin));
 }
 
 void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
@@ -308,7 +329,18 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
         float eff2, err2;
         std::tie(eff1, err1) = this->GetScaleFactorAndUnc(*lep1);
         std::tie(eff2, err2) = this->GetScaleFactorAndUnc(*lep2);
-        float totEff = 1 - ((1 - eff1) * (1 - eff2));
+        float effData1, effMC1;
+        float effData2, effMC2;
+        std::tie(effData1, effMC1) = GetDataAndMCEfficiency(*lep1);
+        std::tie(effData2, effMC2) = GetDataAndMCEfficiency(*lep2);
+        // single-muon trigger without trigger matching: the event fires if at least one muon fires,
+        // weight = P_data / P_MC with P = 1 - (1 - eff1) * (1 - eff2)
+        // if neither muon is inside the map, P_MC = 0 and the event is not reweighted
+        float probMC = 1 - (1 - effMC1) * (1 - effMC2);
+        auto triggerWeight = [probMC](float d1, float d2) {
+            return probMC > 0 ? (1 - (1 - d1) * (1 - d2)) / probMC : 1.0f;
+        };
+        float totEff = triggerWeight(effData1, effData2);
         product.m_optionalWeights["zl1" + weightName] = m_isData ? 1.0 / eff1 : eff1;
         product.m_optionalWeights["zl2" + weightName] = m_isData ? 1.0 / eff2 : eff2;
         product.m_optionalWeights["lepton" + weightName] = m_isData ? 1.0 / totEff : totEff;
@@ -316,8 +348,9 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
         LOG(DEBUG) << "Total SF: " << totEff;
         LOG(DEBUG) << "Apply Variation: " << settings.GetLeptonSFVariation();
         if (settings.GetLeptonSFVariation() == true) {
-            // assume errors as fully correlated, add simple instead of quadrature
-            float totErr = err1 * (1 - eff2) + err2 * (1 - eff1);
+            // effData = (SF +- dSF) * effMC, both muons shifted coherently
+            float totUp = triggerWeight((eff1 + err1) * effMC1, (eff2 + err2) * effMC2);
+            float totDown = triggerWeight((eff1 - err1) * effMC1, (eff2 - err2) * effMC2);
             product.m_optionalWeights["zl1" + weightName + "Up"] =
                 m_isData ? 1.0 / eff1 * (1 + err1) : eff1 + err1;
             product.m_optionalWeights["zl1" + weightName + "Down"] =
@@ -326,33 +359,29 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
                 m_isData ? 1.0 / eff2 * (1 + err2) : eff2 + err2;
             product.m_optionalWeights["zl2" + weightName + "Down"] =
                 m_isData ? 1.0 / eff2 * (1 - err2) : eff2 - err2;
-            product.m_optionalWeights["lepton" + weightName + "Up"] =
-                m_isData ? 1.0 / totEff * (1 + totErr) : totEff + totErr;
-            product.m_optionalWeights["lepton" + weightName + "Down"] =
-                m_isData ? 1.0 / totEff * (1 - totErr) : totEff - totErr;
+            product.m_optionalWeights["lepton" + weightName + "Up"] = m_isData ? 1.0 / totUp : totUp;
+            product.m_optionalWeights["lepton" + weightName + "Down"] = m_isData ? 1.0 / totDown : totDown;
             if (settings.GetDebugVerbosity() > 1) {
                 LOG(DEBUG) << "Lepton1 SF up: " << eff1 + err1
                            << ", Lepton1 SF down: " << eff1 - err1;
                 LOG(DEBUG) << "Lepton2 SF up: " << eff2 + err2
                            << ", Lepton2 SF down: " << eff2 - err2;
-                LOG(DEBUG) << "Total SF up: " << totEff + totErr
-                           << ", Total SF down: " << totEff - totErr;
+                LOG(DEBUG) << "Total SF up: " << totUp
+                           << ", Total SF down: " << totDown;
             }
             // stat and syst parts with the same correlation model
             float stat1, syst1;
             float stat2, syst2;
             std::tie(stat1, syst1) = this->GetStatAndSystUnc(*lep1);
             std::tie(stat2, syst2) = this->GetStatAndSystUnc(*lep2);
-            float totStat = stat1 * (1 - eff2) + stat2 * (1 - eff1);
-            float totSyst = syst1 * (1 - eff2) + syst2 * (1 - eff1);
-            product.m_optionalWeights["lepton" + weightName + "StatUp"] =
-                m_isData ? 1.0 / totEff * (1 + totStat) : totEff + totStat;
-            product.m_optionalWeights["lepton" + weightName + "StatDown"] =
-                m_isData ? 1.0 / totEff * (1 - totStat) : totEff - totStat;
-            product.m_optionalWeights["lepton" + weightName + "SystUp"] =
-                m_isData ? 1.0 / totEff * (1 + totSyst) : totEff + totSyst;
-            product.m_optionalWeights["lepton" + weightName + "SystDown"] =
-                m_isData ? 1.0 / totEff * (1 - totSyst) : totEff - totSyst;
+            float totStatUp = triggerWeight((eff1 + stat1) * effMC1, (eff2 + stat2) * effMC2);
+            float totStatDown = triggerWeight((eff1 - stat1) * effMC1, (eff2 - stat2) * effMC2);
+            float totSystUp = triggerWeight((eff1 + syst1) * effMC1, (eff2 + syst2) * effMC2);
+            float totSystDown = triggerWeight((eff1 - syst1) * effMC1, (eff2 - syst2) * effMC2);
+            product.m_optionalWeights["lepton" + weightName + "StatUp"] = m_isData ? 1.0 / totStatUp : totStatUp;
+            product.m_optionalWeights["lepton" + weightName + "StatDown"] = m_isData ? 1.0 / totStatDown : totStatDown;
+            product.m_optionalWeights["lepton" + weightName + "SystUp"] = m_isData ? 1.0 / totSystUp : totSystUp;
+            product.m_optionalWeights["lepton" + weightName + "SystDown"] = m_isData ? 1.0 / totSystDown : totSystDown;
         }
     } else {
         LOG(DEBUG) << "No valid Z found. Only applying SFs to Z leptons.";

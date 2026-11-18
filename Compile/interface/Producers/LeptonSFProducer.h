@@ -61,6 +61,12 @@ class LeptonTriggerSFProducer : public LeptonSFProducer
     void Produce(ZJetEvent const& event,
                  ZJetProduct& product,
                  ZJetSettings const& settings) const override;
+
+  protected:
+    // trigger efficiencies in data and MC, SF = effData / effMC
+    std::unique_ptr<TH2F> effDataHisto = nullptr;
+    std::unique_ptr<TH2F> effMCHisto = nullptr;
+    std::tuple<float, float> GetDataAndMCEfficiency(KLV const& lepton) const;
 };
 
 class LeptonTrackingSFProducer : public LeptonSFProducer
