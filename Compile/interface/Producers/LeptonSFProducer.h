@@ -26,10 +26,14 @@ class LeptonSFProducer : public ZJetProducerBase
     bool m_reversed_axes;
     bool m_absoluteEta;
     std::unique_ptr<TH2F> sfhisto = nullptr;
+    // bin errors are the stat and syst components of the sfhisto bin error
+    std::unique_ptr<TH2F> sfhistoStat = nullptr;
+    std::unique_ptr<TH2F> sfhistoSyst = nullptr;
 
     virtual void SetEtaAxis2D(std::string histoname);
-    virtual void SetOverflowPtBin();
+    virtual void SetOverflowPtBin(TH2F* histo);
     virtual std::tuple<float, float> GetScaleFactorAndUnc(KLV const& lepton) const;
+    std::tuple<float, float> GetStatAndSystUnc(KLV const& lepton) const;
 };
 
 class LeptonIDSFProducer : public LeptonSFProducer

@@ -50,13 +50,26 @@ void LeptonSFProducer::Init(ZJetSettings const& settings)
     }
     sfhisto = std::unique_ptr<TH2F>(static_cast<TH2F*>(file->Get(histoname.c_str())));
     sfhisto->SetDirectory(0);
+    if (settings.GetLeptonSFVariation() == true) {
+        if (!file->Get((histoname + "_stat").c_str()) || !file->Get((histoname + "_syst").c_str())) {
+            LOG(FATAL) << "Failed to open histogram " << histoname << "_stat or _syst from file " << m_sffile;
+        }
+        sfhistoStat = std::unique_ptr<TH2F>(static_cast<TH2F*>(file->Get((histoname + "_stat").c_str())));
+        sfhistoStat->SetDirectory(0);
+        sfhistoSyst = std::unique_ptr<TH2F>(static_cast<TH2F*>(file->Get((histoname + "_syst").c_str())));
+        sfhistoSyst->SetDirectory(0);
+    }
     file->Close();
 
     // use this pointer, so we call child class methods if overwritten.
     // set correct bools for further processing
     this->SetEtaAxis2D(histoname);
     // Use highest pT bin as overflow bin
-    this->SetOverflowPtBin();
+    this->SetOverflowPtBin(sfhisto.get());
+    if (sfhistoStat) {
+        this->SetOverflowPtBin(sfhistoStat.get());
+        this->SetOverflowPtBin(sfhistoSyst.get());
+    }
 }
 
 void LeptonSFProducer::Produce(ZJetEvent const& event,
@@ -102,6 +115,23 @@ void LeptonSFProducer::Produce(ZJetEvent const& event,
                 LOG(DEBUG) << "Total SF up: " << totEff + totErr
                            << ", Total SF down: " << totEff - totErr;
             }
+            // stat and syst parts with the same correlation model, not available for the Reco SFs
+            if (sfhistoStat) {
+                float stat1, syst1;
+                float stat2, syst2;
+                std::tie(stat1, syst1) = this->GetStatAndSystUnc(*lep1);
+                std::tie(stat2, syst2) = this->GetStatAndSystUnc(*lep2);
+                float totStat = eff1 * stat2 + eff2 * stat1;
+                float totSyst = eff1 * syst2 + eff2 * syst1;
+                product.m_optionalWeights["lepton" + weightName + "StatUp"] =
+                    m_isData ? 1.0 / totEff * (1 + totStat) : totEff + totStat;
+                product.m_optionalWeights["lepton" + weightName + "StatDown"] =
+                    m_isData ? 1.0 / totEff * (1 - totStat) : totEff - totStat;
+                product.m_optionalWeights["lepton" + weightName + "SystUp"] =
+                    m_isData ? 1.0 / totEff * (1 + totSyst) : totEff + totSyst;
+                product.m_optionalWeights["lepton" + weightName + "SystDown"] =
+                    m_isData ? 1.0 / totEff * (1 - totSyst) : totEff - totSyst;
+            }
         }
     } else {
         LOG(DEBUG) << "No valid Z found. Only applying SFs to Z leptons.";
@@ -141,22 +171,22 @@ void LeptonSFProducer::SetEtaAxis2D(std::string histoname)
     return;
 }
 
-void LeptonSFProducer::SetOverflowPtBin()
+void LeptonSFProducer::SetOverflowPtBin(TH2F* histo)
 {
-    int nEta = m_reversed_axes ? sfhisto->GetNbinsY() : sfhisto->GetNbinsX();
-    int nPt = m_reversed_axes ? sfhisto->GetNbinsX() : sfhisto->GetNbinsY();
+    int nEta = m_reversed_axes ? histo->GetNbinsY() : histo->GetNbinsX();
+    int nPt = m_reversed_axes ? histo->GetNbinsX() : histo->GetNbinsY();
     // start at bin 1, since 0 is underflow bin
     for (int i = 1; i <= nEta; ++i) {
         if (m_reversed_axes) {
-            float eff = sfhisto->GetBinContent(nPt, i);
-            float err = sfhisto->GetBinError(nPt, i);
-            sfhisto->SetBinContent(nPt + 1, i, eff);
-            sfhisto->SetBinError(nPt + 1, i, err);
+            float eff = histo->GetBinContent(nPt, i);
+            float err = histo->GetBinError(nPt, i);
+            histo->SetBinContent(nPt + 1, i, eff);
+            histo->SetBinError(nPt + 1, i, err);
         } else {
-            float eff = sfhisto->GetBinContent(i, nPt);
-            float err = sfhisto->GetBinError(i, nPt);
-            sfhisto->SetBinContent(i, nPt + 1, eff);
-            sfhisto->SetBinError(i, nPt + 1, err);
+            float eff = histo->GetBinContent(i, nPt);
+            float err = histo->GetBinError(i, nPt);
+            histo->SetBinContent(i, nPt + 1, eff);
+            histo->SetBinError(i, nPt + 1, err);
         }
     }
 }
@@ -177,6 +207,14 @@ std::tuple<float, float> LeptonSFProducer::GetScaleFactorAndUnc(KLV const& lepto
         eff = 1.0;
     }
     return std::make_tuple(eff, err);
+}
+
+std::tuple<float, float> LeptonSFProducer::GetStatAndSystUnc(KLV const& lepton) const
+{
+    float eta = m_absoluteEta ? std::abs(lepton.p4.Eta()) : lepton.p4.Eta();
+    int bin = m_reversed_axes ? sfhisto->FindBin(lepton.p4.Pt(), eta)
+                              : sfhisto->FindBin(eta, lepton.p4.Pt());
+    return std::make_tuple(sfhistoStat->GetBinError(bin), sfhistoSyst->GetBinError(bin));
 }
 
 ////////////////
@@ -300,6 +338,21 @@ void LeptonTriggerSFProducer::Produce(ZJetEvent const& event,
                 LOG(DEBUG) << "Total SF up: " << totEff + totErr
                            << ", Total SF down: " << totEff - totErr;
             }
+            // stat and syst parts with the same correlation model
+            float stat1, syst1;
+            float stat2, syst2;
+            std::tie(stat1, syst1) = this->GetStatAndSystUnc(*lep1);
+            std::tie(stat2, syst2) = this->GetStatAndSystUnc(*lep2);
+            float totStat = stat1 * (1 - eff2) + stat2 * (1 - eff1);
+            float totSyst = syst1 * (1 - eff2) + syst2 * (1 - eff1);
+            product.m_optionalWeights["lepton" + weightName + "StatUp"] =
+                m_isData ? 1.0 / totEff * (1 + totStat) : totEff + totStat;
+            product.m_optionalWeights["lepton" + weightName + "StatDown"] =
+                m_isData ? 1.0 / totEff * (1 - totStat) : totEff - totStat;
+            product.m_optionalWeights["lepton" + weightName + "SystUp"] =
+                m_isData ? 1.0 / totEff * (1 + totSyst) : totEff + totSyst;
+            product.m_optionalWeights["lepton" + weightName + "SystDown"] =
+                m_isData ? 1.0 / totEff * (1 - totSyst) : totEff - totSyst;
         }
     } else {
         LOG(DEBUG) << "No valid Z found. Only applying SFs to Z leptons.";
