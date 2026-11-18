@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <random>
 
 #include "Excalibur/Compile/interface/ZJetTypes.h"
@@ -32,7 +33,10 @@
  *      the smearing is done using the 'stochastic' method.
  * 
  *  JERSmearerSeed (type: int) :
- *      seed used for the random number generator
+ *      base seed. The random number for the stochastic smearing of each jet is drawn
+ *      from a generator seeded with JERSmearerSeed, run, lumi and event number and
+ *      the jet direction. The smearing of a jet then does not depend on the other
+ *      jets or events, so shifted trees (JEC, muon scale, ...) stay in sync.
  *
  *  Note: This needs to run after the JEC producer.
  *  Additionally, if the 'hybrid' smearing method is chosen, the
@@ -64,5 +68,8 @@ class JERSmearer : public ZJetProducerBase
     std::unique_ptr<JME::JetResolution> m_jetResolution;
     std::unique_ptr<JME::JetResolutionScaleFactor> m_jetResolutionScaleFactor;
 
-    mutable std::mt19937 m_randomNumberGenerator;
+    std::uint64_t m_seed = 0;
+
+    // seed from event id and jet direction (unchanged by energy scaling)
+    std::mt19937 GetJetRNG(ZJetEvent const& event, KLV const& jet) const;
 };

@@ -2,6 +2,8 @@
 
 #include "KappaTools/Toolbox/interface/StringTools.h"
 
+#include <cmath>
+
 
 std::string JERSmearer::GetProducerId() const { return "JERSmearer"; }
 
@@ -78,8 +80,22 @@ void JERSmearer::Init(ZJetSettings const& settings) {
     m_jetResolution.reset(new JME::JetResolution(settings.GetJER() + "_PtResolution_" + algoName + ".txt"));
     m_jetResolutionScaleFactor.reset(new JME::JetResolutionScaleFactor(settings.GetJER() + "_SF_" + algoName + ".txt"));
 
-    // create the random number generator
-    m_randomNumberGenerator = std::mt19937(settings.GetJERSmearerSeed());
+    // base seed for the per-jet random number generators
+    m_seed = static_cast<std::uint64_t>(settings.GetJERSmearerSeed());
+}
+
+std::mt19937 JERSmearer::GetJetRNG(ZJetEvent const& event, KLV const& jet) const {
+    // seed_seq takes 32-bit words, so the 64-bit seed and event number are split
+    std::seed_seq seq{
+        static_cast<std::uint32_t>(m_seed), static_cast<std::uint32_t>(m_seed >> 32),
+        static_cast<std::uint32_t>(event.m_eventInfo->nRun),
+        static_cast<std::uint32_t>(event.m_eventInfo->nLumi),
+        static_cast<std::uint32_t>(event.m_eventInfo->nEvent),
+        static_cast<std::uint32_t>(event.m_eventInfo->nEvent >> 32),
+        // eta and phi rounded to 1e-4, robust against floating-point noise
+        static_cast<std::uint32_t>(std::llround(jet.p4.Eta() * 1e4)),
+        static_cast<std::uint32_t>(std::llround(jet.p4.Phi() * 1e4))};
+    return std::mt19937(seq);
 }
 
 void JERSmearer::Produce(ZJetEvent const& event,
@@ -126,7 +142,8 @@ void JERSmearer::Produce(ZJetEvent const& event,
             }
             else if ((m_smearingMethod == JERSmearer::SmearingMethod::STOCHASTIC) || (!matchedGenJet)) {
                 // match not found or stochastic method requested -> draw pT smearing factor from a normal distribution
-                jecSmearFactor = 1 + std::normal_distribution<>(0, jetResolution)(m_randomNumberGenerator) * std::sqrt(std::max(jetResolutionScaleFactor * jetResolutionScaleFactor - 1, 0.0));
+                std::mt19937 jetRandomNumberGenerator = GetJetRNG(event, *recoJets[iJet]);
+                jecSmearFactor = 1 + std::normal_distribution<>(0, jetResolution)(jetRandomNumberGenerator) * std::sqrt(std::max(jetResolutionScaleFactor * jetResolutionScaleFactor - 1, 0.0));
             }
 
             // apply factor (prevent negative values)
