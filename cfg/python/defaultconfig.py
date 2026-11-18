@@ -116,6 +116,7 @@ def data(cfg, **kwargs):
     cfg['Processors'] = ['filter:JsonFilter', 'producer:HltProducer','filter:HltFilter'] + cfg['Processors']  # apply directly after producer for better performance
     cfg['Processors'] += [
         'producer:NPUProducer',
+        'producer:JECUncertaintyShifter',  # applies the JEC uncertainty shift (after JER smearing)
         'producer:TypeIMETProducer',  # applies type-1 correction, can run on unsorted collections
         'producer:JetSorter' # sorts jets
         ]
@@ -145,6 +146,7 @@ def mc(cfg, **kwargs):
         'producer:RecoJetGenJetMatchingProducer',
         'producer:NeutrinoCounter',
         'producer:ZJetTrueGenMuonsProducer',
+        'producer:JECUncertaintyShifter',  # applies the JEC uncertainty shift (after JER smearing)
         'producer:TypeIMETProducer',  # applies type-1 correction, can run on unsorted collections
         'producer:JetSorter',  # sorts jets
         #'producer:ZJetGenWeightProducer'
@@ -235,8 +237,8 @@ def mc(cfg, **kwargs):
         cfg['JERMethod'] = "stochastic"  # options: "hybrid" or "stochastic"
         cfg['JERSmearerSeed'] = 92837465
 
-        # insert smearer in front of TypeI-MET producer
-        cfg['Processors'].insert(cfg['Processors'].index("producer:TypeIMETProducer"), "producer:JERSmearer")
+        # insert smearer in front of the JEC uncertainty shift and the TypeI-MET producer
+        cfg['Processors'].insert(cfg['Processors'].index("producer:JECUncertaintyShifter"), "producer:JERSmearer")
 
 
 

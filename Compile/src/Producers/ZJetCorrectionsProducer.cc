@@ -1,13 +1,13 @@
+#include <algorithm>
+
 #include "KappaTools/Toolbox/interface/StringTools.h"
 
 #include "Excalibur/Compile/interface/Producers/ZJetCorrectionsProducer.h"
 
 std::string ZJetCorrectionsProducer::GetProducerId() const { return "ZJetCorrectionsProducer"; }
 
-void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
+std::string ZJetCorrectionsProducer::GetJecAlgoName(ZJetSettings const& settings)
 {
-    ZJetProducerBase::Init(settings);
-
     // convert usual algo name (ak5PFJetsCHS) to txt file algo name (AK5PFchs)
     std::string jetName = "Jets";
     if (settings.GetTaggedJets().find("Tagged") !=
@@ -29,6 +29,14 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
             algoName+=algoType;
         }
     }
+    return algoName;
+}
+
+void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
+{
+    ZJetProducerBase::Init(settings);
+
+    std::string algoName = GetJecAlgoName(settings);
     LOG(INFO) << "\t -- Jet corrections enabled for " << algoName
        	      << " jets using the following JEC files:";
 
@@ -135,24 +143,11 @@ void ZJetCorrectionsProducer::Init(ZJetSettings const& settings)
         m_l2l3res = new FactorizedJetCorrector(jecParameters);
         jecParameters.clear();
     }
-    // JEU initialization
-    if (settings.GetJetEnergyCorrectionUncertaintyShift() != 0.0) {
-        LOG(INFO) << "\t -- Enabling JEC Uncertainty...";
-        JetCorrectorParameters* jecUncertaintyParameters = nullptr;
-        std::string fname_unc = settings.GetJec() + "_" + "UncertaintySources" + "_" + algoName + ".txt";
-        if (settings.GetJetEnergyCorrectionUncertaintySource().empty()) {
-            LOG(FATAL) << "Undefined JetEnergyCorrectionUncertaintySource. Use 'Total' for full uncertainty.";
-        }
-        jecUncertaintyParameters = new JetCorrectorParameters(fname_unc, settings.GetJetEnergyCorrectionUncertaintySource());
-        if ((!jecUncertaintyParameters->isValid()) || (jecUncertaintyParameters->size() == 0)) {
-            LOG(FATAL) << "Invalid definition " << settings.GetJetEnergyCorrectionUncertaintySource() << " in file " << fname_unc;
-        }
-        LOG(INFO) << "\t\t" << "Using JEC uncertainty " << settings.GetJetEnergyCorrectionUncertaintySource();
-        LOG(INFO) << "\t\t" << "From file" << fname_unc;
-        correctionUncertainty = new JetCorrectionUncertainty(*jecUncertaintyParameters);
-    }
-    else {
-        LOG(INFO) << "\t -- Using mean JEC values. No JetEnergyCorrectionUncertaintyParameters and/or JetEnergyCorrectionUncertaintyShift supplied.";
+    // The JEC uncertainty shift is applied by the JECUncertaintyShifter (after JER smearing)
+    std::vector<std::string> processors = settings.GetGlobalProcessors();
+    if ((settings.GetJetEnergyCorrectionUncertaintyShift() != 0.0) &&
+        (std::find(processors.begin(), processors.end(), "producer:JECUncertaintyShifter") == processors.end())) {
+        LOG(FATAL) << "JetEnergyCorrectionUncertaintyShift is set, but producer:JECUncertaintyShifter is not in the processors.";
     }
 }
 
@@ -245,13 +240,13 @@ void ZJetCorrectionsProducer::CorrectJetCollection(std::string inCorrLevel,
             *(static_cast<KJet*>(product.GetInvalidJet(settings, event, jetIndex, inCorrLevel)));
     }
 
-    // Apply jet energy corrections and uncertainty shift
-    correctJets(&correctJetsForJecTools, factorizedJetCorrector, correctionUncertainty,
+    // Apply jet energy corrections (no uncertainty shift, see JECUncertaintyShifter)
+    correctJets(&correctJetsForJecTools, factorizedJetCorrector, nullptr,
                 event.m_pileupDensity->rho, static_cast<int>(event.m_vertexSummary->nVertices),
-                -1.0f, settings.GetJetEnergyCorrectionUncertaintyShift(), false);
-    correctJets(&correctInvalidJetsForJecTools, factorizedJetCorrector, correctionUncertainty,
+                -1.0f, 0.0f, false);
+    correctJets(&correctInvalidJetsForJecTools, factorizedJetCorrector, nullptr,
                 event.m_pileupDensity->rho, static_cast<int>(event.m_vertexSummary->nVertices),
-                -1.0f, settings.GetJetEnergyCorrectionUncertaintyShift(), false);
+                -1.0f, 0.0f, false);
 
     // Create shared pointers and store them in the product
     product.m_correctedZJets[outCorrLevel].clear();

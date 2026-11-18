@@ -15,8 +15,8 @@
    Required config tags:
    - JEC (path and prefix of the correction files)
    Optional:
-   - JetEnergyCorrectionUncertaintySource (default: "", name of the uncertainty, default is full)
-   - JetEnergyCorrectionUncertaintyShift (default: 0.0, direction and scale of the uncertainty)
+   The JEC uncertainty shift (JetEnergyCorrectionUncertaintyShift) is not applied here, but by
+   the JECUncertaintyShifter after the JER smearing.
 
    Required packages (unfortunately, nobody knows a tag):
    git cms-addpkg CondFormats/JetMETObjects
@@ -47,6 +47,9 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
         delete m_l2l3res;
     }
 
+    // txt file algo name (AK4PFchs) from the TaggedJets setting (ak4PFJetsCHS)
+    static std::string GetJecAlgoName(ZJetSettings const& settings);
+
     void Init(ZJetSettings const& settings) override;
 
     void Produce(ZJetEvent const& event,
@@ -71,6 +74,4 @@ class ZJetCorrectionsProducer : public ZJetProducerBase
     FactorizedJetCorrector* m_l5c = nullptr;
     FactorizedJetCorrector* m_l2res = nullptr;
     FactorizedJetCorrector* m_l2l3res = nullptr;
-
-    JetCorrectionUncertainty* correctionUncertainty = nullptr;
 };
