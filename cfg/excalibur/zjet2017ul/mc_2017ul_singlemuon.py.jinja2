@@ -123,6 +123,9 @@ def config():
     cfg['DeltaRMatchingRecoJetGenJet'] = 0.2
     cfg["JERMethod"] = "hybrid"
     cfg["JERShift"] = 0
+    # Rochester uncertainty shifts in units of sigma, set per shift by ExcaliburWorkflow
+    cfg['MuonRochesterShiftDT'] = 0.0  # data scale, emulated on MC
+    cfg['MuonRochesterShiftMC'] = 0.0  # MC scale and resolution
 
     ##### Change selection: (see also http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=SMP-17-002&tp=an&id=1891&ancode=SMP-17-002) #####
     cfg['MuonID'] = 'tight'
