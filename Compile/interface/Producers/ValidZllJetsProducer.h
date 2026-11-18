@@ -70,6 +70,8 @@ class ValidZllJetsProducer : public JetCleanerBase {
 
     void Init(ZJetSettings const& settings);
 
+    void Produce(ZJetEvent const& event, ZJetProduct& product, ZJetSettings const& settings) const override;
+
     // this should return true if a jet is valid
     virtual bool DoesJetPass(const KJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const;
 
@@ -78,6 +80,7 @@ class ValidZllJetsProducer : public JetCleanerBase {
 
     PUJetIDWorkingPoint m_puJetIDWorkingPoint;
     std::string m_puJetIDMetadataTag;
+    mutable size_t m_puJetIDTagIndex = 0;
     TH2F* m_puJetIDMinValueHistogram;
     float m_puJetIDMinValue;
 

@@ -71,12 +71,31 @@ void ValidZllJetsProducer::Init(ZJetSettings const& settings) {
     objectJetEta = settings.GetUseObjectJetEtaCut();
 }
 
+void ValidZllJetsProducer::Produce(ZJetEvent const& event, ZJetProduct& product, ZJetSettings const& settings) const {
+    // KJet::getTag copies every tag name on each call, so find the PU jet ID index here once per event.
+    // The tag list is set per lumi by the skim config, so it can only change between input files:
+    // search again only if the name at the cached index does not match.
+    if (m_puJetIDWorkingPoint != ValidZllJetsProducer::PUJetIDWorkingPoint::NONE) {
+        const std::vector<std::string>& tagNames = event.m_jetMetadata->tagNames;
+        if (m_puJetIDTagIndex >= tagNames.size() ||
+            event.m_jetMetadata->ReplaceAll(tagNames[m_puJetIDTagIndex], ":", "") != m_puJetIDMetadataTag) {
+            for (m_puJetIDTagIndex = 0; m_puJetIDTagIndex < tagNames.size(); ++m_puJetIDTagIndex) {
+                if (event.m_jetMetadata->ReplaceAll(tagNames[m_puJetIDTagIndex], ":", "") == m_puJetIDMetadataTag)
+                    break;
+            }
+            if (m_puJetIDTagIndex == tagNames.size())
+                LOG(FATAL) << "[ValidZllJetsProducer] Tag " << m_puJetIDMetadataTag << " not available!";
+        }
+    }
+    JetCleanerBase::Produce(event, product, settings);
+}
+
 bool ValidZllJetsProducer::DoesJetPass(const KJet* jet, ZJetEvent const& event, ZJetProduct const& product, ZJetSettings const& settings) const {
 
     // check that PUJetID is above configured minimal value
     const KJet* kJet = dynamic_cast<const KJet*>(jet);  // need a KJet for PUJetID, not just a KBasicJet...
     if (kJet && (m_puJetIDWorkingPoint != ValidZllJetsProducer::PUJetIDWorkingPoint::NONE)) {
-        const double puJetIDValue = kJet->getTag(m_puJetIDMetadataTag, event.m_jetMetadata);
+        const double puJetIDValue = kJet->tags[m_puJetIDTagIndex];
         // LOG(DEBUG) << "PUJetIDValue: " <<  puJetIDValue;
 
         if (m_puJetIDWorkingPoint == ValidZllJetsProducer::PUJetIDWorkingPoint::FILE) {
